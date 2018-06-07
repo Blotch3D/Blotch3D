@@ -103,7 +103,8 @@ Examples are provided showing how with a few lines of code you can...
 16. Get a list of sprites under the mouse position, to implement mouse
     selection, tooltips, pop-up menus, etc.
 
-17. Detect collisions between sprites \[TBD\].
+17. Detect collisions between sprites \[TBD: example not yet
+    available\].
 
 18. Implement levels-of-detail.
 
@@ -113,7 +114,7 @@ Examples are provided showing how with a few lines of code you can...
 
 21. Support stereoscopic views (anaglyph, VR, etc.) \[TBD\].
 
-22. Implement fog \[TBD\].
+22. Implement fog \[TBD: example not yet available\].
 
 23. Use with WPF and WinForms.
 
