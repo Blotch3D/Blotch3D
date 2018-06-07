@@ -85,7 +85,7 @@ namespace Blotch
 		/// <summary>
 		/// Defines the mipmap (Textures) scaling. The higher this value, the closer you must be to see a given mipmap.
 		/// </summary>
-		public double MipmapScale = 8;
+		public double MipmapScale = 5;
 
 		/// <summary>
 		/// This read-only value is the log of the reciprocal of ApparentSize. It is used in the calculation of the LOD and the mipmap level.
