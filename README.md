@@ -318,8 +318,7 @@ way to add them to your project is to...
 
 3.  Right-click it and select "Properties"
 
-4.  Open the "Buikld Action" dropdown and select
-    "MonoGameContentReference"
+4.  Set the "Build Action" to "MonoGameContentReference"
 
 You can get the names of the content files that you can use by starting
 the pipeline manager (double-click Content/Content.mgcb). You can also
