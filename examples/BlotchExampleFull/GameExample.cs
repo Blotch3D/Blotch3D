@@ -175,7 +175,7 @@ Shift          - Fine control
 			var myHud = new BlSprite(Graphics, "myHud");
 			HudBackground.Add("myHud", myHud);
 
-			myHud.Matrix = Matrix.CreateScale(.2f, .2f, .2f);
+			myHud.Matrix = Matrix.CreateScale(.2f, .1f, .2f);
 			myHud.Matrix *= Matrix.CreateTranslation(3, 1, 0);
 
 			myHud.LODs.Add(Content.Load<Model>("Plane"));
@@ -228,7 +228,7 @@ Shift          - Fine control
 
 			var guiCtrl = new BlGuiControl(this)
 			{
-				Texture = MyTexture,
+				Texture = Graphics.TextToTexture("GUI button", FontArial12),
 				Position = new Vector2(600, 100),
 				OnMouseOver = (ctrl) => { Console.Write("."); }
 			};
