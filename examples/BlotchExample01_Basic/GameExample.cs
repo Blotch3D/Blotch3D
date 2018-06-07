@@ -49,8 +49,8 @@ Shift          - Fine control
 			var MyContent = new ContentManager(Services, "Content");
 
 			// The font we will use to draw the menu on the screen.
-			// "Arial12" is the pathname to the font file
-			Font = MyContent.Load<SpriteFont>("Arial12");
+			// "Arial14" is the pathname to the font file
+			Font = MyContent.Load<SpriteFont>("Arial14");
 
 			// The model of the toroid
 			var TorusModel = MyContent.Load<Model>("torus");

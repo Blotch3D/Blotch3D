@@ -32,7 +32,7 @@ Shift          - Fine control
 		Matrix LastProjectionMatrix;
 		Model SkyboxModel = null;
 		float SkyboxDiameter = 1000000f;
-		SpriteFont FontArial12;
+		SpriteFont FontArial14;
 		List<BlSprite> FlatDrawList = new List<BlSprite>();
 
 		enum Flag : ulong
@@ -69,7 +69,7 @@ Shift          - Fine control
 
 			Content = new ContentManager(Services, "Content");
 
-			FontArial12 = Content.Load<SpriteFont>("arial12");
+			FontArial14 = Content.Load<SpriteFont>("Arial14");
 
 			var floor = new BlSprite(Graphics, "floor");
 			var plane = Content.Load<Model>("Plane");
@@ -156,7 +156,7 @@ Shift          - Fine control
 			var title = new BlSprite(Graphics, "title");
 			title.LODs.Add(Content.Load<Model>("Plane"));
 			title.Matrix = Matrix.CreateScale(.15f, .05f, .15f);
-			title.Mipmap = new BlMipmap(Graphics,Graphics.TextToTexture("This is the\nmodel with LODs", FontArial12, Microsoft.Xna.Framework.Color.Red, Microsoft.Xna.Framework.Color.Transparent));
+			title.Mipmap = new BlMipmap(Graphics,Graphics.TextToTexture("This is the\nmodel with LODs", FontArial14, Microsoft.Xna.Framework.Color.Red, Microsoft.Xna.Framework.Color.Transparent));
 			title.MipmapScale = 0;
 			title.SetAllMaterialBlack();
 			title.EmissiveColor = new Vector3(1, 1, 1);
@@ -179,7 +179,7 @@ Shift          - Fine control
 			myHud.Matrix *= Matrix.CreateTranslation(3, 1, 0);
 
 			myHud.LODs.Add(Content.Load<Model>("Plane"));
-			myHud.Mipmap = new BlMipmap(Graphics, Graphics.TextToTexture("HUD text", FontArial12, Microsoft.Xna.Framework.Color.White, Microsoft.Xna.Framework.Color.Transparent),1);
+			myHud.Mipmap = new BlMipmap(Graphics, Graphics.TextToTexture("HUD text", FontArial14, Microsoft.Xna.Framework.Color.White, Microsoft.Xna.Framework.Color.Transparent),1);
 			myHud.SetAllMaterialBlack();
 			myHud.EmissiveColor = new Vector3(1, 1, 1);
 			myHud.Flags = (ulong)(Flag.IsVisible | Flag.AlwaysOnTop | Flag.HasTranslucency);
@@ -228,7 +228,7 @@ Shift          - Fine control
 
 			var guiCtrl = new BlGuiControl(this)
 			{
-				Texture = Graphics.TextToTexture("GUI button", FontArial12),
+				Texture = Graphics.TextToTexture("GUI button", FontArial14),
 				Position = new Vector2(600, 100),
 				OnMouseOver = (ctrl) => { Console.Write("."); }
 			};
@@ -328,7 +328,7 @@ Shift          - Fine control
 
 			try
 			{
-				Graphics.DrawText(MenuText, FontArial12, new Vector2(50, 50));
+				Graphics.DrawText(MenuText, FontArial14, new Vector2(50, 50));
 			}
 			catch (Exception e)
 			{

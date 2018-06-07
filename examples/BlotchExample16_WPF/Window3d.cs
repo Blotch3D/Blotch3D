@@ -53,7 +53,7 @@ Shift          - Fine control
 
 			// The font we will use to draw the menu on the screen.
 			// "CourierNew12" is the pathname to the font file
-			Font = MyContent.Load<SpriteFont>("Arial12");
+			Font = MyContent.Load<SpriteFont>("Arial14");
 
 			// The model of the toroid
 			var TorusModel = MyContent.Load<Model>("torus");
