@@ -1,7 +1,8 @@
 **Blotch3D User Manual**
 ========================
 
-*\[Preliminary\]*
+*\[This is preliminary information. A* "\[TBD\]" *in the below text
+indicates that feature is not fully implemented\]*
 
 Table of Contents {#table-of-contents .TOCHeading}
 =================
@@ -308,12 +309,21 @@ Making 3D models
 ----------------
 
 There are several primitive models available with Blotch3D. The easiest
-way to add them to your project is to simply copy the Content folder
-from the Blotch3D project folder to your project folder, and then add
-the "Content.mgcb" file in that folder to your project. You can get the
-names of the content files that you can use by starting the pipeline
-manager (double-click Content/Content.mgcb). You can also add more
-content via the pipeline manager (see
+way to add them to your project is to...
+
+1.  Copy the Content folder from the Blotch3D project folder to your
+    project folder
+
+2.  Add the "Content.mgcb" file in that folder to your project
+
+3.  Right-click it and select "Properties"
+
+4.  Open the "Buikld Action" dropdown and select
+    "MonoGameContentReference"
+
+You can get the names of the content files that you can use by starting
+the pipeline manager (double-click Content/Content.mgcb). You can also
+add more content via the pipeline manager (see
 <http://rbwhitaker.wikidot.com/monogame-managing-content>). See the
 examples for details on how to load and display models, fonts, etc.
 
