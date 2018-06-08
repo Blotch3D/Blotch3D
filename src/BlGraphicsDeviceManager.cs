@@ -74,7 +74,7 @@ using Microsoft.Xna.Framework.Input;
 namespace Blotch
 {
 	/// <summary>
-	/// This holds everything having to do with an output window. BlGame creates one of these.
+	/// This holds everything having to do with an output device. BlWindow3D creates one of these for itself.
 	/// </summary>
 	public class BlGraphicsDeviceManager : GraphicsDeviceManager, ICloneable
 	{

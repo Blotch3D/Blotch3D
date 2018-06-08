@@ -311,10 +311,10 @@ A point on a plane can be described with a horizontal distance from the
 origin (the point's "X" value) and a vertical distance from the origin
 (the point's "Y" value), notated by (X,Y).
 
-For example, our model might have one point (vertex) 4 to the right and
-1 up from the origin, notated by (4,1), and another vertex 3 to the
-right and 3 up from the origin, notated by (3,3). (This is a very simple
-model that has only two vertices.)
+For example, our model might have one vertex 4 to the right and 1 up
+from the origin, notated by (4,1), and another vertex 3 to the right and
+3 up from the origin, notated by (3,3). (This is a very simple model
+comprised of only two vertices.)
 
 You can move the model by moving each of those vertices by some amount
 without regard to how far they currently are from the origin. To do
@@ -348,14 +348,15 @@ X' = aX + bY
 For example, if a=0 and b=1, then this would set the new X of each
 vertex to its original Y value.
 
-Finally, we might also want to define how to move Y in the same way. So,
-the equations for both the new X and new Y are:
+Finally, we might also want to define how to create a new Y according to
+the original X and original Y. So, the equations for both the new X and
+new Y are:
 
 X' = aX + bY\
 Y' = cX + dY
 
-By convention we might write the four numbers in a 2x2 matrix, like
-this:
+Remember, the idea is to apply this to every vertex. By convention we
+might write the four numbers in a 2x2 matrix, like this:
 
 a b\
 c d
