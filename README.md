@@ -10,7 +10,7 @@ Introduction
 Blotch3D is a C\# library that vastly simplifies development of 3D
 applications and games.
 
-Examples are provided showing how with just a few lines of code you
+Examples are provided that show how with just a few lines of code you
 can...
 
 1.  Load standard file types of 3D models (as "sprites"), textures,
@@ -37,15 +37,15 @@ can...
 
 9.  Show 2D textures at any position, including a sprite's position.
 
-10. Show in-window text in any font, size, and color at any position,
-    including a sprite's position.
+10. Show in-world and 2D text in any font, size, and color at any 2D or
+    3D position, including a sprite's position.
 
 11. Connect sprites to the camera to implement HUD objects and text that
     resizes with the window size, etc.
 
-12. Implement GUI controls in the 3D window.
+12. Connect the camera to a sprite to implement 'cockpit view'.
 
-13. Connect the camera to a sprite to implement 'cockpit view'.
+13. Implement GUI controls in the 3D window.
 
 14. Implement a skybox.
 
@@ -55,7 +55,7 @@ can...
 16. Get a list of sprites under the mouse position, to implement mouse
     selection, tooltips, pop-up menus, etc.
 
-17. Detect collisions between sprites \[TBD: no example yet\].
+17. Detect collisions between sprites \[example TBD\].
 
 18. Implement levels-of-detail.
 
@@ -65,7 +65,7 @@ can...
 
 21. Support stereoscopic views (anaglyph, VR, etc.) \[TBD\].
 
-22. Implement fog \[TBD: no example yet\].
+22. Implement fog \[example TBD\].
 
 23. Use with WPF and WinForms.
 
@@ -80,7 +80,7 @@ Blotch3D uses MonoGame. MonoGame is a widely used 3D library for C\#
 free, fast, cross platform, actively developed by a large community, and
 fully implements Microsoft's (no longer supported) XNA4 engine. There is
 a plethora of MonoGame/XNA4 documentation, tutorials, examples, and
-discussions on line.
+discussions on line. All MonoGame features remain available in Blotch3D.
 
 All reference documentation of Blotch3D (classes, methods, fields,
 properties, etc.) is available through Visual Studio IntelliSense. If
