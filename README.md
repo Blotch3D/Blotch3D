@@ -35,44 +35,42 @@ can...
 
 8.  Create imposter sprites \[TBD\].
 
-9.  Show 2D textures at any position, including a sprite's position.
-
-10. Show in-world and 2D text in any font, size, and color at any 2D or
+9.  Show in-world and 2D text in any font, size, and color at any 2D or
     3D position, including a sprite's position.
 
-11. Connect sprites to the camera to implement HUD objects and text that
+10. Connect sprites to the camera to implement HUD objects and text that
     resizes with the window size, etc.
 
-12. Connect the camera to a sprite to implement 'cockpit view'.
+11. Connect the camera to a sprite to implement 'cockpit view'.
 
-13. Implement GUI controls in the 3D window.
+12. Implement GUI controls in the 3D window.
 
-14. Implement a skybox.
+13. Implement a skybox.
 
-15. Get a list of sprites touching a ray, to implement weapons fire,
+14. Get a list of sprites touching a ray, to implement weapons fire,
     etc.
 
-16. Get a list of sprites under the mouse position, to implement mouse
+15. Get a list of sprites under the mouse position, to implement mouse
     selection, tooltips, pop-up menus, etc.
 
-17. Detect collisions between sprites \[example TBD\].
+16. Detect collisions between sprites \[example TBD\].
 
-18. Implement levels-of-detail.
+17. Implement levels-of-detail.
 
-19. Implement mipmaps.
+18. Implement mipmaps.
 
-20. Implement translucent sprites.
+19. Implement translucent sprites.
 
-21. Support stereoscopic views (anaglyph, VR, etc.) \[TBD\].
+20. Support stereoscopic views (anaglyph, VR, etc.) \[TBD\].
 
-22. Implement fog \[example TBD\].
+21. Implement fog \[example TBD\].
 
-23. Use with WPF and WinForms.
+22. Use with WPF and WinForms.
 
-24. Under Microsoft Windows, access and override many window features
+23. Under Microsoft Windows, access and override many window features
     and functions using the provided WinForms Form object of the window.
 
-25. Build for other platforms (currently supports iOS, Android, MacOS,
+24. Build for other platforms (currently supports iOS, Android, MacOS,
     Linux, all Windows platforms, PS4, PSVita, Xbox One, and Switch).
 
 Blotch3D uses MonoGame. MonoGame is a widely used 3D library for C\#
