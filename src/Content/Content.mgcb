@@ -210,3 +210,10 @@
 /processorParam:TextureFormat=Compressed
 /build:arial14.spritefont
 
+#begin CourierNew14.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:CourierNew14.spritefont
+

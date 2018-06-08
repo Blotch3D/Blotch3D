@@ -1,9 +1,8 @@
 **Blotch3D User Manual**
 ========================
 
-*\[This is preliminary information. A* "\[TBD\]" *in the below text
-indicates that feature is not fully implemented or there is no example
-of it\]*
+*\[A* "\[TBD\]" *in the below text indicates that feature is not fully
+implemented or there is no example of it\]*
 
 Introduction
 ------------
@@ -88,7 +87,9 @@ Get the Blotch3D repository zip from
 
 Open the Visual Studio solution file.
 
-Build and run the BlotchExample01\_Basic project.
+Build and run the BlotchExample01\_Basic project. It is comprised of a
+single small source file that demonstrates a 3D object, a 2D text
+message, and user control of the camera.
 
 Developing with Blotch3D
 ------------------------

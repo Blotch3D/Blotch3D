@@ -947,6 +947,10 @@ namespace Blotch
 			if (CurrentAspect == 0)
 				CurrentAspect = (float)PreferredBackBufferWidth / PreferredBackBufferHeight;
 			Projection = Microsoft.Xna.Framework.Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians((float)Zoom), (float)CurrentAspect, (float)CurrentNearClip, (float)CurrentFarClip);
+
+			PreferredBackBufferWidth = GraphicsDevice.DisplayMode.Width;
+			PreferredBackBufferHeight = GraphicsDevice.DisplayMode.Height;
+
 			ApplyChanges();
 			MinCamDistance = 1e38;
 			MaxCamDistance = -1e38;
