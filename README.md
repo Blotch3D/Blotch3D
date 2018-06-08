@@ -1,15 +1,14 @@
 **Blotch3D User Manual**
 ========================
 
-*\[A* "\[TBD\]" *in the below text indicates that feature is not fully
-implemented or there is no example of it\]*
+*\[There are a few* "TBD"s *in the below text indicating that a feature
+is not fully implemented or there is no example of it\]*
 
 Introduction
 ------------
 
-Blotch3D is a layer on top of MonoGame that notably simplifies
-development of 3D applications and games, while retaining all the power
-of MonoGame.
+Blotch3D is a C\# library that vastly simplifies development of 3D
+applications and games.
 
 Examples are provided showing how with just a few lines of code you
 can...
@@ -76,6 +75,21 @@ can...
 25. Build for other platforms (currently supports iOS, Android, MacOS,
     Linux, all Windows platforms, PS4, PSVita, Xbox One, and Switch).
 
+Blotch3D uses MonoGame. MonoGame is a widely used 3D library for C\#
+(see Wikipedia article on the professional games based on it). It is
+free, fast, cross platform, actively developed by a large community, and
+fully implements Microsoft's (no longer supported) XNA4 engine. There is
+a plethora of MonoGame/XNA4 documentation, tutorials, examples, and
+discussions on line.
+
+All reference documentation of Blotch3D (classes, methods, fields,
+properties, etc.) is available through Visual Studio IntelliSense. If
+you are using another IDE that doesn't support IntelliSense, just look
+at the comment directly in the Blotch3D source. If you aren't getting
+useful IntelliSense information for a keyword, it may be a MonoGame
+keyword rather than a Blotch3D keyword. In that case you can look it up
+online.
+
 Quick start
 -----------
 
@@ -87,9 +101,8 @@ Get the Blotch3D repository zip from
 
 Open the Visual Studio solution file.
 
-Build and run the BlotchExample01\_Basic project. It is comprised of a
-single small source file that demonstrates a 3D object, a 2D text
-message, and user control of the camera.
+Build and run the example projects. They are each comprised of a single
+small source file demonstrating one aspect of Blotch3D.
 
 Developing with Blotch3D
 ------------------------
@@ -556,11 +569,14 @@ successive frames\--typically at about 15 to 60 times per second.
 Features and limitations
 ------------------------
 
-1.  Blotch3D uses MonoGame. MonoGame is a widely used 3D library for C\#
-    (see Wikipedia article on the professional games based on it). It is
-    free, fast, cross platform, actively developed by a large community,
-    and there is a plethora of MonoGame documentation, tutorials,
-    examples, and discussions on line.
+1.  You are welcome to write multithreaded code in your 3D application.
+    However, any code that directly accesses 3D hardware resources
+    (textures, vertices, etc.) must be executed by the BlWindow3D's 3D
+    thread (see [Developing with Blotch3D](#developing-with-blotch3d)
+    for details). This is because of a limitation in some of the
+    underlying graphics subsystems (OpenGL, etc.). Since it's hard to
+    know what parts of the library access hardware, one should assume
+    all accesses of Blotch3D objects should be done in the 3D thread.
 
 2.  At the time of this writing, MonoGame was not designed with a goal
     of supporting multiple 3D windows because many platforms it supports
@@ -572,35 +588,18 @@ Features and limitations
     Windows, you can use the WinForms BlWindow3D.Form object for that.)
     Support for multiple windows may be added to MonoGame in the future.
 
-3.  You are welcome to write multithreaded code in your 3D application.
-    However, any code that directly accesses 3D hardware resources
-    (textures, vertices, etc.) must be executed by the BlWindow3D's 3D
-    thread (see [Developing with Blotch3D](#developing-with-blotch3d)
-    for details). This is because of a limitation in some of the
-    underlying graphics subsystems (OpenGL, etc.). Since it's hard to
-    know what parts of the library access hardware, one should assume
-    all accesses of Blotch3D objects should be done in the 3D thread.
-
-4.  To make the MonoGame window be a child window of an existing GUI,
+3.  To make the MonoGame window be a child window of an existing GUI,
     you need to explicitly size, position, and convey Z order. On
     Microsoft Windows, the window's Form object (BlWindow3D.Form) may be
     of help in this.
 
-5.  MonoGame fully implements Microsoft's (no longer supported) XNA 4
+4.  MonoGame fully implements Microsoft's (no longer supported) XNA 4
     engine, but for multiple platforms. It also implements features
     beyond XNA 4. So understand that XNA 4 documentation you come across
     may not show you the best way to do something, and documentation of
     earlier versions of XNA (versions 2 and 3) will often not be
     correct. For conversion of XNA3 to XNA4 see
     [http://www.nelsonhurst.com/xna-3-1-to-xna-4-0-cheatsheet/.](http://www.nelsonhurst.com/xna-3-1-to-xna-4-0-cheatsheet/)
-
-6.  Reference documentation of Blotch3D (classes, methods, etc.) is
-    available through Visual Studio IntelliSense. If you are using
-    another IDE that doesn't support IntelliSense, just look at the
-    comment directly in the Blotch3D source. If you aren't getting
-    useful IntelliSense information for a keyword, it may be a MonoGame
-    keyword rather than a Blotch3D keyword. In that case you can look it
-    up online.
 
 Rights
 ------
