@@ -150,25 +150,27 @@ scratch like this:
 To create a project for another platform (Android, iOS, etc.), make sure
 you have the Visual Studio add-on that supports it (for example, for
 Android you'll need to add the Xamarin Android feature), and follow
-something like the above steps for that platform.
+something like the above steps for that platform. Or if that doesn't
+work, look online for an example.
 
 All model meshes, textures, fonts, etc. used by the 3D hardware must be
 created and accessed by the same thread, because supported hardware
-platforms require it. Its best to assume all Blotch3D and MonoGame
-objects should be created and accessed in that thread.
+platforms require it (like OpenGL etc.). Its best to assume all Blotch3D
+and MonoGame objects should be created and accessed in that thread.
 
 When you instantiate a class derived from BlWindow3D, it will create the
 3D window and make it visible, and create a single thread that we'll
 call the "3D thread". (This pattern is used because MonoGame uses it. In
 fact, the BlWindow3D class inherits from MonoGame's "Game" class. But
 instead of overriding Initialize, LoadContent, Update, and Draw, you
-override Setup, FrameProc, and FrameDraw. Other "Game" class methods and
-events can still be overridden, however.)
+override Setup, FrameProc, and FrameDraw from BlWindow3D. Other "Game"
+class methods and events can still be overridden, however.)
 
 Although it may apparently work in certain circumstances, do not have
 the class constructor create or access any 3D resources, or have its
 instance initializers do it, because neither are executed by the 3D
-thread.
+thread. Initialization of 3D resources should be done in the Setup
+method.
 
 Code to be executed in the context of the 3D thread must be in the
 Setup, FrameProc, and/or FrameDraw methods, because those methods are
@@ -246,23 +248,27 @@ countless tutorials online, like
 <https://www.youtube.com/watch?v=2xTzJIaKQFY> or
 <https://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/UV_Map_Basics> .
 
-Introduction to Matrices
-------------------------
+Dynamically changing a sprite's orientation and position
+--------------------------------------------------------
+
+Each sprite has a "Matrix" object that defines its orientation and
+position relative to its parent sprite. When you change a sprite's
+orientation and position, you also change the orientation and position
+of its child sprites. So the sprites "connected" to a sprite (the
+subsprites) will follow that sprite's orientation, position, scale,
+shear, etc.
 
 You can do a lot with Blotch3D/MonoGame without knowing anything about
-the internal workings of matrices. Mainly you only need to know that...
+the internal workings of a matrix object. Mainly you only need to know
+that...
 
-1.  A matrix is an object that describes the position and orientation of
-    a model. Specifically, it describes a coordinate system relative to
+1.  A matrix is an object that describes a coordinate system relative to
     a parent's coordinate system.
 
-2.  Each sprite has a Matrix member that describes its orientation and
-    position relative to its parent sprite.
-
-3.  There are many static and instance methods of the Matrix class that
+2.  There are many static and instance methods of the Matrix class that
     let you create matrices for scaling, translation, rotation, etc.
 
-4.  There are also static and instance Matrix methods and operator
+3.  There are also static and instance Matrix methods and operator
     overloads to combine (matrix multiply) matrices to form a single
     matrix which combines the effects of multiple matrices. For example,
     a rotate matrix and a scale matrix can be multiplied to form a
@@ -286,14 +292,29 @@ knowledge.
 Here we'll introduce the internals of 2D matrices. 3D matrices simply
 have one more dimension.
 
-We know, of course, a point on a plane can be described with a
-horizontal distance from the origin point (X) and a vertical distance
-from the origin point (Y).
+First, a few of definitions:
+
+1.  A "coordinate system" is a set of points whose position is defined
+    relative to each other.
+
+2.  The "origin" of a coordinate system is the point we define as the
+    "starting point" for defining other points. For example, another
+    point might be defined as being 3 to the right and 5 up from the
+    origin, notated by (3,5).
+
+3.  Often, we use the words "point" and "vertex" (plural "vertices")
+    interchangeably. But more specifically a "vertex" is a point in the
+    coordinate system that is used for something. For example, it may be
+    the corner of a model.
+
+A point on a plane can be described with a horizontal distance from the
+origin (the point's "X" value) and a vertical distance from the origin
+(the point's "Y" value), notated by (X,Y).
 
 For example, our model might have one point (vertex) 4 to the right and
 1 up from the origin, notated by (4,1), and another vertex 3 to the
-right and 3 up from the origin, notated by (3,3). (This model only has
-two vertices.)
+right and 3 up from the origin, notated by (3,3). (This is a very simple
+model that has only two vertices.)
 
 You can move the model by moving each of those vertices by some amount
 without regard to how far they currently are from the origin. To do
@@ -302,11 +323,11 @@ add the vector (2,1) to each of those original vertices, which would
 result in final vertices of (6,2) and (5,4). In that case we have
 *translated* (moved) the model.
 
-Matrices can translate a model. But first let's talk about moving a
-vertex *relative to its current position from the origin,* because
-that's what gives matrices the power to shear, rotate, and scale a
-model. This is because those operations affect each vertex differently
-depending on its relationship to the origin.
+Matrices support translation, but first let's talk about moving a vertex
+*relative to its current position from the origin,* because that's what
+gives matrices the power to shear, rotate, and scale a model. This is
+because those operations affect each vertex differently depending on its
+relationship to the origin.
 
 If we want to change the X of each vertex from its current horizontal
 distance from the origin by a factor of 2, we can multiply the X of each
@@ -314,7 +335,7 @@ vertex by 2. For example,
 
 X' = 2X (where X' is the final value)
 
-... which would change to above vertices from (4,1) and (3,3) to (8,1)
+... which would change the above vertices from (4,1) and (3,3) to (8,1)
 and (6,3). In that case we have *scaled* the model relative to the
 origin (in this case only in the X direction).
 
@@ -358,7 +379,7 @@ Y' = 0X + 1Y
 
 ...sets X' to X and Y' to Y.
 
-Such a matrix is called an *identity* matrix because the output is the
+This matrix is called the *identity* matrix because the output is the
 same as the input.
 
 We can create matrices that scale, shear, and even rotate points. To
@@ -426,13 +447,12 @@ M31 M32 M33 M34\
 M41 M42 M43 M44
 
 Besides the ability to multiply entire matrices (as mentioned at the
-beginning of this section), you can also divide (i.e. multiply by the
-matrix inverse) entire matrices to, for example, solve for a matrix that
-was used in a previous matrix multiply, or otherwise isolate one
-operation from another. Welcome to linear algebra! We won't get in to
-how matrix multiplication and division specifically process the
-individual elements of the matrix because the Matrix class already
-provides those functions.
+beginning of this section), you can also divide (i.e. multiply by a
+matrix inverse) matrices to, for example, solve for a matrix that was
+used in a previous matrix multiply, or otherwise isolate one operation
+from another. Welcome to linear algebra! We won't get in to how matrix
+multiplication and division specifically process the individual elements
+of the matrix because the Matrix class already provides those functions.
 
 As was previously mentioned, each sprite has a matrix describing how
 that sprite and its children are transformed from the parent sprite's
@@ -441,12 +461,12 @@ parent's matrix by the child's matrix to create the final matrix used to
 draw that child, and it is also used as the parent matrix for the
 subsprites of that sprite.
 
-Because of confusion in coordinate system handedness (chirality), pre
-vs. post multiplication/division order, row vs. column notation
-(mathematicians use the opposite notation of that used by 3D graphics
-people), and the order of element storage; on occasion it may be easier
-to try things one way and, if it doesn't work as expected, try it
-another way. But for details see
+Because of confusion in coordinate system handedness (chirality),
+multiplication/division order, row vs. column notation (mathematicians
+use the opposite notation of that used by 3D graphics people), and the
+order of element storage in memory; on occasion it may be easier to try
+things one way and, if it doesn't work as expected, try it another way.
+But for details see
 <http://seanmiddleditch.com/matrices-handedness-pre-and-post-multiplication-row-vs-column-major-and-notations>.
 
 A Short Glossary of 3D Graphics Terms
@@ -553,18 +573,19 @@ Matrix
 An array of 16 numbers that describes the position and orientation of a
 sprite. Specifically, a matrix describes a difference, or transform, in
 the orientation (coordinate system) of one object from another. See
-[Introduction to Matrices](#introduction-to-matrices).
+[Introduction to
+Matrices](#dynamically-changing-a-sprites-orientation-and-position).
 
 Origin
 
 The center of a coordinate system. The point in the coordinate system
-that is, by definition, untranslated.
+that is, by definition, at (0,0).
 
 Frame
 
 In this document, \'Frame\' means a complete still scene. It is
 analogous to a movie frame. A moving 3D scene is created by drawing
-successive frames\--typically at about 15 to 60 times per second.
+successive frames---typically at about 15 to 60 times per second.
 
 Features and limitations
 ------------------------
