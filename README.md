@@ -73,12 +73,13 @@ can...
 24. Build for other platforms (currently supports iOS, Android, MacOS,
     Linux, all Windows platforms, PS4, PSVita, Xbox One, and Switch).
 
-Blotch3D uses MonoGame. MonoGame is a widely used 3D library for C\#
-(see Wikipedia article on the professional games based on it). It is
-free, fast, cross platform, actively developed by a large community, and
-fully implements Microsoft's (no longer supported) XNA4 engine. There is
-a plethora of MonoGame/XNA4 documentation, tutorials, examples, and
-discussions on line. All MonoGame features remain available in Blotch3D.
+Blotch3D sits on top of MonoGame. MonoGame is a widely used 3D library
+for C\# (see Wikipedia article on the professional games based on it).
+It is free, fast, cross platform, actively developed by a large
+community, and fully implements Microsoft's (no longer supported) XNA4
+engine. There is a plethora of MonoGame/XNA4 documentation, tutorials,
+examples, and discussions on line. All MonoGame features remain
+available in Blotch3D.
 
 All reference documentation of Blotch3D (classes, methods, fields,
 properties, etc.) is available through Visual Studio IntelliSense. If
