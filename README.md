@@ -27,9 +27,9 @@ can...
 1.  Load standard file types of 3D models as "sprites" and display and
     move them in 3D with real-time performance.
 
-2.  Load textures from image standard files.
+2.  Load textures from standard image files.
 
-3.  Show 2D and in-world (sprite texture) text in any font, size, color,
+3.  Show 2D and in-world (as a texture) text in any font, size, color,
     etc. at any 2D or 3D position, or make 2D text follow a sprite.
 
 4.  Attach sprites to other sprites to create sprite trees as deep as
@@ -40,7 +40,7 @@ can...
 5.  Override all steps in the drawing of each sprite.
 
 6.  A default GUI allows the user to easily control all aspects of the
-    camera (zoom, pan, truck, dolly, etc.).
+    camera (zoom, pan, truck, dolly, rotate, etc.).
 
 7.  Programmatically control camera position, orientation, zoom, etc.
 
@@ -51,9 +51,10 @@ can...
 10. Connect sprites to the camera to implement HUD objects and text that
     resizes with the window size, etc.
 
-11. Connect the camera to a sprite to implement 'cockpit view'.
+11. Connect the camera to a sprite to implement 'cockpit view', etc.
 
-12. Implement 2D text or image GUI controls in the 3D window.
+12. Implement GUI controls (as dynamic 2D text or images areas) in the
+    3D window.
 
 13. Implement a skybox.
 
