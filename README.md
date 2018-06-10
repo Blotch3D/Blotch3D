@@ -18,7 +18,7 @@ small source file demonstrating one aspect of Blotch3D.
 Introduction
 ------------
 
-Blotch3D is a C\# library that vastly simplifies basic development of 3D
+Blotch3D is a C\# library that vastly simplifies development of 3D
 applications and games.
 
 Examples are provided that show how with just a few lines of code you
@@ -92,7 +92,7 @@ It is free, fast, cross platform, actively developed by a large
 community, and fully implements Microsoft's (no longer supported) XNA4
 engine. There is a plethora of MonoGame/XNA4 documentation, tutorials,
 examples, and discussions on line. All MonoGame features remain
-available in Blotch3D.
+available.
 
 All reference documentation of Blotch3D (classes, methods, fields,
 properties, etc.) is available through Visual Studio IntelliSense. If
