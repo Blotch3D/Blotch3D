@@ -1,49 +1,59 @@
 **Blotch3D User Manual**
 ========================
 
-*\[There are a few* "TBD"s *in the below text indicating that a feature
-is not fully implemented or there is no example of it\]*
+Quick start
+-----------
+
+Get the MonoGame installer from <http://www.monogame.net/downloads/> and
+run it.
+
+Get the Blotch3D repository zip from
+<https://github.com/Blotch3D/Blotch3D> and unzip it.
+
+Open the Visual Studio solution file.
+
+Build and run the example projects. They are each comprised of a single
+small source file demonstrating one aspect of Blotch3D.
 
 Introduction
 ------------
 
-Blotch3D is a C\# library that vastly simplifies development of 3D
+Blotch3D is a C\# library that vastly simplifies basic development of 3D
 applications and games.
 
 Examples are provided that show how with just a few lines of code you
 can...
 
-1.  Load standard file types of 3D models (as "sprites"), textures,
-    fonts, etc. and display and move them in 3D with real-time
-    performance.
+1.  Load standard file types of 3D models as "sprites" and display and
+    move them in 3D with real-time performance.
 
-2.  Create dynamic sprites (custom model vertices).
+2.  Load textures from image standard files.
 
-3.  Attach sprites to other sprites to create sprite trees as deep as
+3.  Show 2D and in-world (sprite texture) text in any font, size, color,
+    etc. at any 2D or 3D position, or make 2D text follow a sprite.
+
+4.  Attach sprites to other sprites to create sprite trees as deep as
     you want. Child sprite orientation and position is relative to its
     parent sprite's orientation and position, and can be changed
     dynamically. (It's a scene graph.)
 
-4.  Override all steps in the drawing of each sprite.
+5.  Override all steps in the drawing of each sprite.
 
-5.  A default GUI allows the user to control camera position,
-    orientation, zoom, etc.
+6.  A default GUI allows the user to easily control all aspects of the
+    camera (zoom, pan, truck, dolly, etc.).
 
-6.  Programmatically control camera position, orientation, zoom, etc.
+7.  Programmatically control camera position, orientation, zoom, etc.
 
-7.  Create billboard sprites.
+8.  Create billboard sprites.
 
-8.  Create imposter sprites \[TBD\].
-
-9.  Show in-world and 2D text in any font, size, and color at any 2D or
-    3D position, including a sprite's position.
+9.  Create imposter sprites \[TBD\].
 
 10. Connect sprites to the camera to implement HUD objects and text that
     resizes with the window size, etc.
 
 11. Connect the camera to a sprite to implement 'cockpit view'.
 
-12. Implement GUI controls in the 3D window.
+12. Implement 2D text or image GUI controls in the 3D window.
 
 13. Implement a skybox.
 
@@ -59,18 +69,20 @@ can...
 
 18. Implement mipmaps.
 
-19. Implement translucent sprites.
+19. Implement translucent sprites and textures with an alpha channel.
 
 20. Support stereoscopic views (anaglyph, VR, etc.) \[TBD\].
 
 21. Implement fog \[example TBD\].
 
-22. Use with WPF and WinForms.
+22. Create dynamic sprites (custom model vertices).
 
-23. Under Microsoft Windows, access and override many window features
+23. Use with WPF and WinForms.
+
+24. Under Microsoft Windows, access and override many window features
     and functions using the provided WinForms Form object of the window.
 
-24. Build for other platforms (currently supports iOS, Android, MacOS,
+25. Build for other platforms (currently supports iOS, Android, MacOS,
     Linux, all Windows platforms, PS4, PSVita, Xbox One, and Switch).
 
 Blotch3D sits on top of MonoGame. MonoGame is a widely used 3D library
@@ -88,20 +100,6 @@ at the comment directly in the Blotch3D source. If you aren't getting
 useful IntelliSense information for a keyword, it may be a MonoGame
 keyword rather than a Blotch3D keyword. In that case you can look it up
 online.
-
-Quick start
------------
-
-Get the MonoGame installer from <http://www.monogame.net/downloads/> and
-run it.
-
-Get the Blotch3D repository zip from
-<https://github.com/Blotch3D/Blotch3D> and unzip it.
-
-Open the Visual Studio solution file.
-
-Build and run the example projects. They are each comprised of a single
-small source file demonstrating one aspect of Blotch3D.
 
 Developing with Blotch3D
 ------------------------
