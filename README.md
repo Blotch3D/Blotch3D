@@ -286,7 +286,7 @@ many great MonoGame tutorials.)
 The rest of this section should be studied only when you need a deeper
 knowledge.
 
-### Internals of the Matrix
+### Matrix internals
 
 Here we'll introduce the internals of 2D matrices. 3D matrices simply
 have one more dimension.
@@ -587,8 +587,8 @@ In this document, \'Frame\' means a complete still scene. It is
 analogous to a movie frame. A moving 3D scene is created by drawing
 successive frames---typically at about 15 to 60 times per second.
 
-Features and limitations
-------------------------
+Blotch3D features and limitations
+---------------------------------
 
 1.  You are welcome to write multithreaded code in your 3D application.
     However, any code that directly accesses 3D hardware resources
