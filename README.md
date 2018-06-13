@@ -56,7 +56,7 @@ can...
 
 11. Connect the camera to a sprite to implement 'cockpit view', etc.
 
-12. Implement GUI controls (as dynamic 2D text or images rectangles) in
+12. Implement GUI controls (as dynamic 2D text or image rectangles) in
     the 3D window.
 
 13. Implement a skybox.
@@ -180,8 +180,9 @@ overridden, if needed.)
 Although it may apparently work in certain circumstances, do not have
 the BlWindow3D-derived class constructor create or access any 3D
 resources, or have its instance initializers do it, because neither are
-executed by the 3D thread. Initialization of 3D resources should be done
-in the Setup method.
+executed by the 3D thread. Initialization of persistent 3D resources is
+typically done in the Setup method, but you are welcome to do it in the
+FrameProc or FrameDraw methods, as well.
 
 Code to be executed in the context of the 3D thread must be in the
 Setup, FrameProc, and/or FrameDraw methods, because those methods are
@@ -231,13 +232,13 @@ accessing a reference or primitive data type is naturally thread safe.
 That is, any single primitive type 64-bits long or less, like a
 reference (which is a pointer), floating point value, integer, etc.,
 doesn't need to be protected by a mutex. But any data that must be
-accessed with multiple steps (like structure assignments, other complex
-data, or primitive data longer than the hardware's data bus size) must
-either be protected by a mutex in all threads that access it (and you
-must avoid deadlocks between multiple mutexes), or you can simply pass
-the code that does the access as a delegate to EnqueueCommand or
-EnqueueCommandBlocking, which is considerably more straightforward and
-safer.
+accessed with multiple steps (like structure assignments, multiple class
+members, other complex data, or primitive data longer than the
+hardware's data bus size) must either be protected by a mutex in all
+threads that access it (and you must avoid deadlocks between multiple
+mutexes), or you can simply pass the code that does the access as a
+delegate to EnqueueCommand or EnqueueCommandBlocking, which is
+considerably more straightforward, portable, and safer.
 
 Most Blotch3D objects must be Disposed when you are done with them and
 you are not otherwise terminating the program. You can check the
