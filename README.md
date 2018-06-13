@@ -177,19 +177,19 @@ Draw, you override Blotch3D's Setup, FrameProc, and FrameDraw from
 BlWindow3D. Other "Game" class methods and events can still be
 overridden, if needed.)
 
-Although it may apparently work in certain circumstances, do not have
-the BlWindow3D-derived class constructor create or access any 3D
-resources, or have its instance initializers do it, because neither are
-executed by the 3D thread. Initialization of persistent 3D resources is
-typically done in the Setup method, but you are welcome to do it in the
-FrameProc or FrameDraw methods, as well.
-
 Code to be executed in the context of the 3D thread must be in the
 Setup, FrameProc, and/or FrameDraw methods, because those methods are
 automatically called by the 3D thread. Also, see below for information
 on how another thread can queue a delegate to the 3D thread. A
 single-threaded application does everything in those overridden methods.
 Details follow:
+
+Although it may apparently work in certain circumstances or on certain
+platforms, do not have the BlWindow3D-derived class constructor create
+or access any 3D resources, or have its instance initializers do it,
+because neither are executed by the 3D thread. Initialization of
+persistent 3D resources is typically done in the Setup method, but you
+are welcome to do it in the FrameProc or FrameDraw methods, as well.
 
 When you override the Setup method it will be called once when the
 object derived from BlWindow3D is first created. You might put
