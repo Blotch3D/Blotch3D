@@ -91,20 +91,23 @@ can...
     Linux, all Windows platforms, PS4, PSVita, Xbox One, and Switch).
 
 Blotch3D sits on top of MonoGame. MonoGame is a widely used 3D library
-for C\# (see Wikipedia article on the professional games based on it).
-It is free, fast, cross platform, actively developed by a large
-community, and fully implements Microsoft's (no longer supported) XNA4
-engine. There is a plethora of MonoGame/XNA4 documentation, tutorials,
-examples, and discussions on line. All MonoGame features remain
-available.
+for C\#. It is free, fast, cross platform, actively developed by a large
+community, many professional games use it, and it fully implements
+Microsoft's (no longer supported) XNA4 engine. There is a plethora of
+MonoGame/XNA4 documentation, tutorials, examples, and discussions on
+line. All MonoGame features remain available.
 
 All reference documentation of Blotch3D (classes, methods, fields,
-properties, etc.) is available through Visual Studio IntelliSense. If
-you are using another IDE that doesn't support IntelliSense, just look
-at the comment directly in the Blotch3D source. If you aren't getting
-useful IntelliSense information for a keyword, it may be a MonoGame
-keyword rather than a Blotch3D keyword. In that case you can look it up
-online.
+properties, etc.) is available through Visual Studio IntelliSense. And
+yes, the reference documentation really does explain when and how to use
+it, and it answers common questions, rather than simply re-stating the
+obvious (i.e. a hypothetical method that might be called
+"RecalibrateFragistat" is not documented as "This method recalibrates
+the fragistat"). If you are using another IDE that doesn't support
+IntelliSense, just look at the comment directly in the Blotch3D source.
+If you aren't getting useful IntelliSense information for a keyword, it
+may be a MonoGame keyword rather than a Blotch3D keyword. In that case
+you need to look it up online.
 
 Developing with Blotch3D
 ------------------------
@@ -158,12 +161,12 @@ Android you'll need to add Xamarin Android), and follow something like
 the above steps for that platform. Or if that doesn't work, look online
 for instructions on creating a project for that platform.
 
+### Your source code structure:
+
 All model meshes, textures, fonts, etc. used by the 3D hardware must be
 created and accessed by the same thread, because supported hardware
 platforms require it (like OpenGL etc.). Its best to assume all Blotch3D
 and MonoGame objects should be created and accessed in that thread.
-
-### Source code structure:
 
 When you instantiate a class derived from BlWindow3D, it will create the
 3D window and make it visible, and create a single thread that we'll
@@ -175,10 +178,10 @@ BlWindow3D. Other "Game" class methods and events can still be
 overridden, if needed.)
 
 Although it may apparently work in certain circumstances, do not have
-the class constructor create or access any 3D resources, or have its
-instance initializers do it, because neither are executed by the 3D
-thread. Initialization of 3D resources should be done in the Setup
-method.
+the BlWindow3D-derived class constructor create or access any 3D
+resources, or have its instance initializers do it, because neither are
+executed by the 3D thread. Initialization of 3D resources should be done
+in the Setup method.
 
 Code to be executed in the context of the 3D thread must be in the
 Setup, FrameProc, and/or FrameDraw methods, because those methods are
@@ -222,18 +225,23 @@ you can create thread-safe queues for that as well. For example, user
 input to the 3D window may need to be conveyed to other threads in a
 multi-threaded application.
 
-If you are developing a multithreaded app, as with any such app be sure
-to follow the required protocols: For a 64-bit app on 64-bit hardware,
-all primitive data types are naturally thread safe (i.e. any single
-primitive type 64-bits long or less doesn't need to be protected by a
-mutex). Otherwise you need to protect the complex data with a mutex in
-all threads that access it and specifically avoid deadlocks between
-multiple mutexes, or just access it via EnqueueCommand or
-EnqueueCommandBlocking.
+If you are developing a multithreaded app, be sure to follow the
+protocols for multithreading: For a 64-bit app on 64-bit hardware,
+accessing a reference or primitive data type is naturally thread safe.
+That is, any single primitive type 64-bits long or less, like a
+reference (which is a pointer), floating point value, integer, etc.,
+doesn't need to be protected by a mutex. But any data that must be
+accessed with multiple steps (like structure assignments, other complex
+data, or primitive data longer than the hardware's data bus size) must
+either be protected by a mutex in all threads that access it (and you
+must avoid deadlocks between multiple mutexes), or you can simply pass
+the code that does the access as a delegate to EnqueueCommand or
+EnqueueCommandBlocking, which is considerably more straightforward and
+safer.
 
-Most Blotch3D objects must be Disposed when you are done with them but
-not otherwise terminating the program. You can check the IsDisposed
-member to see if an object has been disposed.
+Most Blotch3D objects must be Disposed when you are done with them and
+you are not otherwise terminating the program. You can check the
+IsDisposed member to see if an object has been disposed.
 
 See the examples and use IntelliSense for more information.
 
