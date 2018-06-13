@@ -4,8 +4,9 @@
 Quick start
 -----------
 
-Get the MonoGame installer from <http://www.monogame.net/downloads/> and
-run it.
+Get the installer for the latest release MonoGame from
+<http://www.monogame.net/downloads/> and run it. (Do NOT get the NuGet
+package.)
 
 Get the Blotch3D repository zip from
 <https://github.com/Blotch3D/Blotch3D> and unzip it.
@@ -30,19 +31,21 @@ can...
 2.  Load textures from standard image files.
 
 3.  Show 2D and in-world (as a texture) text in any font, size, color,
-    etc. at any 2D or 3D position, or make 2D text follow a sprite.
+    etc. at any 2D or 3D position, and make text follow a sprite in 2D
+    or 3D.
 
 4.  Attach sprites to other sprites to create sprite trees as deep as
     you want. Child sprite orientation and position is relative to its
     parent sprite's orientation and position, and can be changed
-    dynamically. (It's a scene graph.)
+    dynamically. (It's a dynamic scene graph.)
 
 5.  Override all steps in the drawing of each sprite.
 
-6.  A default GUI allows the user to easily control all aspects of the
-    camera (zoom, pan, truck, dolly, rotate, etc.).
+6.  A default GUI can allow the user to easily control all aspects of
+    the camera (zoom, pan, truck, dolly, rotate, etc.).
 
-7.  Programmatically control camera position, orientation, zoom, etc.
+7.  Easily control camera position, orientation, zoom, etc.
+    programmatically.
 
 8.  Create billboard sprites.
 
@@ -53,8 +56,8 @@ can...
 
 11. Connect the camera to a sprite to implement 'cockpit view', etc.
 
-12. Implement GUI controls (as dynamic 2D text or images areas) in the
-    3D window.
+12. Implement GUI controls (as dynamic 2D text or images rectangles) in
+    the 3D window.
 
 13. Implement a skybox.
 
@@ -76,12 +79,13 @@ can...
 
 21. Implement fog \[example TBD\].
 
-22. Create dynamic sprites (custom model vertices).
+22. Create sprite models programmatically (custom vertices).
 
 23. Use with WPF and WinForms.
 
-24. Under Microsoft Windows, access and override many window features
-    and functions using the provided WinForms Form object of the window.
+24. Access and override many window features and functions using the
+    provided WinForms Form object of the window (Microsoft Windows
+    only).
 
 25. Build for other platforms (currently supports iOS, Android, MacOS,
     Linux, all Windows platforms, PS4, PSVita, Xbox One, and Switch).
@@ -115,7 +119,8 @@ BlotchExample01\_Basic but with a few additions to it to demonstrate the
 feature of the example. In fact, you can do a diff between the
 BlotchExample01\_Basic source file and another example's source file to
 see what extra code must be added to implement the features it
-demonstrates \[TBD\].
+demonstrates \[TBD: the "full" example needs to be split to several
+examples\].
 
 All provided projects build only for the Windows platform. To create a
 new project for Windows you can just copy the BlotchExample01\_Basic
@@ -137,32 +142,37 @@ scratch like this:
 
 6.  Rename the Game1 file and class as desired.
 
-7.  Open that file.
+7.  Replace its contents with that of an example, or...
 
-8.  Add a 'using Blotch' line at the top of the file.
+    a.  Open that file.
 
-9.  Have the class inherit from BlWindow3D instead of "Game", delete its
-    body, and add overrides of Setup, FrameProc, and/or FrameDraw as
-    desired.
+    b.  Add a 'using Blotch' line at the top of the file.
+
+    c.  Have the class inherit from BlWindow3D instead of "Game", delete
+        its body, and add overrides of Setup, FrameProc, and/or
+        FrameDraw as desired. (See examples)
 
 To create a project for another platform (Android, iOS, etc.), make sure
 you have the Visual Studio add-on that supports it (for example, for
-Android you'll need to add the Xamarin Android feature), and follow
-something like the above steps for that platform. Or if that doesn't
-work, look online for an example.
+Android you'll need to add Xamarin Android), and follow something like
+the above steps for that platform. Or if that doesn't work, look online
+for instructions on creating a project for that platform.
 
 All model meshes, textures, fonts, etc. used by the 3D hardware must be
 created and accessed by the same thread, because supported hardware
 platforms require it (like OpenGL etc.). Its best to assume all Blotch3D
 and MonoGame objects should be created and accessed in that thread.
 
+### Source code structure:
+
 When you instantiate a class derived from BlWindow3D, it will create the
 3D window and make it visible, and create a single thread that we'll
 call the "3D thread". (This pattern is used because MonoGame uses it. In
 fact, the BlWindow3D class inherits from MonoGame's "Game" class. But
-instead of overriding Initialize, LoadContent, Update, and Draw, you
-override Setup, FrameProc, and FrameDraw from BlWindow3D. Other "Game"
-class methods and events can still be overridden, however.)
+instead of overriding MonoGame's Initialize, LoadContent, Update, and
+Draw, you override Blotch3D's Setup, FrameProc, and FrameDraw from
+BlWindow3D. Other "Game" class methods and events can still be
+overridden, if needed.)
 
 Although it may apparently work in certain circumstances, do not have
 the class constructor create or access any 3D resources, or have its
@@ -174,8 +184,8 @@ Code to be executed in the context of the 3D thread must be in the
 Setup, FrameProc, and/or FrameDraw methods, because those methods are
 automatically called by the 3D thread. Also, see below for information
 on how another thread can queue a delegate to the 3D thread. A
-single-threaded application does everything in those overridden methods,
-as follows:
+single-threaded application does everything in those overridden methods.
+Details follow:
 
 When you override the Setup method it will be called once when the
 object derived from BlWindow3D is first created. You might put
@@ -212,8 +222,18 @@ you can create thread-safe queues for that as well. For example, user
 input to the 3D window may need to be conveyed to other threads in a
 multi-threaded application.
 
-Most Blotch3D objects must be Disposed when you are done with them. You
-can check the IsDisposed member to see if an object has been disposed.
+If you are developing a multithreaded app, as with any such app be sure
+to follow the required protocols: For a 64-bit app on 64-bit hardware,
+all primitive data types are naturally thread safe (i.e. any single
+primitive type 64-bits long or less doesn't need to be protected by a
+mutex). Otherwise you need to protect the complex data with a mutex in
+all threads that access it and specifically avoid deadlocks between
+multiple mutexes, or just access it via EnqueueCommand or
+EnqueueCommandBlocking.
+
+Most Blotch3D objects must be Disposed when you are done with them but
+not otherwise terminating the program. You can check the IsDisposed
+member to see if an object has been disposed.
 
 See the examples and use IntelliSense for more information.
 
