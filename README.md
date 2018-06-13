@@ -41,8 +41,8 @@ can...
 
 5.  Override all steps in the drawing of each sprite.
 
-6.  A default GUI can allow the user to easily control all aspects of
-    the camera (zoom, pan, truck, dolly, rotate, etc.).
+6.  You can give the user easy control over all aspects of the camera
+    (zoom, pan, truck, dolly, rotate, etc.).
 
 7.  Easily control camera position, orientation, zoom, etc.
     programmatically.
@@ -161,7 +161,7 @@ Android you'll need to add Xamarin Android), and follow something like
 the above steps for that platform. Or if that doesn't work, look online
 for instructions on creating a project for that platform.
 
-### Your source code structure:
+### Source code structure:
 
 All model meshes, textures, fonts, etc. used by the 3D hardware must be
 created and accessed by the same thread, because supported hardware
@@ -325,36 +325,33 @@ First, a few of definitions:
     relative to each other.
 
 2.  The "origin" of a coordinate system is the point we define as the
-    "starting point" for defining other points. For example, another
-    point might be defined as being 3 to the right and 5 up from the
-    origin, notated by (3,5).
+    "starting point" or "zero point" for defining other points.
+    Specifically, another point might be defined as being 3 to the right
+    and 5 up from the origin, notated by (3,5). The origin is, by
+    definition, at point (0,0).
 
 3.  Often, we use the words "point" and "vertex" (plural "vertices")
     interchangeably. But more specifically a "vertex" is a point in the
     coordinate system that is used for something. For example, it may be
     the corner of a model.
 
-A point on a plane can be described with a horizontal distance from the
-origin (the point's "X" value) and a vertical distance from the origin
-(the point's "Y" value), notated by (X,Y).
+Let's imagine a model that has one vertex 4 to the right and 1 up from
+the origin, notated by (4,1), and another vertex 3 to the right and 3 up
+from the origin, notated by (3,3). (This is a very simple model
+comprised of only two vertices!)
 
-For example, our model might have one vertex 4 to the right and 1 up
-from the origin, notated by (4,1), and another vertex 3 to the right and
-3 up from the origin, notated by (3,3). (This is a very simple model
-comprised of only two vertices.)
-
-You can move the model by moving each of those vertices by some amount
-without regard to how far they currently are from the origin. To do
-that, just add an offset vector to each vertex. For example, we could
+You can move the model by moving each of those vertices by the same
+amount, and without regard to how each currently is from the origin. To
+do that, just add an offset vector to each vertex. For example, we could
 add the vector (2,1) to each of those original vertices, which would
-result in final vertices of (6,2) and (5,4). In that case we have
+result in final model vertices of (6,2) and (5,4). In that case we have
 *translated* (moved) the model.
 
 Matrices support translation, but first let's talk about moving a vertex
 *relative to its current position from the origin,* because that's what
-gives matrices the power to shear, rotate, and scale a model. This is
-because those operations affect each vertex differently depending on its
-relationship to the origin.
+gives matrices the power to shear, rotate, and scale a model around the
+origin. This is because those operations affect each vertex differently
+depending on its relationship to the origin.
 
 If we want to change the X of each vertex from its current horizontal
 distance from the origin by a factor of 2, we can multiply the X of each
@@ -382,8 +379,10 @@ new Y are:
 X' = aX + bY\
 Y' = cX + dY
 
-Remember, the idea is to apply this to every vertex. By convention we
-might write the four numbers in a 2x2 matrix, like this:
+(Remember, the idea is to apply this to every vertex.)
+
+By convention we might write the four numbers in a 2x2 matrix, like
+this:
 
 a b\
 c d
@@ -391,7 +390,7 @@ c d
 This should all be very easy to understand.
 
 But why are we even talking about it? Because now we can define the
-values of a matrix that, if applied to each vertex of a model, define
+elements of a matrix that, if applied to each vertex of a model, define
 any type of *transform* in the position or orientation of that model.
 
 For example, if we apply the following matrix to each of the object's
@@ -407,8 +406,8 @@ Y' = 0X + 1Y
 
 ...sets X' to X and Y' to Y.
 
-This matrix is called the *identity* matrix because the output is the
-same as the input.
+This matrix is called the *identity* matrix because the output (X',Y')
+is the same as the input (X,Y).
 
 We can create matrices that scale, shear, and even rotate points. To
 make an object three times as large, use the matrix:
@@ -480,7 +479,8 @@ matrix inverse) matrices to, for example, solve for a matrix that was
 used in a previous matrix multiply, or otherwise isolate one operation
 from another. Welcome to linear algebra! We won't get in to how matrix
 multiplication and division specifically process the individual elements
-of the matrix because the Matrix class already provides those functions.
+of the matrices because the Matrix class already provides those static
+or instance functions.
 
 As was previously mentioned, each sprite has a matrix describing how
 that sprite and its children are transformed from the parent sprite's
