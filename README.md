@@ -4,7 +4,7 @@
 Quick start
 -----------
 
-Get the installer for the latest release MonoGame from
+Get the installer for the latest release of MonoGame from
 <http://www.monogame.net/downloads/> and run it. (Do NOT get the NuGet
 package.)
 
