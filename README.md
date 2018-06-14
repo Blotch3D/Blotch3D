@@ -98,16 +98,12 @@ MonoGame/XNA4 documentation, tutorials, examples, and discussions on
 line. All MonoGame features remain available.
 
 All reference documentation of Blotch3D (classes, methods, fields,
-properties, etc.) is available through Visual Studio IntelliSense. And
-yes, the reference documentation really does explain when and how to use
-it, and it answers common questions, rather than simply re-stating the
-obvious (i.e. a hypothetical method that might be called
-"RecalibrateFragistat" is not documented as "This method recalibrates
-the fragistat"). If you are using another IDE that doesn't support
-IntelliSense, just look at the comment directly in the Blotch3D source.
-If you aren't getting useful IntelliSense information for a keyword, it
-may be a MonoGame keyword rather than a Blotch3D keyword. In that case
-you need to look it up online.
+properties, etc.) is available through Visual Studio IntelliSense. If
+you are using another IDE that doesn't support IntelliSense, just look
+at the comment directly in the Blotch3D source. If you aren't getting
+useful IntelliSense information for a keyword, it may be a MonoGame
+keyword rather than a Blotch3D keyword. In that case you need to look it
+up online.
 
 Developing with Blotch3D
 ------------------------
@@ -125,10 +121,10 @@ see what extra code must be added to implement the features it
 demonstrates \[TBD: the "full" example needs to be split to several
 examples\].
 
-All provided projects build only for the Windows platform. To create a
-new project for Windows you can just copy the BlotchExample01\_Basic
-folder and rename the project, or you can create the project from
-scratch like this:
+All provided projects are configured to build only for the Windows
+platform. To create a new project for Windows you can just copy the
+BlotchExample01\_Basic folder and rename the project, or you can create
+the project from scratch like this:
 
 1.  Select File/New/Project and create a 'MonoGame Windows Project'.
 
@@ -161,73 +157,65 @@ Android you'll need to add Xamarin Android), and follow something like
 the above steps for that platform. Or if that doesn't work, look online
 for instructions on creating a project for that platform.
 
-### Source code structure:
+### Development pattern:
 
 All model meshes, textures, fonts, etc. used by the 3D hardware must be
 created and accessed by the same thread, because supported hardware
 platforms require it (like OpenGL etc.). Its best to assume all Blotch3D
 and MonoGame objects should be created and accessed in that thread.
 
-When you instantiate a class derived from BlWindow3D, it will create the
+You must instantiate a class derived from BlWindow3D. It will create the
 3D window and make it visible, and create a single thread that we'll
-call the "3D thread". (This pattern is used because MonoGame uses it. In
+call the "3D thread". This pattern is used because MonoGame uses it. In
 fact, the BlWindow3D class inherits from MonoGame's "Game" class. But
 instead of overriding MonoGame's Initialize, LoadContent, Update, and
 Draw, you override Blotch3D's Setup, FrameProc, and FrameDraw from
 BlWindow3D. Other "Game" class methods and events can still be
-overridden, if needed.)
+overridden, if needed.
 
 Code to be executed in the context of the 3D thread must be in the
 Setup, FrameProc, and/or FrameDraw methods, because those methods are
-automatically called by the 3D thread. Also, see below for information
-on how another thread can queue a delegate to the 3D thread. A
-single-threaded application does everything in those overridden methods.
-Details follow:
+automatically called by the 3D thread. Other threads can also queue a
+delegate to the 3D thread (see below). A single-threaded application
+does everything in those overridden methods.
 
 Although it may apparently work in certain circumstances or on certain
 platforms, do not have the BlWindow3D-derived class constructor create
 or access any 3D resources, or have its instance initializers do it,
-because neither are executed by the 3D thread. Initialization of
-persistent 3D resources is typically done in the Setup method, but you
-are welcome to do it in the FrameProc or FrameDraw methods, as well.
+because neither are executed by the 3D thread.
 
-When you override the Setup method it will be called once when the
-object derived from BlWindow3D is first created. You might put
-time-consuming initialization of persistent things in there like
-graphics setting initializations if different from the defaults, loading
-of persistent content (models, fonts, etc.), creation of persistent
-BlSprites, etc. Do not draw things in the 3D window from the setup
-method.
+The 3D thread calls the Setup method once at the beginning of
+instantiation. You might put time-consuming initialization of persistent
+things in there like graphics setting initializations if different from
+the defaults, loading of persistent content (models, fonts, etc.),
+creation of persistent BlSprites, etc. You wouldn't want to put drawing
+code in the Setup method, for several reasons.
 
-When you override the FrameProc method it will be called once per frame
-(you control frame period with BlGraphicsDeviceManager.FramePeriod). You
-can put code there that should be called periodically. This is typically
-code that must run at a constant rate, like code that implements smooth
-sprite and camera movement, etc. For a single-threaded application, this
-is also where you put your application code. Do not draw things in the
-3D window from the FrameProc method.
+The 3D thread calls the FrameProc method once per frame (you control
+frame period with BlGraphicsDeviceManager.FramePeriod). For
+single-threaded applications this is where all application code resides,
+except the actual drawing code. For multi-threaded applications, this is
+where all application code resides that does anything with 3D resources.
+You wouldn't want to put drawing code in the FrameProc method, for
+several reasons.
 
-When you override the FrameDraw method, the 3D thread calls PrepareDraw
-just before calling FrameDraw once per frame, but more rarely if CPU is
-being exhausted. This is where you put drawing code (BlSprite.Draw,
-BlGraphicsDeviceManager.DrawText, etc.). For more efficiency in a
-single-threaded application that may exhaust the CPU, you can put the
-periodic code here that should be executed periodically, instead of in
-FrameProc. But then it should adjust itself to account for variations in
-period.
+The 3D thread calls the FrameDraw method every frame, but only if there
+is enough CPU. Otherwise it calls it more rarely. This is where you put
+drawing code (BlSprite.Draw, BlGraphicsDeviceManager.DrawText, etc.).
+Additionally, if you are developing a single-threaded application that
+will be very subject to exhausting its thread, then you can also put the
+application code here, rather than in FrameProc, as long as the code
+adjusts itself to account for variations in period.
 
 If you are developing a multithreaded app, then when other threads need
 to create, change, or destroy 3D resources or otherwise do something in
 a thread-safe way with the 3D thread, they can pass a delegate to
 EnqueueCommand or EnqueueCommandBlocking. Those methods make sure the
 code is done by the 3D thread sequentially at the end of the next
-FrameProc call. If anything needs to be conveyed back to app threads,
-you can create thread-safe queues for that as well. For example, user
-input to the 3D window may need to be conveyed to other threads in a
-multi-threaded application.
+FrameProc call.
 
-If you are developing a multithreaded app, be sure to follow the
-protocols for multithreading: For a 64-bit app on 64-bit hardware,
+Of course, follow multithreading rules if you are developing a
+multi-threaded application: For a 64-bit app on 64-bit hardware,
 accessing a reference or primitive data type is naturally thread safe.
 That is, any single primitive type 64-bits long or less, like a
 reference (which is a pointer), floating point value, integer, etc.,
@@ -261,55 +249,54 @@ way to add them to your project is to...
 
 4.  Set the "Build Action" to "MonoGameContentReference"
 
-You can get the names of the content files that you can use by starting
-the pipeline manager (double-click Content/Content.mgcb). You can also
-add more content via the pipeline manager (see
+You can get the names of the content files by starting the pipeline
+manager (double-click Content/Content.mgcb). You can also add more
+content via the pipeline manager (see
 <http://rbwhitaker.wikidot.com/monogame-managing-content>). See the
 examples for details on how to load and display models, fonts, etc.
 
 If no existing model meets your needs, you can either programmatically
 create a model by specifying the vertices (see the custom Vertices
-example), or create a model with the Blender 3D modeler. You can also
-instruct Blender to include texture (UV) mapping, by watching one of the
-countless tutorials online, like
+example), or create a model with, for example, the Blender 3D modeler.
+You can also instruct Blender to include texture (UV) mapping by
+watching one of the countless tutorials online, like
 <https://www.youtube.com/watch?v=2xTzJIaKQFY> or
 <https://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/UV_Map_Basics> .
 
 Dynamically changing a sprite's orientation and position
 --------------------------------------------------------
 
-Each sprite has a "Matrix" object that defines its orientation and
-position relative to its parent sprite. When you change a sprite's
-orientation and position, you also change the orientation and position
-of its child sprites. So the sprites "connected" to a sprite (the
-subsprites) will follow that sprite's orientation, position, scale,
-shear, etc.
+Each sprite has a "Matrix" (plural, "Matrices") object that defines its
+orientation and position relative to its parent sprite. When you change
+a sprite's orientation and position, you also change the orientation and
+position of its child sprites. That is, subsprites follow that parent
+sprite's orientation, position, scale, shear, etc.
 
 You can do a lot with Blotch3D/MonoGame without knowing anything about
 the internal workings of a matrix object. Mainly you only need to know
 that...
 
 1.  A matrix is an object that describes a coordinate system relative to
-    a parent's coordinate system.
+    a parent's coordinate system. That is, it defines what changes
+    should be made in a coordinate system (like scaling, rotation, etc.)
 
 2.  There are many static and instance methods of the Matrix class that
     let you create matrices for scaling, translation, rotation, etc.
 
 3.  There are also static and instance Matrix methods and operator
-    overloads to combine (matrix multiply) matrices to form a single
-    matrix which combines the effects of multiple matrices. For example,
-    a rotate matrix and a scale matrix can be multiplied to form a
-    single rotate-scale matrix. But mind the multiplication order. To
-    combine matrices, you would multiply them in the reverse order you
-    would apply them in real life. For example, if conceptually you want
-    to translate (move) and then rotate an object, multiply the rotation
+    overloads to combine (multiply) matrices to form a single matrix
+    which combines the effects of multiple matrices. For example, a
+    rotate matrix and a scale matrix can be multiplied to form a single
+    rotate-scale matrix. But mind the multiplication order. To combine
+    matrices, you would multiply them in the reverse order you would
+    apply them in real life. For example, if conceptually you want to
+    translate (move) and then rotate an object, multiply the rotation
     matrix by the translate matrix rather than the translate matrix by
     the rotation matrix. Novices can simply try the operation one way
     and, if it doesn't work the way you wanted, do it the other way.
 
 For a really good introduction (without the math), see
-<http://rbwhitaker.wikidot.com/monogame-basic-matrices>. (That site has
-many great MonoGame tutorials.)
+<http://rbwhitaker.wikidot.com/monogame-basic-matrices>.
 
 The rest of this section should be studied only when you need a deeper
 knowledge.
@@ -321,8 +308,7 @@ have one more dimension.
 
 First, a few of definitions:
 
-1.  A "coordinate system" is a set of points whose position is defined
-    relative to each other.
+1.  A "coordinate system" is a space in which points can be defined.
 
 2.  The "origin" of a coordinate system is the point we define as the
     "starting point" or "zero point" for defining other points.
@@ -341,17 +327,17 @@ from the origin, notated by (3,3). (This is a very simple model
 comprised of only two vertices!)
 
 You can move the model by moving each of those vertices by the same
-amount, and without regard to how each currently is from the origin. To
+amount, and without regard to where each is relative to the origin. To
 do that, just add an offset vector to each vertex. For example, we could
 add the vector (2,1) to each of those original vertices, which would
 result in final model vertices of (6,2) and (5,4). In that case we have
 *translated* (moved) the model.
 
-Matrices support translation, but first let's talk about moving a vertex
-*relative to its current position from the origin,* because that's what
-gives matrices the power to shear, rotate, and scale a model around the
-origin. This is because those operations affect each vertex differently
-depending on its relationship to the origin.
+Matrices certainly support translation. But first let's talk about
+moving a vertex *relative to its current position from the origin,*
+because that's what gives matrices the power to shear, rotate, and scale
+a model around the origin. This is because those operations affect each
+vertex differently depending on its relationship to the origin.
 
 If we want to change the X of each vertex from its current horizontal
 distance from the origin by a factor of 2, we can multiply the X of each
@@ -410,7 +396,8 @@ This matrix is called the *identity* matrix because the output (X',Y')
 is the same as the input (X,Y).
 
 We can create matrices that scale, shear, and even rotate points. To
-make an object three times as large, use the matrix:
+make an object three times as large (relative to the origin), use the
+matrix:
 
 3 0\
 0 3
@@ -487,7 +474,7 @@ that sprite and its children are transformed from the parent sprite's
 coordinate system. Specifically, Blotch3D does a matrix-multiply of the
 parent's matrix by the child's matrix to create the final matrix used to
 draw that child, and it is also used as the parent matrix for the
-subsprites of that sprite.
+subsprites of that child.
 
 Because of confusion in coordinate system handedness (chirality),
 multiplication/division order, row vs. column notation (mathematicians
