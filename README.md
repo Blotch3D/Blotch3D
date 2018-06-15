@@ -4,9 +4,12 @@
 Quick start
 -----------
 
+(This quick start section is for Windows. See details below for other
+platforms.)
+
 Get the installer for the latest release of MonoGame from
-<http://www.monogame.net/downloads/> and run it. (Do NOT get the NuGet
-package.)
+<http://www.monogame.net/downloads/> and run it. (Do NOT get the current
+development version nor the NuGet package.)
 
 Get the Blotch3D repository zip from
 <https://github.com/Blotch3D/Blotch3D> and unzip it.
@@ -14,13 +17,14 @@ Get the Blotch3D repository zip from
 Open the Visual Studio solution file.
 
 Build and run the example projects. They are each comprised of a single
-small source file demonstrating one aspect of Blotch3D.
+small source file demonstrating one aspect of Blotch3D \[TBD: more
+elaborate examples need to be split into simpler examples\].
 
 Introduction
 ------------
 
-Blotch3D is a C\# library that vastly simplifies development of 3D
-applications and games.
+Blotch3D is a C\# library that vastly simplifies many of the fundamental
+tasks in development of 3D applications and games.
 
 Examples are provided that show how with just a few lines of code you
 can...
@@ -34,25 +38,23 @@ can...
     etc. at any 2D or 3D position, and make text follow a sprite in 2D
     or 3D.
 
-4.  Attach sprites to other sprites to create sprite trees as deep as
-    you want. Child sprite orientation and position is relative to its
-    parent sprite's orientation and position, and can be changed
-    dynamically. (It's a dynamic scene graph.)
+4.  Attach sprites to other sprites to create associated structures of
+    sprites as large as you want. Child sprite orientation and position
+    is relative to its parent sprite's orientation and position, and can
+    be changed dynamically. (It's a dynamic scene graph.)
 
 5.  Override all steps in the drawing of each sprite.
 
 6.  You can give the user easy control over all aspects of the camera
     (zoom, pan, truck, dolly, rotate, etc.).
 
-7.  Easily control camera position, orientation, zoom, etc.
-    programmatically.
+7.  Easily control all aspects of the camera programmatically.
 
 8.  Create billboard sprites.
 
 9.  Create imposter sprites \[TBD\].
 
-10. Connect sprites to the camera to implement HUD objects and text that
-    resizes with the window size, etc.
+10. Connect sprites to the camera to implement HUD objects and text.
 
 11. Connect the camera to a sprite to implement 'cockpit view', etc.
 
@@ -67,7 +69,7 @@ can...
 15. Get a list of sprites under the mouse position, to implement mouse
     selection, tooltips, pop-up menus, etc.
 
-16. Detect collisions between sprites \[example TBD\].
+16. Detect collisions between sprites \[TBD: no example yet\].
 
 17. Implement levels-of-detail.
 
@@ -77,7 +79,7 @@ can...
 
 20. Support stereoscopic views (anaglyph, VR, etc.) \[TBD\].
 
-21. Implement fog \[example TBD\].
+21. Implement fog \[TBD: no example yet\].
 
 22. Create sprite models programmatically (custom vertices).
 
@@ -98,12 +100,21 @@ MonoGame/XNA4 documentation, tutorials, examples, and discussions on
 line. All MonoGame features remain available.
 
 All reference documentation of Blotch3D (classes, methods, fields,
-properties, etc.) is available through Visual Studio IntelliSense. If
-you are using another IDE that doesn't support IntelliSense, just look
-at the comment directly in the Blotch3D source. If you aren't getting
-useful IntelliSense information for a keyword, it may be a MonoGame
-keyword rather than a Blotch3D keyword. In that case you need to look it
-up online.
+properties, etc.) is available through Visual Studio IntelliSense
+information that explains how and why you use the feature, and answers
+frequent questions. If you are using another IDE that doesn't support
+IntelliSense, just look at the comment directly in the Blotch3D source.
+If you aren't getting useful IntelliSense information for a keyword, it
+may be a MonoGame keyword rather than a Blotch3D keyword. In that case
+you need to look it up online.
+
+MonoGame fully implements Microsoft's (no longer supported) XNA 4
+engine, but for multiple platforms. It also implements features beyond
+XNA 4. So understand that XNA 4 documentation you come across may not
+show you the best way to do something, and documentation of earlier
+versions of XNA (versions 2 and 3) will often not be correct. For
+conversion of XNA3 to XNA4 see
+[http://www.nelsonhurst.com/xna-3-1-to-xna-4-0-cheatsheet/.](http://www.nelsonhurst.com/xna-3-1-to-xna-4-0-cheatsheet/)
 
 Developing with Blotch3D
 ------------------------
@@ -113,13 +124,13 @@ source, and the example projects.
 
 BlotchExample01\_Basic is a bare-bones Blotch3D application, where
 GameExample.cs contains the example code. Other example projects also
-contain a GameExample.cs, which is the same source file from
+contain a GameExample.cs, which is similar to the one from
 BlotchExample01\_Basic but with a few additions to it to demonstrate the
 feature of the example. In fact, you can do a diff between the
 BlotchExample01\_Basic source file and another example's source file to
 see what extra code must be added to implement the features it
 demonstrates \[TBD: the "full" example needs to be split to several
-examples\].
+simpler examples\].
 
 All provided projects are configured to build only for the Windows
 platform. To create a new project for Windows you can just copy the
@@ -154,8 +165,8 @@ the project from scratch like this:
 To create a project for another platform (Android, iOS, etc.), make sure
 you have the Visual Studio add-on that supports it (for example, for
 Android you'll need to add Xamarin Android), and follow something like
-the above steps for that platform. Or if that doesn't work, look online
-for instructions on creating a project for that platform.
+the above steps for that platform, or look online for instructions on
+creating a project for that platform.
 
 ### Development pattern:
 
@@ -228,6 +239,21 @@ mutexes), or you can simply pass the code that does the access as a
 delegate to EnqueueCommand or EnqueueCommandBlocking, which is
 considerably more straightforward, portable, and safer.
 
+At the time of this writing, MonoGame was not designed with a goal of
+supporting multiple 3D windows because many platforms it supports are
+not conducive to it. Even if you close the first window before opening
+the second, the second window won't work right. (You *can* create them,
+but they don't work correctly and in certain situations will crash.) If
+you want to be able to "close" and "re-open" a window, you can just hide
+and show the same window. (On Microsoft Windows, you can use the
+WinForms BlWindow3D.Form object for that.) Support for multiple windows
+may be added to MonoGame in the future.
+
+To make the MonoGame window be a child window of an existing GUI, you
+need to explicitly size, position, and convey Z order. On Microsoft
+Windows, the window's Form object (BlWindow3D.Form) may be of help in
+this.
+
 Most Blotch3D objects must be Disposed when you are done with them and
 you are not otherwise terminating the program. You can check the
 IsDisposed member to see if an object has been disposed.
@@ -266,34 +292,30 @@ watching one of the countless tutorials online, like
 Dynamically changing a sprite's orientation and position
 --------------------------------------------------------
 
-Each sprite has a "Matrix" (plural, "Matrices") object that defines its
-orientation and position relative to its parent sprite. When you change
-a sprite's orientation and position, you also change the orientation and
-position of its child sprites. That is, subsprites follow that parent
-sprite's orientation, position, scale, shear, etc.
+Each sprite has a "Matrix" member that defines its orientation and
+position relative to its parent sprite. A matrix is an object that
+describes a coordinate system relative to a parent's coordinate system.
+That is, it defines what changes should be made in a coordinate system
+(like scaling, rotation, etc.)
 
-You can do a lot with Blotch3D/MonoGame without knowing anything about
-the internal workings of a matrix object. Mainly you only need to know
-that...
+There are many static and instance methods of the Matrix class that let
+you easily set a matrix's scaling, translation, rotation, etc.
 
-1.  A matrix is an object that describes a coordinate system relative to
-    a parent's coordinate system. That is, it defines what changes
-    should be made in a coordinate system (like scaling, rotation, etc.)
+When you change anything about a sprite's matrix, you also change the
+orientation and position of its child sprites, if any. That is,
+subsprites reside in the parent sprite's coordinate system.
 
-2.  There are many static and instance methods of the Matrix class that
-    let you create matrices for scaling, translation, rotation, etc.
-
-3.  There are also static and instance Matrix methods and operator
-    overloads to combine (multiply) matrices to form a single matrix
-    which combines the effects of multiple matrices. For example, a
-    rotate matrix and a scale matrix can be multiplied to form a single
-    rotate-scale matrix. But mind the multiplication order. To combine
-    matrices, you would multiply them in the reverse order you would
-    apply them in real life. For example, if conceptually you want to
-    translate (move) and then rotate an object, multiply the rotation
-    matrix by the translate matrix rather than the translate matrix by
-    the rotation matrix. Novices can simply try the operation one way
-    and, if it doesn't work the way you wanted, do it the other way.
+There are also static and instance Matrix methods and operator overloads
+to combine (multiply) matrices to form a single matrix which combines
+the effects of multiple matrices. For example, a rotate matrix and a
+scale matrix can be multiplied to form a single rotate-scale matrix. But
+mind the multiplication order. To combine matrices, you would multiply
+them in the reverse order you would apply them in real life. For
+example, if conceptually you want to translate (move) and then rotate an
+object, multiply the rotation matrix by the translate matrix rather than
+the translate matrix by the rotation matrix. Novices can simply try the
+operation one way and, if it doesn't work the way you wanted, do it the
+other way.
 
 For a really good introduction (without the math), see
 <http://rbwhitaker.wikidot.com/monogame-basic-matrices>.
@@ -321,6 +343,8 @@ First, a few of definitions:
     coordinate system that is used for something. For example, it may be
     the corner of a model.
 
+4.  The plural of "matrix" is "matrices".
+
 Let's imagine a model that has one vertex 4 to the right and 1 up from
 the origin, notated by (4,1), and another vertex 3 to the right and 3 up
 from the origin, notated by (3,3). (This is a very simple model
@@ -341,7 +365,9 @@ vertex differently depending on its relationship to the origin.
 
 If we want to change the X of each vertex from its current horizontal
 distance from the origin by a factor of 2, we can multiply the X of each
-vertex by 2. For example,
+vertex by 2.
+
+For example,
 
 X' = 2X (where X' is the final value)
 
@@ -601,41 +627,6 @@ Frame
 In this document, \'Frame\' means a complete still scene. It is
 analogous to a movie frame. A moving 3D scene is created by drawing
 successive frames---typically at about 15 to 60 times per second.
-
-Blotch3D features and limitations
----------------------------------
-
-1.  You are welcome to write multithreaded code in your 3D application.
-    However, any code that directly accesses 3D hardware resources
-    (textures, vertices, etc.) must be executed by the BlWindow3D's 3D
-    thread (see [Developing with Blotch3D](#developing-with-blotch3d)
-    for details). This is because of a limitation in some of the
-    underlying graphics subsystems (OpenGL, etc.). Since it's hard to
-    know what parts of the library access hardware, one should assume
-    all accesses of Blotch3D objects should be done in the 3D thread.
-
-2.  At the time of this writing, MonoGame was not designed with a goal
-    of supporting multiple 3D windows because many platforms it supports
-    are not conducive to it. Even if you close the first window before
-    opening the second, the second window won't work right. (You *can*
-    create them, but they don't work correctly and in certain situations
-    will crash.) If you want to be able to "close" and "re-open" a
-    window, you can just hide and show the same window. (On Microsoft
-    Windows, you can use the WinForms BlWindow3D.Form object for that.)
-    Support for multiple windows may be added to MonoGame in the future.
-
-3.  To make the MonoGame window be a child window of an existing GUI,
-    you need to explicitly size, position, and convey Z order. On
-    Microsoft Windows, the window's Form object (BlWindow3D.Form) may be
-    of help in this.
-
-4.  MonoGame fully implements Microsoft's (no longer supported) XNA 4
-    engine, but for multiple platforms. It also implements features
-    beyond XNA 4. So understand that XNA 4 documentation you come across
-    may not show you the best way to do something, and documentation of
-    earlier versions of XNA (versions 2 and 3) will often not be
-    correct. For conversion of XNA3 to XNA4 see
-    [http://www.nelsonhurst.com/xna-3-1-to-xna-4-0-cheatsheet/.](http://www.nelsonhurst.com/xna-3-1-to-xna-4-0-cheatsheet/)
 
 Rights
 ------
