@@ -4,7 +4,7 @@
 Quick start
 -----------
 
-(This quick start section is for Windows. See details below for other
+(This quick start section is for Windows. See below for other
 platforms.)
 
 Get the installer for the latest release of MonoGame from
@@ -89,7 +89,7 @@ can...
     provided WinForms Form object of the window (Microsoft Windows
     only).
 
-25. Build for other platforms (currently supports iOS, Android, MacOS,
+25. Build for many platforms (currently supports iOS, Android, MacOS,
     Linux, all Windows platforms, PS4, PSVita, Xbox One, and Switch).
 
 Blotch3D sits on top of MonoGame. MonoGame is a widely used 3D library
