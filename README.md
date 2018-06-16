@@ -1,7 +1,6 @@
 Blotch3D User Manual
 
-Contents {#contents .TOCHeading}
-========
+Contents
 
 [Quick start 1](#quick-start)
 
@@ -9,7 +8,7 @@ Contents {#contents .TOCHeading}
 
 [Developing with Blotch3D 2](#developing-with-blotch3d)
 
-[Development pattern: 3](#development-pattern)
+[Development pattern 3](#development-pattern)
 
 [Making 3D models 5](#making-3d-models)
 
@@ -190,7 +189,7 @@ Android you'll need to add Xamarin Android), and follow something like
 the above steps for that platform, or look online for instructions on
 creating a project for that platform.
 
-### Development pattern:
+### Development pattern
 
 All model meshes, textures, fonts, etc. used by the 3D hardware must be
 created and accessed by the same thread, because supported hardware
