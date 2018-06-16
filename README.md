@@ -1,5 +1,27 @@
-**Blotch3D User Manual**
-========================
+Blotch3D User Manual
+
+Contents {#contents .TOCHeading}
+========
+
+[Quick start 1](#quick-start)
+
+[Introduction 1](#introduction)
+
+[Developing with Blotch3D 2](#developing-with-blotch3d)
+
+[Development pattern: 3](#development-pattern)
+
+[Making 3D models 5](#making-3d-models)
+
+[Dynamically changing a sprite's orientation and position
+5](#dynamically-changing-a-sprites-orientation-and-position)
+
+[Matrix internals 5](#matrix-internals)
+
+[A Short Glossary of 3D Graphics Terms
+8](#a-short-glossary-of-3d-graphics-terms)
+
+[Rights 10](#rights)
 
 Quick start
 -----------
