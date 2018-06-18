@@ -1,7 +1,9 @@
 Blotch3D User Manual
 ====================
 
-Quick start
+[Blotch3D User Manual](#blotch3d-user-manual)
+
+[Quick start](#quick-start)
 
 [Introduction](#introduction)
 
