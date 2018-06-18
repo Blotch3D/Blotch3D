@@ -1,6 +1,5 @@
 Blotch3D User Manual
-
-Contents
+====================
 
 [Quick start 1](#quick-start)
 
@@ -8,9 +7,7 @@ Contents
 
 [Developing with Blotch3D 2](#developing-with-blotch3d)
 
-[Development pattern 3](#development-pattern)
-
-[Making 3D models 5](#making-3d-models)
+[Making 3D models 4](#making-3d-models)
 
 [Dynamically changing a sprite's orientation and position
 5](#dynamically-changing-a-sprites-orientation-and-position)
@@ -189,12 +186,11 @@ Android you'll need to add Xamarin Android), and follow something like
 the above steps for that platform, or look online for instructions on
 creating a project for that platform.
 
-### Development pattern
-
 All model meshes, textures, fonts, etc. used by the 3D hardware must be
 created and accessed by the same thread, because supported hardware
-platforms require it (like OpenGL etc.). Its best to assume all Blotch3D
-and MonoGame objects should be created and accessed in that thread.
+platforms require it (like OpenGL, etc.). Its best to assume all
+Blotch3D and MonoGame objects should be created and accessed in that
+thread.
 
 You must instantiate a class derived from BlWindow3D. It will create the
 3D window and make it visible, and create a single thread that we'll
