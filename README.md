@@ -1,13 +1,13 @@
 Blotch3D User Manual
 ====================
 
-[Quick start 1](#quick-start)
+Quick start 1
 
 [Introduction 1](#introduction)
 
 [Developing with Blotch3D 2](#developing-with-blotch3d)
 
-[Making 3D models 4](#making-3d-models)
+[Making 3D models 5](#making-3d-models)
 
 [Dynamically changing a sprite's orientation and position
 5](#dynamically-changing-a-sprites-orientation-and-position)
@@ -134,6 +134,11 @@ versions of XNA (versions 2 and 3) will often not be correct. For
 conversion of XNA3 to XNA4 see
 [http://www.nelsonhurst.com/xna-3-1-to-xna-4-0-cheatsheet/.](http://www.nelsonhurst.com/xna-3-1-to-xna-4-0-cheatsheet/)
 
+Note that to support all the platforms, certain limitations were
+necessary. Currently you can only have one 3D window. Also, you can't
+specify an existing window to use as the 3D window. See below for
+details and work-arounds.
+
 Developing with Blotch3D
 ------------------------
 
@@ -203,9 +208,10 @@ overridden, if needed.
 
 Code to be executed in the context of the 3D thread must be in the
 Setup, FrameProc, and/or FrameDraw methods, because those methods are
-automatically called by the 3D thread. Other threads can also queue a
-delegate to the 3D thread (see below). A single-threaded application
-does everything in those overridden methods.
+automatically called by the 3D thread. A single-threaded application
+does everything in those overridden methods. Other threads in a
+multi-threaded application can queue a delegate to the 3D thread as
+described later in this document.
 
 Although it may apparently work in certain circumstances or on certain
 platforms, do not have the BlWindow3D-derived class constructor create
@@ -214,62 +220,68 @@ because neither are executed by the 3D thread.
 
 The 3D thread calls the Setup method once at the beginning of
 instantiation. You might put time-consuming initialization of persistent
-things in there like graphics setting initializations if different from
-the defaults, loading of persistent content (models, fonts, etc.),
-creation of persistent BlSprites, etc. You wouldn't want to put drawing
-code in the Setup method, for several reasons.
+things in there like loading of persistent content (models, fonts,
+etc.), creation of persistent BlSprites, etc. Do not put drawing code in
+the Setup method.
 
 The 3D thread calls the FrameProc method once per frame (you control
 frame period with BlGraphicsDeviceManager.FramePeriod). For
 single-threaded applications this is where all application code resides,
 except the actual drawing code. For multi-threaded applications, this is
 where all application code resides that does anything with 3D resources.
-You wouldn't want to put drawing code in the FrameProc method, for
-several reasons.
+Do not put drawing code in the FrameProc method.
 
 The 3D thread calls the FrameDraw method every frame, but only if there
-is enough CPU. Otherwise it calls it more rarely. This is where you put
-drawing code (BlSprite.Draw, BlGraphicsDeviceManager.DrawText, etc.).
-Additionally, if you are developing a single-threaded application that
-will be very subject to exhausting its thread, then you can also put the
-application code here, rather than in FrameProc, as long as the code
-adjusts itself to account for variations in period.
+is enough CPU. Otherwise it calls it less frequently. This is where you
+put drawing code (BlSprite.Draw, BlGraphicsDeviceManager.DrawText,
+etc.). Additionally, if you are developing a single-threaded application
+(i.e. everything is in the 3D thread) but that will also be very subject
+to exhausting its thread, then you can put the application code in
+FrameDraw rather than in FrameProc, as long as the code adjusts itself
+to account for variations in how often it is called.
 
 If you are developing a multithreaded app, then when other threads need
 to create, change, or destroy 3D resources or otherwise do something in
 a thread-safe way with the 3D thread, they can pass a delegate to
 EnqueueCommand or EnqueueCommandBlocking. Those methods make sure the
 code is done by the 3D thread sequentially at the end of the next
-FrameProc call.
+FrameProc call. To pass data back from the 3D thread to another thread
+you can use a separate concurrent queue, or simply pass local variable
+references in a delegate sent to EnqueueCommand or
+EnqueueCommandBlocking.
 
-Of course, follow multithreading rules if you are developing a
-multi-threaded application: For a 64-bit app on 64-bit hardware,
-accessing a reference or primitive data type is naturally thread safe.
-That is, any single primitive type 64-bits long or less, like a
-reference (which is a pointer), floating point value, integer, etc.,
-doesn't need to be protected by a mutex. But any data that must be
-accessed with multiple steps (like structure assignments, multiple class
-members, other complex data, or primitive data longer than the
-hardware's data bus size) must either be protected by a mutex in all
-threads that access it (and you must avoid deadlocks between multiple
-mutexes), or you can simply pass the code that does the access as a
-delegate to EnqueueCommand or EnqueueCommandBlocking, which is
-considerably more straightforward, portable, and safer.
+For multithreaded applications, besides keeping all 3D code in the 3D
+thread, you must of course follow rules you would for any multithreaded
+app. Specifically, in a 64-bit app on 64-bit hardware, accessing a
+reference or primitive data type is naturally thread safe. That is, any
+single primitive type 64-bits long or less, like a reference (which is a
+pointer), floating point value, integer, etc., is naturally atomic. But
+any data that must be accessed atomically with multiple steps (like
+atomic accesses to multiple variables, reading/writing structures, or
+accesses to variables larger than the data bus size) must be done by
+only one thread or passed as a delegate to the same thread (case in
+point, the EnqueueCommand or EnqueueCommandBlocking of the 3D thread),
+or all threads must hold a mutex or use a critical section when
+accessing that data. If you use a mutex, you must make sure there can be
+no deadlocks with other mutexes. A critical section blocks all other
+threads regardless, but can't ever deadlock and has less overhead
+otherwise.
 
-At the time of this writing, MonoGame was not designed with a goal of
-supporting multiple 3D windows because many platforms it supports are
-not conducive to it. Even if you close the first window before opening
-the second, the second window won't work right. (You *can* create them,
-but they don't work correctly and in certain situations will crash.) If
-you want to be able to "close" and "re-open" a window, you can just hide
-and show the same window. (On Microsoft Windows, you can use the
-WinForms BlWindow3D.Form object for that.) Support for multiple windows
-may be added to MonoGame in the future.
+To support multiple platforms, MonoGame cannot support multiple 3D
+windows. On Microsoft Windows (and possibly certain other platforms) you
+*can* create them, but they don't work correctly and in certain
+situations will crash. If you want to be able to "close" and "re-open" a
+window, you can just hide and show the same window. (On Microsoft
+Windows, you can use the WinForms BlWindow3D.Form object for that.)
 
 To make the MonoGame window be a child window of an existing GUI, you
-need to explicitly size, position, and convey Z order. On Microsoft
-Windows, the window's Form object (BlWindow3D.Form) may be of help in
-this.
+need to explicitly size, position, and convey Z order. The easiest way
+to do that would be to overlay the 3D window on an existing child window
+by getting the current attributes of that child window, whenever it
+changes. On Microsoft Windows, the window's Form object
+(BlWindow3D.Form) may be of help in this. There may also be a way to
+specify that an existing window be used as the 3D window, but it
+probably isn't portable.
 
 Most Blotch3D objects must be Disposed when you are done with them and
 you are not otherwise terminating the program. You can check the

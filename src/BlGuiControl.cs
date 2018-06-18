@@ -11,12 +11,13 @@ using Microsoft.Xna.Framework.Input;
 namespace Blotch
 {
 	/// <summary>
-	/// A 2D GUI control. To create a GUI control: instantiate one of these, set its Texture (remember to create it in the
-	/// 3D thread context), window position, and delegate, and then add it to BlWindow3D.GuiControls. The texture will be
+	/// A 2D GUI control. To create a GUI control: instantiate one of these, set its initial Texture (remember to create it in the
+	/// 3D thread context), window position, and delegate, and then add it to BlWindow3D.GuiControls. (Any member can be
+	/// dynamically changed.) The texture will be
 	/// displayed, and then each frame the mouse is over it the delegate will be called.  The delegate typically would examine the
 	/// current mouse state (Mouse.GetState()) and the PrevMouseState member to detect button changes, etc. and perform an action.
 	/// The delegate is called in the context of the window's 3D thread after the FrameProc method. You can use Graphics.TextToTexture
-	/// to create a textual texture, or just load a texture from a content file. Remember
+	/// to create a textual textures, or just load a texture from a content file. Remember
 	/// to Dispose textures when you are done with them.
 	/// </summary>
 	public class BlGuiControl
