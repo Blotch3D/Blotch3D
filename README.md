@@ -1,7 +1,5 @@
-Blotch3D User Manual
-====================
-
-[Blotch3D User Manual](#blotch3d-user-manual)
+**Blotch3D User Manual**
+------------------------
 
 [Quick start](#quick-start)
 
@@ -316,10 +314,9 @@ Dynamically changing a sprite's orientation and position
 --------------------------------------------------------
 
 Each sprite has a "Matrix" member that defines its orientation and
-position relative to its parent sprite (like scaling, rotation, etc.)
-
-There are many static and instance methods of the Matrix class that let
-you easily set a matrix's scaling, translation, rotation, etc.
+position relative to its parent sprite. There are many static and
+instance methods of the Matrix class that let you easily set a matrix's
+scaling, translation, rotation, etc.
 
 When you change anything about a sprite's matrix, you also change the
 orientation and position of its child sprites, if any. That is,
