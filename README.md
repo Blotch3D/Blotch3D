@@ -625,7 +625,7 @@ successive frames---typically at about 15 to 60 times per second.
 Rights
 ------
 
-Blotch3D Copyright © 2018 Kelly Loum
+Blotch3D Copyright © 1999-2018 Kelly Loum
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the
