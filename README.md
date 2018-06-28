@@ -25,18 +25,18 @@ Quick start
 (This quick start section is for Windows. See below for other
 platforms.)
 
-Get the installer for the latest release of MonoGame from
-<http://www.monogame.net/downloads/> and run it. (Do NOT get the current
-development version nor the NuGet package.)
+1.  Get the installer for the latest release of MonoGame from
+    <http://www.monogame.net/downloads/> and run it. (Do NOT get the
+    current development version nor the NuGet package.)
 
-Get the Blotch3D repository zip from
-<https://github.com/Blotch3D/Blotch3D> and unzip it.
+2.  Get the Blotch3D repository zip from
+    <https://github.com/Blotch3D/Blotch3D> and unzip it.
 
-Open the Visual Studio solution file.
+3.  Open the Visual Studio solution file.
 
-Build and run the example projects. They are each comprised of a single
-small source file demonstrating one aspect of Blotch3D \[TBD: more
-elaborate examples need to be split into simpler examples\].
+4.  Build and run the example projects. They are each comprised of a
+    single small source file demonstrating one aspect of Blotch3D \[TBD:
+    more elaborate examples need to be split into simpler examples\].
 
 Introduction
 ------------
@@ -47,67 +47,67 @@ tasks in development of 3D applications and games.
 Examples are provided that show how with just a few lines of code you
 can...
 
-1.  Load standard file types of 3D models as "sprites" and display and
+-   Load standard file types of 3D models as "sprites" and display and
     move them in 3D with real-time performance.
 
-2.  Load textures from standard image files.
+-   Load textures from standard image files.
 
-3.  Show 2D and in-world (as a texture) text in any font, size, color,
+-   Show 2D and in-world (as a texture) text in any font, size, color,
     etc. at any 2D or 3D position, and make text follow a sprite in 2D
     or 3D.
 
-4.  Attach sprites to other sprites to create associated structures of
+-   Attach sprites to other sprites to create associated structures of
     sprites as large as you want. Child sprite orientation and position
     is relative to its parent sprite's orientation and position, and can
     be changed dynamically. (It's a dynamic scene graph.)
 
-5.  Override all steps in the drawing of each sprite.
+-   Override all steps in the drawing of each sprite.
 
-6.  You can give the user easy control over all aspects of the camera
+-   You can give the user easy control over all aspects of the camera
     (zoom, pan, truck, dolly, rotate, etc.).
 
-7.  Easily control all aspects of the camera programmatically.
+-   Easily control all aspects of the camera programmatically.
 
-8.  Create billboard sprites.
+-   Create billboard sprites.
 
-9.  Create imposter sprites \[TBD\].
+-   Create imposter sprites \[TBD\].
 
-10. Connect sprites to the camera to implement HUD objects and text.
+-   Connect sprites to the camera to implement HUD objects and text.
 
-11. Connect the camera to a sprite to implement 'cockpit view', etc.
+-   Connect the camera to a sprite to implement 'cockpit view', etc.
 
-12. Implement GUI controls (as dynamic 2D text or image rectangles) in
+-   Implement GUI controls (as dynamic 2D text or image rectangles) in
     the 3D window.
 
-13. Implement a skybox.
+-   Implement a skybox.
 
-14. Get a list of sprites touching a ray, to implement weapons fire,
+-   Get a list of sprites touching a ray, to implement weapons fire,
     etc.
 
-15. Get a list of sprites under the mouse position, to implement mouse
+-   Get a list of sprites under the mouse position, to implement mouse
     selection, tooltips, pop-up menus, etc.
 
-16. Detect collisions between sprites \[TBD: no example yet\].
+-   Detect collisions between sprites \[TBD: no example yet\].
 
-17. Implement levels-of-detail.
+-   Implement levels-of-detail.
 
-18. Implement mipmaps.
+-   Implement mipmaps.
 
-19. Implement translucent sprites and textures with an alpha channel.
+-   Implement translucent sprites and textures with an alpha channel.
 
-20. Support stereoscopic views (anaglyph, VR, etc.) \[TBD\].
+-   Support stereoscopic views (anaglyph, VR, etc.) \[TBD\].
 
-21. Implement fog \[TBD: no example yet\].
+-   Implement fog \[TBD: no example yet\].
 
-22. Create sprite models programmatically (custom vertices).
+-   Create sprite models programmatically (custom vertices).
 
-23. Use with WPF and WinForms.
+-   Use with WPF and WinForms.
 
-24. Access and override many window features and functions using the
+-   Access and override many window features and functions using the
     provided WinForms Form object of the window (Microsoft Windows
     only).
 
-25. Build for many platforms (currently supports iOS, Android, MacOS,
+-   Build for many platforms (currently supports iOS, Android, MacOS,
     Linux, all Windows platforms, PS4, PSVita, Xbox One, and Switch).
 
 Blotch3D sits on top of MonoGame. MonoGame is a widely used 3D library
@@ -123,14 +123,16 @@ frequent questions. If you are using another IDE that doesn't support
 IntelliSense, just look at the comment directly in the Blotch3D source.
 If you aren't getting useful IntelliSense information for a keyword, it
 may be a MonoGame keyword rather than a Blotch3D keyword. In that case
-you need to look it up online.
+you need to look it up online. Of course, to use IntelliSense, you must
+have the source code in your project (rather than just a reference to
+the DLL).
 
 MonoGame fully implements Microsoft's (no longer supported) XNA 4
 engine, but for multiple platforms. It also implements features beyond
 XNA 4. Therefore XNA 4 documentation you come across may not show you
 the best way to do something, and documentation of earlier versions of
-XNA (versions 2 and 3) will often not be correct. For conversion of XNA3
-to XNA4 see
+XNA (versions 2 and 3) will often not be correct. For conversion of XNA
+3 to XNA 4 see
 [http://www.nelsonhurst.com/xna-3-1-to-xna-4-0-cheatsheet/.](http://www.nelsonhurst.com/xna-3-1-to-xna-4-0-cheatsheet/)
 
 Note that to support all the platforms, certain limitations were
