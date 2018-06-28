@@ -326,13 +326,9 @@ There are also static and instance Matrix methods and operator overloads
 to combine (multiply) matrices to form a single matrix which combines
 the effects of multiple matrices. For example, a rotate matrix and a
 scale matrix can be multiplied to form a single rotate-scale matrix. But
-mind the multiplication order. To combine matrices, you would multiply
-them in the reverse order you would apply them in real life. For
-example, if conceptually you want to translate (move) and then rotate an
-object, multiply the rotation matrix by the translate matrix rather than
-the translate matrix by the rotation matrix. Novices can simply try the
-operation one way and, if it doesn't work the way you wanted, do it the
-other way.
+mind the multiplication order. See below for details, but novices can
+simply try the operation one way (like A times B) and, if it doesn't
+work the way you wanted, do it the other way (B times A).
 
 For a good introduction (without the math), see
 <http://rbwhitaker.wikidot.com/monogame-basic-matrices>.
@@ -345,27 +341,8 @@ knowledge.
 Here we'll introduce the internals of 2D matrices. 3D matrices simply
 have one more dimension.
 
-First, a few of definitions:
-
-1.  A "coordinate system" is a space in which points can be defined.
-
-2.  The "origin" of a coordinate system is the point we define as the
-    "starting point" or "zero point" for defining other points.
-    Specifically, another point might be defined as being 3 to the right
-    and 5 up from the origin, notated by (3,5). The origin is, by
-    definition, at point (0,0).
-
-3.  Often, we use the words "point" and "vertex" (plural "vertices")
-    interchangeably. But more specifically a "vertex" is a point in the
-    coordinate system that is used for something. For example, it may be
-    the corner of a model.
-
-4.  The plural of "matrix" is "matrices".
-
-Let's imagine a model that has one vertex 4 to the right and 1 up from
-the origin, notated by (4,1), and another vertex 3 to the right and 3 up
-from the origin, notated by (3,3). (This is a very simple model
-comprised of only two vertices!)
+Let's imagine a model that has one vertex at (4,1) and another vertex at
+(3,3). (This is a very simple model comprised of only two vertices!)
 
 You can move the model by moving each of those vertices by the same
 amount, and without regard to where each is relative to the origin. To
@@ -380,17 +357,15 @@ because that's what gives matrices the power to shear, rotate, and scale
 a model around the origin. This is because those operations affect each
 vertex differently depending on its relationship to the origin.
 
-If we want to change the X of each vertex from its current horizontal
-distance from the origin by a factor of 2, we can multiply the X of each
-vertex by 2.
+If we want to scale (stretch) the X relative to the origin, we can
+multiply the X of each vertex by 2.
 
 For example,
 
 X' = 2X (where X' is the final value)
 
 ... which would change the above vertices from (4,1) and (3,3) to (8,1)
-and (6,3). In that case we have *scaled* the model relative to the
-origin (in this case only in the X direction).
+and (6,3).
 
 We might want to define how to change each X according to the original X
 value of each vertex *and also according to the original Y value*, like

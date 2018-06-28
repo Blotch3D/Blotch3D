@@ -93,6 +93,7 @@ namespace Blotch
 			CreationThread = Thread.CurrentThread.ManagedThreadId;
 
 			Graphics = new BlGraphicsDeviceManager(this);
+			Window.AllowUserResizing = true;
 		}
 		/// <summary>
 		/// Since all operations accessing 3D resources must be done by the 3D thread,
