@@ -74,7 +74,7 @@ can...
 
 -   Create imposter sprites \[TBD\].
 
--   Connect sprites to the camera to implement HUD objects and text.
+-   Connect sprites to the camera to implement HUD models and text.
 
 -   Connect the camera to a sprite to implement 'cockpit view', etc.
 
@@ -215,9 +215,9 @@ because neither are executed by the 3D thread.
 
 The 3D thread calls the Setup method once at the beginning of
 instantiation. You might put time-consuming initialization of persistent
-things in there like loading of persistent content (models, fonts,
-etc.), creation of persistent BlSprites, etc. Do not put drawing code in
-the Setup method.
+things in there like loading of persistent content (sprite models,
+fonts, etc.), creation of persistent BlSprites, etc. Do not put drawing
+code in the Setup method.
 
 The 3D thread calls the FrameProc method once per frame (you control
 frame period with BlGraphicsDeviceManager.FramePeriod). For
@@ -403,7 +403,7 @@ But why are we even talking about it? Because now we can define the
 elements of a matrix that, if applied to each vertex of a model, define
 any type of *transform* in the position or orientation of that model.
 
-For example, if we apply the following matrix to each of the object's
+For example, if we apply the following matrix to each of the model's
 vertices:
 
 1 0\
@@ -420,14 +420,14 @@ This matrix is called the *identity* matrix because the output (X',Y')
 is the same as the input (X,Y).
 
 We can create matrices that scale, shear, and even rotate points. To
-make an object three times as large (relative to the origin), use the
+make a model three times as large (relative to the origin), use the
 matrix:
 
 3 0\
 0 3
 
-To scale only X by 3 (stretch an object in the X direction), then use
-the matrix:
+To scale only X by 3 (stretch a model in the X direction), then use the
+matrix:
 
 3 0\
 0 1
@@ -437,7 +437,7 @@ The following matrix flips (mirrors) the model vertically:
 1 0\
 0 -1
 
-Below is a matrix to rotate an object counterclockwise by 90 degrees:
+Below is a matrix to rotate a model counterclockwise by 90 degrees:
 
 0 -1\
 1 0
@@ -514,9 +514,9 @@ A Short Glossary of 3D Graphics Terms
 Vertex
 
 A point in space. Typically, a point at which the line segments of a
-polygon meet. That is, a corner of a polygon. A corner of an object.
-Most visible objects are described as a set of vertices. Each vertex can
-have a color, texture coordinate, and normal.
+polygon meet. That is, a corner of a polygon. A corner of a model. Most
+visible models are described as a set of vertices. Each vertex can have
+a color, texture coordinate, and normal.
 
 Polygon
 
@@ -538,8 +538,8 @@ polygon relative to the light.
 
 Texture
 
-A 2D image applied to the surface of an object. For this to work, each
-vertex of the object must have a texture coordinate associated with it,
+A 2D image applied to the surface of a model. For this to work, each
+vertex of the model must have a texture coordinate associated with it,
 which is an X,Y coordinate of the 2D bitmap image that should be aligned
 with that vertex. Pixels across the surface of a polygon are
 interpolated from the texture coordinates specified for each vertex.
@@ -555,7 +555,7 @@ a surface lies at a different angle. Each vertex of a polygon has a
 normal vector associated with it and the brightness across the surface
 of a polygon is interpolated from the normals of its vertices. So, a
 single flat polygon can have a gradient of brightness across it giving
-the illusion of curvature. In this way an object composed of fewer
+the illusion of curvature. In this way a model composed of fewer
 polygons can still be made to look quite smooth.
 
 X-axis
@@ -577,19 +577,19 @@ original location.
 
 Rotation
 
-The circular movement of each vertex of an object about the same axis.
+The circular movement of each vertex of a model about the same axis.
 
 Scale
 
-A change in the width, height, and/or depth of an object.
+A change in the width, height, and/or depth of a model.
 
 Shear (skew)
 
-A pulling of one side of an object in one direction, and the opposite
-side in the opposite direction, without rotation, such that the object
-is distorted rather than rotated. A parallelogram is a rectangle that
-has experienced shear. If you apply another shear along an orthogonal
-axis of the first shear, you rotate the object.
+A pulling of one side of a model in one direction, and the opposite side
+in the opposite direction, without rotation, such that the model is
+distorted rather than rotated. A parallelogram is a rectangle that has
+experienced shear. If you apply another shear along an orthogonal axis
+of the first shear, you rotate the model.
 
 Yaw
 
@@ -605,13 +605,13 @@ Rotation about the Z-axis, after any Pitch has been applied.
 
 Euler angles
 
-The yaw, pitch, and roll of an object, applied in that order.
+The yaw, pitch, and roll of a model, applied in that order.
 
 Matrix
 
 An array of 16 numbers that describes the position and orientation of a
 sprite. Specifically, a matrix describes a difference, or transform, in
-the orientation (coordinate system) of one object from another. See
+the orientation (coordinate system) of one model from another. See
 [Introduction to
 Matrices](#dynamically-changing-a-sprites-orientation-and-position).
 
