@@ -1,7 +1,7 @@
 **Blotch3D User Manual**
 ------------------------
 
-[Quick start](#quick_start)
+[Quick start](#quick-start)
 
 [Introduction](#introduction)
 
@@ -629,7 +629,7 @@ successive frames---typically at about 15 to 60 times per second.
 Rights
 ------
 
-Blotch3D Copyright © 1999-2018 Kelly Loum
+Blotch3D (formerly GWin3D) is Copyright © 1999-2018 by Kelly Loum
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the
