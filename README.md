@@ -1,13 +1,16 @@
 **Blotch3D User Manual**
 ------------------------
 
-Create 3D apps starting with a few lines of example code
+Create dynamic 3D apps for multiple platforms, with just a few lines
+code.
 
 [Quick start](#quick-start)
 
 [Introduction](#introduction)
 
-[Developing with Blotch3D](#developing-with-blotch3d)
+[Project structure](#project-structure)
+
+[Development](#development)
 
 [Making 3D models](#making-3d-models)
 
@@ -24,7 +27,7 @@ Terms](#a-short-glossary-of-3d-graphics-terms)
 Quick start
 -----------
 
-(This quick start section is for Windows. See below for other platforms
+(This quick start section is for Windows. See below for other platforms,
 like Android, etc.)
 
 1.  Get the installer for the latest release of MonoGame from
@@ -38,10 +41,10 @@ like Android, etc.)
 
 4.  Build and run the example projects. They are each comprised of a
     single small source file demonstrating one aspect of Blotch3D \[TBD:
-    elaborate examples need to be split into simpler examples\].
+    the "full" example needs to be split into simpler examples\].
 
 5.  See IntelliSense comments for reference documentation that
-    (surprisingly) describes more than the obvious.
+    (surprisingly) talks about more than the obvious.
 
 Introduction
 ------------
@@ -64,7 +67,7 @@ can...
     or 3D.
 
 -   Attach sprites to other sprites to create associated structures of
-    multiple sprites as large as you want. Child sprite orientation and
+    sprite trees as large as you want. Child sprite orientation and
     position is relative to its parent sprite's orientation and
     position, and can be changed dynamically. (Sprite trees are dynamic
     scene graphs.)
@@ -78,7 +81,7 @@ can...
 
 -   Create billboard sprites.
 
--   Create imposter sprites \[TBD\].
+-   Create imposters \[TBD\].
 
 -   Connect sprites to the camera to implement HUD models and text.
 
@@ -118,21 +121,21 @@ can...
 -   Build for many platforms (currently supports iOS, Android, MacOS,
     Linux, all Windows platforms, PS4, PSVita, Xbox One, and Switch).
 
-Blotch3D sits on top of MonoGame. MonoGame is a widely used 3D library
-for C\#. It is free, fast, cross platform, actively developed by a large
-community, and it's used in many professional games. There is a plethora
-of MonoGame documentation, tutorials, examples, and discussions on line.
-All MonoGame features remain available. For example, custom shaders can
-be written to override the default shader.
+Blotch3D sits on top of MonoGame. MonoGame is a very widely used 3D
+library for C\#. It is free, fast, cross platform, actively developed by
+a large community, and it's used in many professional games. There is a
+plethora of MonoGame documentation, tutorials, examples, and discussions
+on line. All MonoGame features remain available. For example, custom
+shaders can be written to override the default shader.
 
 All reference documentation of Blotch3D (classes, methods, fields,
 properties, etc.) is available through Visual Studio IntelliSense. It
-explains how and why you use the feature, and answers frequent
-questions. If you are using another IDE that doesn't support
-IntelliSense, just look at the comment directly in the Blotch3D source.
-If you aren't getting useful IntelliSense information for a keyword, it
-may be a MonoGame keyword rather than a Blotch3D keyword. In that case
-you need to look it up online.
+explains how and why you use the feature and answers frequent questions.
+If you are using another IDE that doesn't support IntelliSense, just
+look at the comment directly in the Blotch3D source or the Blotch3D.xml
+file. If you aren't getting useful IntelliSense information for a
+keyword, it may be a MonoGame keyword rather than a Blotch3D keyword. In
+that case you need to look it up online.
 
 See MonoGame.net for the official MonoGame documentation. When searching
 on-line for other MonoGame documentation and discussions, be sure to
@@ -153,11 +156,11 @@ official cross-platform way to specify an existing window to use as the
 3D window---MonoGame must create it. See below for details and
 work-arounds.
 
-Developing with Blotch3D
-------------------------
+Project structure
+-----------------
 
-The provided solution contains both the Blotch3D library project with
-source, and the example projects.
+The provided Visual Studio solution file contains both the Blotch3D
+library project with source, and the example projects.
 
 "BlotchExample01\_Basic" is a bare-bones Blotch3D application, where
 GameExample.cs contains the example code. Other example projects also
@@ -168,10 +171,10 @@ file and another example's source file to see what extra code must be
 added to implement the features it demonstrates \[TBD: the "full"
 example needs to be split to several simpler examples\].
 
-All provided projects are configured to build only for the Windows
-platform. To create a new project for Windows you can just copy the
-basic example and rename the project, or you can create the project from
-scratch like this:
+All provided projects are configured to build for the Windows platform.
+To create a new project for Windows you can just copy the basic example
+and rename the project, or you can create the project from scratch like
+this:
 
 1.  Select File/New/Project and create a 'MonoGame Windows Project'.
 
@@ -184,7 +187,9 @@ scratch like this:
     any debug messages. You might want to change this back to 'Windows
     Application' later.
 
-5.  Add a reference to the Blotch3DWindows assembly.
+5.  If the Blotch3DWindows project is not in the solution, add a
+    reference to the Blotch3DWindows assembly (like Blotch3D.dll on
+    Windows).
 
 6.  Rename the Game1.cs file and class as desired.
 
@@ -196,14 +201,19 @@ Android you'll need to add Xamarin Android), and follow something like
 the above steps for that platform, or look online for instructions on
 creating a MonoGame project for that platform.
 
-If you are copying the Blotch3D assembly (like Blotch3D.DLL on Windows)
-to a project or packages folder so you don't have to include its source
-code in a project, be sure to also copy Blotch3D.XML so you still get
-the IntelliSense comments. You shouldn't have to copy any other binary
-file from the Blotch3D output folder if you've installed MonoGame on the
-destination machine. Otherwise you should copy the entire output folder.
-For example, you'd probably want to copy everything in the Blotch3D
-output folder when you are distributing your app.
+If you are copying the Blotch3D assembly (like Blotch3D.dll on Windows)
+to a project or packages folder so you don't have to include the source
+code of the library in your solution, be sure to also copy Blotch3D.xml
+so you still get the IntelliSense. You shouldn't have to copy any other
+binary file from the Blotch3D output folder if you've installed MonoGame
+on the destination machine. Otherwise you should copy the entire project
+output folder. For example, you'd probably want to copy everything in
+the Blotch3D output folder when you are distributing your app.
+
+Development
+-----------
+
+See the examples.
 
 You must instantiate a class derived from BlWindow3D. It will create the
 3D window and make it visible, and create a single thread that we'll
@@ -214,10 +224,10 @@ MonoGame's Initialize, LoadContent, Update, and Draw, you override
 Blotch3D's Setup, FrameProc, and FrameDraw from BlWindow3D. Other "Game"
 class methods and events can still be overridden, if needed.
 
-All model meshes, textures, fonts, etc. used by the 3D hardware must be
-created and accessed by the 3D thread, because some supported hardware
-platforms require it (like OpenGL, etc.). You can assume all Blotch3D
-and MonoGame objects must be created and accessed in that thread.
+All model meshes, textures, fonts, etc. used by the 3D subsystem must be
+created and accessed by the 3D thread, because some subsystems require
+it (like OpenGL, etc.). You should assume all Blotch3D and MonoGame
+objects must be created and accessed in that thread.
 
 Code to be executed in the context of the 3D thread must be in the
 Setup, FrameProc, and/or FrameDraw methods of the class derived from
@@ -237,23 +247,21 @@ instantiation. You might put time-consuming initialization of persistent
 things in there like loading of persistent content (sprite models,
 fonts, etc.), creation of persistent BlSprites, etc.
 
-The 3D thread calls the FrameProc method once per frame (you control
-frame period with BlGraphicsDeviceManager.FramePeriod). For
-single-threaded applications this is typically where the bulk of
-application code resides, except the actual drawing code. For
-multi-threaded applications, this is where all application code resides
-that does anything with 3D resources.
+The 3D thread calls the FrameProc method once per frame (control frame
+period with BlGraphicsDeviceManager.FramePeriod). For single-threaded
+applications this is typically where the bulk of application code
+resides, except the actual drawing code. For multi-threaded
+applications, this is where all application code resides that does
+anything with 3D resources.
 
 The 3D thread calls the FrameDraw method every frame, but only if there
 is enough CPU for the 3D thread. Otherwise it calls it less frequently.
 This is where you put drawing code (BlSprite.Draw,
 BlGraphicsDeviceManager.DrawText, etc.). Additionally, if you are
-developing a single-threaded application (i.e. everything is in the 3D
-thread) that will also be very subject to exhausting its thread, then
-you can put the application code in FrameDraw rather than in
+developing that will also be very subject to exhausting the 3D thread,
+then you can put application code in FrameDraw rather than in
 FrameProc---as long as the code adjusts itself to account for variations
-in how often it is called. This may save CPU when it is being exhausted
-because the FrameDraw is called less often in that case.
+in how often it is called. This will save CPU when the frame rate drops.
 
 If you are developing a multithreaded app, then when other threads need
 to create, change, or destroy 3D resources or otherwise do something in
@@ -261,23 +269,6 @@ a thread-safe way with the 3D thread, they can pass a delegate to
 EnqueueCommand or EnqueueCommandBlocking. Those methods make sure the
 code is done by the 3D thread sequentially at the end of the next
 FrameProc call.
-
-For multithreaded applications, besides keeping all 3D code in the 3D
-thread, you must of course follow rules you would for any multithreaded
-app. Specifically, in a 64-bit app on 64-bit hardware, accessing a
-reference or primitive data type is naturally thread safe. That is, any
-single primitive type 64-bits long or less, like a reference (which
-internally is a pointer), floating point value, integer, etc., is
-naturally atomic. But any data that must be accessed atomically with
-multiple steps (like atomic accesses to multiple variables,
-reading/writing structures, read-modify-writes, or accesses to variables
-larger than the 64-bit data bus size) must be done by only one thread or
-passed as a delegate to the same thread (case in point, the
-EnqueueCommand or EnqueueCommandBlocking of the 3D thread), or all
-threads must hold a mutex or use a critical section when accessing that
-data. If you use a mutex, you must make sure there can be no deadlocks
-with other mutexes. A critical section blocks all other threads
-regardless, but can't ever deadlock and has less overhead otherwise.
 
 MonoGame does not support multiple 3D windows because that isn't
 conducive on certain platforms. On Microsoft Windows (and possibly
