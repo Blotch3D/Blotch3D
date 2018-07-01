@@ -1,6 +1,8 @@
 **Blotch3D User Manual**
 ------------------------
 
+Create 3D apps starting with a few lines of example code
+
 [Quick start](#quick-start)
 
 [Introduction](#introduction)
@@ -22,8 +24,8 @@ Terms](#a-short-glossary-of-3d-graphics-terms)
 Quick start
 -----------
 
-(This quick start section is for Windows. See below for other
-platforms.)
+(This quick start section is for Windows. See below for other platforms
+like Android, etc.)
 
 1.  Get the installer for the latest release of MonoGame from
     <http://www.monogame.net/downloads/> and run it. (Do NOT get the
@@ -37,6 +39,9 @@ platforms.)
 4.  Build and run the example projects. They are each comprised of a
     single small source file demonstrating one aspect of Blotch3D \[TBD:
     elaborate examples need to be split into simpler examples\].
+
+5.  See IntelliSense comments for reference documentation that
+    (surprisingly) describes more than the obvious.
 
 Introduction
 ------------
@@ -59,9 +64,10 @@ can...
     or 3D.
 
 -   Attach sprites to other sprites to create associated structures of
-    sprites as large as you want. Child sprite orientation and position
-    is relative to its parent sprite's orientation and position, and can
-    be changed dynamically. (It's a dynamic scene graph.)
+    multiple sprites as large as you want. Child sprite orientation and
+    position is relative to its parent sprite's orientation and
+    position, and can be changed dynamically. (Sprite trees are dynamic
+    scene graphs.)
 
 -   Override all steps in the drawing of each sprite.
 
@@ -120,15 +126,18 @@ All MonoGame features remain available. For example, custom shaders can
 be written to override the default shader.
 
 All reference documentation of Blotch3D (classes, methods, fields,
-properties, etc.) is available through Visual Studio IntelliSense
-information that explains how and why you use the feature, and answers
-frequent questions. If you are using another IDE that doesn't support
+properties, etc.) is available through Visual Studio IntelliSense. It
+explains how and why you use the feature, and answers frequent
+questions. If you are using another IDE that doesn't support
 IntelliSense, just look at the comment directly in the Blotch3D source.
 If you aren't getting useful IntelliSense information for a keyword, it
 may be a MonoGame keyword rather than a Blotch3D keyword. In that case
-you need to look it up online. Of course, to use IntelliSense you must
-have the source code in your project (rather than just a reference to
-the DLL).
+you need to look it up online.
+
+See MonoGame.net for the official MonoGame documentation. When searching
+on-line for other MonoGame documentation and discussions, be sure to
+note the MonoGame version being discussed. Documentation of earlier
+version may not be compatible with the latest.
 
 MonoGame fully implements Microsoft's (no longer supported) XNA 4
 engine, but for multiple platforms. It also implements features beyond
@@ -139,9 +148,10 @@ XNA (versions 2 and 3) will often not be correct. For conversion of XNA
 [http://www.nelsonhurst.com/xna-3-1-to-xna-4-0-cheatsheet/.](http://www.nelsonhurst.com/xna-3-1-to-xna-4-0-cheatsheet/)
 
 Note that to support all the platforms, certain limitations were
-necessary. Currently you can only have one 3D window. Also, you can't
-specify an existing window to use as the 3D window. See below for
-details and work-arounds.
+necessary. Currently you can only have one 3D window. Also, there is no
+official cross-platform way to specify an existing window to use as the
+3D window---MonoGame must create it. See below for details and
+work-arounds.
 
 Developing with Blotch3D
 ------------------------
@@ -186,6 +196,15 @@ Android you'll need to add Xamarin Android), and follow something like
 the above steps for that platform, or look online for instructions on
 creating a MonoGame project for that platform.
 
+If you are copying the Blotch3D assembly (like Blotch3D.DLL on Windows)
+to a project or packages folder so you don't have to include its source
+code in a project, be sure to also copy Blotch3D.XML so you still get
+the IntelliSense comments. You shouldn't have to copy any other binary
+file from the Blotch3D output folder if you've installed MonoGame on the
+destination machine. Otherwise you should copy the entire output folder.
+For example, you'd probably want to copy everything in the Blotch3D
+output folder when you are distributing your app.
+
 You must instantiate a class derived from BlWindow3D. It will create the
 3D window and make it visible, and create a single thread that we'll
 call the "3D thread", which calls certain methods of the derived class.
@@ -196,7 +215,7 @@ Blotch3D's Setup, FrameProc, and FrameDraw from BlWindow3D. Other "Game"
 class methods and events can still be overridden, if needed.
 
 All model meshes, textures, fonts, etc. used by the 3D hardware must be
-created and accessed by the 3D thread, because supported hardware
+created and accessed by the 3D thread, because some supported hardware
 platforms require it (like OpenGL, etc.). You can assume all Blotch3D
 and MonoGame objects must be created and accessed in that thread.
 
@@ -206,7 +225,7 @@ BlWindow3D, because those methods are automatically called by the 3D
 thread. A single-threaded application would have all its code in those
 overridden methods. For a multi-threaded application, other threads that
 need to do 3D things can queue a delegate to the 3D thread as described
-later in this document.
+below.
 
 Although it may apparently work in certain circumstances or on certain
 platforms, do not have the BlWindow3D-derived class constructor create
@@ -216,25 +235,23 @@ because neither are executed by the 3D thread.
 The 3D thread calls the Setup method once at the beginning of
 instantiation. You might put time-consuming initialization of persistent
 things in there like loading of persistent content (sprite models,
-fonts, etc.), creation of persistent BlSprites, etc. Do not put drawing
-code in the Setup method.
+fonts, etc.), creation of persistent BlSprites, etc.
 
 The 3D thread calls the FrameProc method once per frame (you control
 frame period with BlGraphicsDeviceManager.FramePeriod). For
 single-threaded applications this is typically where the bulk of
 application code resides, except the actual drawing code. For
 multi-threaded applications, this is where all application code resides
-that does anything with 3D resources. Do not put drawing code in the
-FrameProc method.
+that does anything with 3D resources.
 
 The 3D thread calls the FrameDraw method every frame, but only if there
 is enough CPU for the 3D thread. Otherwise it calls it less frequently.
 This is where you put drawing code (BlSprite.Draw,
 BlGraphicsDeviceManager.DrawText, etc.). Additionally, if you are
 developing a single-threaded application (i.e. everything is in the 3D
-thread) but that will also be very subject to exhausting its thread,
-then you can put the application code in FrameDraw rather than in
-FrameProc, as long as the code adjusts itself to account for variations
+thread) that will also be very subject to exhausting its thread, then
+you can put the application code in FrameDraw rather than in
+FrameProc---as long as the code adjusts itself to account for variations
 in how often it is called. This may save CPU when it is being exhausted
 because the FrameDraw is called less often in that case.
 
@@ -243,10 +260,7 @@ to create, change, or destroy 3D resources or otherwise do something in
 a thread-safe way with the 3D thread, they can pass a delegate to
 EnqueueCommand or EnqueueCommandBlocking. Those methods make sure the
 code is done by the 3D thread sequentially at the end of the next
-FrameProc call. To pass data back from the 3D thread to another thread
-you can use a separate concurrent queue, or simply pass local variable
-references in a delegate sent to EnqueueCommand or
-EnqueueCommandBlocking and have your delegate write them.
+FrameProc call.
 
 For multithreaded applications, besides keeping all 3D code in the 3D
 thread, you must of course follow rules you would for any multithreaded
@@ -256,14 +270,14 @@ single primitive type 64-bits long or less, like a reference (which
 internally is a pointer), floating point value, integer, etc., is
 naturally atomic. But any data that must be accessed atomically with
 multiple steps (like atomic accesses to multiple variables,
-reading/writing structures, or accesses to variables larger than the
-64-bit data bus size) must be done by only one thread or passed as a
-delegate to the same thread (case in point, the EnqueueCommand or
-EnqueueCommandBlocking of the 3D thread), or all threads must hold a
-mutex or use a critical section when accessing that data. If you use a
-mutex, you must make sure there can be no deadlocks with other mutexes.
-A critical section blocks all other threads regardless, but can't ever
-deadlock and has less overhead otherwise.
+reading/writing structures, read-modify-writes, or accesses to variables
+larger than the 64-bit data bus size) must be done by only one thread or
+passed as a delegate to the same thread (case in point, the
+EnqueueCommand or EnqueueCommandBlocking of the 3D thread), or all
+threads must hold a mutex or use a critical section when accessing that
+data. If you use a mutex, you must make sure there can be no deadlocks
+with other mutexes. A critical section blocks all other threads
+regardless, but can't ever deadlock and has less overhead otherwise.
 
 MonoGame does not support multiple 3D windows because that isn't
 conducive on certain platforms. On Microsoft Windows (and possibly
@@ -280,7 +294,8 @@ be to overlay the 3D window on an existing child window by getting the
 current attributes of that child window, whenever they change. On
 Microsoft Windows, the window's Form object (BlWindow3D.Form) may be of
 help in this. There may also be a way to specify that an existing window
-be used as the 3D window, but it probably isn't portable.
+be used as the 3D window, but it probably isn't portable and may not
+work in later MonoGame releases.
 
 Most Blotch3D objects must be Disposed when you are done with them and
 you are not otherwise terminating the program.
@@ -310,9 +325,10 @@ examples for details on how to load and display models, fonts, etc.
 
 If no existing model meets your needs, you can either programmatically
 create a model by specifying the vertices (see the custom Vertices
-example), or create a model with, for example, the Blender 3D modeler.
-You can also instruct Blender to include texture (UV) mapping by
-watching one of the countless tutorials online, like
+example), or create a model with, for example, the Blender 3D modeler
+and then add it to the project with the pipeline manager. You can also
+instruct Blender to include texture (UV) mapping by watching one of the
+countless tutorials online, like
 <https://www.youtube.com/watch?v=2xTzJIaKQFY> or
 <https://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/UV_Map_Basics> .
 
@@ -322,7 +338,7 @@ Dynamically changing a sprite's orientation and position
 Each sprite has a "Matrix" member that defines its orientation and
 position relative to its parent sprite. There are many static and
 instance methods of the Matrix class that let you easily set and change
-a matrix's scaling, translation, rotation, etc.
+the scaling, translation, rotation, etc. of a matrix.
 
 When you change anything about a sprite's matrix, you also change the
 orientation and position of its child sprites, if any. That is,
@@ -360,7 +376,7 @@ result in final model vertices of (6,2) and (5,4). In that case we have
 Matrices certainly support translation. But first let's talk about
 moving a vertex *relative to its current position from the origin,*
 because that's what gives matrices the power to shear, rotate, and scale
-a model around the origin. This is because those operations affect each
+a model about the origin. This is because those operations affect each
 vertex differently depending on its relationship to the origin.
 
 If we want to scale (stretch) the X relative to the origin, we can
@@ -382,9 +398,9 @@ X' = aX + bY
 For example, if a=0 and b=1, then this would set the new X of each
 vertex to its original Y value.
 
-Finally, we might also want to define how to create a new Y according to
-the original X and original Y. So, the equations for both the new X and
-new Y are:
+Finally, we might also want to define how to create a new Y for each
+vertex according to its original X and original Y. So, the equations for
+both the new X and new Y are:
 
 X' = aX + bY\
 Y' = cX + dY
@@ -401,7 +417,7 @@ This should all be very easy to understand.
 
 But why are we even talking about it? Because now we can define the
 elements of a matrix that, if applied to each vertex of a model, define
-any type of *transform* in the position or orientation of that model.
+any type of *transform* in the position and orientation of that model.
 
 For example, if we apply the following matrix to each of the model's
 vertices:
