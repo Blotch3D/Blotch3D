@@ -29,7 +29,8 @@ using System.Windows.Forms;
 namespace Blotch
 {
 	/// <summary>
-	/// To create the 3D window, derive a class from BlWindow3D. When you instantiate it, it will create the 3D window and a single thread we’ll
+	/// To create the 3D window, derive a class from BlWindow3D. Instantiate it and call its Run method from the same thread.
+	/// When you instantiate it, it will create the 3D window and a separate thread we’ll
 	/// call the “3D thread”. All model meshes, textures, fonts, etc. used by the 3D hardware must be created and accessed
 	/// by the 3D thread, because supported hardware platforms require it. Its safest to assume all Blotch3D and MonoGame
 	/// objects must be created and accessed in the 3D thread. Although it may apparently work in certain circumstances,

@@ -132,8 +132,6 @@ namespace Blotch
 		/// </summary>
 		public double DefGuiMaxLookZ = 1;
 
-		Rectangle CurrentWindowSize = new Rectangle();
-
 		/// <summary>
 		/// Assign DepthStencilState to this to enable depth buffering
 		/// </summary>
@@ -921,6 +919,15 @@ namespace Blotch
 
 			UpdateViewDirection();
 
+			var width = Window.Window.ClientBounds.Width;
+			var height = Window.Window.ClientBounds.Height;
+			if (width != PreferredBackBufferWidth || height != PreferredBackBufferHeight)
+			{
+				PreferredBackBufferWidth = Window.Window.ClientBounds.Width;
+				PreferredBackBufferHeight = Window.Window.ClientBounds.Height;
+				//Console.WriteLine(Window.Window.ClientBounds);
+			}
+
 			if (NearClip == 0)
 				CurrentNearClip = MinCamDistance;
 			else
@@ -949,14 +956,6 @@ namespace Blotch
 			if (CurrentAspect == 0)
 				CurrentAspect = (float)PreferredBackBufferWidth / PreferredBackBufferHeight;
 			Projection = Microsoft.Xna.Framework.Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians((float)Zoom), (float)CurrentAspect, (float)CurrentNearClip, (float)CurrentFarClip);
-
-			if(CurrentWindowSize != Window.Window.ClientBounds)
-			{
-				PreferredBackBufferWidth = Window.Window.ClientBounds.Width;
-				PreferredBackBufferHeight = Window.Window.ClientBounds.Height;
-				CurrentWindowSize = Window.Window.ClientBounds;
-			}
-
 
 			ApplyChanges();
 			MinCamDistance = 1e38;

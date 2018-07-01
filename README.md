@@ -612,8 +612,8 @@ Matrix
 An array of 16 numbers that describes the position and orientation of a
 sprite. Specifically, a matrix describes a difference, or transform, in
 the orientation (coordinate system) of one model from another. See
-[Introduction to
-Matrices](#dynamically-changing-a-sprites-orientation-and-position).
+[Dynamically changing a sprite's orientation and
+position](#dynamically-changing-a-sprites-orientation-and-position).
 
 Origin
 

@@ -18,6 +18,7 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -75,7 +76,7 @@ namespace Blotch
 			var revTex = new Texture2D(Graphics.GraphicsDevice, tex.Width, tex.Height);
 
 			Color[] rpixels = new Color[tex.Width * tex.Height];
-			for (var x = 0; x < tex.Width; x ++)
+			Parallel.For(0, tex.Width, (x) =>
 			{
 				var ox = x;
 				if (reverseX)
@@ -88,7 +89,7 @@ namespace Blotch
 
 					rpixels[x + tex.Width * y] = pixels[ox + tex.Width * oy];
 				}
-			}
+			});
 			
 			revTex.SetData(rpixels);
 			return revTex;
@@ -103,31 +104,32 @@ namespace Blotch
 			var nheight = tex.Height / 2;
 
 			Color[] mpixels = new Color[nwidth * nheight];
-			for (var x = 0; x <= tex.Width-1; x += 2)
-			{
-				for (var y = 0; y <= tex.Height-1; y += 2)
-				{
-					if (x+1 >= tex.Width || y+1 >= tex.Height)
-						break;
+			Parallel.For(0, (tex.Width - 1) / 2, (xd) =>
+			   {
+				   var x = xd * 2;
+				   for (var y = 0; y <= tex.Height - 1; y += 2)
+				   {
+					   if (x + 1 >= tex.Width || y + 1 >= tex.Height)
+						   break;
 
-					var p00 = pixels[x + tex.Width * y].ToVector4();
-					var p01 = pixels[x + 1 + tex.Width * y].ToVector4();
-					var p10 = pixels[x + tex.Width * (y + 1)].ToVector4();
-					var p11 = pixels[x + 1 + tex.Width * (y + 1)].ToVector4();
+					   var p00 = pixels[x + tex.Width * y].ToVector4();
+					   var p01 = pixels[x + 1 + tex.Width * y].ToVector4();
+					   var p10 = pixels[x + tex.Width * (y + 1)].ToVector4();
+					   var p11 = pixels[x + 1 + tex.Width * (y + 1)].ToVector4();
 
 					// we assume a gamma of 2 (besides, its faster that way)
 
-					var np = p00*p00 + p01*p01 + p10*p10 + p11*p11;
-					if(x/2<nwidth && y/2<nheight)
-						mpixels[(x / 2) + nwidth * (y / 2)] = new Color(
-							new Vector4(
-								(float)Math.Sqrt(np.X / 4f),
-								(float)Math.Sqrt(np.Y / 4f),
-								(float)Math.Sqrt(np.Z / 4f),
-								(float)Math.Sqrt(np.W / 4f)
-								));
-				}
-			}
+					var np = p00 * p00 + p01 * p01 + p10 * p10 + p11 * p11;
+					   if (x / 2 < nwidth && y / 2 < nheight)
+						   mpixels[(x / 2) + nwidth * (y / 2)] = new Color(
+							   new Vector4(
+								   (float)Math.Sqrt(np.X / 4f),
+								   (float)Math.Sqrt(np.Y / 4f),
+								   (float)Math.Sqrt(np.Z / 4f),
+								   (float)Math.Sqrt(np.W / 4f)
+								   ));
+				   }
+			   });
 			var mipmap = new Texture2D(Graphics.GraphicsDevice,nwidth,nheight);
 
 			mipmap.SetData(mpixels);
