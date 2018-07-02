@@ -44,7 +44,7 @@ like Android, etc.)
     the "full" example needs to be split into simpler examples\].
 
 5.  See IntelliSense comments for reference documentation that
-    (surprisingly) talks about more than the obvious.
+    (surprisingly) covers more than the obvious.
 
 Introduction
 ------------
