@@ -1,8 +1,8 @@
 **Blotch3D User Manual**
 ------------------------
 
-Create dynamic 3D apps for multiple platforms, with just a few lines
-code.
+With just a few lines code you can create real-time 3D apps for multiple
+platforms.
 
 [Quick start](#quick-start)
 
