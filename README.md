@@ -220,14 +220,15 @@ You must instantiate a class derived from BlWindow3D. It will create the
 call the "3D thread", which calls certain methods of the derived class.
 This pattern is used because MonoGame uses it. In fact, the BlWindow3D
 class inherits from MonoGame's "Game" class. But instead of overriding
-MonoGame's Initialize, LoadContent, Update, and Draw, you override
-Blotch3D's Setup, FrameProc, and FrameDraw from BlWindow3D. Other "Game"
-class methods and events can still be overridden, if needed.
+certain "Game" class methods, you override BlWindow3D's Setup,
+FrameProc, and FrameDraw methods. Other "Game" class methods and events
+can still be overridden, if needed.
 
 All model meshes, textures, fonts, etc. used by the 3D subsystem must be
-created and accessed by the 3D thread, because some subsystems require
-it (like OpenGL, etc.). You should assume all Blotch3D and MonoGame
-objects must be created and accessed in that thread.
+created and accessed by the 3D thread because some subsystems, depending
+on the platform and subsystem, require it (like OpenGL, etc.). You
+should assume all Blotch3D and MonoGame objects must be created and
+accessed in that thread.
 
 Code to be executed in the context of the 3D thread must be in the
 Setup, FrameProc, and/or FrameDraw methods of the class derived from
@@ -248,7 +249,7 @@ things in there like loading of persistent content (sprite models,
 fonts, etc.), creation of persistent BlSprites, etc.
 
 The 3D thread calls the FrameProc method once per frame (control frame
-period with BlGraphicsDeviceManager.FramePeriod). For single-threaded
+period with BlWindow3D.Graphics.FramePeriod). For single-threaded
 applications this is typically where the bulk of application code
 resides, except the actual drawing code. For multi-threaded
 applications, this is where all application code resides that does
