@@ -225,9 +225,9 @@ FrameProc, and FrameDraw methods. Other "Game" class methods and events
 can still be overridden, if needed.
 
 All model meshes, textures, fonts, etc. used by the 3D subsystem must be
-created and accessed by the 3D thread because some subsystems, depending
-on the platform and subsystem, require it (like OpenGL, etc.). You
-should assume all Blotch3D and MonoGame objects must be created and
+created and accessed from within the 3D thread because some subsystems,
+depending on the platform and subsystem, require it (like OpenGL, etc.).
+You should assume all Blotch3D and MonoGame objects must be created and
 accessed in that thread.
 
 Code to be executed in the context of the 3D thread must be in the
@@ -241,26 +241,26 @@ below.
 Although it may apparently work in certain circumstances or on certain
 platforms, do not have the BlWindow3D-derived class constructor create
 or access any 3D resources, or have its instance initializers do it,
-because neither are executed by the 3D thread.
+because neither are executed in the context of the 3D thread.
 
-The 3D thread calls the Setup method once at the beginning of
+The Setup method is called by the 3D thread once at the beginning of
 instantiation. You might put time-consuming initialization of persistent
 things in there like loading of persistent content (sprite models,
 fonts, etc.), creation of persistent BlSprites, etc.
 
-The 3D thread calls the FrameProc method once per frame (control frame
-period with BlWindow3D.Graphics.FramePeriod). For single-threaded
+The FrameProc method is called by the 3D thread once per frame (control
+frame period with BlWindow3D.Graphics.FramePeriod). For single-threaded
 applications this is typically where the bulk of application code
 resides, except the actual drawing code. For multi-threaded
 applications, this is where all application code resides that does
 anything with 3D resources.
 
-The 3D thread calls the FrameDraw method every frame, but only if there
-is enough CPU for the 3D thread. Otherwise it calls it less frequently.
-This is where you put drawing code (BlSprite.Draw,
+The FrameDraw method is called by the 3D thread every frame, but only if
+there is enough CPU for that thread. Otherwise it calls it less
+frequently. This is where you put drawing code (BlSprite.Draw,
 BlGraphicsDeviceManager.DrawText, etc.). Additionally, if you are
-developing that will also be very subject to exhausting the 3D thread,
-then you can put application code in FrameDraw rather than in
+developing an app that will also be very subject to exhausting the 3D
+thread, then you can put application code in FrameDraw rather than in
 FrameProc---as long as the code adjusts itself to account for variations
 in how often it is called. This will save CPU when the frame rate drops.
 
@@ -316,13 +316,15 @@ more content via the pipeline manager (see
 examples for details on how to load and display models, fonts, etc.
 
 If no existing model meets your needs, you can either programmatically
-create a model by specifying the vertices (see the custom Vertices
-example), or create a model with, for example, the Blender 3D modeler
-and then add it to the project with the pipeline manager. You can also
-instruct Blender to include texture (UV) mapping by watching one of the
-countless tutorials online, like
+create a model by specifying the vertices and normals (see the example
+that uses custom Vertices), or create a model with, for example, the
+Blender 3D modeler and then add it to the project with the pipeline
+manager. The pipeline manager can import several model file types. You
+can also instruct Blender to include texture (UV) mapping by using one
+of the countless tutorials online, like
 <https://www.youtube.com/watch?v=2xTzJIaKQFY> or
 <https://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/UV_Map_Basics> .
+Also, you may be able to import certain existing models from the web.
 
 Dynamically changing a sprite's orientation and position
 --------------------------------------------------------
@@ -334,7 +336,10 @@ the scaling, translation, rotation, etc. of a matrix.
 
 When you change anything about a sprite's matrix, you also change the
 orientation and position of its child sprites, if any. That is,
-subsprites reside in the parent sprite's coordinate system.
+subsprites reside in the parent sprite's coordinate system. For example,
+if a child sprite's matrix scales it by 3, and its parent sprite's
+matrix scales by 4, then the child sprite will be scaled by 12.
+Likewise, rotation, shear, and translation are inherited, as well.
 
 There are also static and instance Matrix methods and operator overloads
 to combine (multiply) matrices to form a single matrix which combines
