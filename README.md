@@ -236,8 +236,9 @@ BlWindow3D, because those methods are automatically called by the 3D
 thread. A single-threaded application would have all its code in those
 overridden methods. For a multi-threaded application, other threads that
 need to do 3D things can queue a delegate to the 3D thread as described
-below. Note that this rule applies to Parallel code, as well! Do not
-parallelize code that creates or accesses 3D resources.
+below. Note that this rule also applies to any code structure that may
+internally use other threads, as well. Do not use Parallel, async, etc.
+code structures that access 3D resources.
 
 Although it may apparently work in certain circumstances or on certain
 platforms, do not have the BlWindow3D-derived class constructor create
