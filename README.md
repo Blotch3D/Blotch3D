@@ -22,6 +22,8 @@ position](#dynamically-changing-a-sprites-orientation-and-position)
 [A Short Glossary of 3D Graphics
 Terms](#a-short-glossary-of-3d-graphics-terms)
 
+[Troubleshooting](#troubleshooting)
+
 [Rights](#rights)
 
 Quick start
@@ -640,6 +642,24 @@ Frame
 In this document, \'Frame\' means a complete still scene. It is
 analogous to a movie frame. A moving 3D scene is created by drawing
 successive frames---typically at about 15 to 60 times per second.
+
+Troubleshooting
+---------------
+
+Q: When I set a billboard attribute of a flat sprite (like a plane), I
+can no longer see it.
+
+A: Perhaps the billboard orientation is such that you are looking at the
+plane from the side. Try setting a rotation in the sprite's matrix (and
+make sure it doesn't just rotate it on the axis intersecting your eye
+point).
+
+Q: I set a sprite's matrix so one of the dimensions has a scale of zero,
+but then the sprite becomes black.
+
+A: A sprite's matrix also affects its normals. By setting a dimension's
+scale to zero, you may have caused some of the normals to be zero'd out
+as well.
 
 Rights
 ------
