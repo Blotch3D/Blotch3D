@@ -334,9 +334,10 @@ Dynamically changing a sprite's orientation and position
 --------------------------------------------------------
 
 Each sprite has a "Matrix" member that defines its orientation and
-position relative to its parent sprite. There are many static and
-instance methods of the Matrix class that let you easily set and change
-the scaling, translation, rotation, etc. of a matrix.
+position relative to its parent sprite, or to an unmodified coordinate
+system if there is no parent. There are many static and instance methods
+of the Matrix class that let you easily set and change the scaling,
+translation, rotation, etc. of a matrix.
 
 When you change anything about a sprite's matrix, you also change the
 orientation and position of its child sprites, if any. That is,
@@ -349,9 +350,10 @@ There are also static and instance Matrix methods and operator overloads
 to combine (multiply) matrices to form a single matrix which combines
 the effects of multiple matrices. For example, a rotate matrix and a
 scale matrix can be multiplied to form a single rotate-scale matrix. But
-mind the multiplication order. See below for details, but novices can
-simply try the operation one way (like A times B) and, if it doesn't
-work the way you wanted, do it the other way (B times A).
+mind the multiplication order because matrix multiplication is not
+commutative. See below for details, but novices can simply try the
+operation one way (like A times B) and, if it doesn't work the way you
+wanted, do it the other way (B times A).
 
 For a good introduction (without the math), see
 <http://rbwhitaker.wikidot.com/monogame-basic-matrices>.
@@ -385,10 +387,10 @@ multiply the X of each vertex by 2.
 
 For example,
 
-X' = 2X (where X' is the final value)
+X' = 2X (where X is the initial value, and X' is the final value)
 
-... which would change the above vertices from (4,1) and (3,3) to (8,1)
-and (6,3).
+... which, when applied to each vertex, would change the above vertices
+from (4,1) and (3,3) to (8,1) and (6,3).
 
 We might want to define how to change each X according to the original X
 value of each vertex *and also according to the original Y value*, like
@@ -443,21 +445,31 @@ matrix:
 3 0\
 0 3
 
-To scale only X by 3 (stretch a model in the X direction), then use the
-matrix:
+To scale only X by 3 (stretch a model in the X direction about the
+origin), then use the matrix:
 
 3 0\
 0 1
 
-The following matrix flips (mirrors) the model vertically:
+The following matrix flips (mirrors) the model vertically about the
+origin:
 
 1 0\
 0 -1
 
-Below is a matrix to rotate a model counterclockwise by 90 degrees:
+Below is a matrix to rotate a model counterclockwise by 90 degrees about
+the origin:
 
 0 -1\
 1 0
+
+Here is a matrix that rotates a model counterclockwise by 45 degrees
+about the origin:
+
+0.707 -0.707\
+0.707 0. 707
+
+Note that '0.707' is the sine of 45 degrees.
 
 A matrix can be created to rotate any amount about any axis.
 
