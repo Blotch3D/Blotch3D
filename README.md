@@ -41,9 +41,7 @@ like Android, etc.)
 
 3.  Open the Visual Studio solution file.
 
-4.  Build and run the example projects. They are each comprised of a
-    single small source file demonstrating one aspect of Blotch3D \[TBD:
-    the "full" example needs to be split into simpler examples\].
+4.  Build and run the example projects.
 
 5.  See IntelliSense comments for reference documentation.
 
@@ -82,8 +80,6 @@ can...
 
 -   Create billboard sprites.
 
--   Create imposters \[TBD\].
-
 -   Connect sprites to the camera to implement HUD models and text.
 
 -   Connect the camera to a sprite to implement 'cockpit view', etc.
@@ -99,17 +95,13 @@ can...
 -   Get a list of sprites under the mouse position, to implement mouse
     selection, tooltips, pop-up menus, etc.
 
--   Detect collisions between sprites \[TBD: no example yet\].
+-   Detect collisions between sprites.
 
 -   Implement levels-of-detail.
 
 -   Implement mipmaps.
 
 -   Implement translucent sprites and textures with an alpha channel.
-
--   Support stereoscopic views (anaglyph, VR, etc.) \[TBD\].
-
--   Implement fog \[TBD: no example yet\].
 
 -   Create sprite models programmatically (custom vertices).
 
