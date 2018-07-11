@@ -535,41 +535,35 @@ But for details see
 A Short Glossary of 3D Graphics Terms
 -------------------------------------
 
-Vertex
-
+Vertex\
 A point in space. Typically, a point at which the line segments of a
 polygon meet. That is, a corner of a polygon. A corner of a model. Most
 visible models are described as a set of vertices. Each vertex can have
 a color, texture coordinate, and normal.
 
-Polygon
-
+Polygon\
 A visible surface described by a set of vertices that define its
 corners. A triangle is a polygon with three vertices, a quad is a
 polygon with four. One side of a polygon is a \"face\".
 
-Ambient lighting
-
+Ambient lighting\
 A 3D scene has one ambient light setting. The intensity of ambient
 lighting on the surface of a polygon is unrelated to the orientation of
 the polygon or the camera.
 
-Diffuse lighting
-
+Diffuse lighting\
 Directional or point source lighting. You can have multiple directional
 or point light sources. Its intensity depends on the orientation of the
 polygon relative to the light.
 
-Texture
-
+Texture\
 A 2D image applied to the surface of a model. For this to work, each
 vertex of the model must have a texture coordinate associated with it,
 which is an X,Y coordinate of the 2D bitmap image that should be aligned
 with that vertex. Pixels across the surface of a polygon are
 interpolated from the texture coordinates specified for each vertex.
 
-Normal
-
+Normal\
 In mathematics, the word \"normal\" means a vector that is perpendicular
 to a surface. In 3D graphics, \"normal\" means a vector that indicates
 from what direction light will cause a surface to be brightest. Normally
@@ -582,76 +576,61 @@ single flat polygon can have a gradient of brightness across it giving
 the illusion of curvature. In this way a model composed of fewer
 polygons can still be made to look quite smooth.
 
-X-axis
-
+X-axis\
 The axis that extends right from the origin.
 
-Y-axis
-
+Y-axis\
 The axis that extends forward from the origin.
 
-Z-axis
-
+Z-axis\
 The axis that extends up from the origin.
 
-Translation
-
+Translation\
 Movement. The placing of something at a different location from its
 original location.
 
-Rotation
-
+Rotation\
 The circular movement of each vertex of a model about the same axis.
 
-Scale
-
+Scale\
 A change in the width, height, and/or depth of a model.
 
-Shear (skew)
-
+Shear (skew)\
 A pulling of one side of a model in one direction, and the opposite side
 in the opposite direction, without rotation, such that the model is
 distorted rather than rotated. A parallelogram is a rectangle that has
 experienced shear. If you apply another shear along an orthogonal axis
 of the first shear, you rotate the model.
 
-Yaw
-
+Yaw\
 Rotation about the Y-axis
 
-Pitch
-
+Pitch\
 Rotation about the X-axis, after any Yaw has been applied.
 
-Roll
-
+Roll\
 Rotation about the Z-axis, after any Pitch has been applied.
 
-Euler angles
-
+Euler angles\
 The yaw, pitch, and roll of a model, applied in that order.
 
-Matrix
-
+Matrix\
 An array of 16 numbers that describes the position and orientation of a
 sprite. Specifically, a matrix describes a difference, or transform, in
 the orientation (coordinate system) of one model from another. See
 [Dynamically changing a sprite's orientation and
 position](#dynamically-changing-a-sprites-orientation-and-position).
 
-Origin
-
+Origin\
 The center of a coordinate system. The point in the coordinate system
 that is, by definition, at (0,0).
 
-Frame
-
+Frame\
 In this document, \'Frame\' means a complete still scene. It is
 analogous to a movie frame. A moving 3D scene is created by drawing
 successive frames---typically at about 15 to 60 times per second.
 
-Depth buffer
-
+Depth buffer\
 3D systems must keep track of the depth of the polygon surface (if any)
 at each 2D pixel so that they know to draw the nearer pixel over the
 farther pixel in the 2D display. The depth buffer is an array with one
@@ -659,13 +638,11 @@ element per 2D screen pixel, where each element is (typically) a 32-bit
 floating point value indicating the depth of the nearest polygon surface
 at that pixel. See 'near clip' and 'far clip'.
 
-Near clipping plane (near clip)
-
+Near clipping plane (near clip)\
 The distance from the camera at which a depth buffer element is equal to
 zero. Nearer surfaces are not drawn.
 
-Far clipping plane (far clip)
-
+Far clipping plane (far clip)\
 The distance from the camera at which a depth buffer element is equal to
 the maximum possible floating-point value. Farther surfaces are not
 drawn.
@@ -683,8 +660,9 @@ your eye point).
 Q: When I'm inside a sprite, I can't see it.\
 A: By default, Blotch3D draws only the outside of a sprite. Try doing a
 \"Graphics.GraphicsDevice.RasterizerState =
-RasterizerState.CullClockwise" in the BlSprite.PreDraw delegate, and set
-it back to CullCounterClockwise in the BlSprite.DrawCleanup delegate.
+RasterizerState.CullClockwise" (or set it to CullNone to see both the
+inside and outside) in the BlSprite.PreDraw delegate, and set it back to
+CullCounterClockwise in the BlSprite.DrawCleanup delegate.
 
 Q: I set a sprite's matrix so one of the dimensions has a scale of zero,
 but then the sprite becomes black.\
