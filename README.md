@@ -45,8 +45,7 @@ like Android, etc.)
     single small source file demonstrating one aspect of Blotch3D \[TBD:
     the "full" example needs to be split into simpler examples\].
 
-5.  See IntelliSense comments for reference documentation that
-    (surprisingly) covers more than the obvious.
+5.  See IntelliSense comments for reference documentation.
 
 Introduction
 ------------
@@ -123,12 +122,12 @@ can...
 -   Build for many platforms (currently supports iOS, Android, MacOS,
     Linux, all Windows platforms, PS4, PSVita, Xbox One, and Switch).
 
-Blotch3D sits on top of MonoGame. MonoGame is a very widely used 3D
-library for C\#. It is free, fast, cross platform, actively developed by
-a large community, and it's used in many professional games. There is a
-plethora of MonoGame documentation, tutorials, examples, and discussions
-on line. All MonoGame features remain available. For example, custom
-shaders can be written to override the default shader.
+Blotch3D sits on top of MonoGame. MonoGame is a widely used 3D library
+for C\#. It is free, fast, cross platform, actively developed by a large
+community, and it's used in many professional games. There is a plethora
+of MonoGame documentation, tutorials, examples, and discussions on line.
+All MonoGame features remain available. For example, custom shaders can
+be written to override the default shader.
 
 All reference documentation of Blotch3D (classes, methods, fields,
 properties, etc.) is available through Visual Studio IntelliSense. It
