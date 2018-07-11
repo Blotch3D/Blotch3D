@@ -652,52 +652,64 @@ successive frames---typically at about 15 to 60 times per second.
 
 Depth buffer
 
-3D subsystems must keep track of the depth of each bit of polygon
-surface so that they know to draw the nearer pixel over the farther
-pixel in the 2D display. The depth buffer is an array with one element
-per 2D pixel, where each element is (typically) a 32-bit floating point
-value indicating the depth of the nearest polygon surface at that pixel.
+3D systems must keep track of the depth of the polygon surface (if any)
+at each 2D pixel so that they know to draw the nearer pixel over the
+farther pixel in the 2D display. The depth buffer is an array with one
+element per 2D screen pixel, where each element is (typically) a 32-bit
+floating point value indicating the depth of the nearest polygon surface
+at that pixel. See 'near clip' and 'far clip'.
 
 Near clipping plane (near clip)
 
-The distance at which a depth buffer element is equal to zero. Nearer
-surfaces are not drawn.
+The distance from the camera at which a depth buffer element is equal to
+zero. Nearer surfaces are not drawn.
 
 Far clipping plane (far clip)
 
-The distance at which a depth buffer element is equal to the maximum
-possible floating-point value. Farther surfaces are not drawn.
+The distance from the camera at which a depth buffer element is equal to
+the maximum possible floating-point value. Farther surfaces are not
+drawn.
 
 Troubleshooting
 ---------------
 
 Q: When I set a billboard attribute of a flat sprite (like a plane), I
-can no longer see it.
-
+can no longer see it.\
 A: Perhaps the billboard orientation is such that you are looking at the
-plane from the side. Try setting a rotation in the sprite's matrix (and
-make sure it doesn't just rotate it on the axis intersecting your eye
-point).
+plane from the side or back. Try setting a rotation in the sprite's
+matrix (and make sure it doesn't just rotate it on the axis intersecting
+your eye point).
+
+Q: When I'm inside a sprite, I can't see it.\
+A: By default, Blotch3D draws only the outside of a sprite. Try doing a
+\"Graphics.GraphicsDevice.RasterizerState =
+RasterizerState.CullClockwise" in the BlSprite.PreDraw delegate, and set
+it back to CullCounterClockwise in the BlSprite.DrawCleanup delegate.
 
 Q: I set a sprite's matrix so one of the dimensions has a scale of zero,
-but then the sprite becomes black.
-
+but then the sprite becomes black.\
 A: A sprite's matrix also affects its normals. By setting a dimension's
 scale to zero, you may have caused some of the normals to be zero'd out
 as well.
 
-Q: When I am zoomed-in a large amount, sprite and camera movement jumps.
-
+Q: When I am zoomed-in a large amount, sprite and camera movement
+jumps.\
 A: You are experiencing floating point precision errors in the
 positioning algorithms. About all you can do is "fake" being that zoomed
 in by, instead, moving the camera forward temporarily. Or simply don't
 allow zoom to go to that extreme.
 
-Q: Sometimes I see the polygons of sprites turn on and off randomly.
-
+Q: Sometimes I see the polygons of sprites turn on and off randomly.\
 A: The floating-point precision limitation of the depth buffer can cause
 this. Try increasing your near clip and/or decreasing your far clip so
 the depth buffer doesn't have to cover so much dynamic range.
+
+Q: I have a sprite that must always be visible, but I think its
+invisible because its outside the depth buffer.\
+A: Try doing a \"Graphics.GraphicsDevice.DepthStencilState =
+Graphics.DepthStencilStateDisabled" in the BlSprite.PreDraw delegate,
+and set it back to DepthStencilStateEnabled in the BlSprite.DrawCleanup
+delegate.
 
 Rights
 ------
