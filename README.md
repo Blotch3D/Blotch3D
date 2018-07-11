@@ -6,7 +6,7 @@ platforms.
 
 [Quick start](#quick-start)
 
-[Introduction](#introduction)
+Introduction
 
 [Project structure](#project-structure)
 
@@ -262,11 +262,7 @@ anything with 3D resources.
 The FrameDraw method is called by the 3D thread every frame, but only if
 there is enough CPU for that thread. Otherwise it calls it less
 frequently. This is where you put drawing code (BlSprite.Draw,
-BlGraphicsDeviceManager.DrawText, etc.). Additionally, if you are
-developing an app that will also be very subject to exhausting the 3D
-thread, then you can put application code in FrameDraw rather than in
-FrameProc---as long as the code adjusts itself to account for variations
-in how often it is called. This will save CPU when the frame rate drops.
+BlGraphicsDeviceManager.DrawText, etc.
 
 If you are developing a multithreaded app, then when other threads need
 to create, change, or destroy 3D resources or otherwise do something in
@@ -655,6 +651,24 @@ In this document, \'Frame\' means a complete still scene. It is
 analogous to a movie frame. A moving 3D scene is created by drawing
 successive frames---typically at about 15 to 60 times per second.
 
+Depth buffer
+
+3D subsystems must keep track of the depth of each bit of polygon
+surface so that they know to draw the nearer pixel over the farther
+pixel in the 2D display. The depth buffer is an array with one element
+per 2D pixel, where each element is (typically) a 32-bit floating point
+value indicating the depth of the nearest polygon surface at that pixel.
+
+Near clipping plane (near clip)
+
+The distance at which a depth buffer element is equal to zero. Nearer
+surfaces are not drawn.
+
+Far clipping plane (far clip)
+
+The distance at which a depth buffer element is equal to the maximum
+possible floating-point value. Farther surfaces are not drawn.
+
 Troubleshooting
 ---------------
 
@@ -672,6 +686,19 @@ but then the sprite becomes black.
 A: A sprite's matrix also affects its normals. By setting a dimension's
 scale to zero, you may have caused some of the normals to be zero'd out
 as well.
+
+Q: When I am zoomed-in a large amount, sprite and camera movement jumps.
+
+A: You are experiencing floating point precision errors in the
+positioning algorithms. About all you can do is "fake" being that zoomed
+in by, instead, moving the camera forward temporarily. Or simply don't
+allow zoom to go to that extreme.
+
+Q: Sometimes I see the polygons of sprites turn on and off randomly.
+
+A: The floating-point precision limitation of the depth buffer can cause
+this. Try increasing your near clip and/or decreasing your far clip so
+the depth buffer doesn't have to cover so much dynamic range.
 
 Rights
 ------
