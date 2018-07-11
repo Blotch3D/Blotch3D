@@ -6,7 +6,7 @@ platforms.
 
 [Quick start](#quick-start)
 
-Introduction
+[Introduction](#introduction)
 
 [Project structure](#project-structure)
 
