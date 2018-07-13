@@ -218,7 +218,7 @@ Shift          - Fine control
 			{
 				// retore default settings
 
-				Graphics.GraphicsDevice.DepthStencilState = Graphics.DepthStencilStateDisabled;
+				Graphics.GraphicsDevice.DepthStencilState = Graphics.DepthStencilStateEnabled;
 				Graphics.GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
 				Graphics.Projection = LastProjectionMatrix;
 			};

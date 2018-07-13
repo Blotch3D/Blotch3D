@@ -22,7 +22,8 @@ namespace BlotchExample
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		public List<Window3d> Windows = new List<Window3d>();
+		Window3d Win = null;
+
 		public MainWindow()
 		{
 			InitializeComponent();
@@ -30,28 +31,18 @@ namespace BlotchExample
 
 		private void StartMonoGameWindow_Click(object sender, RoutedEventArgs e)
 		{
-			int numWins = Windows.Count;
 			new Thread(() =>
 			{
-				var win = new Window3d();
+				Win = new Window3d();
 				Console.WriteLine("Creating window {0}", win.Window.Handle);
-				Windows.Add(win);
-				win.Run();
-				Windows.Remove(win);
-				win.Dispose();
-
+				Win.Run();
+				Win.Dispose();
 			}).Start();
-
-			while (Windows.Count == numWins)
-				Thread.Sleep(10);
 		}
 
 		private void SendWindowCmd_Click(object sender, RoutedEventArgs e)
 		{
-			foreach(var window in Windows)
-			{
-				window.EnqueueCommand((win) => { Console.WriteLine("This is a queued command to window {0}", win.Window.Handle); });
-			}
+			Win.EnqueueCommand((win) => { Console.WriteLine("This is a queued command to window {0}", win.Window.Handle); });
 		}
 	}
 }
