@@ -169,25 +169,28 @@ To create a new project for Windows you can just copy the basic example
 and rename the project, or you can create the project from scratch like
 this:
 
-1.  Create a new project for a platform that is compatible with
+1.  If you haven't already done it, install MonoGame as described in the
+    [Quick start](#quick-start) section.
+
+2.  Create a new project for a platform that is compatible with
     MonoGame.
 
-2.  Add a reference to MonoGame. (For .NET Framework, you would add
+3.  Add a reference to MonoGame. (For .NET Framework, you would add
     something like \\Program Files
-    (x86)\\MonoGame\\v3.0\\Assemblies\\Windows\\MonoGame.Framework.DLL)
+    (x86)\\MonoGame\\v3.0\\Assemblies\\Windows\\MonoGame.Framework.dll)
 
-3.  If the Blotch3DWindows project is not in the solution, add a
+4.  If the Blotch3DWindows project is not in the solution, add a
     reference to the Blotch3DWindows assembly (like Blotch3D.dll on
     Windows).
 
-4.  Follow the procedure in the '[Making 3D models](#making-3d-models)'
+5.  Follow the procedure in the '[Making 3D models](#making-3d-models)'
     section so that you have a place to add content.
 
-5.  You'll probably want to set the output type to 'Console Application'
+6.  You'll probably want to set the output type to 'Console Application'
     for now, so you can see any debug messages. You can change this to
     'Windows Application' later, if you like.
 
-6.  To create the 3D window, use the code from an example that creates
+7.  To create the 3D window, use the code from an example that creates
     the 3D window. For example, for WPF you would copy the code from the
     WPF example's "StartMonoGameWindow\_Click" method.
 
