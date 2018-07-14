@@ -184,15 +184,17 @@ this:
     Windows).
 
 5.  Follow the procedure in the '[Making 3D models](#making-3d-models)'
-    section so that you have a place to add content.
+    section to add a content folder and the pipeline manager so that you
+    have a place to add content.
 
 6.  You'll probably want to set the output type to 'Console Application'
     for now, so you can see any debug messages. You can change this to
     'Windows Application' later, if you like.
 
-7.  To create the 3D window, use the code from an example that creates
-    the 3D window. For example, for WPF you would copy the code from the
-    WPF example's "StartMonoGameWindow\_Click" method.
+7.  To create the 3D window, use the code that creates the 3D window
+    from an example. For example, for WPF you would copy the code from
+    the WPF example's "StartMonoGameWindow\_Click" method. You can put
+    this code wherever you want to create the 3D window.
 
 To create a project for another platform (Android, iOS, etc.), make sure
 you have the Visual Studio add-on that supports it (for example, for
