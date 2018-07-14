@@ -680,12 +680,13 @@ positioning algorithms. About all you can do is "fake" being that zoomed
 in by, instead, moving the camera forward temporarily. Or simply don't
 allow zoom to go to that extreme.
 
-Q: Sometimes I see the polygons of sprites turn on and off randomly.\
+Q: Sometimes I see the polygons and parts polygons of sprites appear and
+disappear randomly as the camera or sprite moves.\
 A: The floating-point precision limitation of the depth buffer can cause
 this. Try increasing your near clip and/or decreasing your far clip so
 the depth buffer doesn't have to cover so much dynamic range.
 
-Q: I have a sprite that must always be visible, but I think its
+Q: I have a sprite that I want to always be visible, but I think its
 invisible because its outside the depth buffer.\
 A: Try doing a \"Graphics.GraphicsDevice.DepthStencilState =
 Graphics.DepthStencilStateDisabled" in the BlSprite.PreDraw delegate,
