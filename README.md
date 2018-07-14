@@ -1,8 +1,8 @@
 **Blotch3D User Manual**
 ------------------------
 
-With just a few lines code you can create real-time 3D apps for multiple
-platforms.
+With just a few lines of C\# code you can create real-time 3D apps for
+multiple platforms.
 
 [Quick start](#quick-start)
 
