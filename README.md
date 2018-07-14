@@ -191,7 +191,7 @@ this:
     for now, so you can see any debug messages. You can change this to
     'Windows Application' later, if you like.
 
-7.  Define a class and instantiate it according to the guidelines in the
+7.  To create a 3D window, follow the guidelines in the
     [Development](#development) section.
 
 To create a project for another platform (Android, iOS, etc.), make sure
