@@ -190,7 +190,7 @@ the project, or you can create the project from scratch like this:
 
 6.  Follow the procedure in the '[Making 3D models](#making-3d-models)'
     section to add a content folder and the pipeline manager so that you
-    have a place to add content.
+    have a way to add content.
 
 7.  You'll probably want to set the output type to 'Console Application'
     for now, so you can see any debug messages. You can change this to
@@ -199,8 +199,9 @@ the project, or you can create the project from scratch like this:
 8.  To create a 3D window, follow the guidelines in the
     [Development](#development) section.
 
-For platforms other than Windows you may need to do a little research
-for the specifics in creating a MonoGame project for that platform.
+The above process works for Windows and generally works for other
+platforms. But you may need to do a little research in setting up a
+MonoGame project for certain other platforms.
 
 If you are copying the Blotch3D assembly (like Blotch3D.dll on Windows)
 to a project or packages folder so you don't have to include the source
@@ -224,22 +225,22 @@ call its "Run" method *from the same thread*. The Run method will call
 the Setup, FrameProc, and FrameDraw methods, and not return until the
 window closes.
 
-All code that accesses 3D resources must be in those methods, including
-code that creates and uses all Blotch3D and MonoGame objects. Note that
-the single thread rule also applies to any code structure that may
-internally use other threads, as well. Do not use Parallel, async, etc.
-code structures that access 3D resources.
+All code that accesses 3D resources must be in the Setup, FrameProc, and
+FrameDraw methods, including code that creates and uses all Blotch3D and
+MonoGame objects. Note that this rule also applies to any code structure
+that may internally use other threads, as well. Do not use Parallel,
+async, etc. code structures that access 3D resources.
 
 This pattern is necessary because certain 3D subsystems (OpenGL,
-DirectX, etc.) on certain platforms require that 3D resources be
-accessed by a single thread. It is the pattern used by MonoGame. In
-fact, the BlWindow3D class inherits from MonoGame's "Game" class. But
-instead of overriding certain "Game" class methods, you override
-BlWindow3D's Setup, FrameProc, and FrameDraw methods. Other "Game" class
-methods and events can still be overridden, if needed.
+DirectX, etc.) generally require that 3D resources be accessed by a
+single thread. It is the pattern used by MonoGame. In fact, the
+BlWindow3D class inherits from MonoGame's "Game" class. But instead of
+overriding certain "Game" class methods, you override BlWindow3D's
+Setup, FrameProc, and FrameDraw methods. Other "Game" class methods and
+events can still be overridden, if needed.
 
-We will call the thread that instantiates the BlWindow3D-derived class
-and calls the Run method, the "3D thread".
+We will call the thread that instantiates the BlWindow3D-derived class,
+calls the Run method, etc., the "3D thread".
 
 A single-threaded application would have all its code in those three
 overridden methods. For a multi-threaded application, other threads that
