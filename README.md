@@ -216,35 +216,34 @@ Development
 
 See the examples.
 
-You must instantiate a class derived from BlWindow3D. It will create the
-3D window and make it visible, and create a single thread that we'll
-call the "3D thread", which calls certain methods of the derived class.
-This pattern is used because MonoGame uses it. In fact, the BlWindow3D
-class inherits from MonoGame's "Game" class. But instead of overriding
-certain "Game" class methods, you override BlWindow3D's Setup,
-FrameProc, and FrameDraw methods. Other "Game" class methods and events
-can still be overridden, if needed.
+To make a 3D window, you must derive a class from BlWindow3D and
+override the Setup, FrameProc, and FrameDraw methods. All code that
+accesses 3D resources must be in those methods, including code that
+creates and uses all Blotch3D and MonoGame objects.
 
-All model meshes, textures, fonts, etc. used by the 3D subsystem must be
-created and accessed from within the 3D thread because some subsystems,
-depending on the platform and subsystem, require it (like OpenGL, etc.).
-You should assume all Blotch3D and MonoGame objects must be created and
-accessed in that thread.
+When it comes time to open the 3D window, you instantiate the class and
+call its "Run" method *from the same thread*. The Run method will call
+the Setup, FrameProc, and FrameDraw methods, and not return until the
+window closes.
 
-Code to be executed in the context of the 3D thread must be in the
-Setup, FrameProc, and/or FrameDraw methods of the class derived from
-BlWindow3D, because those methods are automatically called by the 3D
-thread. A single-threaded application would have all its code in those
+This pattern is necessary because certain 3D subsystems (OpenGL,
+DirectX, etc.) require that 3D resources be accessed by a single thread
+for a given window. It is the pattern used by MonoGame. In fact, the
+BlWindow3D class inherits from MonoGame's "Game" class. But instead of
+overriding certain "Game" class methods, you override BlWindow3D's
+Setup, FrameProc, and FrameDraw methods. Other "Game" class methods and
+events can still be overridden, if needed.
+
+We will call the thread that instantiates the object, calls its Run
+method and thus the Setup, FrameProc, and FrameDraw methods, the "3D
+thread".
+
+A single-threaded application would have all its code in those
 overridden methods. For a multi-threaded application, other threads that
 need to do 3D things can queue a delegate to the 3D thread as described
 below. Note that this rule also applies to any code structure that may
 internally use other threads, as well. Do not use Parallel, async, etc.
 code structures that access 3D resources.
-
-Although it may apparently work in certain circumstances or on certain
-platforms, do not have the BlWindow3D-derived class constructor create
-or access any 3D resources, or have its instance initializers do it,
-because neither are executed in the context of the 3D thread.
 
 The Setup method is called by the 3D thread once at the beginning of
 instantiation. You might put time-consuming initialization of persistent
