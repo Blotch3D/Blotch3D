@@ -191,10 +191,8 @@ this:
     for now, so you can see any debug messages. You can change this to
     'Windows Application' later, if you like.
 
-7.  To create the 3D window, use the code that creates the 3D window
-    from an example. For example, for WPF you would copy the code from
-    the WPF example's "StartMonoGameWindow\_Click" method. You can put
-    this code wherever you want to create the 3D window.
+7.  Define a class and instantiate it according to the guidelines in the
+    [Development](#development) section.
 
 To create a project for another platform (Android, iOS, etc.), make sure
 you have the Visual Studio add-on that supports it (for example, for
