@@ -170,7 +170,7 @@ file and another example's source file to see what extra code must be
 added to implement the features it demonstrates \[TBD: the "full"
 example needs to be split to several simpler examples\].
 
-All the provided projects are configured to build for the Windows
+All the provided projects are configured to build for the Windows x64
 platform. See below for other platforms.
 
 To create a new project, you can just copy the basic example and rename
@@ -250,6 +250,9 @@ The above pattern is necessary because certain 3D subsystems (OpenGL,
 DirectX, etc.) generally require that 3D resources be accessed by a
 single thread. (There are some platform-specific exceptions, but
 MonoGame does not use them.)
+
+The Setup, FrameProc, and FrameDraw override methods are used as
+follows:
 
 The Setup method is called by the 3D thread once at the beginning of
 instantiation of the BlWindow3D-derived object. You might put
