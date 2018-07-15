@@ -7,22 +7,23 @@ using Blotch;
 namespace BlotchExample
 {
 	/// <summary>
-	/// The 3D window. This must inherit from BlWindow3D. See BlWindow3D for detils.
+	/// The 3D window. It must inherit from BlWindow3D.
+	/// You can create one of these for each 3D window you want.
 	/// </summary>
-	public class GameExample : BlWindow3D
+	public class Example : BlWindow3D
 	{
 		/// <summary>
-		/// This will be the torus model we draw in the window
+		/// This will be the torus model we draw in this window
 		/// </summary>
 		BlSprite Torus;
 
 		/// <summary>
-		/// This will be the font for the help menu we draw in the window
+		/// This will be the font for the help menu we draw in this window
 		/// </summary>
 		SpriteFont Font;
 
 		/// <summary>
-		/// The help menu text that we draw in the window
+		/// The help menu text that we draw in this window
 		/// </summary>
 		string Help = @"
 Camera controls:
@@ -37,19 +38,21 @@ Shift          - Fine control
 
 
 		/// <summary>
-		/// See BlWindow3D for details.
+		/// 'Setup' is automatically called one time near the beginning of the program.
+		/// You can load fonts, load models, and do other time consuming one-time things here.
+		/// You can also load content later if necessary (like in the Update or Draw methods), but try
+		/// to load them as few times as necessary because loading things takes time.
 		/// </summary>
 		protected override void Setup()
 		{
 			// We need to create one ContentManager object for each top-level content folder we'll be
-			// loading things from. Here "Content" is the most senior folder name of the content tree.
+			// loading things from. Here "Content" is the most senior folder name of a content tree.
 			// (Content [models, fonts, etc.] are added to the project with the Content utility. Double-click
-			// 'Content.mgcb' in solution explorer.). You can create multiple content managers if content
-			// is spread of diverse folders.
+			// 'Content.mgcb' in solution explorer.)
 			var MyContent = new ContentManager(Services, "Content");
 
 			// The font we will use to draw the menu on the screen.
-			// "Arial14" is the pathname to the font file
+			// "CourierNew12" is the pathname to the font file
 			Font = MyContent.Load<SpriteFont>("Arial14");
 
 			// The model of the toroid
@@ -58,11 +61,13 @@ Shift          - Fine control
 			// The sprite we draw in this window
 			Torus = new BlSprite(Graphics,"Torus");
 			Torus.LODs.Add(TorusModel);
-
 		}
 
 		/// <summary>
-		/// See BlWindow3D for detils.
+		/// 'FrameProc' is automatically called once per frame if at all possible. Here you put the things you definitely
+		/// need to do periodically, like sprite movement that needs to be smooth, critical timing operations,
+		/// etc. If you put that stuff in the FrameDraw() method, then behavior might be choppy because the FrameDraw()
+		/// method is not called periodically if there isn't enough CPU.
 		/// </summary>
 		/// <param name="timeInfo"></param>
 		protected override void FrameProc(GameTime timeInfo)
@@ -76,9 +81,10 @@ Shift          - Fine control
 			Graphics.DoDefaultGui();
 		}
 		/// <summary>
-		/// See BlWindow3D for detils.
+		/// 'FrameDraw' is automatically called once per frame if there is enough CPU. Otherwise its called more slowly.
+		/// This is where you would typically draw the scene.
 		/// </summary>
-		/// <param name="timeInfo">Provides a snapshot of timing values.</param>
+		/// <param name="gameTime">Provides a snapshot of timing values.</param>
 		protected override void FrameDraw(GameTime timeInfo)
 		{
 			//

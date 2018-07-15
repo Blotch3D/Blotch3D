@@ -22,7 +22,7 @@ namespace BlotchExample
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		Window3d Win = null;
+		Example Win = null;
 
 		public MainWindow()
 		{
@@ -33,7 +33,7 @@ namespace BlotchExample
 		{
 			new Thread(() =>
 			{
-				Win = new Window3d();
+				Win = new Example();
 				Console.WriteLine("Creating window {0}", win.Window.Handle);
 				Win.Run();
 				Win.Dispose();

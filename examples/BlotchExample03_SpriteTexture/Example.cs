@@ -4,12 +4,12 @@ using Microsoft.Xna.Framework.Content;
 using System;
 using Blotch;
 
-namespace BlotchExample17_WinForms
+namespace BlotchExample
 {
 	/// <summary>
 	/// The 3D window. This must inherit from BlWindow3D. See BlWindow3D for detils.
 	/// </summary>
-	public class GameExample : BlWindow3D
+	public class Example : BlWindow3D
 	{
 		/// <summary>
 		/// This will be the torus model we draw in the window
@@ -20,6 +20,11 @@ namespace BlotchExample17_WinForms
 		/// This will be the font for the help menu we draw in the window
 		/// </summary>
 		SpriteFont Font;
+
+		/// <summary>
+		/// Texture for the torus
+		/// </summary>
+		Texture2D MyTexture;
 
 		/// <summary>
 		/// The help menu text that we draw in the window
@@ -54,11 +59,19 @@ Shift          - Fine control
 
 			// The model of the toroid
 			var TorusModel = MyContent.Load<Model>("torus");
-
+						
 			// The sprite we draw in this window
 			Torus = new BlSprite(Graphics,"Torus");
 			Torus.LODs.Add(TorusModel);
 
+			// Load the image into a Texture2D
+			MyTexture = Graphics.LoadFromImageFile("image.png");
+
+			// Set the sprite's mipmap
+			Torus.Mipmap = new BlMipmap(Graphics, MyTexture);
+
+			// Note: The above texture has translucency. Doing translucency correctly takes considerable effort.
+			// In this example we don't worry about the oddities we get from not doing it correctly.
 		}
 
 		/// <summary>
@@ -87,7 +100,7 @@ Shift          - Fine control
 
 			Torus.Draw();
 
-			var MyMenuText = String.Format("{0}\nEye:{1}\nLookAt:{2}\nMaxDistance:{3}\nMinistance:{4}\nViewAngle:{5}\nModelLod:{6}\nModelApparentSize:{7}",
+			var MyMenuText = String.Format("{0}\nEye: {1}\nLookAt: {2}\nMaxDistance: {3}\nMinistance: {4}\nViewAngle: {5}\nModelLod: {6}\nModelApparentSize: {7}",
 				Help,
 				Graphics.Eye,
 				Graphics.LookAt,

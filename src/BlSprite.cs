@@ -489,6 +489,9 @@ namespace Blotch
 			if (BlDebug.ShowThreadWarnings && CreationThread != Thread.CurrentThread.ManagedThreadId)
 				BlDebug.Message(String.Format("BlGraphicsDeviceManager.Draw() was called by thread {0} instead of thread {1}", Thread.CurrentThread.ManagedThreadId, CreationThread));
 
+			if (worldMatrixIn == null)
+				worldMatrixIn = Matrix.Identity;
+
 			// save incoming parameters for anyone that needs them (like callbacks)
 			LastWorldMatrix = worldMatrixIn;
 			FlagsParameter = flagsIn;

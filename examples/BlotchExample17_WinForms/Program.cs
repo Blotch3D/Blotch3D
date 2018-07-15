@@ -21,7 +21,7 @@ namespace BlotchExample17_WinForms
 
 			new Thread(() =>
 			{
-				var Win = new GameExample();
+				var Win = new Example();
 				Win.Run();
 				Win.Dispose();
 			}).Start();

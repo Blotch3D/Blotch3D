@@ -1,8 +1,9 @@
 **Blotch3D User Manual**
 ------------------------
 
-With just a few lines of C\# code you can create real-time 3D apps for
-multiple platforms.
+With just a few lines of C\# code you can make a real-time 3D program
+that builds for Windows (all platforms), iOS, Android, MacOS, Linux,
+PS4, PSVita, Xbox One, and Switch.
 
 [Quick start](#quick-start)
 
@@ -113,6 +114,8 @@ lines of code that can...
 
 -   Build for many platforms (currently supports iOS, Android, MacOS,
     Linux, all Windows platforms, PS4, PSVita, Xbox One, and Switch).
+
+-   Implement fog
 
 Blotch3D sits on top of MonoGame. MonoGame is a widely used 3D library
 for C\#. It is free, fast, cross platform, actively developed by a large
