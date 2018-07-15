@@ -34,7 +34,7 @@ namespace BlotchExample
 			new Thread(() =>
 			{
 				Win = new Example();
-				Console.WriteLine("Creating window {0}", win.Window.Handle);
+				Console.WriteLine("Creating window {0}", Win.Window.Handle);
 				Win.Run();
 				Win.Dispose();
 			}).Start();
