@@ -68,11 +68,10 @@ lines of code that can...
     etc. at any 2D or 3D position, and make text follow a sprite in 2D
     or 3D.
 
--   Attach sprites to other sprites to create associated structures of
-    sprite trees as large as you want. Child sprite orientation and
-    position is relative to its parent sprite's orientation and
-    position, and can be changed dynamically. (Sprite trees are dynamic
-    scene graphs.)
+-   Attach sprites to other sprites to create 'sprite trees' as large as
+    you want. Child sprite orientation and position is relative to its
+    parent sprite's orientation and position, and can be changed
+    dynamically. (That is, sprite trees are dynamic scene graphs.)
 
 -   Override all steps in the drawing of each sprite.
 
@@ -106,7 +105,7 @@ lines of code that can...
 
 -   Create sprite models programmatically (custom vertices).
 
--   Use with WPF and WinForms.
+-   Use with WPF and WinForms, on Microsoft Windows.
 
 -   Access and override many window features and functions using the
     provided WinForms Form object of the window (Microsoft Windows
@@ -114,31 +113,32 @@ lines of code that can...
 
 -   Detect collisions between sprites.
 
--   Build for many platforms (currently supports iOS, Android, MacOS,
-    Linux, all Windows platforms, PS4, PSVita, Xbox One, and Switch).
-
 -   Implement fog
 
-Blotch3D sits on top of MonoGame. MonoGame is a widely used 3D library
-for C\#. It is free, fast, cross platform, actively developed by a large
-community, and it's used in many professional games. There is a plethora
-of MonoGame documentation, tutorials, examples, and discussions on line.
+-   Build for many platforms (currently supports all Windows platforms,
+    iOS, Android, MacOS, Linux, PS4, PSVita, Xbox One, and Switch).
+
+Blotch3D uses MonoGame. MonoGame is a widely used 3D library for C\#. It
+is free, fast, cross platform, actively developed by a large community,
+and it's used in many professional games. There is a plethora of
+MonoGame documentation, tutorials, examples, and discussions on line.
 All MonoGame features remain available. For example, custom shaders can
 be written to override the default shader.
 
 All reference documentation of Blotch3D (classes, methods, fields,
 properties, etc.) is available through Visual Studio IntelliSense. It
-explains how and why you use the feature and answers frequent questions.
-If you are using another IDE that doesn't support IntelliSense, just
-look at the comment directly in the Blotch3D source or the Blotch3D.xml
-file. If you aren't getting useful IntelliSense information for a
-keyword, it may be a MonoGame keyword rather than a Blotch3D keyword. In
-that case you need to look it up online.
+explains how and why you use the feature, answers frequent questions,
+and refers to associated concepts. If you are using another IDE that
+doesn't support IntelliSense, just look at the comment directly in the
+Blotch3D source or the Blotch3D.xml file. If you aren't getting useful
+IntelliSense information for a keyword, it may be a MonoGame keyword
+rather than a Blotch3D keyword. In that case you need to look it up
+online.
 
 See MonoGame.net for the official MonoGame documentation. When searching
 on-line for other MonoGame documentation and discussions, be sure to
 note the MonoGame version being discussed. Documentation of earlier
-version may not be compatible with the latest.
+versions may not be compatible with the latest.
 
 MonoGame fully implements Microsoft's (no longer supported) XNA 4
 engine, but for multiple platforms. It also implements features beyond
