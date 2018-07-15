@@ -42,9 +42,12 @@ like Android, etc.)
 
 3.  Open the Visual Studio solution file (Blotch3D.sln).
 
-4.  Build and run the example projects.
+4.  Set "Build/Configuration Manager/Active Solution" to 'x64' if it
+    isn't that already.
 
-5.  See IntelliSense comments for reference documentation.
+5.  Build and run the example projects.
+
+6.  See IntelliSense comments for reference documentation.
 
 Introduction
 ------------
