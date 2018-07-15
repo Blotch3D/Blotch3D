@@ -162,8 +162,8 @@ The provided Visual Studio solution file contains both the Blotch3D
 library project with source, and the example projects.
 
 "BlotchExample01\_Basic" is a bare-bones Blotch3D application, where
-GameExample.cs contains the example code. Other example projects also
-contain a GameExample.cs, which is similar to the one from the basic
+Example.cs contains the example code. Other example projects also
+contain an Example.cs, which is similar to the one from the basic
 example but with a few additions to it to demonstrate a certain feature.
 In fact, you can do a diff between the "BlotchExample01\_Basic" source
 file and another example's source file to see what extra code must be
