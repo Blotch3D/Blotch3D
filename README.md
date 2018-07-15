@@ -29,8 +29,8 @@ Terms](#a-short-glossary-of-3d-graphics-terms)
 Quick start
 -----------
 
-(This quick start section is for Windows. See below for other platforms,
-like Android, etc.)
+(This quick start section is for Microsoft Windows. See below for other
+platforms, like Android, etc.)
 
 1.  Get the installer for the latest release of MonoGame from
     <http://www.monogame.net/downloads/> and run it. (Do NOT get the
@@ -115,8 +115,9 @@ lines of code that can...
 
 -   Implement fog
 
--   Build for many platforms (currently supports all Windows platforms,
-    iOS, Android, MacOS, Linux, PS4, PSVita, Xbox One, and Switch).
+-   Build for many platforms (currently supports all Microsoft Windows
+    platforms, iOS, Android, MacOS, Linux, PS4, PSVita, Xbox One, and
+    Switch).
 
 Blotch3D uses MonoGame. MonoGame is a widely used 3D library for C\#. It
 is free, fast, cross platform, actively developed by a large community,
@@ -169,8 +170,8 @@ file and another example's source file to see what extra code must be
 added to implement the features it demonstrates \[TBD: the "full"
 example needs to be split to several simpler examples\].
 
-All the provided projects are configured to build for the Windows x64
-platform. See below for other platforms.
+All the provided projects are configured to build for the Microsoft
+Windows x64 platform. See below for other platforms.
 
 To create a new project, you can just copy the basic example and rename
 the project, or you can create the project from scratch like this:
@@ -178,9 +179,9 @@ the project, or you can create the project from scratch like this:
 1.  If you haven't already done it, install MonoGame as described in the
     [Quick start](#quick-start) section.
 
-2.  If you are building for a platform other than Windows, install the
-    Visual Studio add-ons, etc. for that platform. (For example, for
-    Android you'd need Xamarin for Android.)
+2.  If you are building for a platform other than Microsoft Windows,
+    install the Visual Studio add-ons, etc. for that platform. (For
+    example, for Android you'd need Xamarin for Android.)
 
 3.  Create a new project for a platform that is compatible with
     MonoGame.
@@ -189,9 +190,8 @@ the project, or you can create the project from scratch like this:
     something like \\Program Files
     (x86)\\MonoGame\\v3.0\\Assemblies\\Windows\\MonoGame.Framework.dll)
 
-5.  If the Blotch3DWindows project is not in the solution, add a
-    reference to the Blotch3DWindows assembly (like Blotch3D.dll on
-    Windows).
+5.  If the Blotch3D project is not in the solution, add a reference to
+    the Blotch3D assembly (like Blotch3D.dll on Microsoft Windows).
 
 6.  Follow the procedure in the '[Making 3D models](#making-3d-models)'
     section to add a content folder and the pipeline manager so that you
@@ -204,18 +204,18 @@ the project, or you can create the project from scratch like this:
 8.  To create a 3D window, follow the guidelines in the
     [Development](#development) section.
 
-The above process works for Windows and generally works for other
-platforms. But you may need to do a little research in setting up a
-MonoGame project for certain other platforms.
+The above process works for Microsoft Windows and generally works for
+other platforms. But you may need to do a little research in setting up
+a MonoGame project for certain other platforms.
 
-If you are copying the Blotch3D assembly (like Blotch3D.dll on Windows)
-to a project or packages folder so you don't have to include the source
-code of the library in your solution, be sure to also copy Blotch3D.xml
-so you still get the IntelliSense. You shouldn't have to copy any other
-binary file from the Blotch3D output folder if you've installed MonoGame
-on the destination machine. Otherwise you should copy the entire project
-output folder. For example, you'd probably want to copy everything in
-the output folder when you are distributing your app.
+If you are copying the Blotch3D assembly (like Blotch3D.dll on Microsoft
+Windows) to a project or packages folder so you don't have to include
+the source code of the library in your solution, be sure to also copy
+Blotch3D.xml so you still get the IntelliSense. You shouldn't have to
+copy any other binary file from the Blotch3D output folder if you've
+installed MonoGame on the destination machine. Otherwise you should copy
+the entire project output folder. For example, you'd probably want to
+copy everything in the output folder when you are distributing your app.
 
 Development
 -----------
