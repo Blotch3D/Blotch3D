@@ -1,9 +1,8 @@
 **Blotch3D User Manual**
 ------------------------
 
-With just a few lines of C\# code you can make a real-time 3D program
-that builds for Windows (all platforms), iOS, Android, MacOS, Linux,
-PS4, PSVita, Xbox One, and Switch.
+With just a few lines of C\# code you can implement real-time 3D on a
+variety of platforms
 
 [Quick start](#quick-start)
 
@@ -99,8 +98,6 @@ lines of code that can...
 -   Get a list of sprites under the mouse position, to implement mouse
     selection, tooltips, pop-up menus, etc.
 
--   Detect collisions between sprites.
-
 -   Implement levels-of-detail.
 
 -   Implement mipmaps.
@@ -114,6 +111,8 @@ lines of code that can...
 -   Access and override many window features and functions using the
     provided WinForms Form object of the window (Microsoft Windows
     only).
+
+-   Detect collisions between sprites.
 
 -   Build for many platforms (currently supports iOS, Android, MacOS,
     Linux, all Windows platforms, PS4, PSVita, Xbox One, and Switch).
