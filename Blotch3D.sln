@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27428.2002
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blotch3DWindows", "src\Blotch3DWindows.csproj", "{D408EC14-3978-4F7D-813F-91C29C6E6AF9}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Blotch3D", "src\Blotch3D.csproj", "{D408EC14-3978-4F7D-813F-91C29C6E6AF9}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlotchExample01_Basic", "examples\BlotchExample01_Basic\BlotchExample01_Basic.csproj", "{5B461D17-477D-4518-88BA-691247FBCB98}"
 EndProject

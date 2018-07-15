@@ -90,6 +90,9 @@ Shift          - Fine control
 			var coords = Torus.GetViewCoords();
 			if(coords!=null)
 			{
+				// This is how you would draw dynamic text. If the text is constant, you can do it faster by
+				// creating a texture of the text (see Graphics.TextToTexture) in Setup, and then drawing that texture here with
+				// Graphics.DrawTexture
 				Graphics.DrawText("This is the model", Font, (Vector2)coords);
 			}
 

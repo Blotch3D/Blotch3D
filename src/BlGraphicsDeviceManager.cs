@@ -834,13 +834,40 @@ namespace Blotch
 			return renderTarget;
 		}
 		/// <summary>
+		/// Draws a texture in the window
+		/// </summary>
+		/// <param name="texture">The texture to draw</param>
+		/// <param name="windowRect">The X and Y window location, in pixels</param>
+		/// <param name="color">Foreground color of the font</param>
+		public void DrawTexture(Texture2D texture, Rectangle windowRect, Microsoft.Xna.Framework.Color? color = null)
+		{
+			if (BlDebug.ShowThreadWarnings && CreationThread != Thread.CurrentThread.ManagedThreadId)
+				throw new Exception(String.Format("BlGraphicsDeviceManager.DrawText() was called by thread {0} instead of thread {1}", Thread.CurrentThread.ManagedThreadId, CreationThread));
+
+			if (MySpriteBatch == null)
+				MySpriteBatch = new SpriteBatch(GraphicsDevice);
+
+			if (color == null)
+				color = new Microsoft.Xna.Framework.Color(0xFFFFFFFF);
+
+			try
+			{
+				MySpriteBatch.Begin();
+				MySpriteBatch.Draw(texture, windowRect, (Microsoft.Xna.Framework.Color)color);
+			}
+			finally
+			{
+				MySpriteBatch.End();
+			}
+		}
+		/// <summary>
 		/// Draws text on the window
 		/// </summary>
 		/// <param name="text">The text to draw</param>
 		/// <param name="font">The font to use (typically created from SpriteFont content with Content.Load<SpriteFont>(...) )</param>
 		/// <param name="windowPos">The X and Y window location, in pixels</param>
 		/// <param name="color">Foreground color of the font</param>
-		public void DrawText(string text,SpriteFont font, Vector2 windowPos, Microsoft.Xna.Framework.Color? color = null)
+		public void DrawText(string text, SpriteFont font, Vector2 windowPos, Microsoft.Xna.Framework.Color? color = null)
 		{
 			if (BlDebug.ShowThreadWarnings && CreationThread != Thread.CurrentThread.ManagedThreadId)
 				throw new Exception(String.Format("BlGraphicsDeviceManager.DrawText() was called by thread {0} instead of thread {1}", Thread.CurrentThread.ManagedThreadId, CreationThread));

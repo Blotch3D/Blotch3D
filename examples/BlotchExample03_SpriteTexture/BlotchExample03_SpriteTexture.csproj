@@ -89,9 +89,9 @@
     <None Include="app.manifest" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\src\Blotch3DWindows.csproj">
+    <ProjectReference Include="..\..\src\Blotch3D.csproj">
       <Project>{d408ec14-3978-4f7d-813f-91c29c6e6af9}</Project>
-      <Name>Blotch3DWindows</Name>
+      <Name>Blotch3D</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
