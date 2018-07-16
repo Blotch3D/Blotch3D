@@ -1,8 +1,8 @@
 **Blotch3D User Manual**
 ------------------------
 
-With just a few lines of C\# code you can implement real-time 3D on a
-variety of platforms
+With just a few lines of C\# code you can implement real-time 3D
+graphics on a variety of desktop, mobile, and game console platforms.
 
 [Quick start](#quick-start)
 
@@ -39,30 +39,28 @@ Quick start
 3.  Open the Visual Studio solution file (Blotch3D.sln).
 
 4.  Build and run the example projects. (For other platforms, you'll
-    need the appropriate Visual Studio add-on, and you will need to
+    need the appropriate Visual Studio add-on and you will need to
     create a separate project for that platform.)
 
 5.  Use IntelliSense to see the reference documentation, or view the
-    Doxygen output in "Blotch3D\_Reference\_Manual.pdf".
+    Doxygen output of it in "Blotch3D\_Reference\_Manual.pdf".
 
 Introduction
 ------------
 
-Blotch3D is a C\# library that vastly simplifies many of the fundamental
-tasks in development of real-time 3D applications and games.
+Blotch3D is a C\# library that vastly simplifies many of the tasks in
+developing 3D applications and games.
 
 Blotch3D was written because I couldn't find a C\# 3D library that was
-both real-time and ultra-easy to use. (SharpDX, OpenTK, UnReal, Unity,
-etc. are real-time but not ultra-simple, WPF 3D is fairly easy to use
-but definitely NOT real-time).
+anywhere near both hard real-time and ultra-easy to use.
 
 Examples are provided that show how with just a few lines of code you
 can...
 
 -   Load standard file types of 3D models as "sprites" and display and
-    move them in 3D with real-time performance.
+    move thousands of them in 3D at high frame rates.
 
--   Set a model's material, texture, and how it responds to lighting.
+-   Set a sprite's material, texture, and lighting response.
 
 -   Load textures from standard image files.
 
@@ -73,7 +71,7 @@ can...
 -   Attach sprites to other sprites to create 'sprite trees' as large as
     you want. Child sprite orientation and position is relative to its
     parent sprite's orientation and position, and can be changed
-    dynamically. (That is, sprite trees are dynamic scene graphs.)
+    dynamically (i.e. the sprite trees are dynamic scene graphs.)
 
 -   Override all steps in the drawing of each sprite.
 
@@ -130,14 +128,7 @@ be written to override the default shader.
 
 All reference documentation of Blotch3D (classes, methods, fields,
 properties, etc.) is available through Visual Studio IntelliSense, and
-in "Blotch3D\_Reference\_Manual.pdf". The reference documentation
-explains how and why you use the feature, answers frequent questions,
-and mentions associated concepts. If you are using another IDE that
-doesn't support IntelliSense, just look at the comment directly in the
-Blotch3D source or the Blotch3D.xml file. If you aren't getting useful
-IntelliSense information for a keyword, it may be a MonoGame keyword
-rather than a Blotch3D keyword. In that case you need to look it up
-online.
+in "Blotch3D\_Reference\_Manual.pdf".
 
 See MonoGame.net for the official MonoGame documentation. When searching
 on-line for other MonoGame documentation and discussions, be sure to

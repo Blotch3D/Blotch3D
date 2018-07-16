@@ -41,7 +41,7 @@ namespace Blotch
 
 		/// <summary>
 		/// The Flags field can be used by callbacks of Draw (PreDraw, PreSubspriteDraw, PreLocalDraw, and PreMeshDraw) to
-		/// indicate various user attributes of the sprite. Also, GetRayIntersections aborts if the bitwise AND of this value
+		/// indicate various user attributes of the sprite. Also, GetRayIntersections won't hit if the bitwise AND of this value
 		/// and the flags argument passed to it is zero.
 		/// </summary>
 		public ulong Flags = 0xFFFFFFFFFFFFFFFF;
@@ -225,6 +225,40 @@ namespace Blotch
 		/// If a specular color is specified, this is the specular power.
 		/// </summary>
 		public float SpecularPower = 8;
+
+		/// <summary>
+		/// See FrameProc
+		/// </summary>
+		/// <param name="sprite"></param>
+		public delegate void FrameProcType(BlSprite sprite);
+
+		/// <summary>
+		/// Called once per frame just after BlWindow3D.FrameProc is called. You can update a sprite
+		/// here, or update it in BlWindow3D.FrameProc. Doing it here makes the code more encapsulated.
+		/// </summary>
+		public FrameProcType FrameProc
+		{
+			get
+			{
+				return _FrameProc;
+			}
+			set
+			{
+				if(Graphics.Window.FrameProcSprites.Contains(this))
+				{
+					Graphics.Window.FrameProcSprites.Remove(this);
+				}
+				_FrameProc = value;
+				if (_FrameProc != null)
+				{
+					Graphics.Window.FrameProcSprites.Add(this);
+				}
+			}
+		}
+		/// <summary>
+		/// Internal use only. Do not alter.
+		/// </summary>
+		public FrameProcType _FrameProc = null;
 
 		/// <summary>
 		/// Return code from PreDraw callback. This tells Draw what to do next.
@@ -454,9 +488,9 @@ namespace Blotch
 		/// <summary>
 		/// Returns a list of subsprites that the ray hit (i.e. those that were within their radius of the ray)
 		/// </summary>
-		/// <param name="ray"></param>
-		/// <param name="flags"></param>
-		/// <param name="sprites"></param>
+		/// <param name="ray">The ray we are searching</param>
+		/// <param name="flags">Check for a hit only if flags & BlSprite.Flags is non-zero</param>
+		/// <param name="sprites">An existing sprite list to load. If null, then this allocates a new sprite list.</param>
 		/// <returns></returns>
 		public List<BlSprite> GetRayIntersections(Ray ray, ulong flags=0xFFFFFFFFFFFFFFFF,List<BlSprite> sprites=null)
 		{
