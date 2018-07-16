@@ -29,9 +29,6 @@ Terms](#a-short-glossary-of-3d-graphics-terms)
 Quick start
 -----------
 
-(This quick start section is for Microsoft Windows. See below for other
-platforms, like Android, etc.)
-
 1.  Get the installer for the latest release of MonoGame from
     <http://www.monogame.net/downloads/> and run it. (Do NOT get the
     current development version nor the NuGet package.)
@@ -41,12 +38,12 @@ platforms, like Android, etc.)
 
 3.  Open the Visual Studio solution file (Blotch3D.sln).
 
-4.  Set "Build/Configuration Manager/Active Solution" to 'x64' if it
-    isn't that already.
+4.  Build and run the example projects. (For other platforms, you'll
+    need the appropriate Visual Studio add-on, and you will need to
+    create a separate project for that platform.)
 
-5.  Build and run the example projects.
-
-6.  See IntelliSense comments for reference documentation.
+5.  Use IntelliSense to see the reference documentation, or view the
+    Doxygen output in "Blotch3D\_Reference\_Manual.pdf".
 
 Introduction
 ------------
@@ -127,7 +124,8 @@ All MonoGame features remain available. For example, custom shaders can
 be written to override the default shader.
 
 All reference documentation of Blotch3D (classes, methods, fields,
-properties, etc.) is available through Visual Studio IntelliSense. It
+properties, etc.) is available through Visual Studio IntelliSense, and
+in "Blotch3D\_Reference\_Manual.pdf". The reference documentation
 explains how and why you use the feature, answers frequent questions,
 and mentions associated concepts. If you are using another IDE that
 doesn't support IntelliSense, just look at the comment directly in the
