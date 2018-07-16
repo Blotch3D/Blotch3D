@@ -49,10 +49,15 @@ Introduction
 ------------
 
 Blotch3D is a C\# library that vastly simplifies many of the fundamental
-tasks in development of 3D applications and games.
+tasks in development of real-time 3D applications and games.
 
-Examples are provided that show how you can write an app with just a few
-lines of code that can...
+Blotch3D was written because I couldn't find a C\# 3D library that was
+both real-time and ultra-easy to use. (SharpDX, OpenTK, UnReal, Unity,
+etc. are real-time but not ultra-simple, WPF 3D is fairly easy to use
+but definitely NOT real-time).
+
+Examples are provided that show how with just a few lines of code you
+can...
 
 -   Load standard file types of 3D models as "sprites" and display and
     move them in 3D with real-time performance.

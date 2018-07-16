@@ -233,8 +233,8 @@ Shift          - Fine control
 				Position = new Vector2(600, 100),
 				OnMouseOver = (ctrl) => 
 				{
-					if(Mouse.GetState().LeftButton == ButtonState.Pressed)
-						Console.WriteLine("GUI button down");
+					if(ctrl.PrevMouseState.LeftButton == ButtonState.Released && Mouse.GetState().LeftButton == ButtonState.Pressed)
+						Console.WriteLine("GUI button was clicked");
 				}
 			};
 
