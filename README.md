@@ -119,17 +119,17 @@ lines of code that can...
     platforms, iOS, Android, MacOS, Linux, PS4, PSVita, Xbox One, and
     Switch).
 
-Blotch3D uses MonoGame. MonoGame is a widely used 3D library for C\#. It
-is free, fast, cross platform, actively developed by a large community,
-and it's used in many professional games. There is a plethora of
-MonoGame documentation, tutorials, examples, and discussions on line.
+Blotch3D sits on top of MonoGame. MonoGame is a widely used 3D library
+for C\#. It is free, fast, cross platform, actively developed by a large
+community, and it's used in many professional games. There is a plethora
+of MonoGame documentation, tutorials, examples, and discussions on line.
 All MonoGame features remain available. For example, custom shaders can
 be written to override the default shader.
 
 All reference documentation of Blotch3D (classes, methods, fields,
 properties, etc.) is available through Visual Studio IntelliSense. It
 explains how and why you use the feature, answers frequent questions,
-and refers to associated concepts. If you are using another IDE that
+and mentions associated concepts. If you are using another IDE that
 doesn't support IntelliSense, just look at the comment directly in the
 Blotch3D source or the Blotch3D.xml file. If you aren't getting useful
 IntelliSense information for a keyword, it may be a MonoGame keyword
