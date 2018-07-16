@@ -93,7 +93,7 @@ Shift          - Fine control
 
 			Torus.Draw();
 
-			var MyMenuText = String.Format("{0}\nEye:{1}\nLookAt:{2}\nMaxDistance:{3}\nMinistance:{4}\nViewAngle:{5}\nModelLod:{6}\nModelApparentSize:{7}",
+			var MyMenuText = String.Format("{0}\nEye: {1}\nLookAt: {2}\nMaxDistance: {3}\nMinistance: {4}\nViewAngle: {5}\nModelLod: {6}\nModelApparentSize: {7}",
 				Help,
 				Graphics.Eye,
 				Graphics.LookAt,

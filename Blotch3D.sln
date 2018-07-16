@@ -13,7 +13,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlotchExample16_WPF", "exam
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlotchExample17_WinForms", "examples\BlotchExample17_WinForms\BlotchExample17_WinForms.csproj", "{74CB29F2-F8E7-46EA-A4EC-1CEF9C6D16CB}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlotchExample01_SpriteMovement", "examples\BlotchExample02_SpriteMovement\BlotchExample01_SpriteMovement.csproj", "{F566FC85-F498-4061-8F3C-55FCEC1C7609}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlotchExample02_SpriteMovement", "examples\BlotchExample02_SpriteMovement\BlotchExample02_SpriteMovement.csproj", "{F566FC85-F498-4061-8F3C-55FCEC1C7609}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlotchExample03_SpriteTexture", "examples\BlotchExample03_SpriteTexture\BlotchExample03_SpriteTexture.csproj", "{35679471-BD0C-41E8-AA59-FBB8C53CB1CB}"
 EndProject

@@ -92,7 +92,11 @@ Shift          - Fine control
 			{
 				// This is how you would draw dynamic text. If the text is constant, you can do it faster by
 				// creating a texture of the text (see Graphics.TextToTexture) in Setup, and then drawing that texture here with
-				// Graphics.DrawTexture
+				// Graphics.DrawTexture.
+				// (You can also make text for the sprite if you add a subsprite that is a 'plane' model, has a texture that
+				// is text, has billboard enabled, and maybe has constant size enabled. In that case, the text can be
+				// occluded by closer sprites unless depth testing is disabled for that sprite, and the text size will vary
+				// with the window size. But that's  more complicated.)
 				Graphics.DrawText("This is the model", Font, (Vector2)coords);
 			}
 

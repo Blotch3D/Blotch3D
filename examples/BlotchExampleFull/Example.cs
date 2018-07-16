@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Content;
 using System;
 using System.Collections.Generic;
 using Blotch;
+using Microsoft.Xna.Framework.Input;
 
 namespace BlotchExample
 {
@@ -228,9 +229,13 @@ Shift          - Fine control
 
 			var guiCtrl = new BlGuiControl(this)
 			{
-				Texture = Graphics.TextToTexture("GUI button", FontArial14),
+				Texture = Graphics.TextToTexture("Click me for a console message", FontArial14),
 				Position = new Vector2(600, 100),
-				OnMouseOver = (ctrl) => { Console.Write("."); }
+				OnMouseOver = (ctrl) => 
+				{
+					if(Mouse.GetState().LeftButton == ButtonState.Pressed)
+						Console.WriteLine("GUI button down");
+				}
 			};
 
 
@@ -315,7 +320,7 @@ Shift          - Fine control
 			TopHudSprite.Draw();
 			Graphics.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 
-			var MenuText = String.Format("{0}\nEye:{1}\nLookAt:{2}\nMaxDistance:{3}\nMinistance:{4}\nZoom:{5}\nModelLod:{6}\nModelApparentSize:{7}",
+			var MyMenuText = String.Format("{0}\nEye: {1}\nLookAt: {2}\nMaxDistance: {3}\nMinistance: {4}\nViewAngle: {5}\nModelLod: {6}\nModelApparentSize: {7}",
 				Help,
 				Graphics.Eye,
 				Graphics.LookAt,
@@ -328,7 +333,7 @@ Shift          - Fine control
 
 			try
 			{
-				Graphics.DrawText(MenuText, FontArial14, new Vector2(50, 50));
+				Graphics.DrawText(MyMenuText, FontArial14, new Vector2(50, 50));
 			}
 			catch (Exception e)
 			{
