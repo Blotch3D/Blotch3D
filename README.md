@@ -408,7 +408,8 @@ Finally, we might also want to define how to create a new Y for each
 vertex according to its original X and original Y. So, the equations for
 both the new X and new Y are:
 
-X' = aX + bY\
+X' = aX + bY
+
 Y' = cX + dY
 
 (Remember, the idea is to apply this to every vertex.)
@@ -416,7 +417,8 @@ Y' = cX + dY
 By convention we might write the four matrix elements (a, b, c, and d)
 in a 2x2 matrix, like this:
 
-a b\
+a b
+
 c d
 
 This should all be very easy to understand.
@@ -428,12 +430,14 @@ any type of *transform* in the position and orientation of that model.
 For example, if we apply the following matrix to each of the model's
 vertices:
 
-1 0\
+1 0
+
 0 1
 
 ...then the vertices are unchanged, because...
 
-X' = 1X + 0Y\
+X' = 1X + 0Y
+
 Y' = 0X + 1Y
 
 ...sets X' to X and Y' to Y.
@@ -445,31 +449,36 @@ We can create matrices that scale, shear, and even rotate points. To
 make a model three times as large (relative to the origin), use the
 matrix:
 
-3 0\
+3 0
+
 0 3
 
 To scale only X by 3 (stretch a model in the X direction about the
 origin), then use the matrix:
 
-3 0\
+3 0
+
 0 1
 
 The following matrix flips (mirrors) the model vertically about the
 origin:
 
-1 0\
+1 0
+
 0 -1
 
 Below is a matrix to rotate a model counterclockwise by 90 degrees about
 the origin:
 
-0 -1\
+0 -1
+
 1 0
 
 Here is a matrix that rotates a model counterclockwise by 45 degrees
 about the origin:
 
-0.707 -0.707\
+0.707 -0.707
+
 0.707 0. 707
 
 Note that '0.707' is the sine of 45 degrees.
@@ -493,27 +502,36 @@ the Z dimension. So, the final matrix size in 3D graphics is 4x4.
 
 Specifically:
 
-X' = aX + bY + cZ + d\
-Y' = eX + fY + gZ + h\
-Z' = iX + jY + kZ + l\
+X' = aX + bY + cZ + d
+
+Y' = eX + fY + gZ + h
+
+Z' = iX + jY + kZ + l
+
 W = mX + nY + oZ + p
 
 (Consider the W as unused, for now.)
 
 Which can be notated as...
 
-a b c d\
-e f g h\
-I j k l\
+a b c d
+
+e f g h
+
+I j k l
+
 m n o p
 
 Notice that the d, h, and l are the translation vector.
 
 The Matrix class in MonoGame uses the following field names:
 
-M11 M12 M13 M14\
-M21 M22 M23 M24\
-M31 M32 M33 M34\
+M11 M12 M13 M14
+
+M21 M22 M23 M24
+
+M31 M32 M33 M34
+
 M41 M42 M43 M44
 
 Besides the ability to multiply entire matrices (as mentioned at the
