@@ -28,8 +28,8 @@ namespace Blotch
 	/// A BlSprite is a single 3D object. Each sprite can also hold any number of subsprites, so you can make
 	/// a sprite tree (a scene graph). In that case the child sprites 'follow' the orientation and position of the parent
 	/// sprite. That is, they exist in the coordinate system of the parent sprite. The location and orientation of a
-	/// sprite in its parent's coordinate system is defined by the sprite's Matrix member. Subsprites, #LODs, and #Mipmaps are NOT disposed
-	/// when the sprite is disposed, so you can assign the same one to multiple sprites. Also see #Matrix for more information.
+	/// sprite in its parent's coordinate system is defined by the sprite's #Matrix member. Subsprites, #LODs, and #Mipmap are NOT disposed
+	/// when the sprite is disposed, so you can assign the same one to multiple sprites.
 	/// </summary>
 	public class BlSprite : Dictionary<string, BlSprite> , IComparable, IDisposable
 	{
@@ -414,7 +414,8 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// Add a subsprite.
+		/// Add a subsprite. (A BlSprite inherits from a Dictionary of BlSprites. This wrapper method to the dictionary's Add
+		/// method simply adds the sprite where the key is the sprite's #Name.)
 		/// </summary>
 		/// <param name="s"></param>
 		public void Add(BlSprite s)
