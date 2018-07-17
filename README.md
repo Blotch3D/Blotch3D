@@ -1,8 +1,7 @@
 **Blotch3D User Manual**
 ------------------------
 
-With just a few lines of C\# code you can implement real-time 3D
-graphics on a variety of desktop, mobile, and game console platforms.
+Create real-time 3D graphics with just a few lines of C\# code.
 
 [Quick start](#quick-start)
 
@@ -51,14 +50,11 @@ Introduction
 Blotch3D is a C\# library that vastly simplifies many of the tasks in
 developing 3D applications and games.
 
-Blotch3D was written because I couldn't find a C\# 3D library that was
-anywhere near both hard real-time and ultra-easy to use.
-
 Examples are provided that show how with just a few lines of code you
 can...
 
--   Load standard file types of 3D models as "sprites" and display and
-    move thousands of them in 3D at high frame rates.
+-   Load standard 3D model file types as "sprites", and display and move
+    thousands of them in 3D at high frame rates.
 
 -   Set a sprite's material, texture, and lighting response.
 
@@ -221,11 +217,11 @@ override the Setup, FrameProc, and FrameDraw methods.
 
 When it comes time to open the 3D window, you instantiate that class and
 call its "Run" method *from the same thread that instantiated it*. The
-Run method will call the Setup, FrameProc, and FrameDraw methods, and
-not return until the window closes.
+Run method will call the Setup, FrameProc, and FrameDraw methods when
+appropriate (explained below), and not return until the window closes.
 
-We will call the thread that instantiates the BlWindow3D-derived class,
-calls the Run method, etc., the "3D thread".
+The thread that instantiates the BlWindow3D-derived class, calls the Run
+method, etc., we will call the "3D thread".
 
 All code that accesses 3D resources must be done in the 3D thread,
 including code that creates and uses all Blotch3D and MonoGame objects.
@@ -233,19 +229,19 @@ Note that this rule also applies to any code structure that may
 internally use other threads, as well. Do not use Parallel, async, etc.
 code structures that access 3D resources.
 
-This pattern is also used by MonoGame. In fact, the BlWindow3D class
-inherits from MonoGame's "Game" class. But instead of overriding certain
-"Game" class methods, you override BlWindow3D's Setup, FrameProc, and
-FrameDraw methods. Other "Game" class methods and events can still be
-overridden, if needed.
+This pattern and these rules are also used by MonoGame. In fact, the
+BlWindow3D class inherits from MonoGame's "Game" class. But instead of
+overriding certain "Game" class methods, you override BlWindow3D's
+Setup, FrameProc, and FrameDraw methods. Other "Game" class methods and
+events can still be overridden, if needed.
 
-The above pattern is necessary because certain 3D subsystems (OpenGL,
-DirectX, etc.) generally require that 3D resources be accessed by a
-single thread. (There are some platform-specific exceptions, but
-MonoGame does not use them.)
+All this is necessary because certain 3D subsystems (OpenGL, DirectX,
+etc.) generally require that 3D resources be accessed by a single
+thread. (There are some platform-specific exceptions, but MonoGame does
+not use them.)
 
-The Setup, FrameProc, and FrameDraw override methods are used as
-follows:
+The Setup, FrameProc, and FrameDraw override methods are called by the
+3D thread as follows:
 
 The Setup method is called by the 3D thread once at the beginning of
 instantiation of the BlWindow3D-derived object. You might put

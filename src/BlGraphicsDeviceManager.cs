@@ -303,7 +303,7 @@ namespace Blotch
 		/// </summary>
 		public float fogEnd = 10;
 
-		BlWindow3D Window;
+		public BlWindow3D Window;
 
 		public SpriteBatch MySpriteBatch=null;
 

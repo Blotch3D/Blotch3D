@@ -62,6 +62,13 @@ namespace Blotch
 		public BlGraphicsDeviceManager Graphics;
 
 		/// <summary>
+		/// Internal use only. Do not write.
+		/// Holds the sprites that currently have a BlSprite.FrameProc defined.
+		/// </summary>
+		public List<BlSprite> FrameProcSprites = new List<BlSprite>();
+
+
+		/// <summary>
 		/// The GUI controls for this window. See BlGuiControl for details.
 		/// </summary>
 		public ConcurrentDictionary<string, BlGuiControl> GuiControls = new ConcurrentDictionary<string, BlGuiControl>();
@@ -204,10 +211,23 @@ namespace Blotch
 
 			ServiceGuiControls();
 
+			ExecutePendingCommands();
+
+			ExecuteSpriteFrameProcs();
+		}
+		void ExecuteSpriteFrameProcs()
+		{
+			foreach (var s in FrameProcSprites)
+			{
+				s.FrameProc(s);
+			}
+		}
+		void ExecutePendingCommands()
+		{
 			// execute any pending commands, in order.
 			while (Queue.TryTake(out BlockingCommand bcmd, 0))
 			{
-				if(bcmd.command != null)
+				if (bcmd.command != null)
 				{
 					bcmd.command(this);
 					if (bcmd.evnt != null)
