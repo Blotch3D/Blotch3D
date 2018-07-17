@@ -40,7 +40,7 @@ namespace Blotch
 		public double ApparentSize { get; private set; }
 
 		/// <summary>
-		/// The Flags field can be used by callbacks of #Draw (#PreDraw, #PreSubspriteDraw, #PreLocalDraw, and #PreMeshDraw) to
+		/// The Flags field can be used by callbacks of #Draw (#PreDraw, #PreSubsprites, #PreLocal, and #PreMeshDraw) to
 		/// indicate various user attributes of the sprite. Also, #GetRayIntersections won't hit if the bitwise AND of this value
 		/// and the flags argument passed to it is zero.
 		/// </summary>
@@ -52,7 +52,7 @@ namespace Blotch
 		/// (VertexPositionNormalTexture[]), or null (indicating nothing should be drawn). Elements with lower indices are
 		/// higher LODs. So index 0 is the highest, index 1 is second highest, etc. LOD decreases (the index increases) for
 		/// every halving of the object's apparent size. You can adjust how close the LODs must be to the camera with
-		/// #LodScale. When the calculated LOD index (see #LodCurrentIndex) is higher than the last element,
+		/// #LodScale. When the calculated LOD index is higher than the last element,
 		/// then the last element is used. So the simplest way to use this is to add a single element of the object you want
 		/// drawn. You can also add multiple references of the same object so multiple consecutive LODs draw the same object.
 		/// You can also set an element to null so it doesn't draw anything, which is typically the last element.
@@ -172,7 +172,7 @@ namespace Blotch
 		/// <summary>
 		/// The #Draw method takes an incoming 'world' matrix parameter which is the coordinate system of its parent. #AbsoluteMatrix
 		/// is that incoming world matrix parameter times the #Matrix member and altered according to Billboarding and #ConstSize.
-		/// This is not read-only because a callback (see #PreDraw, #PreSubspritesDraw, #PreLocalDraw, and #PreMeshDraw) may need to
+		/// This is not read-only because a callback (see #PreDraw, #PreSubsprites, #PreLocal, and #PreMeshDraw) may need to
 		/// change it from within the #Draw method. This is the matrix that is also passed to subsprites as their 'world' matrix.
 		/// </summary>
 		public Matrix AbsoluteMatrix = Matrix.Identity;
@@ -185,13 +185,13 @@ namespace Blotch
 
 		/// <summary>
 		/// Current incoming graphics parameter to the #Draw method. Typically this would be of interest to a callback function (see
-		/// #PreDraw, #PreSubspritesDraw, #PreLocalDraw, and #PreMeshDraw).
+		/// #PreDraw, #PreSubsprites, #PreLocal, and #PreMeshDraw).
 		/// </summary>
 		public BlGraphicsDeviceManager Graphics = null;
 
 		/// <summary>
 		/// Current incoming world matrix parameter to the #Draw method. Typically this would be of interest to a callback function (see
-		/// #PreDraw, #PreSubspritesDraw, #PreLocalDraw, and #PreMeshDraw).
+		/// #PreDraw, #PreSubsprites, #PreLocal, and #PreMeshDraw).
 		/// </summary>
 		public Matrix? LastWorldMatrix = null;
 
@@ -202,7 +202,7 @@ namespace Blotch
 
 		/// <summary>
 		/// Current incoming flags parameter to the Draw method. Typically this would be of interest to a callback function (see
-		/// #PreDraw, #PreSubspritesDraw, #PreLocalDraw, and #PreMeshDraw).
+		/// #PreDraw, #PreSubsprites, #PreLocal, and #PreMeshDraw).
 		/// </summary>
 		public ulong FlagsParameter = 0;
 

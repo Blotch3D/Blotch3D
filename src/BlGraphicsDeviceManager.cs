@@ -80,7 +80,7 @@ namespace Blotch
 	{
 		/// <summary>
 		/// This is the view matrix. Normally you would use the higher-level functions
-		/// #Eye, #LookAt, #Up, #CameraToSprite, and #DoDefaultGui intead of changing this directly.
+		/// #Eye, #LookAt, #CameraUp, #SetCameraToSprite, and #DoDefaultGui intead of changing this directly.
 		/// </summary>
 		public Microsoft.Xna.Framework.Matrix View;
 
@@ -919,10 +919,10 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// This is automatically called once at the beginning of your #FrameDraw method. It calculates the latest #View and
+		/// This is automatically called once at the beginning of your BlWindow3D#FrameDraw method. It calculates the latest #View and
 		/// #Projection settings according to the current camera specifications (#Zoom, #Aspect, #Eye, #LookAt, etc.), and
 		/// if firstCallInDraw is true it also may sleep in order to obey FramePeriod. It must also be called explicitly after
-		/// any changes to the camera settings made later in the #FrameDraw method. Only in the first call
+		/// any changes to the camera settings made later in the BlWindow3D#FrameDraw method. Only in the first call
 		/// should firstCallInDraw be true, and in any subsequent calls it should be false.
 		/// </summary>
 		/// <param name="firstCallInDraw">True indicates this method should also sleep in order to obey FramePeriod.</param>
