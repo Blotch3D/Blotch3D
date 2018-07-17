@@ -26,10 +26,9 @@ namespace Blotch
 {
 	/// <summary>
 	/// This static class holds the debug flags.
-	/// Initial flag values are often enabled for Debug builds and disabled for Release builds.
+	/// Many flags are initialized according to whether its a Debug build or Release build.
 	/// Some flags enable exceptions for probable errors, and many flags cause warning messages to be sent
-	/// to the console window, if it exist. For this reason you should test your app as a
-	/// debug build console app.
+	/// to the console window, if it exist. For this reason you should first test your app as a debug build console app.
 	/// </summary>
 	public static class BlDebug
 	{
@@ -40,7 +39,7 @@ namespace Blotch
 
 		/// <summary>
 		/// If true, this causes warnings related to thread issues to appear. For example, it will cause warnings to appear when
-		/// certain Blotch objects are not disposed by the same thread that created them. Default is true
+		/// certain Blotch3D objects are not disposed by the same thread that created them. Default is true
 		/// for debug, false for release build. 
 		/// </summary>
 		public static bool ShowThreadWarnings = true;
@@ -53,7 +52,7 @@ namespace Blotch
 #endif
 		}
 		/// <summary>
-		/// Display a debug message, and save it to the logfile if writeToLogFile is true.
+		/// Display a debug message and save it to the logfile if writeToLogFile is true.
 		/// Call it like this, for example:
 		/// if (Debug.drawables) Debug.Message(String.Format("Drawables: {0}", runModeDrawables));
 		/// </summary>

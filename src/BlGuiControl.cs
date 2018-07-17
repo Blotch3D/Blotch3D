@@ -12,12 +12,12 @@ namespace Blotch
 {
 	/// <summary>
 	/// A 2D GUI control. To create a GUI control: instantiate one of these, set its initial Texture (remember to create it in the
-	/// 3D thread context), window position, and delegate, and then add it to BlWindow3D.GuiControls. (Any member can be
+	/// 3D thread context), window position, and delegate, and then add it to BlWindow3D#GuiControls. (Any member can be
 	/// dynamically changed.) The texture will be
 	/// displayed, and then each frame the mouse is over it the delegate will be called.  The delegate typically would examine the
-	/// current mouse state (Mouse.GetState()) and the PrevMouseState member to detect button changes, etc. and perform an action.
-	/// The delegate is called in the context of the window's 3D thread after the FrameProc method. You can use Graphics.TextToTexture
-	/// to create a textual textures, or just load a texture from a content file. Remember
+	/// current mouse state (Mouse.GetState()) and the #PrevMouseState member to detect button changes, etc. and perform an action.
+	/// The delegate is called in the context of the window's 3D thread after the BlWindow3D#FrameProc method. You can use
+	/// BlGraphicsDeviceManager#TextToTexture to create a textual textures, or just load a texture from a content file. Remember
 	/// to Dispose textures when you are done with them.
 	/// </summary>
 	public class BlGuiControl
@@ -39,7 +39,7 @@ namespace Blotch
 		public delegate void OnMouseChangeDelegate(BlGuiControl guiCtrl);
 		/// <summary>
 		/// The delegate to call each frame (from the 3D thread) when the mouse is over the control. A typical delegate would make a decision
-		/// according to guiCtrl.PrevMouseState and the current mouse state (Mouse.GetState).
+		/// according to #PrevMouseState and the current mouse state (Mouse.GetState).
 		/// </summary>
 		public OnMouseChangeDelegate OnMouseOver = null;
 

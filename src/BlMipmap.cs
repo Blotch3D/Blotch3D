@@ -26,7 +26,7 @@ namespace Blotch
 {
 	/// <summary>
 	/// A mipmap of textures for a given BlSprite. You could load this from an image file and then assign
-	/// it to the Mipmap member of a BlSprite. Note that this is a software mipmap (i.e. it isn't implemented
+	/// it to a BlSprite#Mipmap. Note that this is a software mipmap (i.e. it isn't implemented
 	/// in the 3D hardware). That is, only one resolution texture is used at time.
 	/// </summary>
 	public class BlMipmap: List<Texture2D>,IDisposable
@@ -37,7 +37,7 @@ namespace Blotch
 		/// Creates the mipmaps.
 		/// </summary>
 		/// <param name="graphics">Graphics device (typically the one owned by your BlWindow3D)</param>
-		/// <param name="tex">Texture from which to create mipmaps, typically gotten from BlGraphics.LoadFromImageFile.</param>
+		/// <param name="tex">Texture from which to create mipmaps, typically gotten from BlGraphics#LoadFromImageFile.</param>
 		/// <param name="numMaps">Maximum number of mipmaps to create (none are created with lower resolution than 16x16)</param>
 		/// <param name="reverseX">Whether to reverse pixels horizontally</param>
 		/// <param name="reverseY">Whether to reverse pixels vertically</param>

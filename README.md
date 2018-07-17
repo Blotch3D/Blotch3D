@@ -111,6 +111,9 @@ can...
 
 -   Implement fog
 
+-   Define ambient lighting, and up to three point-light sources. (More
+    lights can be defined if a custom shader is used.)
+
 -   Build for many platforms (currently supports all Microsoft Windows
     platforms, iOS, Android, MacOS, Linux, PS4, PSVita, Xbox One, and
     Switch).
