@@ -283,8 +283,8 @@ namespace Blotch
 		public List<Light> Lights = new List<Light>();
 
 		/// <summary>
-		/// The ambient light color. If null, no ambient light is enabled. Note: There is no ambient color. Both
-		/// diffuse and ambient light illuminates the model's Color. See the BlSprite#Color member.
+		/// The ambient light color. If null, no ambient light is enabled. Note: There is no ambient color
+		/// for a BlSprite. Both diffuse and ambient light illuminates the model's Color. See the BlSprite#Color member.
 		/// </summary>
 		public Vector3? AmbientLightColor = new Vector3(.1f, .1f, .1f);
 

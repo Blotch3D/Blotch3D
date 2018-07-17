@@ -127,7 +127,12 @@ be written to override the default shader.
 
 All reference documentation of Blotch3D (classes, methods, fields,
 properties, etc.) is available through Visual Studio IntelliSense, and
-in "Blotch3D\_Reference\_Manual.pdf".
+it is also available in Doxygen output file
+"Blotch3D\_Reference\_Manual.pdf". (Note: To support Doxygen, links in
+the IntelliSense comments are preceded with '\#'. Also, this document is
+prepended to that Doxygen output, but for some reason the reference
+links within this document don't work when it is embedded in that
+reference manual.)
 
 See MonoGame.net for the official MonoGame documentation. When searching
 on-line for other MonoGame documentation and discussions, be sure to
@@ -197,9 +202,8 @@ the project, or you can create the project from scratch like this:
 8.  To create a 3D window, follow the guidelines in the
     [Development](#development) section.
 
-The above process works for Microsoft Windows and generally works for
-other platforms. But you may need to do a little research in setting up
-a MonoGame project for certain other platforms.
+The above process works for Microsoft Windows. Generally this should be
+close to the procedure you need for other platforms.
 
 If you are copying the Blotch3D assembly (like Blotch3D.dll on Microsoft
 Windows) to a project or packages folder so you don't have to include
