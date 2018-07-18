@@ -1,32 +1,10 @@
-**Blotch3D User Manual**
-------------------------
+Blotch3D
+========
 
 Create real-time 3D graphics with just a few lines of C\# code.
 
-[Quick start](#quick-start)
-
-[Introduction](#introduction)
-
-[Project structure](#project-structure)
-
-[Development](#development)
-
-[Making 3D models](#making-3d-models)
-
-[Dynamically changing a sprite's orientation and
-position](#dynamically-changing-a-sprites-orientation-and-position)
-
-[Matrix internals](#matrix-internals)
-
-[A Short Glossary of 3D Graphics
-Terms](#a-short-glossary-of-3d-graphics-terms)
-
-[Troubleshooting](#troubleshooting)
-
-[Rights](#rights)
-
 Quick start
------------
+===========
 
 1.  Get the installer for the latest release of MonoGame from
     <http://www.monogame.net/downloads/> and run it. (Do NOT get the
@@ -45,7 +23,7 @@ Quick start
     Doxygen output of it in "Blotch3D\_Reference\_Manual.pdf".
 
 Introduction
-------------
+============
 
 Blotch3D is a C\# library that vastly simplifies many of the tasks in
 developing 3D applications and games.
@@ -154,7 +132,7 @@ official cross-platform way to specify an existing window to use as the
 work-arounds.
 
 Project structure
------------------
+=================
 
 The provided Visual Studio solution file contains both the Blotch3D
 library project with source, and the example projects.
@@ -215,7 +193,7 @@ the entire project output folder. For example, you'd probably want to
 copy everything in the output folder when you are distributing your app.
 
 Development
------------
+===========
 
 See the examples.
 
@@ -302,7 +280,7 @@ you are not otherwise terminating the program.
 See the examples and use IntelliSense for more information.
 
 Making 3D models
-----------------
+================
 
 There are several primitive models available with Blotch3D. The easiest
 way to add them to your project is to...
@@ -334,7 +312,7 @@ of the countless tutorials online, like
 Also, you may be able to import certain existing models from the web.
 
 Dynamically changing a sprite's orientation and position
---------------------------------------------------------
+========================================================
 
 Each sprite has a "Matrix" member that defines its orientation and
 position relative to its parent sprite, or to an unmodified coordinate
@@ -364,7 +342,8 @@ For a good introduction (without the math), see
 The rest of this section should be studied only when you need a deeper
 knowledge.
 
-### Matrix internals
+Matrix internals
+================
 
 Here we'll introduce the internals of 2D matrices. 3D matrices simply
 have one more dimension.
@@ -559,7 +538,7 @@ But for details see
 <http://seanmiddleditch.com/matrices-handedness-pre-and-post-multiplication-row-vs-column-major-and-notations>.
 
 A Short Glossary of 3D Graphics Terms
--------------------------------------
+=====================================
 
 Vertex\
 A point in space. Typically, a point at which the line segments of a
@@ -674,7 +653,7 @@ the maximum possible floating-point value. Farther surfaces are not
 drawn.
 
 Troubleshooting
----------------
+===============
 
 Q: When I set a billboard attribute of a flat sprite (like a plane), I
 can no longer see it.\
@@ -717,7 +696,7 @@ and set it back to DepthStencilStateEnabled in the BlSprite.DrawCleanup
 delegate.
 
 Rights
-------
+======
 
 Blotch3D (formerly GWin3D) is Copyright © 1999-2018 by Kelly Loum
 
