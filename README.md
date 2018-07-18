@@ -19,8 +19,8 @@ Quick start
     need the appropriate Visual Studio add-on and you will need to
     create a separate project for that platform.)
 
-5.  Use IntelliSense to see the reference documentation, or view the
-    Doxygen output of it in "Blotch3D\_Reference\_Manual.pdf".
+5.  Use IntelliSense to see the reference documentation, or see the
+    "Blotch3DManual.pdf".
 
 Introduction
 ============
@@ -105,12 +105,8 @@ be written to override the default shader.
 
 All reference documentation of Blotch3D (classes, methods, fields,
 properties, etc.) is available through Visual Studio IntelliSense, and
-it is also available in Doxygen output file
-"Blotch3D\_Reference\_Manual.pdf". (Note: To support Doxygen, links in
-the IntelliSense comments are preceded with '\#'. Also, this document is
-prepended to that Doxygen output, but for some reason the reference
-links within this document don't work when it is embedded in that
-reference manual.)
+it is also available in "Blotch3DManual.pdf". (Note: To support Doxygen,
+links in the IntelliSense comments are preceded with '\#'.)
 
 See MonoGame.net for the official MonoGame documentation. When searching
 on-line for other MonoGame documentation and discussions, be sure to
