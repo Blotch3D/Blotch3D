@@ -44,7 +44,7 @@ namespace Blotch
 		public OnMouseChangeDelegate OnMouseOver = null;
 
 		/// <summary>
-		/// The previous mouse state. A delegte typiclly uses this along with the current mouse state to make a decision.
+		/// The previous mouse state. A delegate typically uses this along with the current mouse state to make a decision.
 		/// </summary>
 		public MouseState PrevMouseState = new MouseState();
 

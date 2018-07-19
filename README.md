@@ -98,15 +98,15 @@ can...
 
 Blotch3D sits on top of MonoGame. MonoGame is a widely used 3D library
 for C\#. It is free, fast, cross platform, actively developed by a large
-community, and it's used in many professional games. There is a plethora
-of MonoGame documentation, tutorials, examples, and discussions on line.
-All MonoGame features remain available. For example, custom shaders can
-be written to override the default shader.
+community, and used in many professional games. There is a plethora of
+MonoGame documentation, tutorials, examples, and discussions on line.
+All MonoGame features remain available in Blotch3D. For example, custom
+shaders can be written to override the default shader.
 
-All reference documentation of Blotch3D (classes, methods, fields,
+Reference documentation of Blotch3D (classes, methods, fields,
 properties, etc.) is available through Visual Studio IntelliSense, and
-it is also available in "Blotch3DManual.pdf". (Note: To support Doxygen,
-links in the IntelliSense comments are preceded with '\#'.)
+in "Blotch3DManual.pdf". (Note: To support Doxygen, links in the
+IntelliSense comments are preceded with '\#'.)
 
 See MonoGame.net for the official MonoGame documentation. When searching
 on-line for other MonoGame documentation and discussions, be sure to
@@ -145,40 +145,6 @@ example needs to be split to several simpler examples\].
 All the provided projects are configured to build for the Microsoft
 Windows x64 platform. See below for other platforms.
 
-To create a new project, you can just copy the basic example and rename
-the project, or you can create the project from scratch like this:
-
-1.  If you haven't already done it, install MonoGame as described in the
-    [Quick start](#quick-start) section.
-
-2.  If you are building for a platform other than Microsoft Windows,
-    install the Visual Studio add-ons, etc. for that platform. (For
-    example, for Android you'd need Xamarin for Android.)
-
-3.  Create a new project for a platform that is compatible with
-    MonoGame.
-
-4.  Add a reference to MonoGame. (For .NET Framework, you would add
-    something like \\Program Files
-    (x86)\\MonoGame\\v3.0\\Assemblies\\Windows\\MonoGame.Framework.dll)
-
-5.  If the Blotch3D project is not in the solution, add a reference to
-    the Blotch3D assembly (like Blotch3D.dll on Microsoft Windows).
-
-6.  Follow the procedure in the '[Making 3D models](#making-3d-models)'
-    section to add a content folder and the pipeline manager so that you
-    have a way to add content.
-
-7.  You'll probably want to set the output type to 'Console Application'
-    for now, so you can see any debug messages. You can change this to
-    'Windows Application' later, if you like.
-
-8.  To create a 3D window, follow the guidelines in the
-    [Development](#development) section.
-
-The above process works for Microsoft Windows. Generally this should be
-close to the procedure you need for other platforms.
-
 If you are copying the Blotch3D assembly (like Blotch3D.dll on Microsoft
 Windows) to a project or packages folder so you don't have to include
 the source code of the library in your solution, be sure to also copy
@@ -187,6 +153,51 @@ copy any other binary file from the Blotch3D output folder if you've
 installed MonoGame on the destination machine. Otherwise you should copy
 the entire project output folder. For example, you'd probably want to
 copy everything in the output folder when you are distributing your app.
+
+To create a new project, if you haven't already you must first install
+MonoGame as described in the [Quick start](#quick-start) section. You
+must also install the Visual Studio add-ons, etc. for the desired
+platform if different from Microsoft Windows. (For example, for Android
+you'd need the Xamarin for Android add-on.)
+
+Then try one of the following, in order of increasing difficulty:
+
+1.  Copy an existing Blotch3D example project and rename it (Windows
+    only).
+
+2.  Use the project wizard to create a MonoGame project, and then add a
+    reference to Blotch3D, or the Blotch3D source.
+
+3.  Look online for instructions on creating the project type you want.
+
+4.  Do something like the following:
+
+    a.  Create a new project with the project wizard that is close to
+        the type you want.
+
+    b.  Add a reference to MonoGame. (For example, for .NET Framework on
+        Windows you would add something like \\Program Files
+        (x86)\\MonoGame\\v3.0\\Assemblies\\Windows\\MonoGame.Framework.dll)
+
+    c.  If the Blotch3D project is not in the solution, add a reference
+        to the Blotch3D assembly (like Blotch3D.dll on Microsoft
+        Windows).
+
+    d.  Follow the procedure in the '[Making 3D
+        models](#making-3d-models)' section to add a content folder and
+        the pipeline manager so that you have a way to add content.
+
+    e.  If available on the selected platform, you'll probably want to
+        set the output type to 'Console Application' for now, so you can
+        see any debug messages. You can change this to 'Windows
+        Application' (or whatever) later, if you like.
+
+    f.  You may need to copy various XML structures into your csproj
+        file from other projects that have some of the attributes that
+        you want.
+
+    g.  To create a 3D window, follow the guidelines in the
+        [Development](#development) section.
 
 Development
 ===========
@@ -200,6 +211,9 @@ When it comes time to open the 3D window, you instantiate that class and
 call its "Run" method *from the same thread that instantiated it*. The
 Run method will call the Setup, FrameProc, and FrameDraw methods when
 appropriate (explained below), and not return until the window closes.
+(For this reason, you may want to do all this from some other thread
+than the main thread so that the main thread can handle a GUI or
+whatever).
 
 The thread that instantiates the BlWindow3D-derived class, calls the Run
 method, etc., we will call the "3D thread".
@@ -224,11 +238,10 @@ not use them.)
 The Setup, FrameProc, and FrameDraw override methods are called by the
 3D thread as follows:
 
-The Setup method is called by the 3D thread once at the beginning of
-instantiation of the BlWindow3D-derived object. You might put
-time-consuming initialization of persistent things in there like loading
-of persistent content (sprite models, fonts, etc.), creation of
-persistent BlSprites, etc.
+The Setup method is called by the 3D thread exactly once at the
+beginning of instantiation of the BlWindow3D-derived object. You might
+put time-consuming initialization of persistent things in there like
+loading of persistent content (sprite models, fonts, BlSprites, etc.).
 
 The FrameProc method is called by the 3D thread once per frame. For
 single-threaded applications this is typically where the bulk of
@@ -237,28 +250,30 @@ multi-threaded applications, this is where all application code resides
 that does anything with 3D resources.
 
 The FrameDraw method is called by the 3D thread every frame, but only if
-there is enough CPU for the thread. Otherwise it calls it less
+there is enough CPU for that thread. Otherwise it calls it less
 frequently. This is where you put drawing code (BlSprite.Draw,
-BlGraphicsDeviceManager.DrawText, etc. You can also put app code here as
-long as it's aware that calls to it may not be periodic.
+BlGraphicsDeviceManager.DrawText, etc.). For apps that may suffer from
+severe CPU exhaustion, you may want to put your app code in this method
+so it is called less frequently (as long as that code can properly
+handle that variable periodicity).
 
 A single-threaded application would have all its code in those three
 overridden methods.
 
-If you are developing a multithreaded app, then when other threads need
-to create, change, or destroy 3D resources or otherwise do something in
-a thread-safe way with the 3D thread, they can pass a delegate to
-EnqueueCommand or EnqueueCommandBlocking. Those methods make sure the
-code is done by the 3D thread sequentially at the end of the next
-FrameProc call.
+If you are developing a multithreaded app, then you would probably want
+to reserve the 3D thread only for tasks that access 3D resources. When
+other threads need to create, change, or destroy 3D resources or
+otherwise do something in a thread-safe way with the 3D thread, they can
+pass a delegate to BlWindow3D.EnqueueCommand or
+BlWindow3D.EnqueueCommandBlocking.
 
-MonoGame does not support multiple 3D windows because that isn't
-conducive on certain platforms. On Microsoft Windows (and possibly
-certain other platforms) you *can* create them, but they don't work
-correctly and in certain situations will crash. If you want to be able
-to "close" and "re-open" a window, you can just hide and show the same
-window. (On Microsoft Windows, you can use the BlWindow3D.Form object
-for that.)
+Because multiple windows are not conducive to some of the supported
+platforms, MonoGame, and thus Blotch3D, does not support more than one
+window. You *can* create multiple windows, but they don't work correctly
+(input sometimes goes to the wrong window) and in certain situations
+will crash. If you want to be able to "close" and "re-open" a window,
+you can just hide and show the same window. (On Microsoft Windows, you
+can use the BlWindow3D.Form object for that.)
 
 To make the MonoGame window be a child window of an existing GUI, you
 need to explicitly size, position, and convey Z order so that it is
@@ -273,7 +288,8 @@ work in later MonoGame releases.
 Most Blotch3D objects must be Disposed when you are done with them and
 you are not otherwise terminating the program.
 
-See the examples and use IntelliSense for more information.
+See the examples, reference documentation, and IntelliSense for more
+information.
 
 Making 3D models
 ================
@@ -289,6 +305,32 @@ way to add them to your project is to...
 3.  Right-click it and select "Properties"
 
 4.  Set the "Build Action" to "MonoGameContentReference"
+
+If the "MonoGameContentReference" build option is not available in the
+drop-down list because, for example, you have created a project from
+scratch (rather than copied an existing example), then try this:
+
+(from
+<http://www.infinitespace-studios.co.uk/general/monogame-content-pipeline-integration/>)
+
+1.  Open your application .csproj in an Editor.
+
+2.  In the first \<PropertyGroup\> section
+    add \<MonoGamePlatform\>\$(Platform)\</MonoGamePlatform\>, where
+    \$(Platform) is the system you are targeting e.g Windows, iOS,
+    Android. For example...
+
+    \<MonoGamePlatform\>Windows\</MonoGamePlatform\>
+
+3.  Add the following lines right underneath the \<MonoGamePlatform /\>
+    element:
+    \<MonoGameInstallDirectory Condition=\"\'\$(OS)\' != \'Unix\' \"\>\$(MSBuildProgramFiles32)\</MonoGameInstallDirectory\>
+
+4.  \<MonoGameInstallDirectory Condition=\"\'\$(OS)\' == \'Unix\' \"\>\$(MSBuildExtensionsPath)\</MonoGameInstallDirectory\>
+
+5.  Find the \<Import/\> element for the CSharp (or FSharp) targets and
+    underneath
+    add\<Import Project=\"\$(MSBuildExtensionsPath)\\MonoGame\\v3.0\\MonoGame.Content.Builder.targets\" /\>
 
 You can get the names of the content files by starting the MonoGame
 pipeline manager (double-click Content/Content.mgcb). You can also add
