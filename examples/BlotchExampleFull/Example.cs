@@ -158,7 +158,7 @@ Shift          - Fine control
 			title.LODs.Add(Content.Load<Model>("Plane"));
 			title.Matrix = Matrix.CreateScale(.15f, .05f, .15f);
 			title.Mipmap = new BlMipmap(Graphics,Graphics.TextToTexture("This is the\nmodel with LODs", FontArial14, Microsoft.Xna.Framework.Color.Red, Microsoft.Xna.Framework.Color.Transparent));
-			title.MipmapScale = 0;
+			title.MipmapScale = -1000;
 			title.SetAllMaterialBlack();
 			title.EmissiveColor = new Vector3(1, 1, 1);
 			title.Flags = (ulong)(Flag.IsVisible | Flag.AlwaysOnTop | Flag.HasTranslucency);
@@ -187,9 +187,11 @@ Shift          - Fine control
 			//helpHud.PreDraw = PreDraw;
 			//helpHud.PreLocal = PreLocal;
 
-			// Create skybox
-			Skybox = new BlSprite(Graphics, "Skybox");
-
+			// Create skybox, with a FrameProc that keeps it centered on the camera
+			Skybox = new BlSprite(Graphics, "Skybox", (s) =>
+			{
+				s.Matrix.Translation = Graphics.TargetEye;
+			});
 			Skybox.Mipmap = new BlMipmap(Graphics, Graphics.LoadFromImageFile("Skybox.jpg"),1);
 			SkyboxModel = Content.Load<Model>("uv_sphere_192x96");
 			Skybox.LODs.Add(SkyboxModel);
@@ -265,8 +267,6 @@ Shift          - Fine control
 				foreach (var s in sprites)
 					Console.WriteLine(s);
 			}
-
-			Skybox.Matrix.Translation = Graphics.Eye;
 		}
 
 		public BlSprite.PreDrawCmd PreDraw(BlSprite This)

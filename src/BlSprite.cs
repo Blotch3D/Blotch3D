@@ -47,7 +47,7 @@ namespace Blotch
 		public ulong Flags = 0xFFFFFFFFFFFFFFFF;
 
 		/// <summary>
-		/// The object drawn for this sprite. Specifically, this is a list of levels of detail (LOD), where only one is drawn
+		/// The level-of-detail objects drawn for this sprite. Only one element is drawn
 		/// depending on the ApparentSize. Each element can be a Model, a triangle list
 		/// (VertexPositionNormalTexture[]), or null (indicating nothing should be drawn). Elements with lower indices are
 		/// higher LODs. So index 0 is the highest, index 1 is second highest, etc. LOD decreases (the index increases) for
@@ -64,6 +64,7 @@ namespace Blotch
 		/// Defines the LOD scaling. The higher this value, the closer you
 		/// must be to see a given LOD. A value of 9 (default) indicates that the highest LOD (LODs[0]) occurs when an
 		/// object with a diameter of 1 roughly fills the window.
+		/// Set to a large negative value, like -1000, to disable LODs (i.e. always use the highest resolution LOD).
 		/// </summary>
 		public double LodScale = 9;
 
@@ -77,13 +78,14 @@ namespace Blotch
 		/// Most graphics subsystems do support mipmaps, but these are supported at the app level.
 		/// Therefore only one image is used over a model for a given model apparent size, rather than nearer portions of the
 		/// model showing higher-level mipmaps.
-		/// These are NOT disposed when the sprite is disposed. A given BlMipmap may be assigned
+		/// These are NOT disposed when the sprite is disposed so that a given BlMipmap may be assigned
 		/// to multiple sprites.
 		/// </summary>
 		public BlMipmap Mipmap = null;
 
 		/// <summary>
 		/// Defines the mipmap (Textures) scaling. The higher this value, the closer you must be to see a given mipmap.
+		/// Set to a large negative value, like -1000, to disable mipmaps (i.e. always use the highest resolution mipmap).
 		/// </summary>
 		public double MipmapScale = 5;
 
@@ -156,7 +158,9 @@ namespace Blotch
 
 		/// <summary>
 		/// If true, maintain a constant apparent size for the sprite regardless of camera distance or zoom. This is typically
-		/// used along with one of the Billboarding effects (see #SphericalBillboard, #CylindricalBillboardX, etc.). If both #ConstSize
+		/// used along with one of the Billboarding effects (see #SphericalBillboard, #CylindricalBillboardX, etc.).
+		/// Note that if ConstSize is true, ApparentSize, LodScale, and MipmapScale still act as if it is false, and therefore in that case you
+		/// may want to disable them (set them to large negative values. If both #ConstSize
 		/// and any Billboarding is enabled and you have asymmetric scaling (different scaling for each dimension), then you'll
 		/// need to separate those operations into different levels of the sprite tree to obtain the desired behavior. You'll also
 		/// probably want to disable the depth stencil buffer and control which sprite is drawn first so that certain sprites are
@@ -232,33 +236,18 @@ namespace Blotch
 		/// <param name="sprite"></param>
 		public delegate void FrameProcType(BlSprite sprite);
 
+		FrameProcType FrameProc = null;
+
 		/// <summary>
-		/// Called once per frame just after BlWindow3D#FrameProc is called. You can update a sprite
-		/// here, or update it in BlWindow3D#FrameProc. Doing it here makes the code more encapsulated.
+		/// Execute the FrameProc, if it was specified in the BlSprite constructor.
+		/// (Normally you wouldn't need to call this because its automatically called 
+		/// by the BlWindow.)
 		/// </summary>
-		public FrameProcType FrameProc
+		public void ExecuteFrameProc()
 		{
-			get
-			{
-				return _FrameProc;
-			}
-			set
-			{
-				if(Graphics.Window.FrameProcSprites.Contains(this))
-				{
-					Graphics.Window.FrameProcSprites.Remove(this);
-				}
-				_FrameProc = value;
-				if (_FrameProc != null)
-				{
-					Graphics.Window.FrameProcSprites.Add(this);
-				}
-			}
+			if(FrameProc!=null)
+				FrameProc(this);
 		}
-		/// <summary>
-		/// Internal use only. Do not alter.
-		/// </summary>
-		public FrameProcType _FrameProc = null;
 
 		/// <summary>
 		/// Return code from #PreDraw callback. This tells #Draw what to do next.
@@ -406,8 +395,17 @@ namespace Blotch
 		/// </summary>
 		public string Name;
 
-		public BlSprite(BlGraphicsDeviceManager graphicsIn, string name)
+		/// <summary>
+		/// Constructs a sprite
+		/// </summary>
+		/// <param name="graphicsIn">The BlGraphicsDeviceManager that operates on this sprite</param>
+		/// <param name="name">The name of the sprite (must be unique among other sprites in the same subsprite list)</param>
+		/// <param name="frameProc">The delegate to run every frame</param>
+		public BlSprite(BlGraphicsDeviceManager graphicsIn, string name,FrameProcType frameProc=null)
 		{
+			FrameProc = frameProc;
+			if(FrameProc!=null)
+				graphicsIn.Window.FrameProcSpritesAdd(this);
 			CreationThread = Thread.CurrentThread.ManagedThreadId;
 			Graphics = graphicsIn;
 			Name = name;
@@ -1004,6 +1002,9 @@ namespace Blotch
 			GC.SuppressFinalize(this);
 
 			// Note: We do NOT dispose the models and mipmaps because we did not create them
+
+			if (FrameProc != null)
+				Graphics.Window.FrameProcSpritesRemove(this);
 
 			// Dispose the VerticesEffect if we were the one who created it.
 			if (IsVerticesEffectMine && _VerticesEffect!=null)

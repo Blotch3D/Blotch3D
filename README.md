@@ -100,8 +100,17 @@ Blotch3D sits on top of MonoGame. MonoGame is a widely used 3D library
 for C\#. It is free, fast, cross platform, actively developed by a large
 community, and used in many professional games. There is a plethora of
 MonoGame documentation, tutorials, examples, and discussions on line.
-All MonoGame features remain available in Blotch3D. For example, custom
-shaders can be written to override the default shader.
+
+All MonoGame features remain available in Blotch3D. For examples:
+
+-   The models encapsulated in a BlSprite (see the BlSprite.LODs field)
+    is a list of MonoGame Model objects and/or triangle arrays
+    (VertexPositionNormalTexture\[\]).
+
+-   The BlWindow3D class derives from the MonoGame "Game" class.
+
+-   The BlGraphicsDeviceManager class derives from MonoGame's
+    "GraphicsDeviceManager" class.
 
 Reference documentation of Blotch3D (classes, methods, fields,
 properties, etc.) is available through Visual Studio IntelliSense, and
@@ -248,7 +257,11 @@ The FrameProc method is called by the 3D thread once per frame. For
 single-threaded applications this is typically where the bulk of
 application code resides, except the actual drawing code. For
 multi-threaded applications, this is typically where all application
-code resides that does anything with 3D resources.
+code resides that does anything with 3D resources. (Note: You can also
+pass a delegate to the BlSprite constructor, which will cause that
+delegate to be executed just after the BlWindow3D's FrameProc method is
+executed. The effect is the same as putting the code in FrameProc, but
+it better encapsulates sprite-specific code.)
 
 The FrameDraw method is called by the 3D thread every frame, but only if
 there is enough CPU for that thread. Otherwise it calls it less
@@ -676,19 +689,19 @@ position](#dynamically-changing-a-sprites-orientation-and-position).
 
 Frame
 
-In this document, \'frame\' means a complete still scene. It is
-analogous to a movie frame. A moving 3D scene is created by drawing
-successive frames---typically at about 15 to 60 times per second.
+In this document, \'frame\' is analogous to a movie frame. A moving 3D
+scene is created by drawing successive frames.
 
 Depth buffer
 
-3D systems must keep track of the depth of the polygon surface (if any)
-at each 2D window pixel so that they know to draw the nearer pixel over
-the farther pixel in the 2D display. The depth buffer is an array with
-one element per 2D window pixel, where each element is (typically) a
-32-bit floating point value indicating the depth of the nearest polygon
-surface at that pixel. See BlGraphicsDeviceManager.NearClip and
-BlGraphicsDeviceManager.FarClip.
+3D systems typically keep track of the depth of the polygon surface (if
+any) at each 2D window pixel so that they know to draw the nearer pixel
+over the farther pixel in the 2D display. The depth buffer is an array
+with one element per 2D window pixel, where each element is (typically)
+a 32-bit floating point value indicating the depth of the last drawn
+pixel. In that way pixels that are farther away need not be drawn. You
+can override this behavior for special cases. See
+BlGraphicsDeviceManager.NearClip and BlGraphicsDeviceManager.FarClip.
 
 Near clipping plane (NearClip)
 

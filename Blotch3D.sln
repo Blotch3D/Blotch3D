@@ -20,6 +20,9 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlotchExample04_SpriteText", "examples\BlotchExample04_SpriteText\BlotchExample04_SpriteText.csproj", "{45AFCF2A-9CAC-47E1-A830-99952A4DC7EF}"
 EndProject
 Global
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
 		Release|x64 = Release|x64

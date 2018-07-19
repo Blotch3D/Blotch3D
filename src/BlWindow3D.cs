@@ -47,11 +47,10 @@ namespace Blotch
 		/// </summary>
 		public BlGraphicsDeviceManager Graphics;
 
-		/// <summary>
-		/// Internal use only. Do not write.
-		/// Holds the sprites that currently have a BlSprite#FrameProc defined.
-		/// </summary>
-		public List<BlSprite> FrameProcSprites = new List<BlSprite>();
+
+
+		List<BlSprite> FrameProcSprites = new List<BlSprite>();
+		Mutex FrameProcSpritesMutex = new Mutex();
 
 
 		/// <summary>
@@ -64,12 +63,13 @@ namespace Blotch
 		/// </summary>
 		/// <param name="win">The BlWindow3D object</param>
 		public delegate void Command(BlWindow3D win);
-		class BlockingCommand
+		class QueueCommand
 		{
 			public Command command=null;
 			public AutoResetEvent evnt = null;
 		}
-		BlockingCollection<BlockingCommand> Queue = new BlockingCollection<BlockingCommand>();
+		Mutex QueueMutex = new Mutex();
+		Queue<QueueCommand> Queue = new Queue<QueueCommand>();
 
 #if WINDOWS
 		/// <summary>
@@ -100,12 +100,19 @@ namespace Blotch
 		/// <param name="cmd"></param>
 		public void EnqueueCommand(Command cmd)
 		{
-			var Qcmd = new BlockingCommand()
+			var Qcmd = new QueueCommand()
 			{
 				command = cmd
 			};
-
-			Queue.Add(Qcmd);
+			try
+			{
+				QueueMutex.WaitOne();
+				Queue.Enqueue(Qcmd);
+			}
+			finally
+			{
+				QueueMutex.ReleaseMutex();
+			}
 		}
 		/// <summary>
 		/// Since all operations accessing 3D resources must be done by the 3D thread,
@@ -119,13 +126,21 @@ namespace Blotch
 		public void EnqueueCommandBlocking(Command cmd)
 		{
 			var myEvent = new AutoResetEvent(false);
-			var Qcmd = new BlockingCommand()
+			var Qcmd = new QueueCommand()
 			{
 				command = cmd,
 				evnt = myEvent
 			};
 
-			Queue.Add(Qcmd);
+			try
+			{
+				QueueMutex.WaitOne();
+				Queue.Enqueue(Qcmd);
+			}
+			finally
+			{
+				QueueMutex.ReleaseMutex();
+			}
 			myEvent.WaitOne();
 		}
 #if WINDOWS
@@ -201,24 +216,75 @@ namespace Blotch
 
 			ExecuteSpriteFrameProcs();
 		}
+		/// <summary>
+		/// Used internally
+		/// </summary>
+		/// <param name="s"></param>
+		public void FrameProcSpritesAdd(BlSprite s)
+		{
+			try
+			{
+				FrameProcSpritesMutex.WaitOne();
+				FrameProcSprites.Add(s);
+			}
+			finally
+			{
+				FrameProcSpritesMutex.ReleaseMutex();
+			}
+		}
+		/// <summary>
+		/// Used internally
+		/// </summary>
+		/// <param name="s"></param>
+		public void FrameProcSpritesRemove(BlSprite s)
+		{
+			try
+			{
+				FrameProcSpritesMutex.WaitOne();
+				FrameProcSprites.Remove(s);
+			}
+			finally
+			{
+				FrameProcSpritesMutex.ReleaseMutex();
+			}
+		}
 		void ExecuteSpriteFrameProcs()
 		{
-			foreach (var s in FrameProcSprites)
+			try
 			{
-				s.FrameProc(s);
+				FrameProcSpritesMutex.WaitOne();
+
+				foreach (var s in FrameProcSprites)
+				{
+					s.ExecuteFrameProc();
+				}
+			}
+			finally
+			{
+				FrameProcSpritesMutex.ReleaseMutex();
 			}
 		}
 		void ExecutePendingCommands()
 		{
 			// execute any pending commands, in order.
-			while (Queue.TryTake(out BlockingCommand bcmd, 0))
+			QueueCommand bcmd;
+			try
 			{
-				if (bcmd.command != null)
+				QueueMutex.WaitOne();
+				while (Queue.Count > 0)
 				{
-					bcmd.command(this);
-					if (bcmd.evnt != null)
-						bcmd.evnt.Set();
+					bcmd = Queue.Dequeue();
+					if (bcmd.command != null)
+					{
+						bcmd.command(this);
+						if (bcmd.evnt != null)
+							bcmd.evnt.Set();
+					}
 				}
+			}
+			finally
+			{
+				QueueMutex.ReleaseMutex();
 			}
 		}
 
@@ -310,7 +376,7 @@ namespace Blotch
 
 			base.Dispose();
 
-			Queue.Dispose();
+			QueueMutex.Dispose();
 			Graphics.Dispose();
 #if WINDOWS
 			WindowForm.Dispose();
