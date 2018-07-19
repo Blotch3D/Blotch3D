@@ -43,9 +43,9 @@ can...
     or 3D.
 
 -   Attach sprites to other sprites to create 'sprite trees' as large as
-    you want. Child sprite orientation and position is relative to its
-    parent sprite's orientation and position, and can be changed
-    dynamically (i.e. the sprite trees are dynamic scene graphs.)
+    you want. Child sprite orientation, position, scale, etc. are
+    relative to the sprite's parent, and can be changed dynamically
+    (i.e. the sprite trees are dynamic scene graphs.)
 
 -   Override all steps in the drawing of each sprite.
 
@@ -667,33 +667,35 @@ The yaw, pitch, and roll of a model, applied in that order.
 
 Matrix
 
-An array of 16 numbers that describes the position and orientation of a
-sprite. Specifically, a matrix describes a difference, or transform, in
-the orientation (coordinate system) of one model from another. See
-[Dynamically changing a sprite's orientation and
+An array of numbers that can describe a difference, or transform, in one
+coordinate system from another. Each sprite has a matrix that defines
+its location, rotation, scale, shear etc. within the coordinate system
+of its parent sprite, or within an untransformed coordinate system if
+there is no parent. See [Dynamically changing a sprite's orientation and
 position](#dynamically-changing-a-sprites-orientation-and-position).
 
 Frame
 
-In this document, \'Frame\' means a complete still scene. It is
+In this document, \'frame\' means a complete still scene. It is
 analogous to a movie frame. A moving 3D scene is created by drawing
 successive frames---typically at about 15 to 60 times per second.
 
 Depth buffer
 
 3D systems must keep track of the depth of the polygon surface (if any)
-at each 2D pixel so that they know to draw the nearer pixel over the
-farther pixel in the 2D display. The depth buffer is an array with one
-element per 2D screen pixel, where each element is (typically) a 32-bit
-floating point value indicating the depth of the nearest polygon surface
-at that pixel. See 'near clip' and 'far clip'.
+at each 2D window pixel so that they know to draw the nearer pixel over
+the farther pixel in the 2D display. The depth buffer is an array with
+one element per 2D window pixel, where each element is (typically) a
+32-bit floating point value indicating the depth of the nearest polygon
+surface at that pixel. See BlGraphicsDeviceManager.NearClip and
+BlGraphicsDeviceManager.FarClip.
 
-Near clipping plane (near clip)
+Near clipping plane (NearClip)
 
 The distance from the camera at which a depth buffer element is equal to
 zero. Nearer surfaces are not drawn.
 
-Far clipping plane (far clip)
+Far clipping plane (FarClip)
 
 The distance from the camera at which a depth buffer element is equal to
 the maximum possible floating-point value. Farther surfaces are not
@@ -702,15 +704,15 @@ drawn.
 Model space
 
 The untransformed three-dimensional space that models are initially
-created/defined in. Typically a model is centered on the model space
-origin.
+created/defined in. Typically, a model is centered on the origin of
+model space.
 
 World space
 
 The three-dimensional space that you see through the two-dimensional
 view of the window. A model is transformed from model space to world
 space by its final matrix (that is, the matrix we get *after* a sprite's
-matrix is multiplied by its parent sprite matrices).
+matrix is multiplied by its parent sprite matrices, if any).
 
 View space
 
@@ -740,14 +742,15 @@ RasterizerState.CullClockwise" (or set it to CullNone to see both the
 inside and outside) in the BlSprite.PreDraw delegate, and set it back to
 CullCounterClockwise in the BlSprite.DrawCleanup delegate.
 
-Q: I set a sprite's matrix so one of the dimensions has a scale of zero,
-but then the sprite becomes black.
+Q: I set a sprite's matrix so that one of the dimensions has a scale of
+zero, but then the sprite becomes black.
 
 A: A sprite's matrix also affects its normals. By setting a dimension's
 scale to zero, you may have caused some of the normals to be zero'd-out
 as well.
 
-Q: When I am zoomed-in a large amount, sprite and camera movement jumps.
+Q: When I am zoomed-in a large amount, sprite and camera movement jumps
+as the sprite or camera move.
 
 A: You are experiencing floating point precision errors in the
 positioning algorithms. About all you can do is "fake" being that zoomed

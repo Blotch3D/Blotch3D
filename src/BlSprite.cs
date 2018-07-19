@@ -478,7 +478,6 @@ namespace Blotch
 		/// (BoundSphere), or null if it doesn't enter the sphere.
 		/// </summary>
 		/// <param name="ray"></param>
-		/// <param name="boundingSphere"></param>
 		/// <returns>How far along the ray till the first intersection, or null oif it didn't intersect</returns>
 		public double? DoesRayIntersect(Ray ray)
 		{
