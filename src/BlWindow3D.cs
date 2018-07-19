@@ -93,7 +93,7 @@ namespace Blotch
 		/// Since all operations accessing 3D resources must be done by the 3D thread,
 		/// this allows other threads to
 		/// send commands to execute in the 3D thread. For example, you might need another thread to be able to 
-		/// create, move, and delete BlSprites. You can also use this for general thred safety of various operations.
+		/// create, move, and delete BlSprites. You can also use this for general thread safety of various operations.
 		/// This method does not block.
 		/// Also see BlWindow3D and the (blocking) #EnqueueCommandBlocking for more details.
 		/// </summary>
@@ -111,7 +111,7 @@ namespace Blotch
 		/// Since all operations accessing 3D resources must be done by the 3D thread,
 		/// this allows other threads to
 		/// send commands to execute in the 3D thread. For example, you might need another thread to be able to 
-		/// create, move, and delete BlSprites. You can also use this for general thred safety of various operations.
+		/// create, move, and delete BlSprites. You can also use this for general thread safety of various operations.
 		/// This method blocks until the command has executed.
 		/// Also see BlWindow3D and the (non-blocking) #EnqueueCommand for more details.
 		/// </summary>

@@ -154,13 +154,14 @@ installed MonoGame on the destination machine. Otherwise you should copy
 the entire project output folder. For example, you'd probably want to
 copy everything in the output folder when you are distributing your app.
 
-To create a new project, if you haven't already you must first install
-MonoGame as described in the [Quick start](#quick-start) section. You
+To create a new project, you must first install MonoGame as described in
+the [Quick start](#quick-start) section, if you haven't already. You
 must also install the Visual Studio add-ons, etc. for the desired
 platform if different from Microsoft Windows. (For example, for Android
 you'd need the Xamarin for Android add-on.)
 
-Then try one of the following, in order of increasing difficulty:
+Then try one of the following, roughly in order of increasing
+difficulty:
 
 1.  Copy an existing Blotch3D example project and rename it (Windows
     only).
@@ -168,7 +169,8 @@ Then try one of the following, in order of increasing difficulty:
 2.  Use the project wizard to create a MonoGame project, and then add a
     reference to Blotch3D, or the Blotch3D source.
 
-3.  Look online for instructions on creating the project type you want.
+3.  Look online for instructions on creating the project/platform type
+    you want.
 
 4.  Do something like the following:
 
@@ -196,8 +198,8 @@ Then try one of the following, in order of increasing difficulty:
         file from other projects that have some of the attributes that
         you want.
 
-    g.  To create a 3D window, follow the guidelines in the
-        [Development](#development) section.
+To create a 3D window, follow the guidelines in the
+[Development](#development) section.
 
 Development
 ===========
@@ -215,8 +217,7 @@ appropriate (explained below), and not return until the window closes.
 than the main thread so that the main thread can handle a GUI or
 whatever).
 
-The thread that instantiates the BlWindow3D-derived class, calls the Run
-method, etc., we will call the "3D thread".
+We will call the abovementioned thread the "3D thread".
 
 All code that accesses 3D resources must be done in the 3D thread,
 including code that creates and uses all Blotch3D and MonoGame objects.
@@ -246,29 +247,29 @@ loading of persistent content (sprite models, fonts, BlSprites, etc.).
 The FrameProc method is called by the 3D thread once per frame. For
 single-threaded applications this is typically where the bulk of
 application code resides, except the actual drawing code. For
-multi-threaded applications, this is where all application code resides
-that does anything with 3D resources.
+multi-threaded applications, this is typically where all application
+code resides that does anything with 3D resources.
 
 The FrameDraw method is called by the 3D thread every frame, but only if
 there is enough CPU for that thread. Otherwise it calls it less
-frequently. This is where you put drawing code (BlSprite.Draw,
+frequently. This is where you must put drawing code (BlSprite.Draw,
 BlGraphicsDeviceManager.DrawText, etc.). For apps that may suffer from
-severe CPU exhaustion, you may want to put your app code in this method
-so it is called less frequently (as long as that code can properly
-handle that variable periodicity).
+severe CPU exhaustion (at least for the 3D thread), you may want to put
+your app code in this method so it is called less frequently (as long as
+that code can properly handle being called at variable rates).
 
 A single-threaded application would have all its code in those three
 overridden methods.
 
 If you are developing a multithreaded app, then you would probably want
 to reserve the 3D thread only for tasks that access 3D resources. When
-other threads need to create, change, or destroy 3D resources or
+other threads do need to create, change, or destroy 3D resources or
 otherwise do something in a thread-safe way with the 3D thread, they can
 pass a delegate to BlWindow3D.EnqueueCommand or
 BlWindow3D.EnqueueCommandBlocking.
 
 Because multiple windows are not conducive to some of the supported
-platforms, MonoGame, and thus Blotch3D, does not support more than one
+platforms, MonoGame, and thus Blotch3D, do not support more than one
 window. You *can* create multiple windows, but they don't work correctly
 (input sometimes goes to the wrong window) and in certain situations
 will crash. If you want to be able to "close" and "re-open" a window,
@@ -318,19 +319,19 @@ scratch (rather than copied an existing example), then try this:
 2.  In the first \<PropertyGroup\> section
     add \<MonoGamePlatform\>\$(Platform)\</MonoGamePlatform\>, where
     \$(Platform) is the system you are targeting e.g Windows, iOS,
-    Android. For example...
-
+    Android. For example:
     \<MonoGamePlatform\>Windows\</MonoGamePlatform\>
 
 3.  Add the following lines right underneath the \<MonoGamePlatform /\>
     element:
     \<MonoGameInstallDirectory Condition=\"\'\$(OS)\' != \'Unix\' \"\>\$(MSBuildProgramFiles32)\</MonoGameInstallDirectory\>
 
-4.  \<MonoGameInstallDirectory Condition=\"\'\$(OS)\' == \'Unix\' \"\>\$(MSBuildExtensionsPath)\</MonoGameInstallDirectory\>
+    \<MonoGameInstallDirectory Condition=\"\'\$(OS)\' == \'Unix\' \"\>\$(MSBuildExtensionsPath)\</MonoGameInstallDirectory\>
 
-5.  Find the \<Import/\> element for the CSharp (or FSharp) targets and
-    underneath
-    add\<Import Project=\"\$(MSBuildExtensionsPath)\\MonoGame\\v3.0\\MonoGame.Content.Builder.targets\" /\>
+4.  Find the \<Import/\> element for the CSharp (or FSharp) targets and
+    underneath add:
+
+    \<Import Project=\"\$(MSBuildExtensionsPath)\\MonoGame\\v3.0\\MonoGame.Content.Builder.targets\" /\>
 
 You can get the names of the content files by starting the MonoGame
 pipeline manager (double-click Content/Content.mgcb). You can also add
@@ -347,7 +348,8 @@ can also instruct Blender to include texture (UV) mapping by using one
 of the countless tutorials online, like
 <https://www.youtube.com/watch?v=2xTzJIaKQFY> or
 <https://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/UV_Map_Basics> .
-Also, you may be able to import certain existing models from the web.
+Also, you may be able to import certain existing models from the web,
+but mind the copyright.
 
 Dynamically changing a sprite's orientation and position
 ========================================================
@@ -550,14 +552,14 @@ used in a previous matrix multiply, or otherwise isolate one operation
 from another. Welcome to linear algebra! The Matrix class provides
 matrix multiply, inversion, etc. methods. If you are interested in how
 the individual matrix elements are processed to perform matrix
-arithmetic, you can look it up online.
+arithmetic, please look it up online.
 
 As was previously mentioned, each sprite has a matrix describing how
 that sprite and its children are transformed from the parent sprite's
 coordinate system. Specifically, Blotch3D does a matrix-multiply of the
-parent's matrix with the child's matrix to create the final matrix used
-to draw that child, and that matrix is also used as the parent matrix
-for the subsprites of that child.
+parent's matrix with the child's matrix to create the final ("absolute")
+matrix used to draw that child, and that matrix is also used as the
+parent matrix for the subsprites of that child.
 
 A Short Glossary of 3D Graphics Terms
 =====================================
@@ -621,6 +623,11 @@ Z-axis
 
 The axis that extends up from the origin.
 
+Origin
+
+The center of a coordinate system. The point in the coordinate system
+that is, by definition, at (0,0).
+
 Translation
 
 Movement. The placing of something at a different location from its
@@ -665,11 +672,6 @@ sprite. Specifically, a matrix describes a difference, or transform, in
 the orientation (coordinate system) of one model from another. See
 [Dynamically changing a sprite's orientation and
 position](#dynamically-changing-a-sprites-orientation-and-position).
-
-Origin
-
-The center of a coordinate system. The point in the coordinate system
-that is, by definition, at (0,0).
 
 Frame
 
@@ -742,7 +744,7 @@ Q: I set a sprite's matrix so one of the dimensions has a scale of zero,
 but then the sprite becomes black.
 
 A: A sprite's matrix also affects its normals. By setting a dimension's
-scale to zero, you may have caused some of the normals to be zero'd out
+scale to zero, you may have caused some of the normals to be zero'd-out
 as well.
 
 Q: When I am zoomed-in a large amount, sprite and camera movement jumps.
@@ -753,15 +755,16 @@ in by, instead, moving the camera forward temporarily. Or simply don't
 allow zoom to go to that extreme.
 
 Q: Sometimes I see slightly farther polygons and parts polygons of
-sprites appear n front of nearer ones, and it varies as the camera or
+sprites appear in front of nearer ones, and it varies as the camera or
 sprite moves.
 
 A: The floating-point precision limitation of the depth buffer can cause
 this. Try increasing your near clip and/or decreasing your far clip so
 the depth buffer doesn't have to cover so much dynamic range.
 
-Q: I have a sprite that I want to always be visible, but I think its
-invisible because its outside the depth buffer.
+Q: I have a sprite that I want always to be visible, but I think its
+invisible because its outside the depth buffer, but I don't want to
+change the depth buffer.
 
 A: Try doing a \"Graphics.GraphicsDevice.DepthStencilState =
 Graphics.DepthStencilStateDisabled" in the BlSprite.PreDraw delegate,
