@@ -101,17 +101,6 @@ for C\#. It is free, fast, cross platform, actively developed by a large
 community, and used in many professional games. There is a plethora of
 MonoGame documentation, tutorials, examples, and discussions on line.
 
-All MonoGame features remain available in Blotch3D. For examples:
-
--   The models encapsulated in a BlSprite (see the BlSprite.LODs field)
-    is a list of MonoGame Model objects and/or triangle arrays
-    (VertexPositionNormalTexture\[\]).
-
--   The BlWindow3D class derives from the MonoGame "Game" class.
-
--   The BlGraphicsDeviceManager class derives from MonoGame's
-    "GraphicsDeviceManager" class.
-
 Reference documentation of Blotch3D (classes, methods, fields,
 properties, etc.) is available through Visual Studio IntelliSense, and
 in "Blotch3DManual.pdf". (Note: To support Doxygen, links in the
@@ -298,6 +287,17 @@ Microsoft Windows, the window's Form object (BlWindow3D.Form) may be of
 help in this. There may also be a way to specify that an existing window
 be used as the 3D window, but it probably isn't portable and may not
 work in later MonoGame releases.
+
+All MonoGame features remain available in Blotch3D. For examples:
+
+-   The models encapsulated in a BlSprite (see the BlSprite.LODs field)
+    is a list of MonoGame Model objects and/or triangle arrays
+    (VertexPositionNormalTexture\[\]).
+
+-   The BlWindow3D class derives from the MonoGame "Game" class.
+
+-   The BlGraphicsDeviceManager class derives from MonoGame's
+    "GraphicsDeviceManager" class.
 
 Most Blotch3D objects must be Disposed when you are done with them and
 you are not otherwise terminating the program.
