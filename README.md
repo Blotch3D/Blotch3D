@@ -44,8 +44,8 @@ can...
 
 -   Attach sprites to other sprites to create 'sprite trees' as large as
     you want. Child sprite orientation, position, scale, etc. are
-    relative to the sprite's parent, and can be changed dynamically
-    (i.e. the sprite trees are dynamic scene graphs.)
+    relative to the parent sprite, and can be changed dynamically (i.e.
+    the sprite trees are dynamic scene graphs.)
 
 -   Override all steps in the drawing of each sprite.
 
@@ -63,7 +63,7 @@ can...
 -   Implement GUI controls (as dynamic 2D text or image rectangles) in
     the 3D window.
 
--   Implement a skybox.
+-   Implement a skybox sprite.
 
 -   Get a list of sprites touching a ray, to implement weapons fire,
     etc.
@@ -135,10 +135,10 @@ library project with source, and the example projects.
 Example.cs contains the example code. Other example projects also
 contain an Example.cs, which is similar to the one from the basic
 example but with a few additions to it to demonstrate a certain feature.
-In fact, you can do a diff between the "BlotchExample01\_Basic" source
-file and another example's source file to see what extra code must be
-added to implement the features it demonstrates \[TBD: the "full"
-example needs to be split to several simpler examples\].
+In fact, you can do a diff between the basic Examples.cs file and
+another example's source file to see what extra code must be added to
+implement the features it demonstrates \[TBD: the "full" example needs
+to be split to several simpler examples\].
 
 All the provided projects are configured to build for the Microsoft
 Windows x64 platform. See below for other platforms.
@@ -158,43 +158,38 @@ must also install the Visual Studio add-ons, etc. for the desired
 platform if different from Microsoft Windows. (For example, for Android
 you'd need the Xamarin for Android add-on.)
 
-Then try one of the following, roughly in order of increasing
-difficulty:
+For Microsoft Windows, you can create a new project by either copying an
+existing Blotch3D example project and renaming it, or you can use the
+project wizard to create a MonoGame project and then add a reference to
+Blotch3D or the Blotch3D source.
 
-1.  Copy an existing Blotch3D example project and rename it (Windows
-    only).
+For other platforms, you can look online for instructions on creating a
+MonoGame project/platform type you want and then add a reference to, or
+the source of, Blotch3D.
 
-2.  Use the project wizard to create a MonoGame project, and then add a
-    reference to Blotch3D, or the Blotch3D source.
+Or you can:
 
-3.  Look online for instructions on creating the project/platform type
-    you want.
+1.  Create a new project with the project wizard that is close to the
+    type you want or use online instructions for creating it.
 
-4.  Do something like the following:
+2.  Add a reference to MonoGame if it doesn't already have one.
+    (typically found in \\Program Files
+    (x86)\\MonoGame\\v3.0\\Assemblies\\\...)
 
-    a.  Create a new project with the project wizard that is close to
-        the type you want.
+3.  Include the Blotch3D source in the project, or a Blotch3D project in
+    the solution, or add a reference to a build of it for that platform.
 
-    b.  Add a reference to MonoGame. (For example, for .NET Framework on
-        Windows you would add something like \\Program Files
-        (x86)\\MonoGame\\v3.0\\Assemblies\\Windows\\MonoGame.Framework.dll)
+4.  Follow the procedure in the '[Making 3D models](#making-3d-models)'
+    section to add a content folder and the pipeline manager so that you
+    have a way to add content.
 
-    c.  If the Blotch3D project is not in the solution, add a reference
-        to the Blotch3D assembly (like Blotch3D.dll on Microsoft
-        Windows).
+5.  If available on the selected platform, while debugging you'll
+    probably want to temporarily set the output type to a type that
+    shows stdout messages (like 'Console Application' on Microsoft
+    Windows) so you can see any debug messages.
 
-    d.  Follow the procedure in the '[Making 3D
-        models](#making-3d-models)' section to add a content folder and
-        the pipeline manager so that you have a way to add content.
-
-    e.  If available on the selected platform, you'll probably want to
-        set the output type to 'Console Application' for now, so you can
-        see any debug messages. You can change this to 'Windows
-        Application' (or whatever) later, if you like.
-
-    f.  You may need to copy various XML structures into your csproj
-        file from other projects that have some of the attributes that
-        you want.
+6.  You may need to copy various XML structures into your csproj file
+    from other projects that have some of the attributes that you want.
 
 To create a 3D window, follow the guidelines in the
 [Development](#development) section.
@@ -202,26 +197,28 @@ To create a 3D window, follow the guidelines in the
 Development
 ===========
 
-See the examples.
+See the examples and their comments, starting with the basic example.
 
 To make a 3D window, you must derive a class from BlWindow3D and
 override the Setup, FrameProc, and FrameDraw methods.
 
-When it comes time to open the 3D window, you instantiate that class and
-call its "Run" method *from the same thread that instantiated it*. The
-Run method will call the Setup, FrameProc, and FrameDraw methods when
-appropriate (explained below), and not return until the window closes.
-(For this reason, you may want to do all this from some other thread
-than the main thread so that the main thread can handle a GUI or
-whatever).
+When it comes time to create the 3D window, you instantiate that class
+and call its "Run" method *from the same thread that instantiated it*.
+The Run method will call the Setup, FrameProc, and FrameDraw methods
+when appropriate (explained below), and not return until the window
+closes. (For this reason, you may want to create the BlWindow from
+within some other thread than the main thread so that the main thread
+can handle a GUI or whatever).
 
 We will call the abovementioned thread the "3D thread".
 
 All code that accesses 3D resources must be done in the 3D thread,
 including code that creates and uses all Blotch3D and MonoGame objects.
-Note that this rule also applies to any code structure that may
-internally use other threads, as well. Do not use Parallel, async, etc.
-code structures that access 3D resources.
+Note that this rule also applies to any code structure (Parallel, async,
+etc.) that may internally use other threads, as well. This is necessary
+because certain 3D subsystems (OpenGL, DirectX, etc.) generally require
+that 3D resources be accessed by a single thread. (There are some
+platform-specific exceptions, but MonoGame does not use them.)
 
 This pattern and these rules are also used by MonoGame. In fact, the
 BlWindow3D class inherits from MonoGame's "Game" class. But instead of
@@ -229,31 +226,27 @@ overriding certain "Game" class methods, you override BlWindow3D's
 Setup, FrameProc, and FrameDraw methods. Other "Game" class methods and
 events can still be overridden, if needed.
 
-All this is necessary because certain 3D subsystems (OpenGL, DirectX,
-etc.) generally require that 3D resources be accessed by a single
-thread. (There are some platform-specific exceptions, but MonoGame does
-not use them.)
-
-The Setup, FrameProc, and FrameDraw override methods are called by the
-3D thread as follows:
+The Setup, FrameProc, and FrameDraw methods are called by the 3D thread
+as follows:
 
 The Setup method is called by the 3D thread exactly once at the
 beginning of instantiation of the BlWindow3D-derived object. You might
-put time-consuming initialization of persistent things in there like
-loading of persistent content (sprite models, fonts, BlSprites, etc.).
+put time-consuming initialization of persistent things in there like the
+loading and initialization of persistent content (sprite models, fonts,
+BlSprites, etc.).
 
-The FrameProc method is called by the 3D thread once per frame. For
+The FrameProc method is called by the 3D thread once every frame. For
 single-threaded applications this is typically where the bulk of
 application code resides, except the actual drawing code. For
 multi-threaded applications, this is typically where all application
 code resides that does anything with 3D resources. (Note: You can also
 pass a delegate to the BlSprite constructor, which will cause that
-delegate to be executed just after the BlWindow3D's FrameProc method is
+delegate to be executed every time the BlWindow3D's FrameProc method is
 executed. The effect is the same as putting the code in FrameProc, but
 it better encapsulates sprite-specific code.)
 
 The FrameDraw method is called by the 3D thread every frame, but only if
-there is enough CPU for that thread. Otherwise it calls it less
+there is enough CPU for that thread. Otherwise it is called less
 frequently. This is where you must put drawing code (BlSprite.Draw,
 BlGraphicsDeviceManager.DrawText, etc.). For apps that may suffer from
 severe CPU exhaustion (at least for the 3D thread), you may want to put
@@ -278,29 +271,29 @@ will crash. If you want to be able to "close" and "re-open" a window,
 you can just hide and show the same window. (On Microsoft Windows, you
 can use the BlWindow3D.Form object for that.)
 
-To make the MonoGame window be a child window of an existing GUI, you
-need to explicitly size, position, and convey Z order so that it is
-overlaid at the right screen location. The easiest way to do that would
-be to overlay the 3D window on an existing child window by getting the
-current attributes of that child window, whenever they change. On
-Microsoft Windows, the window's Form object (BlWindow3D.Form) may be of
-help in this. There may also be a way to specify that an existing window
-be used as the 3D window, but it probably isn't portable and may not
-work in later MonoGame releases.
+Officially, MonoGame must create the 3D window, and does not allow you
+to specify an existing window to use as the 3D window. There are some
+platform-specific ways to do it described online, but note that they may
+not work in later MonoGame releases. To properly make the MonoGame
+window be a child window of an existing GUI, you need to explicitly
+size, position, and convey Z order to the original MonoGame window so
+that it is overlaid over the child window.
 
-All MonoGame features remain available in Blotch3D. For examples:
+All MonoGame features remain available and accessible in Blotch3D. For
+examples:
 
--   The models encapsulated in a BlSprite (see the BlSprite.LODs field)
-    is a list of MonoGame Model objects and/or triangle arrays
-    (VertexPositionNormalTexture\[\]).
+-   The models you specify for a sprite object (see the BlSprite.LODs
+    field) are MonoGame "Model" objects and/or MonoGame triangle arrays
+    (arrays of MonoGame 's "VertexPositionNormalTexture"). So, you can,
+    for example, specify custom shaders, etc., for those models.
 
 -   The BlWindow3D class derives from the MonoGame "Game" class.
 
 -   The BlGraphicsDeviceManager class derives from MonoGame's
     "GraphicsDeviceManager" class.
 
-Most Blotch3D objects must be Disposed when you are done with them and
-you are not otherwise terminating the program.
+Remember that most Blotch3D objects must be Disposed when you are done
+with them and you are not otherwise terminating the program.
 
 See the examples, reference documentation, and IntelliSense for more
 information.

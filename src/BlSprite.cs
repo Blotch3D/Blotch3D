@@ -47,15 +47,15 @@ namespace Blotch
 		public ulong Flags = 0xFFFFFFFFFFFFFFFF;
 
 		/// <summary>
-		/// The level-of-detail objects drawn for this sprite. Only one element is drawn
+		/// The objects (levels of detail) to draw for this sprite. Only one element is drawn
 		/// depending on the ApparentSize. Each element can be a Model, a triangle list
 		/// (VertexPositionNormalTexture[]), or null (indicating nothing should be drawn). Elements with lower indices are
-		/// higher LODs. So index 0 is the highest, index 1 is second highest, etc. LOD decreases (the index increases) for
+		/// higher LODs. So index 0 has the highest detail, index 1 is second highest, etc. LOD decreases (the index increases) for
 		/// every halving of the object's apparent size. You can adjust how close the LODs must be to the camera with
 		/// #LodScale. When the calculated LOD index is higher than the last element,
-		/// then the last element is used. So the simplest way to use this is to add a single element of the object you want
-		/// drawn. You can also add multiple references of the same object so multiple consecutive LODs draw the same object.
-		/// You can also set an element to null so it doesn't draw anything, which is typically the last element.
+		/// then the last element is used. So the simplest way to use this is to add a single object to the list.
+		/// You can add multiple references of the same object so multiple consecutive LODs draw the same object.
+		/// You can set an element to null so it doesn't draw anything, which is typically the last element.
 		/// A model can be assigned to multiple sprites. These are NOT disposed when the sprite is disposed.
 		/// </summary>
 		public List<object> LODs = new List<object>();
@@ -74,11 +74,12 @@ namespace Blotch
 		/// of model size, where element zero is the highest resolution, used when the apparent size is largest.
 		/// If a mipmap is not available for the apparent
 		/// size, the next higher available on is used. So, for example, you can specify only one texture to be used as all
-		/// mipmaps if you like. Note that for a texture to display, the model must include texture coordinates.
-		/// Most graphics subsystems do support mipmaps, but these are supported at the app level.
-		/// Therefore only one image is used over a model for a given model apparent size, rather than nearer portions of the
+		/// mipmaps if you like. Note that for a texture to display, the model must include texture coordinates. It must
+		/// also include normals if lighting other than 'emissive' is desired. 
+		/// Most graphics subsystems do support mipmaps, but these are software mipmaps, so only one image is used
+		/// over a model for a given model apparent size rather than nearer portions of the
 		/// model showing higher-level mipmaps.
-		/// These are NOT disposed when the sprite is disposed so that a given BlMipmap may be assigned
+		/// These are NOT disposed when the sprite is disposed, so a given BlMipmap may be assigned
 		/// to multiple sprites.
 		/// </summary>
 		public BlMipmap Mipmap = null;
