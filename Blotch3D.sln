@@ -19,7 +19,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlotchExample03_SpriteTextu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlotchExample04_SpriteText", "examples\BlotchExample04_SpriteText\BlotchExample04_SpriteText.csproj", "{45AFCF2A-9CAC-47E1-A830-99952A4DC7EF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlotchExample03_SpriteAlphaTexture", "examples\BlotchExample03_SpriteAlphaTexture\BlotchExample03_SpriteAlphaTexture.csproj", "{E2CF65D5-EE0A-4922-B373-B1FE3A172FE5}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlotchExample05_SpriteAlphaTexture", "examples\BlotchExample05_SpriteAlphaTexture\BlotchExample05_SpriteAlphaTexture.csproj", "{E2CF65D5-EE0A-4922-B373-B1FE3A172FE5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
