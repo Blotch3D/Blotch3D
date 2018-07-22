@@ -19,7 +19,7 @@ Quick start
     need the appropriate Visual Studio add-on and you will need to
     create a separate project for that platform.)
 
-5.  Use IntelliSense to see the reference documentation, or see the
+5.  Use IntelliSense to see the reference documentation, or see
     "Blotch3DManual.pdf".
 
 Introduction
@@ -40,7 +40,7 @@ can...
 
 -   Show 2D and in-world (as a texture) text in any font, size, color,
     etc. at any 2D or 3D position, and make text follow a sprite in 2D
-    or 3D.
+    or 3D. 2D textures and text can have a transparent background.
 
 -   Attach sprites to other sprites to create 'sprite trees' as large as
     you want. Child sprite orientation, position, scale, etc. are
@@ -75,7 +75,9 @@ can...
 
 -   Implement mipmaps.
 
--   Implement translucent sprites and textures with an alpha channel.
+-   Apply translucent textures to sprites (i.e. textures with an alpha
+    channel) with certain restrictions (see SpriteAlphaTexture for
+    details).
 
 -   Create sprite models programmatically (custom vertices).
 
@@ -212,13 +214,14 @@ can handle a GUI or whatever).
 
 We will call the abovementioned thread the "3D thread".
 
-All code that accesses 3D resources must be done in the 3D thread,
-including code that creates and uses all Blotch3D and MonoGame objects.
-Note that this rule also applies to any code structure (Parallel, async,
-etc.) that may internally use other threads, as well. This is necessary
-because certain 3D subsystems (OpenGL, DirectX, etc.) generally require
-that 3D resources be accessed by a single thread. (There are some
-platform-specific exceptions, but MonoGame does not use them.)
+All code that accesses 3D hardware resources must be done in the 3D
+thread, including code that creates and uses all Blotch3D and MonoGame
+objects. Note that this rule also applies to any code structure
+(Parallel, async, etc.) that may internally use other threads, as well.
+This is necessary because certain 3D subsystems (OpenGL, DirectX, etc.)
+generally require that 3D resources be accessed by a single thread.
+(There are some platform-specific exceptions, but MonoGame does not use
+them.)
 
 This pattern and these rules are also used by MonoGame. In fact, the
 BlWindow3D class inherits from MonoGame's "Game" class. But instead of
@@ -283,9 +286,8 @@ All MonoGame features remain available and accessible in Blotch3D. For
 examples:
 
 -   The models you specify for a sprite object (see the BlSprite.LODs
-    field) are MonoGame "Model" objects and/or MonoGame triangle arrays
-    (arrays of MonoGame 's "VertexPositionNormalTexture"). So, you can,
-    for example, specify custom shaders, etc., for those models.
+    field) are MonoGame "Model" objects. So, you can, for example,
+    specify custom shaders, etc., for those models.
 
 -   The BlWindow3D class derives from the MonoGame "Game" class.
 
@@ -779,6 +781,30 @@ A: Try doing a \"Graphics.GraphicsDevice.DepthStencilState =
 Graphics.DepthStencilStateDisabled" in the BlSprite.PreDraw delegate,
 and set it back to DepthStencilStateEnabled in the BlSprite.DrawCleanup
 delegate.
+
+Q: I'm moving or rotating a sprite regularly over many frames by
+multiplying its matrix with a matrix that represents the change per
+frame, but after a while the sprite gets distorted or drifts from its
+predicted position, location, rotation, etc.
+
+A: When you multiply two matrices, you introduce a very slight
+floating-point inaccuracy in the resulting matrix because floating-point
+values have a limited number of bits. Normally the inaccuracy is too
+small to matter. But if you repeatedly do it to the same matrix, it will
+eventually become noticeable. Try changing your math so that a new
+matrix is created from scratch each frame, or at least created every
+several hundred frames. For example, let's say you want to slightly
+rotate a sprite every frame by the same amount. You can either create a
+new rotation matrix from scratch every frame from a simple float scalar
+angle value you are regularly updating, or you can multiply the existing
+matrix by a persistent rotation matrix you created initially. The former
+method is more precise, but the latter is less CPU intensive (because
+creating a rotation matrix from a floating-point angle value requires
+that transcendental functions be called, but multiplying matrices does
+not). A good compromise is to use a combination of both, if possible.
+Specifically, multiply by a rotation matrix for a time, but somewhat
+periodically recreate the sprite's matrix from the scalar angle value to
+set it back to where it should be for the particular frame.
 
 Rights
 ======

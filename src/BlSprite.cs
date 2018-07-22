@@ -40,7 +40,7 @@ namespace Blotch
 		public double ApparentSize { get; private set; }
 
 		/// <summary>
-		/// The Flags field can be used by callbacks of #Draw (#PreDraw, #PreSubsprites, #PreLocal, and #PreMeshDraw) to
+		/// The Flags field can be used by callbacks of #Draw (#PreDraw, #PreSubsprites, #PreLocal, and #SetMeshEffect) to
 		/// indicate various user attributes of the sprite. Also, #GetRayIntersections won't hit if the bitwise AND of this value
 		/// and the flags argument passed to it is zero.
 		/// </summary>
@@ -105,10 +105,10 @@ namespace Blotch
 		public BoundingSphere? BoundSphere = null;
 
 		/// <summary>
-		/// BasicEffect used to draw vertices. If not explicitly set, then use a default BasicEffect and dispose it when the BlSprite
-		/// is disposed. If explicitly set, then don't dispose it when the BlSprite is disposed.
+		/// Effect used to draw vertices. If not explicitly set, then a default BasicEffect is used, and disposed when the BlSprite
+		/// is disposed. If explicitly set, then it is not  disposed when the BlSprite is disposed.
 		/// </summary>
-		public BasicEffect VerticesEffect
+		BasicEffect VerticesEffect
 		{
 			get { return _VerticesEffect; }
 			set
@@ -177,7 +177,7 @@ namespace Blotch
 		/// <summary>
 		/// The #Draw method takes an incoming 'world' matrix parameter which is the coordinate system of its parent. #AbsoluteMatrix
 		/// is that incoming world matrix parameter times the #Matrix member and altered according to Billboarding and #ConstSize.
-		/// This is not read-only because a callback (see #PreDraw, #PreSubsprites, #PreLocal, and #PreMeshDraw) may need to
+		/// This is not read-only because a callback (see #PreDraw, #PreSubsprites, #PreLocal, and #SetMeshEffect) may need to
 		/// change it from within the #Draw method. This is the matrix that is also passed to subsprites as their 'world' matrix.
 		/// </summary>
 		public Matrix AbsoluteMatrix = Matrix.Identity;
@@ -190,13 +190,13 @@ namespace Blotch
 
 		/// <summary>
 		/// Current incoming graphics parameter to the #Draw method. Typically this would be of interest to a callback function (see
-		/// #PreDraw, #PreSubsprites, #PreLocal, and #PreMeshDraw).
+		/// #PreDraw, #PreSubsprites, #PreLocal, and #SetMeshEffect).
 		/// </summary>
 		public BlGraphicsDeviceManager Graphics = null;
 
 		/// <summary>
 		/// Current incoming world matrix parameter to the #Draw method. Typically this would be of interest to a callback function (see
-		/// #PreDraw, #PreSubsprites, #PreLocal, and #PreMeshDraw).
+		/// #PreDraw, #PreSubsprites, #PreLocal, and #SetMeshEffect).
 		/// </summary>
 		public Matrix? LastWorldMatrix = null;
 
@@ -207,7 +207,7 @@ namespace Blotch
 
 		/// <summary>
 		/// Current incoming flags parameter to the Draw method. Typically this would be of interest to a callback function (see
-		/// #PreDraw, #PreSubsprites, #PreLocal, and #PreMeshDraw).
+		/// #PreDraw, #PreSubsprites, #PreLocal, and #SetMeshEffect).
 		/// </summary>
 		public ulong FlagsParameter = 0;
 
@@ -267,8 +267,7 @@ namespace Blotch
 			/// Continue Draw method execution, but don't bother re-calculating AbsoluteMatrix. One would typically return this
 			/// if, for example, its known that AbsoluteMatrix will not change from its current value because the Draw parameters
 			/// will be the same as they were the last time Draw was called. This happens, for example, when multiple calls are
-			/// being made in the same draw iteration for graphic operations that require multiple passes, like proper handling
-			/// of translucency, etc.
+			/// being made in the same draw iteration for graphic operations that require multiple passes.
 			/// </summary>
 			UseCurrentAbsoluteMatrix
 		}
@@ -322,10 +321,10 @@ namespace Blotch
 		/// <summary>
 		/// Return code from #PreSubsprites callback. This tells #Draw what to do next.
 		/// </summary>
-		public enum PreMeshDrawCmd
+		public enum SetMeshEffectCmd
 		{
 			/// <summary>
-			/// Continue Draw method execution
+			/// Continue Draw method execution for the mesh
 			/// </summary>
 			Continue,
 			/// <summary>
@@ -339,18 +338,20 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// See #PreMeshDraw
+		/// See #SetMeshEffect
 		/// </summary>
 		/// <param name="sprite"></param>
 		/// <param name="mesh"></param>
 		/// <returns></returns>
-		public delegate PreMeshDrawCmd PreMeshDrawType(BlSprite sprite, ModelMesh mesh);
-		
+		public delegate SetMeshEffectCmd SetMeshEffectType(BlSprite sprite, ModelMesh mesh);
+
 		/// <summary>
-		/// If not null, #Draw method calls this before each model mesh is drawn for the local model. From this function one might
-		/// examine and/or alter any public writable BlSprite field. If the return value is true, then the mesh will not be drawn.
+		/// If this not null, then the #Draw method executes this delegate for each model mesh instead of setting the mesh effect to BasicEffect.
+		/// In that case some effect must be set for the mesh. See the SpriteAlphaTexture
+		/// example. The return value from the delegate indicates whether to draw the mesh, skip drawing the mesh, or abort the Draw method entirely.
+		/// Note: This works only when for LOD elements that are models. When an LOD element is a vertex list, it always uses the BasicEffect.
 		/// </summary>
-		public PreMeshDrawType PreMeshDraw = null;
+		public SetMeshEffectType SetMeshEffect = null;
 
 		/// <summary>
 		/// Return code from #PreSubsprites callback. This tells #Draw what to do next.
@@ -520,7 +521,7 @@ namespace Blotch
 		/// </summary>
 		/// <param name="worldMatrixIn">Defines the position and orientation of the sprite</param>
 		/// <param name="flagsIn">Copied to LastFlags for use by any callback of Draw (PreDraw, PreSubspriteDraw, PreLocalDraw,
-		/// and PreMeshDraw) that wants it</param>
+		/// and SetMeshEffect) that wants it</param>
 		public void Draw(Matrix? worldMatrixIn = null, ulong flagsIn = 0xFFFFFFFFFFFFFFFF)
 		{
 			if (BlDebug.ShowThreadWarnings && CreationThread != Thread.CurrentThread.ManagedThreadId)
@@ -622,7 +623,7 @@ namespace Blotch
 
 			return LODs[(int)i];
 		}
-		Texture2D GetMipmapLod()
+		public Texture2D GetMipmapLod()
 		{
 			if (Mipmap==null || Mipmap.Count < 1)
 				return null;
@@ -654,36 +655,39 @@ namespace Blotch
 
 					foreach (ModelMesh mesh in Model.Meshes)
 					{
-						//
-						// Draw the model
-						//
-						if (PreMeshDraw != null)
-						{
-							var ret = PreMeshDraw(this, mesh);
-							if (ret == PreMeshDrawCmd.Skip)
-								continue;
-							if (ret == PreMeshDrawCmd.Abort)
-								return;
-						}
-
 						if (boundSphere == null)
 							boundSphere = mesh.BoundingSphere;
 						else
 							boundSphere = BoundingSphere.CreateMerged((BoundingSphere)boundSphere, mesh.BoundingSphere);
 
 						//
-						// For each effect in the mesh
+						// Draw the model
 						//
-						foreach (var effect in mesh.Effects)
+						if (SetMeshEffect != null)
 						{
-							var basicEffect = (BasicEffect)effect;
-
-							SetupBasicEffectLighting(Graphics, basicEffect);
-
-							basicEffect.Projection = Graphics.Projection;
-							basicEffect.View = Graphics.View;
-							basicEffect.World = AbsoluteMatrix;
+							var ret = SetMeshEffect(this, mesh);
+							if (ret == SetMeshEffectCmd.Skip)
+								continue;
+							if (ret == SetMeshEffectCmd.Abort)
+								return;
 						}
+						else
+						{
+							//
+							// For each effect in the mesh
+							//
+							foreach (var effect in mesh.Effects)
+							{
+								var basicEffect = (BasicEffect)effect;
+
+								SetupBasicEffectLighting(Graphics, basicEffect);
+
+								basicEffect.Projection = Graphics.Projection;
+								basicEffect.View = Graphics.View;
+								basicEffect.World = AbsoluteMatrix;
+							}
+						}
+
 
 						mesh.Draw();
 					}

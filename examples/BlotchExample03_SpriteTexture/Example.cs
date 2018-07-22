@@ -68,10 +68,10 @@ Shift          - Fine control
 			MyTexture = Graphics.LoadFromImageFile("image.png");
 
 			// Set the sprite's mipmap
+			// NOTE: The texture mapping is up to the model designer, because
+			// the texture coordinates for each vertex are embedded in the model file.
 			Torus.Mipmap = new BlMipmap(Graphics, MyTexture);
 
-			// Note: The above texture has translucency. Doing translucency correctly takes considerable effort.
-			// In this example we don't worry about the oddities we get from not doing it correctly.
 		}
 
 		/// <summary>
@@ -111,7 +111,12 @@ Shift          - Fine control
 				Torus.ApparentSize
 			);
 
-			Graphics.DrawText(MyMenuText, Font, new Vector2(50, 50));
+			// handle undrawable characters for the specified font(like the infinity symbol)
+			try
+			{
+				Graphics.DrawText(MyMenuText, Font, new Vector2(50, 50));
+			}
+			catch { }
 		}
 	}
 }

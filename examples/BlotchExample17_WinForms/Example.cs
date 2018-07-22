@@ -97,8 +97,12 @@ Shift          - Fine control
 				Torus.LodTarget,
 				Torus.ApparentSize
 			);
-
-			Graphics.DrawText(MyMenuText, Font, new Vector2(50, 50));
+			// handle undrawable characters for the specified font(like the infinity symbol)
+			try
+			{
+				Graphics.DrawText(MyMenuText, Font, new Vector2(50, 50));
+			}
+			catch { }
 		}
 	}
 }

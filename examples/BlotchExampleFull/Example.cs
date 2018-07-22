@@ -33,21 +33,7 @@ Shift          - Fine control
 		Matrix LastProjectionMatrix;
 		Model SkyboxModel = null;
 		float SkyboxDiameter = 1000000f;
-		SpriteFont FontArial14;
-		List<BlSprite> FlatDrawList = new List<BlSprite>();
-
-		enum Flag : ulong
-		{
-			None = 0,
-			IsVisible = 0x00000001,
-			IsInvisible = 0x00000002,
-			HasNoTranslucency = 0x00000004,
-			HasTranslucency = 0x00000008,
-			NotAlwaysOnTop = 0x00000010,
-			AlwaysOnTop = 0x00000020,
-			CompileFlatList = 0x00000040,
-			UseCurrentAbsoluteMatrix = 0x00000080,
-		}
+		SpriteFont Font;
 
 		public GameExample()
 		{
@@ -70,7 +56,7 @@ Shift          - Fine control
 
 			Content = new ContentManager(Services, "Content");
 
-			FontArial14 = Content.Load<SpriteFont>("Arial14");
+			Font = Content.Load<SpriteFont>("Arial14");
 
 			var floor = new BlSprite(Graphics, "floor");
 			var plane = Content.Load<Model>("Plane");
@@ -83,10 +69,7 @@ Shift          - Fine control
 			floor.LODs.Add(plane);
 			floor.Mipmap = new BlMipmap(Graphics, MyTexture);
 			floor.SetAllMaterialBlack();
-			floor.Flags = (ulong)(Flag.IsVisible | Flag.NotAlwaysOnTop | Flag.HasTranslucency);
 			floor.EmissiveColor = new Vector3(1, 1, 1);
-			floor.PreDraw = PreDraw;
-			floor.PreLocal = PreLocal;
 			TopSprite.Add("floor", floor);
 
 			//
@@ -94,9 +77,6 @@ Shift          - Fine control
 			//
 			var modelParent = new BlSprite(Graphics, "parent");
 			modelParent.Matrix *= Matrix.CreateTranslation(1,1,1);
-			modelParent.Flags = (ulong)(Flag.IsInvisible | Flag.NotAlwaysOnTop | Flag.HasNoTranslucency);
-			modelParent.PreDraw = PreDraw;
-			modelParent.PreLocal = PreLocal;
 			TopSprite.Add("modelParent", modelParent);
 
 			//
@@ -106,10 +86,7 @@ Shift          - Fine control
 			Model.Mipmap = new BlMipmap(Graphics, MyTexture);
 			Model.Matrix = Microsoft.Xna.Framework.Matrix.CreateScale(.12f);
 			Model.SetAllMaterialBlack();
-			Model.Flags = (ulong)(Flag.IsVisible | Flag.NotAlwaysOnTop | Flag.HasNoTranslucency);
 			Model.EmissiveColor = new Vector3(1, 1, 1);
-			Model.PreDraw = PreDraw;
-			Model.PreLocal = PreLocal;
 			modelParent.Add("model", Model);
 
 			var verts = new VertexPositionNormalTexture[6];
@@ -154,16 +131,27 @@ Shift          - Fine control
 			text.ConstSize = true;
 			modelParent.Add("text", text);
 
+			// Note that in-world textures with alpha (like this one) really need to use
+			// an alpha test to work correctly (see the SpriteAlphaTexture demo)
+			// This one works because it is drawn last and there is no other alpha texture in front of it.
 			var title = new BlSprite(Graphics, "title");
 			title.LODs.Add(Content.Load<Model>("Plane"));
 			title.Matrix = Matrix.CreateScale(.15f, .05f, .15f);
-			title.Mipmap = new BlMipmap(Graphics,Graphics.TextToTexture("This is the\nmodel with LODs", FontArial14, Microsoft.Xna.Framework.Color.Red, Microsoft.Xna.Framework.Color.Transparent));
+			title.Mipmap = new BlMipmap(Graphics,Graphics.TextToTexture("These words are\nin world space", Font, Microsoft.Xna.Framework.Color.Red, Microsoft.Xna.Framework.Color.Transparent));
 			title.MipmapScale = -1000;
 			title.SetAllMaterialBlack();
 			title.EmissiveColor = new Vector3(1, 1, 1);
-			title.Flags = (ulong)(Flag.IsVisible | Flag.AlwaysOnTop | Flag.HasTranslucency);
-			title.PreDraw = PreDraw;
-			title.PreLocal = PreLocal;
+			title.PreDraw = (s) => 
+			{
+				// Disable depth testing
+				Graphics.GraphicsDevice.DepthStencilState = Graphics.DepthStencilStateDisabled;
+				return BlSprite.PreDrawCmd.Continue;
+			};
+			title.DrawCleanup = (s) =>
+			{
+				// Disable depth testing
+				Graphics.GraphicsDevice.DepthStencilState = Graphics.DepthStencilStateEnabled;
+			};
 			text.Add("title", title);
 
 			//
@@ -180,12 +168,9 @@ Shift          - Fine control
 			myHud.Matrix *= Matrix.CreateTranslation(3, 1, 0);
 
 			myHud.LODs.Add(Content.Load<Model>("Plane"));
-			myHud.Mipmap = new BlMipmap(Graphics, Graphics.TextToTexture("HUD text", FontArial14, Microsoft.Xna.Framework.Color.White, Microsoft.Xna.Framework.Color.Transparent),1);
+			myHud.Mipmap = new BlMipmap(Graphics, Graphics.TextToTexture("HUD text", Font, Microsoft.Xna.Framework.Color.White, Microsoft.Xna.Framework.Color.Transparent),1);
 			myHud.SetAllMaterialBlack();
 			myHud.EmissiveColor = new Vector3(1, 1, 1);
-			myHud.Flags = (ulong)(Flag.IsVisible | Flag.AlwaysOnTop | Flag.HasTranslucency);
-			//helpHud.PreDraw = PreDraw;
-			//helpHud.PreLocal = PreLocal;
 
 			// Create skybox, with a FrameProc that keeps it centered on the camera
 			Skybox = new BlSprite(Graphics, "Skybox", (s) =>
@@ -231,7 +216,7 @@ Shift          - Fine control
 
 			var guiCtrl = new BlGuiControl(this)
 			{
-				Texture = Graphics.TextToTexture("Click me for a console message", FontArial14),
+				Texture = Graphics.TextToTexture("Click me for a console message", Font),
 				Position = new Vector2(600, 100),
 				OnMouseOver = (ctrl) => 
 				{
@@ -269,29 +254,6 @@ Shift          - Fine control
 			}
 		}
 
-		public BlSprite.PreDrawCmd PreDraw(BlSprite This)
-		{
-			if((This.FlagsParameter & (ulong)Flag.UseCurrentAbsoluteMatrix) != 0)
-				return BlSprite.PreDrawCmd.UseCurrentAbsoluteMatrix;
-
-			return BlSprite.PreDrawCmd.Continue;
-		}
-		public BlSprite.PreLocalCmd PreLocal(BlSprite This)
-		{
-			if (((Flag)This.FlagsParameter & Flag.CompileFlatList) != 0)
-			{
-				FlatDrawList.Add(This);
-				return BlSprite.PreLocalCmd.Abort;
-			}
-
-			if ((This.Flags & (ulong)Flag.HasTranslucency) != 0)
-				Graphics.GraphicsDevice.DepthStencilState = DepthStencilState.None;
-			else
-				Graphics.GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-
-			return BlSprite.PreLocalCmd.Continue;
-		}
-
 		/// <summary>
 		/// 'FrameDraw' is automatically called once per frame if there is enough CPU. Otherwise its called more slowly.
 		/// This is where you would typically draw the scene.
@@ -304,16 +266,7 @@ Shift          - Fine control
 			var hudDist = (float)-(Graphics.CurrentNearClip + Graphics.CurrentFarClip) / 2;
 			HudBackground.Matrix = Matrix.CreateScale(.4f, .4f, .4f) * Matrix.CreateTranslation(0, 0, hudDist);
 
-			// Get a list of sprites with collapsed matrix for each
-			FlatDrawList.Clear();
-			TopSprite.Draw(null,(ulong)Flag.CompileFlatList);
-
-			// order it by distance from camera (far to near)
-			FlatDrawList.Sort();
-
-			// draw the flat list in far to near order
-			foreach (var s in FlatDrawList)
-				s.Draw( null, (ulong)Flag.UseCurrentAbsoluteMatrix);
+			TopSprite.Draw();
 
 			Graphics.SetSpriteToCamera(TopHudSprite);
 			Graphics.GraphicsDevice.DepthStencilState = DepthStencilState.None;
@@ -333,7 +286,12 @@ Shift          - Fine control
 
 			try
 			{
-				Graphics.DrawText(MyMenuText, FontArial14, new Vector2(50, 50));
+				// handle undrawable characters for the specified font(like the infinity symbol)
+				try
+				{
+					Graphics.DrawText(MyMenuText, Font, new Vector2(50, 50));
+				}
+				catch { }
 			}
 			catch (Exception e)
 			{
