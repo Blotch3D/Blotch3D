@@ -36,7 +36,8 @@ can...
 
 -   Set a sprite's material, texture, and lighting response.
 
--   Load textures from standard image files.
+-   Load textures from standard image files, including textures with an
+    alpha channel (with translucent pixels).
 
 -   Show 2D and in-world (as a texture) text in any font, size, color,
     etc. at any 2D or 3D position, and make text follow a sprite in 2D
@@ -313,9 +314,10 @@ like any other texture, there may be situations that you will see
 certain undesirable artifacts depending on whether a far surface with
 respect to the camera is drawn before or after a near surface. For some
 translucent textures the artifacts can be subtle, and you might find
-them perfectly acceptable. We do this in the "full" example because you
-can't even see the sprites when viewed from underneath, which is when
-you would otherwise see the artifacts in that example.
+them perfectly acceptable. We do this in the "full" example because the
+draw order is such that you won't see the artifacts because you can't
+even see the sprites when viewed from underneath, which is when you
+would otherwise see the artifacts in that example.
 
 One main reason these artifacts occur is because the default MonoGame
 "Effect" used to draw models (the "BasicEffect" effect) provides a pixel
@@ -362,6 +364,9 @@ Specifically, you do the following:
     return BlBasicEffect;
 
     };
+
+Note that BlBasicEffect is slightly slower than the default effect, so
+only use BlBasicEffect when necessary.
 
 Making 3D models
 ================
