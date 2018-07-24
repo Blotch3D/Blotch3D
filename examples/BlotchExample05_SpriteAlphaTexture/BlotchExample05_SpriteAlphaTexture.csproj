@@ -68,6 +68,10 @@
   <ItemGroup>
     <None Include="app.config" />
     <None Include="app.manifest" />
+    <MonoGameContentReference Include="Content\Content.mgcb" />
+    <EmbeddedResource Include="Content\BasicEffectWithAlphaTest.mgfxo">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\src\Blotch3D.csproj">

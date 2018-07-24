@@ -104,24 +104,7 @@ namespace Blotch
 		/// </summary>
 		public BoundingSphere? BoundSphere = null;
 
-		/// <summary>
-		/// Effect used to draw vertices. If not explicitly set, then a default BasicEffect is used, and disposed when the BlSprite
-		/// is disposed. If explicitly set, then it is not  disposed when the BlSprite is disposed.
-		/// </summary>
-		BasicEffect VerticesEffect
-		{
-			get { return _VerticesEffect; }
-			set
-			{
-				if (IsVerticesEffectMine && _VerticesEffect != null)
-					_VerticesEffect.Dispose();
-
-				_VerticesEffect = value;
-				IsVerticesEffectMine = false;
-			}
-		}
-		bool IsVerticesEffectMine = false;
-		BasicEffect _VerticesEffect = null;
+		Effect VerticesEffect = null;
 
 		/// <summary>
 		/// Spherically billboard the model. Specifically, keep the model's 'forward' direction pointing at the camera and keep
@@ -321,7 +304,7 @@ namespace Blotch
 		/// <summary>
 		/// Return code from #PreSubsprites callback. This tells #Draw what to do next.
 		/// </summary>
-		public enum SetMeshEffectCmd
+		public enum SetEffectCmd
 		{
 			/// <summary>
 			/// Continue Draw method execution for the mesh
@@ -341,17 +324,17 @@ namespace Blotch
 		/// See #SetMeshEffect
 		/// </summary>
 		/// <param name="sprite"></param>
-		/// <param name="mesh"></param>
+		/// <param name="effect"></param>
 		/// <returns></returns>
-		public delegate SetMeshEffectCmd SetMeshEffectType(BlSprite sprite, ModelMesh mesh);
+		public delegate Effect SetMeshEffectType(BlSprite sprite, Effect effect);
 
 		/// <summary>
-		/// If this not null, then the #Draw method executes this delegate for each model mesh instead of setting the mesh effect to BasicEffect.
-		/// In that case some effect must be set for the mesh. See the SpriteAlphaTexture
-		/// example. The return value from the delegate indicates whether to draw the mesh, skip drawing the mesh, or abort the Draw method entirely.
-		/// Note: This works only when for LOD elements that are models. When an LOD element is a vertex list, it always uses the BasicEffect.
+		/// If this not null, then the #Draw method executes this delegate for each model mesh effect instead using the
+		/// default BasicEffects. See the SpriteAlphaTexture for an example. The return value is the new or altered effect.
+		/// If this is called when the thing to draw is a VertexPositionNormalTexture, then the effect parameter passed in
+		/// is a null.
 		/// </summary>
-		public SetMeshEffectType SetMeshEffect = null;
+		public SetMeshEffectType SetEffect = null;
 
 		/// <summary>
 		/// Return code from #PreSubsprites callback. This tells #Draw what to do next.
@@ -534,14 +517,18 @@ namespace Blotch
 			LastWorldMatrix = worldMatrixIn;
 			FlagsParameter = flagsIn;
 
+#if !DEBUG
 			try
 			{
+#endif
 				DrawInternal();
+#if !DEBUG
 			}
 			catch (Exception e)
 			{
 				Console.WriteLine("Recovered from exception in EsSprite.Draw method:\n\n{0}", e);
 			}
+#endif
 		}
 
 		/// <summary>
@@ -663,31 +650,23 @@ namespace Blotch
 						//
 						// Draw the model
 						//
-						if (SetMeshEffect != null)
+						if (SetEffect != null)
 						{
-							var ret = SetMeshEffect(this, mesh);
-							if (ret == SetMeshEffectCmd.Skip)
-								continue;
-							if (ret == SetMeshEffectCmd.Abort)
-								return;
+							foreach (var part in mesh.MeshParts)
+							{
+								var ret = SetEffect(this, part.Effect);
+								if (ret == null)
+									continue;
+								part.Effect = ret;
+							}
 						}
 						else
 						{
-							//
-							// For each effect in the mesh
-							//
 							foreach (var effect in mesh.Effects)
 							{
-								var basicEffect = (BasicEffect)effect;
-
-								SetupBasicEffectLighting(Graphics, basicEffect);
-
-								basicEffect.Projection = Graphics.Projection;
-								basicEffect.View = Graphics.View;
-								basicEffect.World = AbsoluteMatrix;
+								SetupBasicEffect((BasicEffect)effect);
 							}
 						}
-
 
 						mesh.Draw();
 					}
@@ -697,20 +676,25 @@ namespace Blotch
 				{
 					var Vertices = obj as VertexPositionNormalTexture[];
 
-					if(_VerticesEffect == null)
+					if (SetEffect != null)
 					{
-						_VerticesEffect = new BasicEffect(Graphics.GraphicsDevice);
-						IsVerticesEffectMine = true;
+						var ret = SetEffect(this, null);
+						if (ret == null)
+							return;
+					}
+					else
+					{
+						if (VerticesEffect == null)
+						{
+							VerticesEffect = new BasicEffect(Graphics.GraphicsDevice);
+						}
+						SetupBasicEffect((BasicEffect)VerticesEffect);
 					}
 
-					SetupBasicEffectLighting(Graphics, _VerticesEffect);
-
-					_VerticesEffect.Projection = Graphics.Projection;
-					_VerticesEffect.View = Graphics.View;
-					_VerticesEffect.World = AbsoluteMatrix;
+					//VerticesEffect.Techniques[0].Passes[0].Apply();
 
 					Vector3 avg = Vector3.Zero;
-					foreach (var pass in _VerticesEffect.CurrentTechnique.Passes)
+					foreach (var pass in VerticesEffect.CurrentTechnique.Passes)
 					{
 						pass.Apply();
 
@@ -854,14 +838,21 @@ namespace Blotch
 			}
 		}
 		/// <summary>
-		/// Called by DrawInternal
+		/// Sets up in the specified BasicEffect all matrices and lighting parameters for this sprite.
+		/// BlSprite#DrawInternal calls this for the BasicEffects embedded in the LOD models.
+		/// App code might call this from a SetEffect delegate if, for example, it is using a modified
+		/// form of the stock BasicEffect.fx, like the Blotch3D's BasicEffectWithAlphaTest.
 		/// </summary>
-		void SetupBasicEffectLighting(BlGraphicsDeviceManager flc, BasicEffect effect)
+		public void SetupBasicEffect(BasicEffect effect)
 		{
+			effect.Projection = Graphics.Projection;
+			effect.View = Graphics.View;
+			effect.World = AbsoluteMatrix;
+
 			effect.LightingEnabled = true;
 			do
 			{
-				if (flc.Lights.Count < 1)
+				if (Graphics.Lights.Count < 1)
 				{
 					effect.DirectionalLight0.Enabled = false;
 					effect.DirectionalLight1.Enabled = false;
@@ -869,7 +860,7 @@ namespace Blotch
 					break;
 				}
 
-				var light = flc.Lights[0];
+				var light = Graphics.Lights[0];
 				if (light.LightDirection != null)
 				{
 					effect.DirectionalLight0.DiffuseColor = light.LightDiffuseColor;
@@ -880,14 +871,14 @@ namespace Blotch
 				else
 					effect.DirectionalLight0.Enabled = false;
 
-				if (flc.Lights.Count < 2)
+				if (Graphics.Lights.Count < 2)
 				{
 					effect.DirectionalLight1.Enabled = false;
 					effect.DirectionalLight2.Enabled = false;
 					break;
 				}
 
-				light = flc.Lights[1];
+				light = Graphics.Lights[1];
 				if (light.LightDirection != null)
 				{
 					effect.DirectionalLight1.DiffuseColor = light.LightDiffuseColor;
@@ -898,13 +889,13 @@ namespace Blotch
 				else
 					effect.DirectionalLight1.Enabled = false;
 
-				if (flc.Lights.Count < 3)
+				if (Graphics.Lights.Count < 3)
 				{
 					effect.DirectionalLight2.Enabled = false;
 					break;
 				}
 
-				light = flc.Lights[2];
+				light = Graphics.Lights[2];
 				if (light.LightDirection != null)
 				{
 					effect.DirectionalLight2.DiffuseColor = light.LightDiffuseColor;
@@ -924,8 +915,8 @@ namespace Blotch
 			if (EmissiveColor != null)
 				effect.EmissiveColor = (Vector3)EmissiveColor;
 
-			if (flc.AmbientLightColor != null)
-				effect.AmbientLightColor = (Vector3)flc.AmbientLightColor;
+			if (Graphics.AmbientLightColor != null)
+				effect.AmbientLightColor = (Vector3)Graphics.AmbientLightColor;
 
 			if (SpecularColor != null)
 			{
@@ -933,12 +924,114 @@ namespace Blotch
 				effect.SpecularPower = SpecularPower;
 			}
 
-			if (flc.FogColor != null)
+			if (Graphics.FogColor != null)
 			{
-				effect.FogColor = (Vector3)flc.FogColor;
+				effect.FogColor = (Vector3)Graphics.FogColor;
 				effect.FogEnabled = true;
-				effect.FogStart = flc.fogStart;
-				effect.FogEnd = flc.fogEnd;
+				effect.FogStart = Graphics.fogStart;
+				effect.FogEnd = Graphics.fogEnd;
+			}
+
+			var Texture = GetMipmapLod();
+			if (Texture != null)
+			{
+				effect.TextureEnabled = true;
+				effect.Texture = Texture;
+			}
+		}
+		/// <summary>
+		/// Sets up in the specified BasicEffect all matrices and lighting parameters for this sprite.
+		/// BlSprite#DrawInternal calls this for the BasicEffects embedded in the LOD models.
+		/// App code might call this from a SetEffect delegate if, for example, it is using a modified
+		/// form of the stock BasicEffect.fx, like the Blotch3D's BasicEffectWithAlphaTest.
+		/// </summary>
+		public void SetupBasicEffect(BlBasicEffect effect)
+		{
+			effect.Projection = Graphics.Projection;
+			effect.View = Graphics.View;
+			effect.World = AbsoluteMatrix;
+
+			effect.LightingEnabled = true;
+			do
+			{
+				if (Graphics.Lights.Count < 1)
+				{
+					effect.DirectionalLight0.Enabled = false;
+					effect.DirectionalLight1.Enabled = false;
+					effect.DirectionalLight2.Enabled = false;
+					break;
+				}
+
+				var light = Graphics.Lights[0];
+				if (light.LightDirection != null)
+				{
+					effect.DirectionalLight0.DiffuseColor = light.LightDiffuseColor;
+					effect.DirectionalLight0.SpecularColor = light.LightSpecularColor;
+					effect.DirectionalLight0.Direction = (Vector3)light.LightDirection;
+					effect.DirectionalLight0.Enabled = true;
+				}
+				else
+					effect.DirectionalLight0.Enabled = false;
+
+				if (Graphics.Lights.Count < 2)
+				{
+					effect.DirectionalLight1.Enabled = false;
+					effect.DirectionalLight2.Enabled = false;
+					break;
+				}
+
+				light = Graphics.Lights[1];
+				if (light.LightDirection != null)
+				{
+					effect.DirectionalLight1.DiffuseColor = light.LightDiffuseColor;
+					effect.DirectionalLight1.SpecularColor = light.LightSpecularColor;
+					effect.DirectionalLight1.Direction = (Vector3)light.LightDirection;
+					effect.DirectionalLight1.Enabled = true;
+				}
+				else
+					effect.DirectionalLight1.Enabled = false;
+
+				if (Graphics.Lights.Count < 3)
+				{
+					effect.DirectionalLight2.Enabled = false;
+					break;
+				}
+
+				light = Graphics.Lights[2];
+				if (light.LightDirection != null)
+				{
+					effect.DirectionalLight2.DiffuseColor = light.LightDiffuseColor;
+					effect.DirectionalLight2.SpecularColor = light.LightSpecularColor;
+					effect.DirectionalLight2.Direction = (Vector3)light.LightDirection;
+					effect.DirectionalLight2.Enabled = true;
+				}
+				else
+					effect.DirectionalLight2.Enabled = false;
+
+			}
+			while (false);
+
+			if (Color != null)
+				effect.DiffuseColor = (Vector3)Color;
+
+			if (EmissiveColor != null)
+				effect.EmissiveColor = (Vector3)EmissiveColor;
+
+			if (Graphics.AmbientLightColor != null)
+				effect.AmbientLightColor = (Vector3)Graphics.AmbientLightColor;
+
+			if (SpecularColor != null)
+			{
+				effect.SpecularColor = (Vector3)SpecularColor;
+				effect.SpecularPower = SpecularPower;
+			}
+
+			if (Graphics.FogColor != null)
+			{
+				effect.FogColor = (Vector3)Graphics.FogColor;
+				effect.FogEnabled = true;
+				effect.FogStart = Graphics.fogStart;
+				effect.FogEnd = Graphics.fogEnd;
 			}
 
 			var Texture = GetMipmapLod();
@@ -1012,8 +1105,7 @@ namespace Blotch
 				Graphics.Window.FrameProcSpritesRemove(this);
 
 			// Dispose the VerticesEffect if we were the one who created it.
-			if (IsVerticesEffectMine && _VerticesEffect!=null)
-				_VerticesEffect.Dispose();
+			VerticesEffect.Dispose();
 
 			//base.Dispose();
 			IsDisposed = true;

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Content;
 using System;
 using Blotch;
+using System.IO;
 
 namespace BlotchExample
 {
@@ -40,23 +41,27 @@ Esc            - Reset
 Shift          - Fine control
 ";
 
-		AlphaTestEffect AlphaTestEffect;
+		/// <summary>
+		/// Same as BasicEffect, but also does alpha test (and has a AlphaTestThreshold variable)
+		/// Note that this does NOT inherit from BasicEffect and cannot be used in its place
+		/// </summary>
+		BlBasicEffect BlBasicEffect;
 
 		/// <summary>
 		/// See BlWindow3D for details.
 		/// </summary>
 		protected override void Setup()
 		{
-			AlphaTestEffect = new AlphaTestEffect(GraphicsDevice);
-			AlphaTestEffect.AlphaFunction = CompareFunction.GreaterEqual;
-			AlphaTestEffect.ReferenceAlpha = 128;
-
 			// We need to create one ContentManager object for each top-level content folder we'll be
 			// loading things from. Here "Content" is the most senior folder name of the content tree.
 			// (Content [models, fonts, etc.] are added to the project with the Content utility. Double-click
 			// 'Content.mgcb' in solution explorer.). You can create multiple content managers if content
 			// is spread of diverse folders.
 			var MyContent = new ContentManager(Services, "Content");
+
+			byte[] bytes = File.ReadAllBytes("Content/BlBasicEffect.mgfxo");
+			BlBasicEffect = new BlBasicEffect(Graphics.GraphicsDevice, bytes);
+			BlBasicEffect.Parameters["AlphaTestThreshold"].SetValue(.2f);
 
 			// The font we will use to draw the menu on the screen.
 			// "Arial14" is the pathname to the font file
@@ -68,47 +73,12 @@ Shift          - Fine control
 			// The sprite we draw in this window
 			Torus = new BlSprite(Graphics,"Torus");
 
-			Torus.PreDraw = (s) => 
+			// See documentation for details on translucency
+			Torus.SetEffect = (s,effect) =>
 			{
-				var graphicsDevice = s.Graphics.GraphicsDevice;
-				//graphicsDevice.BlendState = BlendState.Opaque;
-				//graphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
-				//graphicsDevice.DepthStencilState = DepthStencilState.None;
-				graphicsDevice.SamplerStates[0] = SamplerState.LinearWrap;
+				s.SetupBasicEffect(BlBasicEffect);	
 
-				return BlSprite.PreDrawCmd.Continue;
-			};
-
-			Torus.DrawCleanup=(s)=>
-			{
-				var graphicsDevice = s.Graphics.GraphicsDevice;
-
-				//graphicsDevice.DepthStencilState = DepthStencilState.Default;
-				//graphicsDevice.SamplerStates[0] = SamplerState.LinearClamp;
-			};
-
-			// Unfortunately, MonoGame's stock AlphaTestEffect does not have full lighting support.
-			// It only supports ambient and fog. To make an alpha testing effect with full lighting support
-			// you'd need to copy the source to BasicEffect and then add the alpha test, which is not trivial.
-			// (Custom shaders files (*.fx) can be added the same way as other resources--via double-clicking
-			// Content.mgcb and then loading them as an effect)
-			// Note: You can also just neglect the AlphaTestEffect stuff in this demo and use the 
-			// BasicEffect like all the other demos but with an alpha channel in the texture. That will give you a
-			// "poor man's" alpha texture (which will have certain fairly subtle artifacts) but with full lighting support.
-			Torus.SetMeshEffect = (s,mesh) =>
-			{
-				foreach(var part in mesh.MeshParts)
-				{
-					AlphaTestEffect.World = s.AbsoluteMatrix;
-					AlphaTestEffect.View = s.Graphics.View;
-					AlphaTestEffect.Projection = s.Graphics.Projection;
-					AlphaTestEffect.Texture = s.GetMipmapLod();
-
-					part.Effect = AlphaTestEffect;
-
-					AlphaTestEffect.Techniques[2].Passes[0].Apply();
-				}
-				return BlSprite.SetMeshEffectCmd.Continue;
+				return BlBasicEffect;
 			};
 
 			Torus.LODs.Add(TorusModel);

@@ -349,7 +349,7 @@ namespace Blotch
 
 			GraphicsDevice.BlendState = BlendState.AlphaBlend;
 			//GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-			//GraphicsProfile = GraphicsProfile.HiDef;
+			GraphicsProfile = GraphicsProfile.HiDef;
 			PreferMultiSampling = true;
 
 			//RasterizerState rasterizerState = new RasterizerState();

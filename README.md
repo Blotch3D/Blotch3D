@@ -40,7 +40,7 @@ can...
 
 -   Show 2D and in-world (as a texture) text in any font, size, color,
     etc. at any 2D or 3D position, and make text follow a sprite in 2D
-    or 3D. 2D textures and text can have a transparent background.
+    or 3D.
 
 -   Attach sprites to other sprites to create 'sprite trees' as large as
     you want. Child sprite orientation, position, scale, etc. are
@@ -60,8 +60,8 @@ can...
 
 -   Connect the camera to a sprite to implement 'cockpit view', etc.
 
--   Implement GUI controls (as dynamic 2D text or image rectangles) in
-    the 3D window.
+-   Implement GUI controls (as dynamic 2D text or image rectangles, and
+    with transparent pixels) in the 3D window.
 
 -   Implement a skybox sprite.
 
@@ -74,10 +74,6 @@ can...
 -   Implement levels-of-detail.
 
 -   Implement mipmaps.
-
--   Apply translucent textures to sprites (i.e. textures with an alpha
-    channel) with certain restrictions (see SpriteAlphaTexture for
-    details).
 
 -   Create sprite models programmatically (custom vertices).
 
@@ -299,6 +295,60 @@ with them and you are not otherwise terminating the program.
 
 See the examples, reference documentation, and IntelliSense for more
 information.
+
+Translucency
+============
+
+Translucent pixels in text or textures drawn using the 2D Blotch3D
+drawing methods (BlGraphicsDeviceManager\#DrawText and
+BlGraphicsDeviceManager\#DrawTexture) will always correctly show the
+things behind them. Just be sure to call those methods after all other
+3D things are drawn in a given frame.
+
+However, a translucent texture applied to a sprite requires special
+handling.
+
+If you simply apply the translucent texture to a sprite as if it's just
+like any other texture, it will often work as expected. However, you
+will sometimes see certain undesirable artifacts depending on whether a
+far surface with respect to the camera is drawn before or after a near
+surface. You can alleviate *some* of these artifacts by simply drawing
+all opaque sprites in any order and then all translucent sprites in
+far-to-near order (which requires creating a sorted list of sprites to
+draw every frame). However, this would not eliminate the artifacts that
+sometimes appear when sprite surfaces intersect or one surface of the
+same translucent sprite occludes another of that sprite.
+
+For some translucent textures the artifacts can be subtle, and you might
+find them perfectly acceptable. We do this in the "full" example because
+you can't even see the sprites when viewed from underneath, which is
+when you would otherwise see the artifacts.
+
+One main reason these artifacts occur is because the default MonoGame
+"Effect" used (the "BasicEffect" effect) provides a pixel shader that
+does not do "alpha testing". Alpha testing is the process of neglecting
+to draw texture pixels if the texture pixel's alpha is below some value
+(i.e. if it is translucent enough). Although even then, there are
+artifacts that occur when multiple *partly*-translucent textures occlude
+one another, but that is a subject for a more advanced text.
+
+If you do want to use alpha testing, MonoGame does provide an
+"AlphaTestEffect" effect that supports it. Using that stock effect is
+demonstrated in the SpriteAlphaTexture example. However, AlphaTestEffect
+does not support directional lights, as are supported in BasicEffect.
+You'll notice the model in that example is evenly lit even though there
+are the default directional lights present.
+
+So, to implement pretty good translucency you would have to write a
+custom effect (i.e. write an "FX" file, compile it with the provided
+2MGFX.exe, load the compiled file with something like the following...
+
+byte\[\] bytes = File.ReadAllBytes(\"Content/MyEffect.mgfxo\");
+
+MyEffect = new Effect(Graphics.GraphicsDevice, bytes);
+
+...and then set its parameters just before drawing the sprite(s) that
+will use it.
 
 Making 3D models
 ================
@@ -798,13 +848,13 @@ rotate a sprite every frame by the same amount. You can either create a
 new rotation matrix from scratch every frame from a simple float scalar
 angle value you are regularly updating, or you can multiply the existing
 matrix by a persistent rotation matrix you created initially. The former
-method is more precise, but the latter is less CPU intensive (because
+method is more precise, but the latter is less CPU intensive because
 creating a rotation matrix from a floating-point angle value requires
 that transcendental functions be called, but multiplying matrices does
-not). A good compromise is to use a combination of both, if possible.
+not. A good compromise is to use a combination of both, if possible.
 Specifically, multiply by a rotation matrix for a time, but somewhat
-periodically recreate the sprite's matrix from the scalar angle value to
-set it back to where it should be for the particular frame.
+periodically recreate the sprite's matrix directly from the scalar angle
+value.
 
 Rights
 ======
