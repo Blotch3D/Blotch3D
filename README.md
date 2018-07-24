@@ -303,52 +303,65 @@ Translucent pixels in text or textures drawn using the 2D Blotch3D
 drawing methods (BlGraphicsDeviceManager\#DrawText and
 BlGraphicsDeviceManager\#DrawTexture) will always correctly show the
 things behind them. Just be sure to call those methods after all other
-3D things are drawn in a given frame.
+3D things are drawn.
 
-However, a translucent texture applied to a sprite requires special
+However, a translucent texture applied to a sprite may require special
 handling.
 
 If you simply apply the translucent texture to a sprite as if it's just
-like any other texture, it will often work as expected. However, you
-will sometimes see certain undesirable artifacts depending on whether a
-far surface with respect to the camera is drawn before or after a near
-surface. You can alleviate *some* of these artifacts by simply drawing
-all opaque sprites in any order and then all translucent sprites in
-far-to-near order (which requires creating a sorted list of sprites to
-draw every frame). However, this would not eliminate the artifacts that
-sometimes appear when sprite surfaces intersect or one surface of the
-same translucent sprite occludes another of that sprite.
-
-For some translucent textures the artifacts can be subtle, and you might
-find them perfectly acceptable. We do this in the "full" example because
-you can't even see the sprites when viewed from underneath, which is
-when you would otherwise see the artifacts.
+like any other texture, there may be situations that you will see
+certain undesirable artifacts depending on whether a far surface with
+respect to the camera is drawn before or after a near surface. For some
+translucent textures the artifacts can be subtle, and you might find
+them perfectly acceptable. We do this in the "full" example because you
+can't even see the sprites when viewed from underneath, which is when
+you would otherwise see the artifacts in that example.
 
 One main reason these artifacts occur is because the default MonoGame
-"Effect" used (the "BasicEffect" effect) provides a pixel shader that
-does not do "alpha testing". Alpha testing is the process of neglecting
-to draw texture pixels if the texture pixel's alpha is below some value
-(i.e. if it is translucent enough). Although even then, there are
-artifacts that occur when multiple *partly*-translucent textures occlude
-one another, but that is a subject for a more advanced text.
+"Effect" used to draw models (the "BasicEffect" effect) provides a pixel
+shader that does not do "alpha testing". Alpha testing is the process of
+neglecting to draw texture pixels if the texture pixel's alpha is below
+some value (i.e. if it is translucent enough). (Although even then,
+there are artifacts that occur when multiple *partly*-translucent
+textures occlude one another, but that is a subject for a more advanced
+text.)
 
-If you do want to use alpha testing, MonoGame does provide an
-"AlphaTestEffect" effect that supports it. Using that stock effect is
-demonstrated in the SpriteAlphaTexture example. However, AlphaTestEffect
-does not support directional lights, as are supported in BasicEffect.
-You'll notice the model in that example is evenly lit even though there
-are the default directional lights present.
+MonoGame does provide a separate "AlphaTestEffect" effect that supports
+it. But AlphaTestEffect does not support directional lights, as are
+supported in BasicEffect. So, don't bother with AlphaTestEffect.
 
-So, to implement pretty good translucency you would have to write a
-custom effect (i.e. write an "FX" file, compile it with the provided
-2MGFX.exe, load the compiled file with something like the following...
+For these reasons Blotch3D includes a custom effect called BlBasicEffect
+that provides everything that MonoGame's BasicEffect provides, but also
+provides alpha testing. See the SpriteAlphaTexture example.
+Specifically, you do the following:
 
-byte\[\] bytes = File.ReadAllBytes(\"Content/MyEffect.mgfxo\");
+1.  Copy the "BlBasicEffect.mgfxo" file from the Blotch3D source to your
+    program execution folder.
 
-MyEffect = new Effect(Graphics.GraphicsDevice, bytes);
+2.  Your program loads that file and creates a BlBasicEffect, like this:
 
-...and then set its parameters just before drawing the sprite(s) that
-will use it.
+    byte\[\] bytes = File.ReadAllBytes(\"BlBasicEffect.mgfxo\");
+
+    BlBasicEffect = new BlBasicEffect(Graphics.GraphicsDevice, bytes);
+
+3.  And it specifies the alpha level that merits drawing the pixel, like
+    this (this could also be done in the delegate described below):
+
+    BlBasicEffect.Parameters\[\"AlphaTestThreshold\"\].SetValue(.2f);
+
+4.  And then your program assigns a delegate to the BlSprite's SetEffect
+    field (for sprites that have translucent textures). The delegate
+    does something like this:
+
+    MySprite.SetEffect = (s,effect) =\>
+
+    {
+
+    s.SetupBasicEffect(BlBasicEffect);
+
+    return BlBasicEffect;
+
+    };
 
 Making 3D models
 ================
