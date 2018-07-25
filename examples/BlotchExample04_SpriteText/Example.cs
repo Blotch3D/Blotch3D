@@ -61,7 +61,7 @@ Shift          - Fine control
 		}
 
 		/// <summary>
-		/// See BlWindow3D for detils.
+		/// See BlWindow3D for details.
 		/// </summary>
 		/// <param name="timeInfo"></param>
 		protected override void FrameProc(GameTime timeInfo)

@@ -840,8 +840,7 @@ namespace Blotch
 		/// <summary>
 		/// Sets up in the specified BasicEffect all matrices and lighting parameters for this sprite.
 		/// BlSprite#DrawInternal calls this for the BasicEffects embedded in the LOD models.
-		/// App code might call this from a SetEffect delegate if, for example, it is using a modified
-		/// form of the stock BasicEffect.fx, like the Blotch3D's BasicEffectWithAlphaTest.
+		/// For BlBasicEffect objects, see the overload of this method.
 		/// </summary>
 		public void SetupBasicEffect(BasicEffect effect)
 		{
@@ -942,7 +941,7 @@ namespace Blotch
 		/// <summary>
 		/// Sets up in the specified BlBasicEffect with all matrices and lighting parameters for this sprite.
 		/// App code might call this from a SetEffect delegate if, for example, it is using one of the
-		/// BlBasicEffectxxx effects, like the BasicEffectWithAlphaTest.
+		/// BlBasicEffectxxx effects, like the BlBasicEffectWithAlphaTest.
 		/// </summary>
 		public void SetupBasicEffect(BlBasicEffect effect)
 		{

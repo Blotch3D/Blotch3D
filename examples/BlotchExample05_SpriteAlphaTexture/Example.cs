@@ -73,7 +73,7 @@ Shift          - Fine control
 			// The sprite we draw in this window
 			Torus = new BlSprite(Graphics,"Torus");
 
-			// See documentation for details on translucency
+			// See Blotch3D documentation for details on translucency
 			Torus.SetEffect = (s,effect) =>
 			{
 				s.SetupBasicEffect(BlBasicEffectAlphaTest);	
@@ -93,7 +93,7 @@ Shift          - Fine control
 		}
 
 		/// <summary>
-		/// See BlWindow3D for detils.
+		/// See BlWindow3D for details.
 		/// </summary>
 		/// <param name="timeInfo"></param>
 		protected override void FrameProc(GameTime timeInfo)
