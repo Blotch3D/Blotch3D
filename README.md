@@ -264,12 +264,13 @@ pass a delegate to BlWindow3D.EnqueueCommand or
 BlWindow3D.EnqueueCommandBlocking.
 
 Because multiple windows are not conducive to some of the supported
-platforms, MonoGame, and thus Blotch3D, do not support more than one
-window. You *can* create multiple windows, but they don't work correctly
-(input sometimes goes to the wrong window) and in certain situations
-will crash. If you want to be able to "close" and "re-open" a window,
-you can just hide and show the same window. (On Microsoft Windows, you
-can use the BlWindow3D.Form object for that.)
+platforms, MonoGame, and thus Blotch3D, do not support more than one 3D
+window. (You can create any number of other windows you like.) You *can*
+create multiple 3D windows, but they don't work correctly (input
+sometimes goes to the wrong window) and in certain situations will
+crash. If you want to be able to "close" and "re-open" a window, you can
+just hide and show the same window. (On Microsoft Windows, you can use
+the BlWindow3D.Form object for that.)
 
 Officially, MonoGame must create the 3D window, and does not allow you
 to specify an existing window to use as the 3D window. There are some
@@ -290,6 +291,11 @@ examples:
 
 -   The BlGraphicsDeviceManager class derives from MonoGame's
     "GraphicsDeviceManager" class.
+
+-   You are welcome to draw MonoGame objects along with Blotch3D
+    objects.
+
+-   All other MonoGame features are available, like audio, etc.
 
 Remember that most Blotch3D objects must be Disposed when you are done
 with them and you are not otherwise terminating the program.
@@ -400,15 +406,15 @@ supported in BasicEffect. So, don't bother with AlphaTestEffect unless
 you don't care about the directional lights.
 
 For these reasons Blotch3D includes a custom effect called
-BlBasicEffectAlphaTest that provides everything that MonoGame's
-BasicEffect provides, but also provides alpha testing. See the
-SpriteAlphaTexture example to see how to use it. Essentially your
-program must do the following:
+BlBasicEffectAlphaTest (to be held as a BlBasicEffect object) that
+provides everything that MonoGame's BasicEffect provides, but also
+provides alpha testing. See the SpriteAlphaTexture example to see how to
+use it. Essentially your program must do the following:
 
 1.  Copy the "BlBasicEffectAlphaTest.mgfxo" (or
     "BlBasicEffectAlphaTestOGL.mgfxo" for certain other platforms) from
-    the Blotch3D source "Content/Effects" folder to your program
-    execution folder.
+    the Blotch3D source "Content/Effects" folder to, for example, your
+    program execution folder.
 
 2.  Your program loads that file and creates a BlBasicEffectAlphaTest,
     like this:
@@ -421,8 +427,8 @@ program must do the following:
     bytes);
 
 3.  And it specifies the alpha threshold level that merits drawing the
-    pixel, like this (this could also be done in the delegate described
-    below):
+    pixel, like this, for example (this could also be done in the
+    delegate described below):
 
     BlBasicEffectAlphaTest.Parameters\[\"AlphaTestThreshold\"\].SetValue(.5f);
 
@@ -448,10 +454,9 @@ The provided "BlBasicEffectAlphaTest.mgfxo" and
 code (HLSL) can be found in the Blotch3D Content/Effects folder. All it
 is, is the original MonoGame BasicEffect code with a few lines added for
 alpha test. The make\_effects.bat file in the Blotch3D source folder
-(it's just a call to 2MGFX.exe) builds them, but first be sure to add
-the path to 2MGFX.exe to the 'path' environment variable. Typically the
-path is something like "\\Program Files
-(x86)\\MSBuild\\MonoGame\\v3.0\\Tools".
+builds them, but first be sure to add the path to 2MGFX.exe to the
+'path' environment variable. Typically the path is something like
+"\\Program Files (x86)\\MSBuild\\MonoGame\\v3.0\\Tools".
 
 Dynamically changing a sprite's orientation and position
 ========================================================
