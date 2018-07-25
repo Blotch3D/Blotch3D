@@ -867,7 +867,7 @@ positioning algorithms. About all you can do is "fake" being that zoomed
 in by, instead, moving the camera forward temporarily. Or simply don't
 allow zoom to go to that extreme.
 
-Q: Sometimes I see slightly farther polygons and parts polygons of
+Q: Sometimes I see slightly farther polygons and parts of polygons of
 sprites appear in front of nearer ones, and it varies as the camera or
 sprite moves.
 
@@ -877,7 +877,7 @@ the depth buffer doesn't have to cover so much dynamic range.
 
 Q: I have a sprite that I want always to be visible, but I think its
 invisible because its outside the depth buffer, but I don't want to
-change the depth buffer.
+change the clipping planes (NearClip and FarClip).
 
 A: Try doing a \"Graphics.GraphicsDevice.DepthStencilState =
 Graphics.DepthStencilStateDisabled" in the BlSprite.PreDraw delegate,
@@ -898,15 +898,15 @@ matrix is created from scratch each frame, or at least created every
 several hundred frames. For example, let's say you want to slightly
 rotate a sprite every frame by the same amount. You can either create a
 new rotation matrix from scratch every frame from a simple float scalar
-angle value you are regularly updating, or you can multiply the existing
-matrix by a persistent rotation matrix you created initially. The former
-method is more precise, but the latter is less CPU intensive because
-creating a rotation matrix from a floating-point angle value requires
-that transcendental functions be called, but multiplying matrices does
-not. A good compromise is to use a combination of both, if possible.
-Specifically, multiply by a rotation matrix for a time, but somewhat
-periodically recreate the sprite's matrix directly from the scalar angle
-value.
+angle value you are regularly incrementing, or you can multiply the
+existing matrix by a persistent rotation matrix you created initially.
+The former method is more precise, but the latter is less CPU intensive
+because creating a rotation matrix from a floating-point angle value
+requires that transcendental functions be called, but multiplying
+matrices does not. A good compromise is to use a combination of both, if
+possible. Specifically, multiply by a rotation matrix for a time, but
+somewhat periodically recreate the sprite's matrix directly from the
+scalar angle value.
 
 Rights
 ======
