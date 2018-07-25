@@ -487,8 +487,8 @@ wanted, do it the other way (B times A).
 For a good introduction (without the math), see
 <http://rbwhitaker.wikidot.com/monogame-basic-matrices>.
 
-The following [Matrix internals](#matrix-internals) section should be
-studied only when you need a deeper knowledge.
+The [Matrix internals](#matrix-internals) section should be studied only
+when you need a deeper knowledge.
 
 Matrix internals
 ================
@@ -794,10 +794,11 @@ Depth buffer
 any) at each 2D window pixel so that they know to draw the nearer pixel
 over the farther pixel in the 2D display. The depth buffer is an array
 with one element per 2D window pixel, where each element is (typically)
-a 32-bit floating point value indicating the depth of the last drawn
-pixel. In that way pixels that are farther away need not be drawn. You
-can override this behavior for special cases. See
-BlGraphicsDeviceManager.NearClip and BlGraphicsDeviceManager.FarClip.
+a 32-bit floating point value indicating the nearest (to the camera)
+depth of that point. In that way pixels that are farther away need not
+be drawn. You can override this behavior for special cases. See
+BlGraphicsDeviceManager.NearClip, BlGraphicsDeviceManager.FarClip. and
+search the web for MonoGame depth information.
 
 Near clipping plane (NearClip)
 
