@@ -61,7 +61,7 @@ Shift          - Fine control
 
 			byte[] bytes = File.ReadAllBytes("Content/BlBasicEffect.mgfxo");
 			BlBasicEffect = new BlBasicEffect(Graphics.GraphicsDevice, bytes);
-			BlBasicEffect.Parameters["AlphaTestThreshold"].SetValue(.2f);
+			BlBasicEffect.Parameters["AlphaTestThreshold"].SetValue(.5f);
 
 			// The font we will use to draw the menu on the screen.
 			// "Arial14" is the pathname to the font file

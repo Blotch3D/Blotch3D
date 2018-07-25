@@ -383,9 +383,10 @@ One main reason these artifacts occur is because the default MonoGame
 shader that does not do "alpha testing". Alpha testing is the process of
 neglecting to draw texture pixels (and thus neglecting to update the
 depth buffer) if the texture pixel's alpha is below some threshold value
-(i.e. if it is translucent enough). (Although even then, there are
-artifacts that occur when multiple *partly*-translucent textures occlude
-one another, but that is a subject for a more advanced text.)
+(i.e. if it is translucent enough). Most typical textures with an alpha
+channel usually use an alpha value of zero or one, indicating absence or
+presence of texture. Alpha testing works well with those. For alpha
+values intended to show partial translucency, it doesn't work as well.
 
 MonoGame does provide a separate "AlphaTestEffect" effect that supports
 it. But AlphaTestEffect does not support directional lights, as are
@@ -394,15 +395,21 @@ you don't care about the directional lights.
 
 For these reasons Blotch3D includes a custom effect called BlBasicEffect
 that provides everything that MonoGame's BasicEffect provides, but also
-provides alpha testing. See the SpriteAlphaTexture example.
-Specifically, you do the following:
+provides alpha testing. See the SpriteAlphaTexture example to see how to
+use it. Note that you will need to rebuild the BlBasicEffect effect for
+platforms other than Microsoft Windows. See below for more information
+on building it.
 
-1.  Copy the "BlBasicEffect.mgfxo" file from the Blotch3D source
-    "Content" folder to your program execution folder.
+To use BlBasicEffect, your program must do the following:
+
+1.  Copy the "BlBasicEffect.mgfxo" (or "BlBasicEffectOGL.mgfxo" for
+    certain other platforms) from the Blotch3D source "Content/Effects"
+    folder to your program execution folder.
 
 2.  Your program loads that file and creates a BlBasicEffect, like this:
 
-    byte\[\] bytes = File.ReadAllBytes(\"BlBasicEffect.mgfxo\");
+    byte\[\] bytes = File.ReadAllBytes(\"BlBasicEffect.mgfxo\"); // or
+    'BlBasicEffectOGL.mgfxo' for certain other platforms
 
     BlBasicEffect = new BlBasicEffect(Graphics.GraphicsDevice, bytes);
 
@@ -427,14 +434,16 @@ Specifically, you do the following:
     };
 
 Note that BlBasicEffect is slightly slower than the default
-(BasicEffect) effect, so only use BlBasicEffect when desired.
+(BasicEffect) effect, so only use BlBasicEffect when needed.
 
-The "BlBasicEffect.mgfxo" file is a compiled file. If you are
-interested, the source code can be found in Blotch3D Content/Effects
-folder. You can even build it with the make\_effects.bat file in the
-Blotch3D source folder, but first be sure to add the path to 2MGFX.exe
-to the path environment variable. Typically the path is something like
-"\\Program Files (x86)\\MSBuild\\MonoGame\\v3.0\\Tools".
+The provided "BlBasicEffect.mgfxo" and "BlBasicEffectOGL.mgfxo" files
+are compiled. The shader source code (HLSL) can be found in the Blotch3D
+Content/Effects folder. All it is, is the original MonoGame BasicEffect
+code with a few lines added for alpha test. The make\_effects.bat file
+in the Blotch3D source folder (it's just a call to 2MGFX.exe) builds
+them, but first be sure to add the path to 2MGFX.exe to the 'path'
+environment variable. Typically the path is something like "\\Program
+Files (x86)\\MSBuild\\MonoGame\\v3.0\\Tools".
 
 Dynamically changing a sprite's orientation and position
 ========================================================

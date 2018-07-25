@@ -38,7 +38,7 @@ BEGIN_CONSTANTS
     float4x4 World                  _vs(c19)          _cb(c15);
     float3x3 WorldInverseTranspose  _vs(c23)          _cb(c19);
 
-	float AlphaTestThreshold = .1;
+	float AlphaTestThreshold = .5;
 MATRIX_CONSTANTS
 
     float4x4 WorldViewProj          _vs(c15)          _cb(c0);
