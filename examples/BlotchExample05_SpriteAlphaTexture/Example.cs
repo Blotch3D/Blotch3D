@@ -45,7 +45,7 @@ Shift          - Fine control
 		/// Same as BasicEffect, but also does alpha test (and has a AlphaTestThreshold variable)
 		/// Note that this does NOT inherit from BasicEffect and cannot be used in its place
 		/// </summary>
-		BlBasicEffect BlBasicEffect;
+		BlBasicEffect BlBasicEffectAlphaTest;
 
 		/// <summary>
 		/// See BlWindow3D for details.
@@ -59,9 +59,9 @@ Shift          - Fine control
 			// is spread of diverse folders.
 			var MyContent = new ContentManager(Services, "Content");
 
-			byte[] bytes = File.ReadAllBytes("Content/BlBasicEffect.mgfxo");
-			BlBasicEffect = new BlBasicEffect(Graphics.GraphicsDevice, bytes);
-			BlBasicEffect.Parameters["AlphaTestThreshold"].SetValue(.5f);
+			byte[] bytes = File.ReadAllBytes("Content/BlBasicEffectAlphaTest.mgfxo");
+			BlBasicEffectAlphaTest = new BlBasicEffect(Graphics.GraphicsDevice, bytes);
+			BlBasicEffectAlphaTest.Parameters["AlphaTestThreshold"].SetValue(.5f);
 
 			// The font we will use to draw the menu on the screen.
 			// "Arial14" is the pathname to the font file
@@ -76,9 +76,9 @@ Shift          - Fine control
 			// See documentation for details on translucency
 			Torus.SetEffect = (s,effect) =>
 			{
-				s.SetupBasicEffect(BlBasicEffect);	
+				s.SetupBasicEffect(BlBasicEffectAlphaTest);	
 
-				return BlBasicEffect;
+				return BlBasicEffectAlphaTest;
 			};
 
 			Torus.LODs.Add(TorusModel);

@@ -372,11 +372,13 @@ If you simply apply the translucent texture to a sprite as if it's just
 like any other texture, there may be situations that you will see
 certain undesirable artifacts depending on whether a far surface with
 respect to the camera is drawn before or after a near surface. For some
-translucent textures the artifacts can be subtle, or your particular app
-avoids the artifacts. We do this in the "full" example because the draw
-order is such that you won't see the artifacts because you can't even
-see the sprites when viewed from underneath, which is when you would
-otherwise see the artifacts in that example.
+translucent textures the artifacts can be negligible, or your particular
+app avoids the artifacts entirely because of camera constraints and
+drawing order. In those cases, you don't need any other special code. We
+do this in the "full" example because the draw order is such that you
+won't see the artifacts because you can't even see the sprites when
+viewed from underneath, which is when you would otherwise see the
+artifacts in that example.
 
 One main reason these artifacts occur is because the default MonoGame
 "Effect" used to draw models (the "BasicEffect" effect) provides a pixel
@@ -384,66 +386,72 @@ shader that does not do "alpha testing". Alpha testing is the process of
 neglecting to draw texture pixels (and thus neglecting to update the
 depth buffer) if the texture pixel's alpha is below some threshold value
 (i.e. if it is translucent enough). Most typical textures with an alpha
-channel usually use an alpha value of zero or one, indicating absence or
-presence of texture. Alpha testing works well with those. For alpha
-values intended to show partial translucency, it doesn't work as well.
+channel use an alpha value of pretty much zero or one, indicating
+absence or presence of texture. Alpha testing works well with those. For
+alpha values intended to show partial translucency, it doesn't work as
+well. In those cases, you will have to watch drawing order. And if
+translucent sprites intersect, or a translucent surface occludes another
+surface of the same sprite, you will have to look online for more
+advanced solutions.
 
 MonoGame does provide a separate "AlphaTestEffect" effect that supports
 it. But AlphaTestEffect does not support directional lights, as are
 supported in BasicEffect. So, don't bother with AlphaTestEffect unless
 you don't care about the directional lights.
 
-For these reasons Blotch3D includes a custom effect called BlBasicEffect
-that provides everything that MonoGame's BasicEffect provides, but also
-provides alpha testing. See the SpriteAlphaTexture example to see how to
-use it. Note that you will need to rebuild the BlBasicEffect effect for
-platforms other than Microsoft Windows. See below for more information
-on building it.
+For these reasons Blotch3D includes a custom effect called
+BlBasicEffectAlphaTest that provides everything that MonoGame's
+BasicEffect provides, but also provides alpha testing. See the
+SpriteAlphaTexture example to see how to use it. Essentially your
+program must do the following:
 
-To use BlBasicEffect, your program must do the following:
+1.  Copy the "BlBasicEffectAlphaTest.mgfxo" (or
+    "BlBasicEffectAlphaTestOGL.mgfxo" for certain other platforms) from
+    the Blotch3D source "Content/Effects" folder to your program
+    execution folder.
 
-1.  Copy the "BlBasicEffect.mgfxo" (or "BlBasicEffectOGL.mgfxo" for
-    certain other platforms) from the Blotch3D source "Content/Effects"
-    folder to your program execution folder.
+2.  Your program loads that file and creates a BlBasicEffectAlphaTest,
+    like this:
 
-2.  Your program loads that file and creates a BlBasicEffect, like this:
+    byte\[\] bytes =
+    File.ReadAllBytes(\"BlBasicEffectAlphaTest.mgfxo\"); // or
+    'BlBasicEffectAlphaTestOGL.mgfxo' for certain other platforms
 
-    byte\[\] bytes = File.ReadAllBytes(\"BlBasicEffect.mgfxo\"); // or
-    'BlBasicEffectOGL.mgfxo' for certain other platforms
-
-    BlBasicEffect = new BlBasicEffect(Graphics.GraphicsDevice, bytes);
+    BlBasicEffectAlphaTest = new BlBasicEffect(Graphics.GraphicsDevice,
+    bytes);
 
 3.  And it specifies the alpha threshold level that merits drawing the
     pixel, like this (this could also be done in the delegate described
     below):
 
-    BlBasicEffect.Parameters\[\"AlphaTestThreshold\"\].SetValue(.2f);
+    BlBasicEffectAlphaTest.Parameters\[\"AlphaTestThreshold\"\].SetValue(.5f);
 
-4.  And then your program assigns a delegate to the BlSprite's SetEffect
-    delegate field for sprites that have translucent textures. The
+4.  And then your program assigns, for sprites that have translucent
+    textures, a delegate to the BlSprite's SetEffect delegate field. The
     delegate does something like this:
 
     MyTranslucentSprite.SetEffect = (s,effect) =\>
 
     {
 
-    s.SetupBasicEffect(BlBasicEffect);
+    s.SetupBasicEffect(BlBasicEffectAlphaTest);
 
-    return BlBasicEffect;
+    return BlBasicEffectAlphaTest;
 
     };
 
-Note that BlBasicEffect is slightly slower than the default
-(BasicEffect) effect, so only use BlBasicEffect when needed.
+Note that BlBasicEffectAlphaTest is slightly slower than the default
+(BasicEffect) effect, so only use BlBasicEffectAlphaTest when needed.
 
-The provided "BlBasicEffect.mgfxo" and "BlBasicEffectOGL.mgfxo" files
-are compiled. The shader source code (HLSL) can be found in the Blotch3D
-Content/Effects folder. All it is, is the original MonoGame BasicEffect
-code with a few lines added for alpha test. The make\_effects.bat file
-in the Blotch3D source folder (it's just a call to 2MGFX.exe) builds
-them, but first be sure to add the path to 2MGFX.exe to the 'path'
-environment variable. Typically the path is something like "\\Program
-Files (x86)\\MSBuild\\MonoGame\\v3.0\\Tools".
+The provided "BlBasicEffectAlphaTest.mgfxo" and
+"BlBasicEffectAlphaTestOGL.mgfxo" files are compiled. The shader source
+code (HLSL) can be found in the Blotch3D Content/Effects folder. All it
+is, is the original MonoGame BasicEffect code with a few lines added for
+alpha test. The make\_effects.bat file in the Blotch3D source folder
+(it's just a call to 2MGFX.exe) builds them, but first be sure to add
+the path to 2MGFX.exe to the 'path' environment variable. Typically the
+path is something like "\\Program Files
+(x86)\\MSBuild\\MonoGame\\v3.0\\Tools".
 
 Dynamically changing a sprite's orientation and position
 ========================================================
@@ -463,10 +471,10 @@ space. Likewise, rotation, shear, and translation are inherited, as
 well.
 
 There are also static and instance Matrix methods and operator overloads
-to combine (multiply) matrices to form a single matrix which combines
-the effects of multiple matrices. For example, a rotate matrix and a
-scale matrix can be multiplied to form a single rotate-scale matrix. But
-mind the multiplication order because matrix multiplication is not
+to "multiply" matrices to form a single matrix which combines the
+effects of multiple matrices. For example, a rotate matrix and a scale
+matrix can be multiplied to form a single rotate-scale matrix. But mind
+the multiplication order because matrix multiplication is not
 commutative. See below for details, but novices can simply try the
 operation one way (like A times B) and, if it doesn't work the way you
 wanted, do it the other way (B times A).
@@ -658,18 +666,20 @@ parent matrix for the subsprites of that child.
 A Short Glossary of 3D Graphics Terms
 =====================================
 
-Vertex
-
-A point in space. Typically, a point at which the line segments of a
-polygon meet. That is, a corner of a polygon. A corner of a model. Most
-visible models are described as a set of vertices. Each vertex can have
-a color, texture coordinate, and normal.
-
 Polygon
 
 A visible surface described by a set of vertices that define its
 corners. A triangle is a polygon with three vertices, a quad is a
 polygon with four. One side of a polygon is a \"face\".
+
+Vertex
+
+A point in space. Typically, a point at which the line segments of a
+polygon meet. That is, a corner of a polygon. A corner of a model. Most
+visible models are described as a set of vertices. Each vertex can have
+a color, texture coordinate, and normal. Pixels across the face of a
+polygon are (typically) interpolated from the vertex color, texture, and
+normal values.
 
 Ambient lighting
 
