@@ -306,8 +306,27 @@ information.
 Making 3D models
 ================
 
-There are several primitive models available with Blotch3D. The easiest
-way to add them to your project is to...
+There are several primitive models available with Blotch3D. If your
+project already has a "Content.mgcb" file, just double-click it and add
+the file(s) to the pipeline manager. See
+<http://rbwhitaker.wikidot.com/monogame-managing-content>) for more
+information.
+
+If no existing model meets your needs, you can either programmatically
+create a model by specifying the vertices and normals (see the example
+that uses custom Vertices), or create a model with, for example, the
+Blender 3D modeler and then add it to the project with the pipeline
+manager. The pipeline manager can import several model file types. You
+can also instruct Blender to include texture (UV) mapping by using one
+of the countless tutorials online, like
+<https://www.youtube.com/watch?v=2xTzJIaKQFY> or
+<https://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/UV_Map_Basics> .
+Also, you may be able to import certain existing models from the web,
+but mind the copyright.
+
+If you don't have a "Content.mgcb" file in your project because, for
+example, you created the Blotch3D project from scratch, then do the
+following...
 
 1.  Copy the Content folder from the Blotch3D project folder to your
     project folder
@@ -343,24 +362,6 @@ scratch, rather than copied an existing example, then try this:
     underneath add:
 
     \<Import Project=\"\$(MSBuildExtensionsPath)\\MonoGame\\v3.0\\MonoGame.Content.Builder.targets\" /\>
-
-You can get the names of the content files by starting the MonoGame
-pipeline manager (double-click Content/Content.mgcb). You can also add
-more content via the pipeline manager (see
-<http://rbwhitaker.wikidot.com/monogame-managing-content>). See the
-examples for details on how to load and display models, fonts, etc.
-
-If no existing model meets your needs, you can either programmatically
-create a model by specifying the vertices and normals (see the example
-that uses custom Vertices), or create a model with, for example, the
-Blender 3D modeler and then add it to the project with the pipeline
-manager. The pipeline manager can import several model file types. You
-can also instruct Blender to include texture (UV) mapping by using one
-of the countless tutorials online, like
-<https://www.youtube.com/watch?v=2xTzJIaKQFY> or
-<https://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/UV_Map_Basics> .
-Also, you may be able to import certain existing models from the web,
-but mind the copyright.
 
 Translucency
 ============
