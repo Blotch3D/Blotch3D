@@ -7,8 +7,8 @@ Quick start
 ===========
 
 1.  Get the installer for the latest release of MonoGame from
-    <http://www.monogame.net/downloads/> and run it. (Do NOT get the
-    current development version nor the NuGet package.)
+    <http://www.monogame.net/downloads/> and run it. Do NOT get the
+    current development version nor the NuGet package.
 
 2.  Get the Blotch3D repository zip from
     <https://github.com/Blotch3D/Blotch3D> and unzip it.
@@ -37,7 +37,7 @@ can...
 -   Set a sprite's material, texture, and lighting response.
 
 -   Load textures from standard image files, including textures with an
-    alpha channel (with translucent pixels).
+    alpha channel (i.e. with translucent pixels).
 
 -   Show 2D and in-world (as a texture) text in any font, size, color,
     etc. at any 2D or 3D position, and make text follow a sprite in 2D
@@ -61,8 +61,8 @@ can...
 
 -   Connect the camera to a sprite to implement 'cockpit view', etc.
 
--   Implement GUI controls (as dynamic 2D text or image rectangles, and
-    with transparent pixels) in the 3D window.
+-   Implement GUI controls as dynamic 2D text or image rectangles, and
+    with transparent pixels in the 3D window.
 
 -   Implement a skybox sprite.
 
@@ -91,9 +91,9 @@ can...
 -   Define ambient lighting, and up to three point-light sources. (More
     lights can be defined if a custom shader is used.)
 
--   Build for many platforms (currently supports all Microsoft Windows
+-   Build for many platforms. Currently supports all Microsoft Windows
     platforms, iOS, Android, MacOS, Linux, PS4, PSVita, Xbox One, and
-    Switch).
+    Switch.
 
 Blotch3D sits on top of MonoGame. MonoGame is a widely used 3D library
 for C\#. It is free, fast, cross platform, actively developed by a large
@@ -102,8 +102,8 @@ MonoGame documentation, tutorials, examples, and discussions on line.
 
 Reference documentation of Blotch3D (classes, methods, fields,
 properties, etc.) is available through Visual Studio IntelliSense, and
-in "Blotch3DManual.pdf". (Note: To support Doxygen, links in the
-IntelliSense comments are preceded with '\#'.)
+in "Blotch3DManual.pdf". Note: To support Doxygen, links in the
+IntelliSense comments are preceded with '\#'.
 
 See MonoGame.net for the official MonoGame documentation. When searching
 on-line for other MonoGame documentation and discussions, be sure to
@@ -142,8 +142,8 @@ to be split to several simpler examples\].
 All the provided projects are configured to build for the Microsoft
 Windows x64 platform. See below for other platforms.
 
-If you are copying the Blotch3D assembly (like Blotch3D.dll on Microsoft
-Windows) to a project or packages folder so you don't have to include
+If you are copying the Blotch3D assembly, like Blotch3D.dll on Microsoft
+Windows, to a project or packages folder so you don't have to include
 the source code of the library in your solution, be sure to also copy
 Blotch3D.xml so you still get the IntelliSense. You shouldn't have to
 copy any other binary file from the Blotch3D output folder if you've
@@ -154,8 +154,8 @@ copy everything in the output folder when you are distributing your app.
 To create a new project, you must first install MonoGame as described in
 the [Quick start](#quick-start) section, if you haven't already. You
 must also install the Visual Studio add-ons, etc. for the desired
-platform if different from Microsoft Windows. (For example, for Android
-you'd need the Xamarin for Android add-on.)
+platform if different from Microsoft Windows. For example, for Android
+you'd need the Xamarin for Android add-on.
 
 For Microsoft Windows, you can create a new project by either copying an
 existing Blotch3D example project and renaming it, or you can use the
@@ -265,12 +265,12 @@ BlWindow3D.EnqueueCommandBlocking.
 
 Because multiple windows are not conducive to some of the supported
 platforms, MonoGame, and thus Blotch3D, do not support more than one 3D
-window. (You can create any number of other windows you like.) You *can*
-create multiple 3D windows, but they don't work correctly (input
-sometimes goes to the wrong window) and in certain situations will
-crash. If you want to be able to "close" and "re-open" a window, you can
-just hide and show the same window. (On Microsoft Windows, you can use
-the BlWindow3D.Form object for that.)
+window. (You can create any number of other, non-3D windows you like.)
+You *can* create multiple 3D windows, but they don't work correctly
+(input sometimes goes to the wrong window) and in certain situations
+will crash. If you want to be able to "close" and "re-open" a window,
+you can just hide and show the same window. (On Microsoft Windows, you
+can use the BlWindow3D.Form object for that.)
 
 Officially, MonoGame must create the 3D window, and does not allow you
 to specify an existing window to use as the 3D window. There are some
@@ -320,7 +320,7 @@ way to add them to your project is to...
 
 If the "MonoGameContentReference" build option is not available in the
 drop-down list because, for example, you have created a project from
-scratch (rather than copied an existing example), then try this:
+scratch, rather than copied an existing example, then try this:
 
 (from
 <http://www.infinitespace-studios.co.uk/general/monogame-content-pipeline-integration/>)
@@ -369,7 +369,7 @@ Translucent pixels in text or textures drawn using the 2D Blotch3D
 drawing methods (BlGraphicsDeviceManager\#DrawText and
 BlGraphicsDeviceManager\#DrawTexture) will always correctly show the
 things behind them. Just be sure to call those methods after all other
-3D things are drawn.
+3D things are drawn in FrameDraw.
 
 However, a translucent texture applied to a sprite may require special
 handling.
@@ -380,26 +380,26 @@ certain undesirable artifacts depending on whether a far surface with
 respect to the camera is drawn before or after a near surface. For some
 translucent textures the artifacts can be negligible, or your particular
 application may avoid the artifacts entirely because of camera
-constraints and drawing order. In those cases, you don't need any other
-special code. We do this in the "full" example because the draw order of
-the translucent sprites, and their positions, are such that you won't
-see the artifacts because you can't even see the sprites when viewed
-from underneath, which is when you would otherwise see the artifacts in
-that example.
+constraints, sprite position constraints, and drawing order. In those
+cases, you don't need any other special code. We do this in the "full"
+example because the draw order of the translucent sprites, and their
+positions, are such that you won't see the artifacts because you can't
+even see the sprites when viewed from underneath, which is when you
+would otherwise see the artifacts in that example.
 
 One main reason such artifacts occur is because the default MonoGame
 "Effect" used to draw models (the "BasicEffect" effect) provides a pixel
 shader that does not do "alpha testing". Alpha testing is the process of
-neglecting to draw texture pixels (and thus neglecting to update the
-depth buffer) if the texture pixel's alpha is below some threshold value
+neglecting to draw texture pixels, and thus neglecting to update the
+depth buffer, if the texture pixel's alpha is below some threshold value
 (i.e. if it is translucent enough). Most typical textures with an alpha
-channel use an alpha value of pretty much zero or one, indicating
+channel use an alpha value of zero or one (or close to them), indicating
 absence or presence of texture. Alpha testing works well with those. For
-alpha values intended to show partial translucency, it doesn't work
-well. In those cases, at a minimum you will have to watch drawing order,
-and if translucent sprites intersect or a translucent surface occludes
-another surface of the same sprite, you will have to look online for
-more advanced solutions.
+alpha values specifically intended to show partial translucency, it
+doesn't work well. In those cases, at a minimum you will have to control
+sprite drawing order, and if translucent sprites intersect or a
+translucent surface occludes another surface of the same sprite, you
+will have to look online for more advanced solutions.
 
 MonoGame does provide a separate "AlphaTestEffect" effect that supports
 it. But AlphaTestEffect does not support directional lights, as are
@@ -484,7 +484,7 @@ commutative. See below for details, but novices can simply try the
 operation one way (like A times B) and if it doesn't work the way you
 wanted, do it the other way (B times A).
 
-For a good introduction (without the math), see
+For a good introduction without the math, see
 <http://rbwhitaker.wikidot.com/monogame-basic-matrices>.
 
 The [Matrix internals](#matrix-internals) section should be studied only
