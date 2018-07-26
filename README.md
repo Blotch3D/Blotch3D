@@ -376,40 +376,43 @@ However, a translucent texture applied to a sprite may require special
 handling.
 
 If you simply apply the translucent texture to a sprite as if it's just
-like any other texture, there may be situations that you will see
-certain undesirable artifacts depending on whether a far surface with
-respect to the camera is drawn before or after a near surface. For some
-translucent textures the artifacts can be negligible, or your particular
-application may avoid the artifacts entirely because of camera
-constraints, sprite position constraints, and drawing order. In those
-cases, you don't need any other special code. We do this in the "full"
-example because the draw order of the translucent sprites, and their
-positions, are such that you won't see the artifacts because you can't
-even see the sprites when viewed from underneath, which is when you
-would otherwise see the artifacts in that example.
+like any other texture, you will not see through the transparent texture
+when a near polygon with translucency is drawn before a far polygon that
+it occludes. This is because the far surface is not drawn because the
+near surface updated the depth buffer to indicate the far surface need
+not be drawn. For some translucent textures the artifacts can be
+negligible, or your particular application may avoid the artifacts
+entirely because of camera constraints, sprite position constraints, and
+drawing order. In those cases, you don't need any other special code. We
+do this in the "full" example because the draw order of the translucent
+sprites, and their positions, are such that you won't see the artifacts
+because you can't even see the sprites when viewed from underneath,
+which is when you would otherwise see the artifacts in that example.
 
 One main reason such artifacts occur is because the default MonoGame
 "Effect" used to draw models (the "BasicEffect" effect) provides a pixel
 shader that does not do "alpha testing". Alpha testing is the process of
-neglecting to draw texture pixels, and thus neglecting to update the
-depth buffer, if the texture pixel's alpha is below some threshold value
-(i.e. if it is translucent enough). Most typical textures with an alpha
-channel use an alpha value of zero or one (or close to them), indicating
-absence or presence of texture. Alpha testing works well with those. For
-alpha values specifically intended to show partial translucency, it
-doesn't work well. In those cases, at a minimum you will have to control
-sprite drawing order, and if translucent sprites intersect or a
-translucent surface occludes another surface of the same sprite, you
-will have to look online for more advanced solutions.
+completely neglecting to draw transparent texture pixels, and thus
+neglecting to update the depth buffer at that window position. Most
+typical textures with an alpha channel use an alpha value of only zero
+or one (or close to them), indicating absence or presence of texture.
+Alpha testing works well with textures like that. For alpha values
+specifically intended to show partial translucency (alpha values well
+between zero and one), it doesn't work well. In those cases, at a
+minimum you will have to control translucent sprite drawing order (draw
+all opaque sprites normally, and then draw translucent sprites far to
+near), and if translucent sprites intersect or a translucent surface
+occludes another surface of the same sprite, you will have to look
+online for more advanced solutions.
 
 MonoGame does provide a separate "AlphaTestEffect" effect that supports
-it. But AlphaTestEffect does not support directional lights, as are
-supported in BasicEffect. So, don't bother with AlphaTestEffect unless
-you don't care about the directional lights.
+alpha test. But AlphaTestEffect does not support directional lights, as
+are supported in BasicEffect. So, don't bother with AlphaTestEffect
+unless you don't care about the directional lights.
 
 For these reasons Blotch3D includes a custom effect called
-BlBasicEffectAlphaTest (to be held as a BlBasicEffect object) that
-provides everything that MonoGame's BasicEffect provides, but also
+BlBasicEffectAlphaTest (to be held in code as a BlBasicEffect object)
+that provides everything that MonoGame's BasicEffect provides, but also
 provides alpha testing. See the SpriteAlphaTexture example to see how it
 is used. Essentially your program must do the following:
 
@@ -431,7 +434,7 @@ is used. Essentially your program must do the following:
     pixel, like this, for example (this could also be done in the
     delegate described below):
 
-    BlBasicEffectAlphaTest.Parameters\[\"AlphaTestThreshold\"\].SetValue(.5f);
+    BlBasicEffectAlphaTest.Parameters\[\"AlphaTestThreshold\"\].SetValue(.3f);
 
 4.  And then for sprites that have translucent textures your program
     assigns a delegate to the BlSprite's SetEffect delegate field. For
@@ -447,8 +450,9 @@ is used. Essentially your program must do the following:
 
     };
 
-Note that BlBasicEffectAlphaTest is slightly slower than the default
-(BasicEffect) effect, so only use BlBasicEffectAlphaTest when needed.
+Note that BlBasicEffectAlphaTest may be slightly slower than the default
+(BasicEffect) effect when drawing mostly opaque textures, so only use
+BlBasicEffectAlphaTest when needed.
 
 The provided "BlBasicEffectAlphaTest.mgfxo" and
 "BlBasicEffectAlphaTestOGL.mgfxo" files are already compiled. The shader
