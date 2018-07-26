@@ -184,7 +184,7 @@ namespace Blotch
 		public Matrix? LastWorldMatrix = null;
 
 		/// <summary>
-		/// Whether to use depth testing, and whether to participate in autoclipping calculations when they are enabled.
+		/// Wwhether to participate in autoclipping calculations, when they are enabled.
 		/// </summary>
 		public bool IncludeInAutoClipping = true;
 

@@ -73,8 +73,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.manifest" />
-    <None Include="Content\BlBasicEffectAlphaTest.mgfxo" />
-    <None Include="Content\BlBasicEffectAlphaTestOGL.mgfxo" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />

@@ -433,8 +433,8 @@ is used. Essentially your program must do the following:
     BlBasicEffectAlphaTest.Parameters\[\"AlphaTestThreshold\"\].SetValue(.5f);
 
 4.  And then for sprites that have translucent textures your program
-    assigns a delegate to the BlSprite's SetEffect delegate field. The
-    delegate does something like this:
+    assigns a delegate to the BlSprite's SetEffect delegate field. For
+    example:
 
     MyTranslucentSprite.SetEffect = (s,effect) =\>
 
@@ -450,10 +450,10 @@ Note that BlBasicEffectAlphaTest is slightly slower than the default
 (BasicEffect) effect, so only use BlBasicEffectAlphaTest when needed.
 
 The provided "BlBasicEffectAlphaTest.mgfxo" and
-"BlBasicEffectAlphaTestOGL.mgfxo" files are compiled. The shader source
-code (HLSL) can be found in the Blotch3D Content/Effects folder. It is
-just the original MonoGame BasicEffect code with a few lines added for
-alpha test. The make\_effects.bat file in the Blotch3D source folder
+"BlBasicEffectAlphaTestOGL.mgfxo" files are already compiled. The shader
+source code (HLSL) can be found in the Blotch3D Content/Effects folder.
+It is just the original MonoGame BasicEffect code with a few lines added
+for alpha test. The make\_effects.bat file in the Blotch3D source folder
 builds them, but first be sure to add the path to 2MGFX.exe to the
 'path' environment variable. Typically the path is something like
 "\\Program Files (x86)\\MSBuild\\MonoGame\\v3.0\\Tools".
@@ -846,18 +846,18 @@ your eye point).
 
 Q: When I'm inside a sprite, I can't see it.
 
-A: By default, Blotch3D draws only the outside of a sprite. Try doing a
-\"Graphics.GraphicsDevice.RasterizerState =
+A: By default, Blotch3D draws only the outside of a sprite. Try putting
+a \"Graphics.GraphicsDevice.RasterizerState =
 RasterizerState.CullClockwise" (or set it to CullNone to see both the
 inside and outside) in the BlSprite.PreDraw delegate, and set it back to
 CullCounterClockwise in the BlSprite.DrawCleanup delegate.
 
 Q: I set a sprite's matrix so that one of the dimensions has a scale of
-zero, but then the sprite becomes black.
+zero, but then the sprite, or parts of it, become black.
 
 A: A sprite's matrix also affects its normals. By setting a dimension's
 scale to zero, you may have caused some of the normals to be zero'd-out
-as well.
+as well. Try setting the scale to a very small number, rather than zero.
 
 Q: When I am zoomed-in a large amount, sprite and camera movement jumps
 as the sprite or camera move.
@@ -872,8 +872,9 @@ sprites appear in front of nearer ones, and it varies as the camera or
 sprite moves.
 
 A: The floating-point precision limitation of the depth buffer can cause
-this. Try increasing your near clip and/or decreasing your far clip so
-the depth buffer doesn't have to cover so much dynamic range.
+this. Disable auto-clipping on one or both of NearClip and FarClip, and
+otherwise try increasing your near clip and/or decreasing your far clip
+so the depth buffer doesn't have to cover so much dynamic range.
 
 Q: I have a sprite that I want always to be visible, but I think its
 invisible because its outside the depth buffer, but I don't want to
