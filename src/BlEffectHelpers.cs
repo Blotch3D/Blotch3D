@@ -19,7 +19,7 @@ namespace Botch
 	/// Track which effect parameters need to be recomputed during the next OnApply.
 	/// </summary>
 	[Flags]
-	public enum BlEffectDirtyFlags
+	internal enum BlEffectDirtyFlags
 	{
 		WorldViewProj = 1,
 		World = 2,

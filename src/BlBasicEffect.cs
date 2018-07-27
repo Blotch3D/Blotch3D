@@ -17,7 +17,10 @@ using System;
 namespace Blotch
 {
 	/// <summary>
-	/// Built-in effect that supports optional texturing, vertex coloring, fog, and lighting.
+	/// Holds a Blotch3D custom effect that is exactly like MonoGame's BasicEffect but with certain added features.
+	/// To make a BlBasicEffect you must also pass a byte array containing the shader code. There are currently two
+	/// shaders that you can pass to this constructor: BlBasicEffectAlphaTest and BlBasicEffectClipColor. See the
+	/// SpriteAlphaTexture and VideoWithTransparency examples to see how to make and use them.
 	/// </summary>
 	public class BlBasicEffect : Effect, IEffectMatrices, IEffectLights, IEffectFog
 	{
@@ -341,7 +344,7 @@ namespace Blotch
 		#region Methods
 
 		/// <summary>
-		/// Creates a new BasicEffectWithAlphaTest with default parameter settings.
+		/// Creates a new BlBasicEffect with default parameter settings. See class description for more info.
 		/// </summary>
 		public BlBasicEffect(GraphicsDevice device, byte[] bytes)
 			: base(device, bytes)
@@ -354,7 +357,7 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// Creates a new BasicEffectWithAlphaTest by cloning parameter settings from an existing instance.
+		/// Creates a new BlBasicEffect by cloning parameter settings from an existing instance.
 		/// </summary>
 		protected BlBasicEffect(BlBasicEffect cloneSource)
 			: base(cloneSource)
