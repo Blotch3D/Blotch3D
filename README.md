@@ -1,10 +1,13 @@
 Blotch3D
 ========
 
-Create real-time 3D graphics with just a few lines of C\# code.
+This library lets you add hard real-time, full-featured 3D graphics to
+your C\# program with just a few lines of code.
 
 Quick start
 ===========
+
+On your development machine ...
 
 1.  Get the installer for the latest release of MonoGame from
     <http://www.monogame.net/downloads/> and run it. Do NOT get the
@@ -21,6 +24,9 @@ Quick start
 
 5.  Use IntelliSense to see the reference documentation, or see
     "Blotch3DManual.pdf".
+
+To deliver your app, simply deliver the contents of the build output
+directory.
 
 Introduction
 ============
@@ -50,8 +56,8 @@ can...
 
 -   Override all steps in the drawing of each sprite.
 
--   You can give the user easy control over all aspects of the camera
-    (zoom, pan, truck, dolly, rotate, etc.).
+-   Easily give the user control over all aspects of the camera (zoom,
+    pan, truck, dolly, rotate, etc.).
 
 -   Easily control all aspects of the camera programmatically.
 
@@ -309,7 +315,7 @@ Making 3D models
 There are several primitive models available with Blotch3D. If your
 project already has a "Content.mgcb" file, just double-click it and add
 the file(s) to the pipeline manager. See
-<http://rbwhitaker.wikidot.com/monogame-managing-content>) for more
+<http://rbwhitaker.wikidot.com/monogame-managing-content> for more
 information.
 
 If no existing model meets your needs, you can either programmatically
