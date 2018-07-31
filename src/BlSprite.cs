@@ -69,20 +69,20 @@ namespace Blotch
 		public double LodScale = 9;
 
 		/// <summary>
-		/// Mipmap textures to apply to the model. These work the same as LODs (see LODs for more information). The texture
-		/// used depends on the apparent size of the model. The next higher mipmap is used for every doubling
+		/// BlMipmap to apply to the model, or a single texture (Texture2D). The model must include texture coordinates. It must
+		/// also include normals if lighting other than 'emissive' is desired. If BlMipmap, it will work the same as
+		/// LODs (see LODs for more information). Specifically, the mipmap texture applied
+		/// depends on the apparent size of the model. The next higher mipmap is used for every doubling
 		/// of model size, where element zero is the highest resolution, used when the apparent size is largest.
 		/// If a mipmap is not available for the apparent
-		/// size, the next higher available on is used. So, for example, you can specify only one texture to be used as all
-		/// mipmaps if you like. Note that for a texture to display, the model must include texture coordinates. It must
-		/// also include normals if lighting other than 'emissive' is desired. 
+		/// size, the next higher available on is used.
 		/// Most graphics subsystems do support mipmaps, but these are software mipmaps, so only one image is used
 		/// over a model for a given model apparent size rather than nearer portions of the
 		/// model showing higher-level mipmaps.
-		/// These are NOT disposed when the sprite is disposed, so a given BlMipmap may be assigned
+		/// This is NOT disposed when the sprite is disposed, so a given BlMipmap or Texture2D may be assigned
 		/// to multiple sprites.
 		/// </summary>
-		public BlMipmap Mipmap = null;
+		public object Mipmap = null;
 
 		/// <summary>
 		/// Defines the mipmap (Textures) scaling. The higher this value, the closer you must be to see a given mipmap.
@@ -610,20 +610,33 @@ namespace Blotch
 
 			return LODs[(int)i];
 		}
-		public Texture2D GetMipmapLod()
+		/// <summary>
+		/// If Mipmap is a BlMipmap, this returns the mimap texture that should currently be applied to the sprite.
+		/// If Mipmap is a Texture2D, then that texture is returned.
+		/// </summary>
+		/// <returns></returns>
+		public Texture2D GetCurrentTexture()
 		{
-			if (Mipmap==null || Mipmap.Count < 1)
-				return null;
+			if(Mipmap is BlMipmap)
+			{
+				var mipmap = Mipmap as BlMipmap;
+				if (mipmap == null || mipmap.Count < 1)
+					return null;
 
-			var i = MipmapScale + LodTarget;
+				var i = MipmapScale + LodTarget;
 
-			if (i >= Mipmap.Count)
-				i = Mipmap.Count - 1;
+				if (i >= mipmap.Count)
+					i = mipmap.Count - 1;
 
-			if (i < 0)
-				i = 0;
+				if (i < 0)
+					i = 0;
 
-			return Mipmap[(int)i];
+				return mipmap[(int)i];
+			}
+			else
+			{
+				return Mipmap as Texture2D;
+			}
 		}
 		/// <summary>
 		/// Called by DrawInternal
@@ -931,7 +944,7 @@ namespace Blotch
 				effect.FogEnd = Graphics.fogEnd;
 			}
 
-			var Texture = GetMipmapLod();
+			var Texture = GetCurrentTexture();
 			if (Texture != null)
 			{
 				effect.TextureEnabled = true;
@@ -1032,7 +1045,7 @@ namespace Blotch
 				effect.FogEnd = Graphics.fogEnd;
 			}
 
-			var Texture = GetMipmapLod();
+			var Texture = GetCurrentTexture();
 			if (Texture != null)
 			{
 				effect.TextureEnabled = true;

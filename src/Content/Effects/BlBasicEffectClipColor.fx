@@ -38,7 +38,6 @@ BEGIN_CONSTANTS
     float4x4 World                  _vs(c19)          _cb(c15);
     float3x3 WorldInverseTranspose  _vs(c23)          _cb(c19);
 
-	float AlphaTestThreshold = .5;
 	float4 ClipColor = { 0,0,0,0 };
 	float ClipColorTolerance = .1;
 MATRIX_CONSTANTS

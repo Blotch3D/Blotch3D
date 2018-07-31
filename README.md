@@ -63,6 +63,8 @@ can...
 
 -   Create billboard sprites.
 
+-   Show a video as a 2D or 3D texture.
+
 -   Connect sprites to the camera to implement HUD models and text.
 
 -   Connect the camera to a sprite to implement 'cockpit view', etc.
@@ -148,6 +150,16 @@ to be split to several simpler examples\].
 All the provided projects are configured to build for the Microsoft
 Windows x64 platform. See below for other platforms.
 
+To create a new project, you must first install MonoGame as described in
+the [Quick start](#quick-start) section, if you haven't already. You
+must also install the Visual Studio add-ons, etc. for the desired
+platform if different from Microsoft Windows. For example, for Android
+you'd need the Xamarin for Android add-on. When creating a project for
+Microsoft Windows, you can either copy an existing Blotch3D example
+project and rename it, or you can use the project wizard to create a
+MonoGame project and then add a reference to Blotch3D or the Blotch3D
+source.
+
 If you are copying the Blotch3D assembly, like Blotch3D.dll on Microsoft
 Windows, to a project or packages folder so you don't have to include
 the source code of the library in your solution, be sure to also copy
@@ -157,16 +169,15 @@ installed MonoGame on the destination machine. Otherwise you should copy
 the entire project output folder. For example, you'd probably want to
 copy everything in the output folder when you are distributing your app.
 
-To create a new project, you must first install MonoGame as described in
-the [Quick start](#quick-start) section, if you haven't already. You
-must also install the Visual Studio add-ons, etc. for the desired
-platform if different from Microsoft Windows. For example, for Android
-you'd need the Xamarin for Android add-on.
-
-For Microsoft Windows, you can create a new project by either copying an
-existing Blotch3D example project and renaming it, or you can use the
-project wizard to create a MonoGame project and then add a reference to
-Blotch3D or the Blotch3D source.
+Note that the Blotch3D project includes some standard primitive models
+in its Content folder. If that project is in your solution, you can
+refer to those default models in your source without having to
+specifically add them. This is what some of the example do. If the
+Blotch3D project is not in your solution (for example, you have only a
+reference to its DLL), or you want to add other content besides the
+default models, then you will need to add a Content.mgcb to your project
+as described in the [Making and using 3D
+models](#making-and-using-3d-models) section.
 
 For other platforms, you can look online for instructions on creating a
 MonoGame project/platform type you want and then add a reference to, or
@@ -184,9 +195,10 @@ Or you can:
 3.  Include the Blotch3D source in the project, or a Blotch3D project in
     the solution, or add a reference to a build of it for that platform.
 
-4.  Follow the procedure in the '[Making 3D models](#making-3d-models)'
-    section to add a content folder and the pipeline manager so that you
-    have a way to add content.
+4.  Follow the procedure in the '[Making and using 3D
+    models](#making-and-using-3d-models)' section to add a content
+    folder and the pipeline manager so that you have a way to add custom
+    content.
 
 5.  If available on the selected platform, while debugging you'll
     probably want to temporarily set the output type to a type that
@@ -211,7 +223,7 @@ When it comes time to create the 3D window, you instantiate that class
 and call its "Run" method *from the same thread that instantiated it*.
 The Run method will call the Setup, FrameProc, and FrameDraw methods
 when appropriate (explained below), and not return until the window
-closes. (For this reason, you may want to create the BlWindow from
+closes. (For this reason, you may want to create the BlWindow3D from
 within some other thread than the main thread so that the main thread
 can handle a GUI or whatever).
 
@@ -236,10 +248,9 @@ The Setup, FrameProc, and FrameDraw methods are called by the 3D thread
 as follows:
 
 The Setup method is called by the 3D thread exactly once at the
-beginning of instantiation of the BlWindow3D-derived object. You might
-put time-consuming initialization of persistent things in there like the
-loading and initialization of persistent content (sprite models, fonts,
-BlSprites, etc.).
+beginning. You might put time-consuming initialization of persistent
+things in there like the loading and initialization of persistent
+content (sprite models, fonts, BlSprites, etc.).
 
 The FrameProc method is called by the 3D thread once every frame. For
 single-threaded applications this is typically where the bulk of
@@ -263,20 +274,19 @@ A single-threaded application would have all its code in those three
 overridden methods.
 
 If you are developing a multithreaded app, then you would probably want
-to reserve the 3D thread only for tasks that access 3D resources. When
-other threads do need to create, change, or destroy 3D resources or
-otherwise do something in a thread-safe way with the 3D thread, they can
-pass a delegate to BlWindow3D.EnqueueCommand or
+to reserve the 3D thread only for tasks that access 3D hardware
+resources. When other threads do need to create, change, or destroy 3D
+hardware resources or otherwise do something in a thread-safe way with
+the 3D thread, they can pass a delegate via BlWindow3D.EnqueueCommand or
 BlWindow3D.EnqueueCommandBlocking.
 
 Because multiple windows are not conducive to some of the supported
 platforms, MonoGame, and thus Blotch3D, do not support more than one 3D
 window. (You can create any number of other, non-3D windows you like.)
-You *can* create multiple 3D windows, but they don't work correctly
+You can *create* multiple 3D windows, but they don't work correctly
 (input sometimes goes to the wrong window) and in certain situations
 will crash. If you want to be able to "close" and "re-open" a window,
-you can just hide and show the same window. (On Microsoft Windows, you
-can use the BlWindow3D.Form object for that.)
+you can just hide and show the same window.
 
 Officially, MonoGame must create the 3D window, and does not allow you
 to specify an existing window to use as the 3D window. There are some
@@ -309,8 +319,8 @@ with them and you are not otherwise terminating the program.
 See the examples, reference documentation, and IntelliSense for more
 information.
 
-Making 3D models
-================
+Making and using 3D models
+==========================
 
 There are several primitive models available with Blotch3D. If your
 project already has a "Content.mgcb" file, just double-click it and add
@@ -395,14 +405,14 @@ sprites, and their positions, are such that you won't see the artifacts
 because you can't even see the sprites when viewed from underneath,
 which is when you would otherwise see the artifacts in that example.
 
-One main reason such artifacts occur is because the default MonoGame
-"Effect" used to draw models (the "BasicEffect" effect) provides a pixel
-shader that does not do "alpha testing". Alpha testing is the process of
+The reason such artifacts occur is because the default MonoGame "Effect"
+used to draw models (the "BasicEffect" effect) provides a pixel shader
+that does not do "alpha testing". Alpha testing is the process of
 completely neglecting to draw transparent texture pixels, and thus
-neglecting to update the depth buffer at that window position. Most
-typical textures with an alpha channel use an alpha value of only zero
-or one (or close to them), indicating absence or presence of texture.
-Alpha testing works well with textures like that. For alpha values
+neglecting to update the depth buffer at that window pixel. Most typical
+textures with an alpha channel use an alpha value of only zero or one
+(or close to them), indicating absence or presence of texture. Alpha
+testing works well with textures like that. For alpha values
 specifically intended to show partial translucency (alpha values well
 between zero and one), it doesn't work well. In those cases, at a
 minimum you will have to control translucent sprite drawing order (draw
@@ -425,13 +435,14 @@ is used. Essentially your program must do the following:
 1.  Copy the "BlBasicEffectAlphaTest.mgfxo" (or
     "BlBasicEffectAlphaTestOGL.mgfxo" for certain other platforms) from
     the Blotch3D source "Content/Effects" folder to, for example, your
-    program execution folder.
+    program execution folder. (i.e. add it to your project and specify
+    in its properties that it should be copied to output.)
 
 2.  Your program loads that file and creates a BlBasicEffect, like this:
 
     byte\[\] bytes =
     File.ReadAllBytes(\"BlBasicEffectAlphaTest.mgfxo\"); // or
-    'BlBasicEffectAlphaTestOGL.mgfxo' for certain other platforms
+    'BlBasicEffectAlphaTestOGL.mgfxo' for other platforms
 
     BlBasicEffectAlphaTest = new BlBasicEffect(Graphics.GraphicsDevice,
     bytes);
@@ -456,15 +467,24 @@ is used. Essentially your program must do the following:
 
     };
 
-Note that BlBasicEffectAlphaTest may be slightly slower than the default
-(BasicEffect) effect when drawing mostly opaque textures, so only use
-BlBasicEffectAlphaTest when needed.
+Blotch3D also includes a BlBasicEffectClipColor effect, which "creates"
+its own alpha channel from a specified texture color. Use it like
+BlBasicEffectAlphaTest but instead of setting the AlphaTestThreshold
+variable, set the ClipColor and ClipColorTolerance variables. ClipColor
+is the texture color that should indicate transparency (a Vector3 or
+Vector4), and ClipColorTolerance is a float that indicates how close to
+ClipColor (0 to .999) the texture color must be to cause transparency.
+BlBasicEffectClipColor is especially useful for videos where no alpha
+channel is present. It is demonstrated in the VideoWithAlpha example.
 
-The provided "BlBasicEffectAlphaTest.mgfxo" and
-"BlBasicEffectAlphaTestOGL.mgfxo" files are already compiled. The shader
-source code (HLSL) can be found in the Blotch3D Content/Effects folder.
-It is just the original MonoGame BasicEffect code with a few lines added
-for alpha test. The make\_effects.bat file in the Blotch3D source folder
+Note that the custom effects provided by Blotch3D may be slightly slower
+than the default (BasicEffect) effect when drawing mostly opaque
+textures, so only use them when needed.
+
+The provided custom effect files are already compiled. The shader source
+code (HLSL) can be found in the Blotch3D Content/Effects folder. It is
+just the original MonoGame BasicEffect code with a few lines added for
+alpha test. The "make\_effects.bat" file in the Blotch3D source folder
 builds them, but first be sure to add the path to 2MGFX.exe to the
 'path' environment variable. Typically the path is something like
 "\\Program Files (x86)\\MSBuild\\MonoGame\\v3.0\\Tools".
@@ -867,7 +887,7 @@ Q: I set a sprite's matrix so that one of the dimensions has a scale of
 zero, but then the sprite, or parts of it, become black.
 
 A: A sprite's matrix also affects its normals. By setting a dimension's
-scale to zero, you may have caused some of the normals to be zero'd-out
+scale to zero, you may have caused some of the normals to be zeroed-out
 as well. Try setting the scale to a very small number, rather than zero.
 
 Q: When I am zoomed-in a large amount, sprite and camera movement jumps
@@ -916,9 +936,9 @@ The former method is more precise, but the latter is less CPU intensive
 because creating a rotation matrix from a floating-point angle value
 requires that transcendental functions be called, but multiplying
 matrices does not. A good compromise is to use a combination of both, if
-possible. Specifically, multiply by a rotation matrix for a time, but
-somewhat periodically recreate the sprite's matrix directly from the
-scalar angle value.
+possible. Specifically, multiply by a rotation matrix most of the time,
+but on occasion recreate the sprite's matrix directly from the scalar
+angle value.
 
 Rights
 ======

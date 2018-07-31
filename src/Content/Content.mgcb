@@ -217,3 +217,8 @@
 /processorParam:TextureFormat=Compressed
 /build:CourierNew14.spritefont
 
+#begin sample_video.mp4
+/importer:H264Importer
+/processor:VideoProcessor
+/build:sample_video.mp4
+

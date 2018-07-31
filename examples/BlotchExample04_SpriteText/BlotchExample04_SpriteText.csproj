@@ -10,7 +10,7 @@
     <OutputType>Exe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>BlotchExample</RootNamespace>
-    <AssemblyName>BlotchExample01_Basic</AssemblyName>
+    <AssemblyName>BlotchExample01_SpriteText</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MonoGamePlatform>Windows</MonoGamePlatform>
     <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
