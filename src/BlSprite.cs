@@ -1116,7 +1116,8 @@ namespace Blotch
 				Graphics.Window.FrameProcSpritesRemove(this);
 
 			// Dispose the VerticesEffect if we were the one who created it.
-			VerticesEffect.Dispose();
+			if(VerticesEffect != null)
+				VerticesEffect.Dispose();
 
 			//base.Dispose();
 			IsDisposed = true;
