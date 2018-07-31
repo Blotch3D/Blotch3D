@@ -63,7 +63,8 @@ can...
 
 -   Create billboard sprites.
 
--   Show a video as a 2D or 3D texture.
+-   Show a video as a 2D or 3D texture (See
+    <http://rbwhitaker.wikidot.com/video-playback> for details)
 
 -   Connect sprites to the camera to implement HUD models and text.
 
@@ -475,7 +476,7 @@ is the texture color that should indicate transparency (a Vector3 or
 Vector4), and ClipColorTolerance is a float that indicates how close to
 ClipColor (0 to .999) the texture color must be to cause transparency.
 BlBasicEffectClipColor is especially useful for videos where no alpha
-channel is present. It is demonstrated in the VideoWithAlpha example.
+channel is present.
 
 Note that the custom effects provided by Blotch3D may be slightly slower
 than the default (BasicEffect) effect when drawing mostly opaque
