@@ -236,14 +236,16 @@ objects. Note that this rule also applies to any code structure
 (Parallel, async, etc.) that may internally use other threads, as well.
 This is necessary because certain 3D subsystems (OpenGL, DirectX, etc.)
 generally require that 3D resources be accessed by a single thread.
-(There are some platform-specific exceptions, but MonoGame does not use
-them.)
+Since it's hard to know exactly what 3D task really does hit the 3D
+hardware, its best to assume all of them do (like creation and use of
+Blotch3D and MonoGame objects). Even so, there are some
+platform-specific exceptions, but MonoGame does not use them.
 
-This pattern and these rules are also used by MonoGame. In fact, the
-BlWindow3D class inherits from MonoGame's "Game" class. But instead of
-overriding certain "Game" class methods, you override BlWindow3D's
-Setup, FrameProc, and FrameDraw methods. Other "Game" class methods and
-events can still be overridden, if needed.
+Of course, this pattern and these rules are also used by MonoGame. In
+fact, the BlWindow3D class inherits from MonoGame's "Game" class. But
+instead of overriding certain "Game" class methods, you override
+BlWindow3D's Setup, FrameProc, and FrameDraw methods. Other "Game" class
+methods and events can still be overridden, if needed.
 
 The Setup, FrameProc, and FrameDraw methods are called by the 3D thread
 as follows:

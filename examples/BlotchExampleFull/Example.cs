@@ -61,7 +61,7 @@ Shift          - Fine control
 			var floor = new BlSprite(Graphics, "floor");
 			var plane = Content.Load<Model>("Plane");
 			var sphere = Content.Load<Model>("uv_sphere_192x96");
-			var MyTexture = Graphics.LoadFromImageFile("image.png");
+			var MyTexture = Graphics.LoadFromImageFile("image_with_alpha.png");
 
 			//
 			// Create floor
