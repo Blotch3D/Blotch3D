@@ -59,10 +59,6 @@ Shift          - Fine control
 			// is spread of diverse folders.
 			var MyContent = new ContentManager(Services, "Content");
 
-			byte[] bytes = File.ReadAllBytes("Content/BlBasicEffectAlphaTest.mgfxo");
-			BlBasicEffectAlphaTest = new BlBasicEffect(Graphics.GraphicsDevice, bytes);
-			BlBasicEffectAlphaTest.Parameters["AlphaTestThreshold"].SetValue(.5f);
-
 			// The font we will use to draw the menu on the screen.
 			// "Arial14" is the pathname to the font file
 			Font = MyContent.Load<SpriteFont>("Arial14");
@@ -72,6 +68,11 @@ Shift          - Fine control
 						
 			// The sprite we draw in this window
 			Torus = new BlSprite(Graphics,"Torus");
+
+			// We use a custom effect rather than the default effect
+			byte[] bytes = File.ReadAllBytes("Content/BlBasicEffectAlphaTest.mgfxo");
+			BlBasicEffectAlphaTest = new BlBasicEffect(Graphics.GraphicsDevice, bytes);
+			BlBasicEffectAlphaTest.Parameters["AlphaTestThreshold"].SetValue(.5f);
 
 			// See Blotch3D documentation for details on translucency
 			Torus.SetEffect = (s,effect) =>

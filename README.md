@@ -173,7 +173,7 @@ copy everything in the output folder when you are distributing your app.
 Note that the Blotch3D project includes some standard primitive models
 in its Content folder. If that project is in your solution, you can
 refer to those default models in your source without having to
-specifically add them. This is what some of the example do. If the
+specifically add them. This is what some of the examples do. If the
 Blotch3D project is not in your solution (for example, you have only a
 reference to its DLL), or you want to add other content besides the
 default models, then you will need to add a Content.mgcb to your project
@@ -187,7 +187,7 @@ the source of, Blotch3D.
 Or you can:
 
 1.  Create a new project with the project wizard that is close to the
-    type you want or use online instructions for creating it.
+    type you want, or use online instructions for creating it.
 
 2.  Add a reference to MonoGame if it doesn't already have one.
     (typically found in \\Program Files
@@ -196,10 +196,9 @@ Or you can:
 3.  Include the Blotch3D source in the project, or a Blotch3D project in
     the solution, or add a reference to a build of it for that platform.
 
-4.  Follow the procedure in the '[Making and using 3D
-    models](#making-and-using-3d-models)' section to add a content
-    folder and the pipeline manager so that you have a way to add custom
-    content.
+4.  If you need custom content, follow the procedure in the '[Making and
+    using 3D models](#making-and-using-3d-models)' section to add a
+    content folder and the pipeline manager.
 
 5.  If available on the selected platform, while debugging you'll
     probably want to temporarily set the output type to a type that
@@ -303,8 +302,9 @@ All MonoGame features remain available and accessible in Blotch3D. For
 examples:
 
 -   The models you specify for a sprite object (see the BlSprite.LODs
-    field) are MonoGame "Model" objects. So, you can, for example,
-    specify custom shaders, etc., for those models.
+    field) are MonoGame "Model" objects or a VertexPositionNormalTexture
+    array. So, you can, for example, specify custom shaders, etc., for
+    those things.
 
 -   The BlWindow3D class derives from the MonoGame "Game" class.
 
@@ -416,13 +416,13 @@ neglecting to update the depth buffer at that window pixel. Most typical
 textures with an alpha channel use an alpha value of only zero or one
 (or close to them), indicating absence or presence of texture. Alpha
 testing works well with textures like that. For alpha values
-specifically intended to show partial translucency (alpha values well
-between zero and one), it doesn't work well. In those cases, at a
-minimum you will have to control translucent sprite drawing order (draw
-all opaque sprites normally, and then draw translucent sprites far to
-near), and if translucent sprites intersect or a translucent surface
-occludes another surface of the same sprite, you will have to look
-online for more advanced solutions.
+specifically intended to show partial translucency (alpha values near
+0.5), it doesn't work well. In those cases, at a minimum you will have
+to control translucent sprite drawing order (draw all opaque sprites
+normally, and then draw translucent sprites far to near), and if
+translucent sprites intersect or a translucent surface occludes another
+surface of the same sprite, you will have to look online for more
+advanced solutions.
 
 MonoGame does provide a separate "AlphaTestEffect" effect that supports
 alpha test. But AlphaTestEffect does not support directional lights, as
@@ -769,7 +769,7 @@ The axis that extends up from the origin.
 Origin
 
 The center of a coordinate system. The point in the coordinate system
-that is, by definition, at (0,0).
+that is, by definition, at (0,0,0).
 
 Translation
 
