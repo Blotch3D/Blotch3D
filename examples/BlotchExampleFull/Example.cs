@@ -216,7 +216,7 @@ Shift          - Fine control
 
 			var guiCtrl = new BlGuiControl(this)
 			{
-				Texture = Graphics.TextToTexture("Click me for a console message", Font),
+				Texture = Graphics.TextToTexture("Click me for a console message", Font,Color.Green,Color.Transparent),
 				Position = new Vector2(600, 100),
 				OnMouseOver = (ctrl) => 
 				{
