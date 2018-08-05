@@ -495,8 +495,8 @@ variable, set the ClipColor and ClipColorTolerance variables. ClipColor
 is the texture color that should indicate transparency (a Vector3 or
 Vector4), and ClipColorTolerance is a float that indicates how close to
 ClipColor (0 to .999) the texture color must be to cause transparency.
-BlBasicEffectClipColor is especially useful for videos where no alpha
-channel is present.
+BlBasicEffectClipColor is especially useful for videos that neglected to
+include an alpha channel.
 
 Note that the custom effects provided by Blotch3D may be slightly slower
 than the default (BasicEffect) effect when drawing mostly opaque
