@@ -34,8 +34,8 @@ Introduction
 Blotch3D is a C\# library that vastly simplifies many of the tasks in
 developing 3D applications and games.
 
-Examples are provided that show how with just a few lines of code you
-can...
+Bare-bones examples are provided that show how with just a few lines of
+code you can...
 
 -   Load standard 3D model file types as "sprites", and display and move
     thousands of them in 3D at high frame rates.
@@ -258,28 +258,44 @@ The FrameProc method is called by the 3D thread once every frame. For
 single-threaded applications this is typically where the bulk of
 application code resides, except the actual drawing code. For
 multi-threaded applications, this is typically where all application
-code resides that does anything with 3D resources. (Note: You can also
-pass a delegate to the BlSprite constructor, which will cause that
-delegate to be executed every time the BlWindow3D's FrameProc method is
-executed. The effect is the same as putting the code in FrameProc, but
-it better encapsulates sprite-specific code.)
+code resides that does anything with 3D resources, except the actual
+drawing code. (Note: You can also pass a delegate to the BlSprite
+constructor, which will cause that delegate to be executed every time
+the BlWindow3D's FrameProc method is executed. The effect is the same as
+putting the code in FrameProc, but it better encapsulates
+sprite-specific code.)
 
 The FrameDraw method is called by the 3D thread every frame, but only if
 there is enough CPU for that thread. Otherwise it is called less
 frequently. This is where you must put drawing code (BlSprite.Draw,
 BlGraphicsDeviceManager.DrawText, etc.). For apps that may suffer from
 severe CPU exhaustion (at least for the 3D thread), you may want to put
-your app code in this method so it is called less frequently (as long as
-that code can properly handle being called at variable rates).
+your app code in this method, as well, so it is called less frequently
+(as long as that code can properly handle being called at variable
+rates).
 
-A single-threaded application would have all its code in those three
-overridden methods.
+You can use variety of methods to draw things in FrameDraw. Blotch3D
+provides methods to draw text and textures in 2D (draw them after all 3D
+objects have been drawn so they aren't overwritten by them). Sprites are
+drawn with the BlSprite.Draw method. When you draw a sprite, all its
+subsprites are also drawn. So, oftentimes you may want to have a "Top"
+sprite that holds all others, and call the Draw method of the Top sprite
+to draw all other sprites. (BlSprite inherits from Dictionary\<string,
+BlSprite\>, where the string key is the subsprite name). You can also
+use MonoGame drawing techniques. For example, it is faster to draw
+multiple 2D textures and text using MonoGame's SpriteBatch class.
 
-If you are developing a multithreaded app, then you would probably want
-to reserve the 3D thread only for tasks that access 3D hardware
-resources. When other threads do need to create, change, or destroy 3D
-hardware resources or otherwise do something in a thread-safe way with
-the 3D thread, they can pass a delegate via BlWindow3D.EnqueueCommand or
+By default, lighting, background color, and sprite coloring are set so
+that it is most probable you will see them. These may need to be changed
+after you've verified sprites are properly created and positioned.
+
+A single-threaded application would have all its code in the three
+overridden methods: Setup, FrameProc, and FrameDraw. If you are
+developing a multithreaded app, then you would probably want to reserve
+the 3D thread only for tasks that access 3D hardware resources. When
+other threads do need to create, change, or destroy 3D hardware
+resources or otherwise do something in a thread-safe way with the 3D
+thread, they can pass a delegate via BlWindow3D.EnqueueCommand or
 BlWindow3D.EnqueueCommandBlocking.
 
 Because multiple windows are not conducive to some of the supported
@@ -296,15 +312,15 @@ platform-specific ways to do it described online, but note that they may
 not work in later MonoGame releases. To properly make the MonoGame
 window be a child window of an existing GUI, you need to explicitly
 size, position, and convey Z order to the original MonoGame window so
-that it is overlaid over the child window.
+that it is overlaid over the child window. On Microsoft Windows, the
+BlWindow3D.WindowForm field may be helpful in this.
 
 All MonoGame features remain available and accessible in Blotch3D. For
 examples:
 
 -   The models you specify for a sprite object (see the BlSprite.LODs
     field) are MonoGame "Model" objects or a VertexPositionNormalTexture
-    array. So, you can, for example, specify custom shaders, etc., for
-    those things.
+    array.
 
 -   The BlWindow3D class derives from the MonoGame "Game" class.
 
@@ -396,7 +412,7 @@ handling.
 
 If you simply apply the translucent texture to a sprite as if it's just
 like any other texture, you will not see through the transparent texture
-when a near polygon with translucency is drawn before a far polygon that
+when a near surface with translucency is drawn before a far surface that
 it occludes. This is because the far surface is not drawn because the
 near surface updated the depth buffer to indicate the far surface need
 not be drawn. For some translucent textures the artifacts can be
@@ -417,12 +433,12 @@ textures with an alpha channel use an alpha value of only zero or one
 (or close to them), indicating absence or presence of texture. Alpha
 testing works well with textures like that. For alpha values
 specifically intended to show partial translucency (alpha values near
-0.5), it doesn't work well. In those cases, at a minimum you will have
-to control translucent sprite drawing order (draw all opaque sprites
-normally, and then draw translucent sprites far to near), and if
-translucent sprites intersect or a translucent surface occludes another
-surface of the same sprite, you will have to look online for more
-advanced solutions.
+0.5), it doesn't work as well. In those cases, you can live with the
+artifacts, or beyond that at a minimum you will have to control
+translucent sprite drawing order (draw all opaque sprites normally, and
+then draw translucent sprites far to near), and if translucent sprites
+still intersect or a translucent surface still occludes another surface
+of the same sprite, you can look online for more advanced solutions.
 
 MonoGame does provide a separate "AlphaTestEffect" effect that supports
 alpha test. But AlphaTestEffect does not support directional lights, as
@@ -436,16 +452,16 @@ provides alpha testing. See the SpriteAlphaTexture example to see how it
 is used. Essentially your program must do the following:
 
 1.  Copy the "BlBasicEffectAlphaTest.mgfxo" (or
-    "BlBasicEffectAlphaTestOGL.mgfxo" for certain other platforms) from
-    the Blotch3D source "Content/Effects" folder to, for example, your
-    program execution folder. (i.e. add it to your project and specify
-    in its properties that it should be copied to output.)
+    "BlBasicEffectAlphaTestOGL.mgfxo" for platforms that use OpenGL)
+    from the Blotch3D source "Content/Effects" folder to, for example,
+    your program execution folder. (i.e. add it to your project and
+    specify in its properties that it should be copied to output.)
 
 2.  Your program loads that file and creates a BlBasicEffect, like this:
 
     byte\[\] bytes =
-    File.ReadAllBytes(\"BlBasicEffectAlphaTest.mgfxo\"); // or
-    'BlBasicEffectAlphaTestOGL.mgfxo' for other platforms
+    File.ReadAllBytes(\"BlBasicEffectAlphaTest.mgfxo\"); // (or
+    'BlBasicEffectAlphaTestOGL.mgfxo' for OpenGL)
 
     BlBasicEffectAlphaTest = new BlBasicEffect(Graphics.GraphicsDevice,
     bytes);
@@ -484,13 +500,14 @@ Note that the custom effects provided by Blotch3D may be slightly slower
 than the default (BasicEffect) effect when drawing mostly opaque
 textures, so only use them when needed.
 
-The provided custom effect files are already compiled. The shader source
-code (HLSL) can be found in the Blotch3D Content/Effects folder. It is
-just the original MonoGame BasicEffect code with a few lines added for
-alpha test. The "make\_effects.bat" file in the Blotch3D source folder
-builds them, but first be sure to add the path to 2MGFX.exe to the
-'path' environment variable. Typically the path is something like
-"\\Program Files (x86)\\MSBuild\\MonoGame\\v3.0\\Tools".
+The provided custom effect files are already compiled in the Blotch3D
+delivery from GitHub. The shader source code (HLSL) can be found in the
+Blotch3D Content/Effects folder. It is just the original MonoGame
+BasicEffect code with a few lines added for alpha test. The
+"make\_effects.bat" file in the Blotch3D source folder builds them, but
+first be sure to add the path to 2MGFX.exe to the 'path' environment
+variable. Typically the path is something like "\\Program Files
+(x86)\\MSBuild\\MonoGame\\v3.0\\Tools".
 
 Dynamically changing a sprite's orientation and position
 ========================================================
