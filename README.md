@@ -341,26 +341,28 @@ information.
 Making and using 3D models
 ==========================
 
-There are several primitive models available with Blotch3D. If your
-project already has a "Content.mgcb" file, just double-click it and add
-the file(s) to the pipeline manager. See
+There are several primitive models available with Blotch3D. If the
+Blotch3D project is included in your solution, you can use them as is
+shown in the examples. Otherwise you will need to add a "Content.mgcb"
+file to your project as described below, and then add the model file(s)
+by double-clicking that file to open the pipeline manager. See
 <http://rbwhitaker.wikidot.com/monogame-managing-content> for more
-information.
+information. (You also use this technique to add any other type of
+content, like fonts, images, etc.).
 
 If no existing model meets your needs, you can either programmatically
 create a model by specifying the vertices and normals (see the example
 that uses custom Vertices), or create a model with, for example, the
-Blender 3D modeler and then add it to the project with the pipeline
-manager. The pipeline manager can import several model file types. You
-can also instruct Blender to include texture (UV) mapping by using one
-of the countless tutorials online, like
+Blender 3D modeler and then add that model to the project with the
+pipeline manager. The pipeline manager can import several model file
+types. You can also instruct Blender to include texture (UV) mapping by
+using one of the countless tutorials online, like
 <https://www.youtube.com/watch?v=2xTzJIaKQFY> or
 <https://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/UV_Map_Basics> .
 Also, you may be able to import certain existing models from the web,
 but mind the copyright.
 
-If you don't have a "Content.mgcb" file in your project because, for
-example, you created the Blotch3D project from scratch, then do the
+If you don't have a "Content.mgcb" file in your project, then do the
 following...
 
 1.  Copy the Content folder from the Blotch3D project folder to your
@@ -373,8 +375,8 @@ following...
 4.  Set the "Build Action" to "MonoGameContentReference"
 
 If the "MonoGameContentReference" build option is not available in the
-drop-down list because, for example, you have created a project from
-scratch, rather than copied an existing example, then try this:
+drop-down list because, for example, you have created a non-MonoGame
+project from scratch, then try this:
 
 (from
 <http://www.infinitespace-studios.co.uk/general/monogame-content-pipeline-integration/>)
