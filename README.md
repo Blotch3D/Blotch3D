@@ -165,11 +165,10 @@ Blotch3D.
 If you are copying the Blotch3D library binary (like Blotch3D.dll on
 Windows) to a project or packages folder instead of including its source
 code, be sure to also copy Blotch3D.xml so you still get the
-IntelliSense. You shouldn't have to copy any other binary file from the
-Blotch3D output folder if you've installed MonoGame on the destination
-machine. Otherwise you should copy the entire project output folder. For
-example, you'd probably want to copy everything in the output folder
-when you are distributing your app.
+IntelliSense.
+
+To distribute a program, deliver everything in your project's output
+folder.
 
 To create a project for another platform, generally you follow the same
 procedure described here but you may need to look online for particular
