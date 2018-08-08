@@ -25,8 +25,8 @@ On your development machine ...
 5.  Use IntelliSense to see the reference documentation, or see
     "Blotch3DManual.pdf".
 
-To deliver your app, simply deliver the contents of the build output
-directory.
+6.  Create a new Blotch3D project by following the instructions in the
+    [Creating a new project](#creating-a-new-project) section.
 
 Introduction
 ============
@@ -202,9 +202,9 @@ objects. Note that this rule also applies to any code structure
 (Parallel, async, etc.) that may internally use other threads, as well.
 This is necessary because certain 3D subsystems (OpenGL, DirectX, etc.)
 generally require that 3D resources be accessed by a single thread.
-Since it's hard to know exactly what 3D task really does hit the 3D
-hardware, its best to assume all of them do (like creation and use of
-Blotch3D and MonoGame objects). Even so, there are some
+Since sometimes it's hard to know exactly what 3D task really does hit
+the 3D hardware, its best to assume all of them do (like creation and
+use of Blotch3D and MonoGame objects). Even so, there are some
 platform-specific exceptions, but MonoGame does not use them.
 
 Of course, this pattern and these rules are also used by MonoGame. In
