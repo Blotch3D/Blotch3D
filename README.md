@@ -133,9 +133,6 @@ official cross-platform way to specify an existing window to use as the
 3D window---MonoGame must create it. See below for details and
 work-arounds.
 
-Project structure
-=================
-
 The provided Visual Studio solution file contains both the Blotch3D
 library project with source, and the example projects.
 
@@ -151,65 +148,35 @@ to be split to several simpler examples\].
 All the provided projects are configured to build for the Microsoft
 Windows x64 platform. See below for other platforms.
 
+Creating a new project
+======================
+
 To create a new project, you must first install MonoGame as described in
-the [Quick start](#quick-start) section, if you haven't already. You
-must also install the Visual Studio add-ons, etc. for the desired
-platform if different from Microsoft Windows. For example, for Android
-you'd need the Xamarin for Android add-on. When creating a project for
-Microsoft Windows, you can either copy an existing Blotch3D example
-project and rename it, or you can use the project wizard to create a
-MonoGame project and then add a reference to Blotch3D or the Blotch3D
-source.
+the [Quick start](#quick-start) section, if you haven't already.
 
-If you are copying the Blotch3D assembly, like Blotch3D.dll on Microsoft
-Windows, to a project or packages folder so you don't have to include
-the source code of the library in your solution, be sure to also copy
-Blotch3D.xml so you still get the IntelliSense. You shouldn't have to
-copy any other binary file from the Blotch3D output folder if you've
-installed MonoGame on the destination machine. Otherwise you should copy
-the entire project output folder. For example, you'd probably want to
-copy everything in the output folder when you are distributing your app.
+If the target platform is different from Microsoft Windows, you must
+also install any Visual Studio add-ons, etc. for the desired platform.
+For example, for Android you'd need the Xamarin for Android add-on.
 
-Note that the Blotch3D project includes some standard primitive models
-in its Content folder. If that project is in your solution, you can
-refer to those default models in your source without having to
-specifically add them. This is what some of the examples do. If the
-Blotch3D project is not in your solution (for example, you have only a
-reference to its DLL), or you want to add other content besides the
-default models, then you will need to add a Content.mgcb to your project
-as described in the [Making and using 3D
-models](#making-and-using-3d-models) section.
+Then select File/New/Project/MonoGame, and select the type of MonoGame
+project you want. Then add the source, or a reference to the source, of
+Blotch3D.
 
-For other platforms, you can look online for instructions on creating a
-MonoGame project/platform type you want and then add a reference to, or
-the source of, Blotch3D.
+If you are copying the Blotch3D library binary (like Blotch3D.dll on
+Windows) to a project or packages folder instead of including its source
+code, be sure to also copy Blotch3D.xml so you still get the
+IntelliSense. You shouldn't have to copy any other binary file from the
+Blotch3D output folder if you've installed MonoGame on the destination
+machine. Otherwise you should copy the entire project output folder. For
+example, you'd probably want to copy everything in the output folder
+when you are distributing your app.
 
-Or you can:
-
-1.  Create a new project with the project wizard that is close to the
-    type you want, or use online instructions for creating it.
-
-2.  Add a reference to MonoGame if it doesn't already have one.
-    (typically found in \\Program Files
-    (x86)\\MonoGame\\v3.0\\Assemblies\\\...)
-
-3.  Include the Blotch3D source in the project, or a Blotch3D project in
-    the solution, or add a reference to a build of it for that platform.
-
-4.  If you need custom content, follow the procedure in the '[Making and
-    using 3D models](#making-and-using-3d-models)' section to add a
-    content folder and the pipeline manager.
-
-5.  If available on the selected platform, while debugging you'll
-    probably want to temporarily set the output type to a type that
-    shows stdout messages (like 'Console Application' on Microsoft
-    Windows) so you can see any debug messages.
-
-6.  You may need to copy various XML structures into your csproj file
-    from other projects that have some of the attributes that you want.
-
-To create a 3D window, follow the guidelines in the
-[Development](#development) section.
+To create a project for another platform, generally you follow the same
+procedure described here but you may need to look online for particular
+instructions on creating a MonoGame project for the target platform. And
+as always, the Blotch3D source project must be included in the solution
+or you must reference a binary of it that was built for the target
+platform.
 
 Development
 ===========
@@ -343,27 +310,26 @@ Making and using 3D models
 
 There are several primitive models available with Blotch3D. If the
 Blotch3D project is included in your solution, you can use them as is
-shown in the examples. Otherwise you will need to add a "Content.mgcb"
-file to your project as described below, and then add the model file(s)
-by double-clicking that file to open the pipeline manager. See
-<http://rbwhitaker.wikidot.com/monogame-managing-content> for more
+shown in the examples. Otherwise you will need to add the content by
+double-clicking the "Content.mgcb" file to open the pipeline manager.
+See <http://rbwhitaker.wikidot.com/monogame-managing-content> for more
 information. (You also use this technique to add any other type of
 content, like fonts, images, etc.).
 
-If no existing model meets your needs, you can either programmatically
-create a model by specifying the vertices and normals (see the example
-that uses custom Vertices), or create a model with, for example, the
-Blender 3D modeler and then add that model to the project with the
-pipeline manager. The pipeline manager can import several model file
-types. You can also instruct Blender to include texture (UV) mapping by
-using one of the countless tutorials online, like
+To create a new model, you can either programmatically create it by
+specifying the vertices and normals (see the example that uses custom
+Vertices), or create a model with, for example, the Blender 3D modeler
+and then add that model to the project with the pipeline manager. The
+pipeline manager can import several model file types. You can also
+instruct Blender to include texture (UV) mapping by using one of the
+countless tutorials online, like
 <https://www.youtube.com/watch?v=2xTzJIaKQFY> or
 <https://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/UV_Map_Basics> .
 Also, you may be able to import certain existing models from the web,
 but mind the copyright.
 
-If you don't have a "Content.mgcb" file in your project, then do the
-following...
+If for some reason you don't have a "Content.mgcb" file in your project,
+then do the following...
 
 1.  Copy the Content folder from the Blotch3D project folder to your
     project folder
@@ -425,6 +391,7 @@ do this in the "full" example because the draw order of the translucent
 sprites, and their positions, are such that you won't see the artifacts
 because you can't even see the sprites when viewed from underneath,
 which is when you would otherwise see the artifacts in that example.
+(Note: subsprites are drawn in the order they are added.)
 
 The reason such artifacts occur is because the default MonoGame "Effect"
 used to draw models (the "BasicEffect" effect) provides a pixel shader
