@@ -467,9 +467,7 @@ namespace Blotch
 			if (BoundSphere == null)
 				return null;
 
-			var sphere = (BoundingSphere)BoundSphere;
-			sphere = sphere.Transform(AbsoluteMatrix);
-			return ray.Intersects(sphere);
+			return ray.Intersects((BoundingSphere)BoundSphere);
 		}
 
 		/// <summary>
