@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 //#endregion
 
-namespace Botch
+namespace Blotch
 {
 	/// <summary>
 	/// Track which effect parameters need to be recomputed during the next OnApply.

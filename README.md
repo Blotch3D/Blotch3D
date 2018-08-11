@@ -230,9 +230,9 @@ The effect is the same as putting the code in FrameProc, but it better
 encapsulates sprite-specific code.)
 
 Once every frame the 3D thread prepares for drawing and then calls the
-FrameDraw method, as well. But only if there is enough CPU available in
-the 3D thread. Otherwise FrameDraw is called less frequently. This is
-where you should put drawing code (BlSprite.Draw,
+FrameDraw method, but only if there is enough CPU available in the 3D
+thread. Otherwise FrameDraw is called less frequently. This is where you
+should put drawing code (BlSprite.Draw,
 BlGraphicsDeviceManager.DrawText, etc.). For apps that may suffer from
 severe CPU exhaustion (at least for the 3D thread), you may also want to
 put your app code in this method, as well, so it is called less
@@ -257,9 +257,9 @@ after you've verified sprites are properly created and positioned.
 
 A single-threaded application would have all its code in the three
 overridden methods: Setup, FrameProc, and FrameDraw. If you are
-developing a multithreaded app, then you would probably want to reserve
-the 3D thread only for tasks that access 3D hardware resources. When
-other threads do need to create, change, or destroy 3D hardware
+developing a multithreaded program, then you would probably want to
+reserve the 3D thread only for tasks that access 3D hardware resources.
+When other threads do need to create, change, or destroy 3D hardware
 resources or otherwise do something in a thread-safe way with the 3D
 thread, they can pass a delegate via BlWindow3D.EnqueueCommand or
 BlWindow3D.EnqueueCommandBlocking.
@@ -313,11 +313,11 @@ There are several primitive models available with Blotch3D. If the
 Blotch3D project is included in your solution, you can use them as is
 shown in the examples (in fact, to do this you don't even need the
 MonoGame "Content.mgcb" file in your project). Otherwise you will need
-to add the content by double-clicking the "Content.mgcb" file to open
-the pipeline manager. See
-<http://rbwhitaker.wikidot.com/monogame-managing-content> for more
-information. (You also add any other type of content, like fonts, etc.
-by use of the MonoGame "Content.mgcb" file.)
+to add the content explicitly to your "Content.mgcb" via the pipeline
+manager (which you start by double-clicking the "Content.mgcb" in your
+project). See <http://rbwhitaker.wikidot.com/monogame-managing-content>
+for more information. (You also add any other type of content, like
+fonts, etc. by use of the MonoGame "Content.mgcb" file.)
 
 To create a new model, you can either programmatically create it by
 specifying the vertices and normals (see the example that creates custom
@@ -337,7 +337,7 @@ If for some reason you created a non-MonoGame project (without a
 1.  If not already done, add a reference to MonoGame.
 
 2.  Copy the Content folder from the Blotch3D project folder (or any
-    other project with a content folder) to your project folder
+    other MonoGame project with a content folder) to your project folder
 
 3.  Add the "Content.mgcb" file in that folder to your project
 
@@ -376,7 +376,7 @@ Translucency and Custom Effects
 
 Translucent pixels in text or textures drawn using the 2D Blotch3D
 drawing methods (BlGraphicsDeviceManager\#DrawText and
-BlGraphicsDeviceManager\#DrawTexture) or any MonoGame drawing methods
+BlGraphicsDeviceManager\#DrawTexture) or any MonoGame 2D drawing methods
 will always correctly show the things behind them. Just be sure to call
 those methods after all other 3D things are drawn in FrameDraw.
 
