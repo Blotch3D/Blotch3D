@@ -1,3 +1,6 @@
+Blotch3D
+========
+
 Quick start
 ===========
 
@@ -146,7 +149,7 @@ Creating a new project
 ======================
 
 To create a new project, you must first install MonoGame as described in
-the [Quick start](#quick-start) section, if you haven't already.
+the [Quick start](#blotch3d) section, if you haven't already.
 
 If the target platform is different from Microsoft Windows, you must
 also install any Visual Studio add-ons, etc. for the desired platform.
@@ -300,7 +303,7 @@ examples:
 Remember that most Blotch3D objects must be Disposed when you are done
 with them and you are not otherwise terminating the program.
 
-See the examples, reference documentation (docs/Blotch3DManual.pdf), and
+See the examples, reference documentation (doc/Blotch3DManual.pdf), and
 IntelliSense for more information.
 
 Making and using 3D models
