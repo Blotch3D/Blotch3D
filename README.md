@@ -1,9 +1,3 @@
-Blotch3D
-========
-
-This library lets you add hard real-time, full-featured 3D graphics to
-your C\# program with just a few lines of code.
-
 Quick start
 ===========
 
@@ -172,9 +166,11 @@ folder.
 
 To create a project for another platform, generally you follow the same
 procedure described here but you may need to look online for particular
-instructions on creating a MonoGame project for the target platform. And
-as always, the Blotch3D source project must be included in the solution
-or you must reference a binary of it that was built for the target
+instructions on creating a MonoGame project for the target platform. See
+[Making and using 3D models](#making-and-using-3d-models) for special
+cases where you may need to manually add the Content.mgcb file. And as
+always, the Blotch3D source project must be included in the solution or
+you must reference a binary of it that was built for the target
 platform.
 
 Development
@@ -230,24 +226,27 @@ constructor, which will cause that delegate to be executed every frame.
 The effect is the same as putting the code in FrameProc, but it better
 encapsulates sprite-specific code.)
 
-The FrameDraw method is called by the 3D thread every frame, but only if
-there is enough CPU for that thread. Otherwise it is called less
-frequently. This is where you must put drawing code (BlSprite.Draw,
+Once every frame the 3D thread prepares for drawing and then calls the
+FrameDraw method, as well. But only if there is enough CPU available in
+the 3D thread. Otherwise FrameDraw is called less frequently. This is
+where you should put drawing code (BlSprite.Draw,
 BlGraphicsDeviceManager.DrawText, etc.). For apps that may suffer from
-severe CPU exhaustion (at least for the 3D thread), you may want to put
-your app code in this method, as well, so it is called less frequently,
-as long as that code can properly handle being called at variable rates.
+severe CPU exhaustion (at least for the 3D thread), you may also want to
+put your app code in this method, as well, so it is called less
+frequently, as long as that code can properly handle being called at
+variable rates.
 
 You can use a variety of methods to draw things in FrameDraw. Blotch3D
-provides methods to draw text and textures in 2D (draw them after all 3D
-objects have been drawn so they aren't overwritten by them). Sprites are
-drawn with the BlSprite.Draw method. When you draw a sprite, all its
-subsprites are also drawn. So, oftentimes you may want to have a "Top"
-sprite that holds all others, and call the Draw method of the Top sprite
-to draw all other sprites. (BlSprite inherits from Dictionary\<string,
-BlSprite\>, where the string key is the subsprite name). You can also
-use MonoGame drawing techniques. For example, it is faster to draw
-multiple 2D textures and text using MonoGame's SpriteBatch class.
+provides methods to draw text and textures in 2D (just draw them after
+all 3D objects have been drawn so they aren't overwritten by them).
+Sprites are drawn with the BlSprite.Draw method. When you draw a sprite,
+all its subsprites are also drawn. So, oftentimes you may want to have a
+"Top" sprite that holds others, and call the Draw method of the Top
+sprite to draw all other sprites. (BlSprite inherits from
+Dictionary\<string, BlSprite\>, where the string key is the subsprite
+name.) You can also draw things with MonoGame. For example, it is faster
+to draw multiple 2D textures and text using MonoGame's SpriteBatch
+class.
 
 By default, lighting, background color, and sprite coloring are set so
 that it is most probable you will see them. These may need to be changed
@@ -265,19 +264,19 @@ BlWindow3D.EnqueueCommandBlocking.
 Because multiple windows are not conducive to some of the supported
 platforms, MonoGame, and thus Blotch3D, do not support more than one 3D
 window. (You can create any number of other, non-3D windows you like.)
-You can *create* multiple 3D windows, but they don't work correctly
-(input sometimes goes to the wrong window) and in certain situations
-will crash. If you want to be able to "close" and "re-open" a window,
-you can just hide and show the same window.
+You can *create* multiple 3D windows, but MonoGame does not support them
+correctly (input sometimes goes to the wrong window) and in certain
+situations will crash. If you want to be able to "close" and "re-open" a
+window, you can just hide and show the same window.
 
 Officially, MonoGame must create the 3D window, and does not allow you
 to specify an existing window to use as the 3D window. There are some
 platform-specific ways to do it described online, but note that they may
-not work in later MonoGame releases. To properly make the MonoGame
-window be a child window of an existing GUI, you need to explicitly
-size, position, and convey Z order to the original MonoGame window so
-that it is overlaid over the child window. On Microsoft Windows, the
-BlWindow3D.WindowForm field may be helpful in this.
+not work in later MonoGame releases.
+
+To properly make the MonoGame window be a child window of an existing
+GUI, you need to explicitly size, position, and convey Z order to the 3D
+window so that it is overlaid over the child window.
 
 All MonoGame features remain available and accessible in Blotch3D. For
 examples:
@@ -286,7 +285,9 @@ examples:
     field) are MonoGame "Model" objects or a VertexPositionNormalTexture
     array.
 
--   The BlWindow3D class derives from the MonoGame "Game" class.
+-   The BlWindow3D class derives from the MonoGame "Game" class. The
+    Setup, FrameProc, and FrameDraw methods are called by certain
+    overridden Game methods.
 
 -   The BlGraphicsDeviceManager class derives from MonoGame's
     "GraphicsDeviceManager" class.
@@ -299,8 +300,8 @@ examples:
 Remember that most Blotch3D objects must be Disposed when you are done
 with them and you are not otherwise terminating the program.
 
-See the examples, reference documentation, and IntelliSense for more
-information.
+See the examples, reference documentation (docs/Blotch3DManual.pdf), and
+IntelliSense for more information.
 
 Making and using 3D models
 ==========================
@@ -312,12 +313,12 @@ MonoGame "Content.mgcb" file in your project). Otherwise you will need
 to add the content by double-clicking the "Content.mgcb" file to open
 the pipeline manager. See
 <http://rbwhitaker.wikidot.com/monogame-managing-content> for more
-information. (You also add any other type of content, like fonts,
-images, etc. by use of the MonoGame "Content.mgcb" file.)
+information. (You also add any other type of content, like fonts, etc.
+by use of the MonoGame "Content.mgcb" file.)
 
 To create a new model, you can either programmatically create it by
-specifying the vertices and normals (see the example that uses custom
-Vertices), or create a model with, for example, the Blender 3D modeler
+specifying the vertices and normals (see the example that creates custom
+vertices), or create a model with, for example, the Blender 3D modeler
 and then add that model to the project with the pipeline manager. The
 pipeline manager can import several model file types. You can also
 instruct Blender to include texture (UV) mapping by using one of the
@@ -325,19 +326,21 @@ countless tutorials online, like
 <https://www.youtube.com/watch?v=2xTzJIaKQFY> or
 <https://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/UV_Map_Basics> .
 Also, you may be able to import certain existing models from the web,
-but mind the copyright.
+but mind their copyright.
 
-If for some reason you don't have a "Content.mgcb" file in your project,
-then do the following...
+If for some reason you created a non-MonoGame project (without a
+"Content.mgcb" file), then do the following...
 
-1.  Copy the Content folder from the Blotch3D project folder to your
-    project folder
+1.  If not already done, add a reference to MonoGame.
 
-2.  Add the "Content.mgcb" file in that folder to your project
+2.  Copy the Content folder from the Blotch3D project folder (or any
+    other project with a content folder) to your project folder
 
-3.  Right-click it and select "Properties"
+3.  Add the "Content.mgcb" file in that folder to your project
 
-4.  Set the "Build Action" to "MonoGameContentReference"
+4.  Right-click it and select "Properties"
+
+5.  Set the "Build Action" to "MonoGameContentReference"
 
 If the "MonoGameContentReference" build option is not available in the
 drop-down list because, for example, you have created a non-MonoGame
@@ -370,27 +373,27 @@ Translucency and Custom Effects
 
 Translucent pixels in text or textures drawn using the 2D Blotch3D
 drawing methods (BlGraphicsDeviceManager\#DrawText and
-BlGraphicsDeviceManager\#DrawTexture) will always correctly show the
-things behind them. Just be sure to call those methods after all other
-3D things are drawn in FrameDraw.
+BlGraphicsDeviceManager\#DrawTexture) or any MonoGame drawing methods
+will always correctly show the things behind them. Just be sure to call
+those methods after all other 3D things are drawn in FrameDraw.
 
-However, a translucent texture applied to a sprite may require special
-handling.
+However, a 3D translucent texture, like a translucent texture applied to
+a sprite, may require special handling.
 
 If you simply apply the translucent texture to a sprite as if it's just
 like any other texture, you will not see through the transparent texture
 when a near surface with translucency is drawn before a far surface that
-it occludes. This is because the far surface is not drawn because the
-near surface updated the depth buffer to indicate the far surface need
-not be drawn. For some translucent textures the artifacts can be
-negligible, or your particular application may avoid the artifacts
-entirely because of camera constraints, sprite position constraints, and
-drawing order. In those cases, you don't need any other special code. We
-do this in the "full" example because the draw order of the translucent
-sprites, and their positions, are such that you won't see the artifacts
-because you can't even see the sprites when viewed from underneath,
-which is when you would otherwise see the artifacts in that example.
-(Note: subsprites are drawn in the order they are added.)
+it occludes. This is because drawing the near surface also updates the
+depth buffer, so the far surface is not drawn. For some translucent
+textures the artifacts can be negligible, or your particular application
+may avoid the artifacts entirely because of camera constraints, sprite
+position constraints, and drawing order. In those cases, you don't need
+any other special code. We do this in the "full" example because the
+draw order of the translucent sprites, and their positions, are such
+that you won't see the artifacts because you can't even see the sprites
+when viewed from underneath, which is when you would otherwise see the
+artifacts in that example. (Note: subsprites are drawn in the order they
+are added.)
 
 The reason such artifacts occur is because the default MonoGame "Effect"
 used to draw models (the "BasicEffect" effect) provides a pixel shader
@@ -398,10 +401,10 @@ that does not do "alpha testing". Alpha testing is the process of
 completely neglecting to draw transparent texture pixels, and thus
 neglecting to update the depth buffer at that window pixel. Most typical
 textures with an alpha channel use an alpha value of only zero or one
-(or close to them), indicating absence or presence of texture. Alpha
-testing works well with textures like that. For alpha values
+(or close to them), indicating absence or presence of visible pixels.
+Alpha testing works well with textures like that. For alpha values
 specifically intended to show partial translucency (alpha values near
-0.5), it doesn't work as well. In those cases, you can live with the
+0.5), it doesn't work well. In those cases, you can live with the
 artifacts, or beyond that at a minimum you will have to control
 translucent sprite drawing order (draw all opaque sprites normally, and
 then draw translucent sprites far to near), and if translucent sprites
@@ -411,7 +414,8 @@ of the same sprite, you can look online for more advanced solutions.
 MonoGame does provide a separate "AlphaTestEffect" effect that supports
 alpha test. But AlphaTestEffect does not support directional lights, as
 are supported in BasicEffect. So, don't bother with AlphaTestEffect
-unless you don't care about the directional lights.
+unless you don't care about the directional lights (i.e. you are using
+only emission lighting).
 
 For these reasons Blotch3D includes a custom effect called
 BlBasicEffectAlphaTest (to be held in code as a BlBasicEffect object)
@@ -477,8 +481,8 @@ first be sure to add the path to 2MGFX.exe to the 'path' environment
 variable. Typically the path is something like "\\Program Files
 (x86)\\MSBuild\\MonoGame\\v3.0\\Tools".
 
-Dynamically changing a sprite's orientation and position
-========================================================
+Setting and dynamically changing a sprite's scale, orientation, and position
+============================================================================
 
 Each sprite has a "Matrix" member that defines its orientation and
 position relative to its parent sprite, or to an unmodified coordinate
@@ -486,13 +490,12 @@ system if there is no parent. There are many static and instance methods
 of the Matrix class that let you easily set and change the scaling,
 translation, rotation, etc. of a matrix.
 
-When you change anything about a sprite's matrix, you also change the
-orientation and position of its child sprites, if any. That is,
-subsprites reside in the parent sprite's coordinate system. For example,
-if a child sprite's matrix scales it by 3, and its parent sprite's
-matrix scales by 4, then the child sprite will be scaled by 12 in world
-space. Likewise, rotation, shear, and translation are inherited, as
-well.
+When you change anything about a sprite's matrix, you also change it for
+the child sprites, if any. That is, subsprites reside in the parent
+sprite's coordinate system. For example, if a child sprite's matrix
+scales it by 3, and its parent sprite's matrix scales by 4, then the
+child sprite will be scaled by 12 in world space. Likewise, rotation,
+shear, and translation are inherited, as well.
 
 There are also static and instance Matrix methods and operator overloads
 to "multiply" matrices to form a single matrix which combines the
@@ -506,8 +509,8 @@ wanted, do it the other way (B times A).
 For a good introduction without the math, see
 <http://rbwhitaker.wikidot.com/monogame-basic-matrices>.
 
-The [Matrix internals](#matrix-internals) section should be studied only
-when you need a deeper knowledge.
+The following [Matrix internals](#matrix-internals) section should be
+studied only when you need a deeper knowledge.
 
 Matrix internals
 ================
@@ -560,7 +563,7 @@ Y' = cX + dY
 
 (Remember, the idea is to apply this to every vertex.)
 
-By convention we might write the four matrix elements (a, b, c, and d)
+By convention we might write the four matrix constants (a, b, c, and d)
 in a 2x2 matrix, like this:
 
 a b
@@ -627,7 +630,7 @@ about the origin:
 
 0.707 0. 707
 
-Note that '0.707' is the sine of 45 degrees.
+Note that '0.707' is the sine of 45 degrees, or cosine of 45 degrees.
 
 A matrix can be created to rotate any amount about any axis.
 
@@ -800,7 +803,7 @@ coordinate system from another. Each sprite has a matrix that defines
 its location, rotation, scale, shear etc. within the coordinate system
 of its parent sprite, or within an untransformed coordinate system if
 there is no parent. See [Dynamically changing a sprite's orientation and
-position](#dynamically-changing-a-sprites-orientation-and-position).
+position](#setting-and-dynamically-changing-a-sprites-scale-orientation-and-position).
 
 Frame
 
