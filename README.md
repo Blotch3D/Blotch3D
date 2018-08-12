@@ -148,68 +148,64 @@ Windows x64 platform. See below for other platforms.
 Creating a new project
 ======================
 
-To create a new project, you must first install MonoGame as described in
-the [Quick start](#blotch3d) section, if you haven't already.
+To develop with Blotch3D, you must first follow the steps in the [Quick
+start](#blotch3d) section to install MonoGame. Then...
 
 If the target platform is different from Microsoft Windows, you must
 also install any Visual Studio add-ons, etc. for the desired platform.
 For example, for Android you'd need the Xamarin for Android add-on.
 
-Then select File/New/Project/MonoGame, and select the type of MonoGame
-project you want. Then add the source, or a reference to the source, of
-Blotch3D.
+To create a new project from scratch, select File/New/Project/MonoGame,
+and select the type of MonoGame project you want. Then add the source,
+or a reference to the source, of Blotch3D.
+
+To add Blotch3D/MonoGame to an existing non-MonoGame project, in most
+cases you can just add a reference to the appropriate MonoGame binary
+(typically in "\\Program Files (x86)\\MSBuild\\MonoGame\\v3.0\\\...".
+Then add a reference to, or the source of, Blotch3D.
 
 If you are copying the Blotch3D library binary (like Blotch3D.dll on
 Windows) to a project or packages folder instead of including its source
 code, be sure to also copy Blotch3D.xml so you still get the
 IntelliSense.
 
-To distribute a program, deliver everything in your project's output
-folder.
-
 To create a project for another platform, generally you follow the same
 procedure described here but you may need to look online for particular
-instructions on creating a MonoGame project for the target platform. See
-[Making and using 3D models](#making-and-using-3d-models) for special
-cases where you may need to manually add the Content.mgcb file. And as
-always, the Blotch3D source project must be included in the solution or
-you must reference a binary of it that was built for the target
-platform.
+instructions on creating a MonoGame project for the target platform.
+
+See [Making and using 3D models](#making-and-using-3d-models) for cases
+where you need to manually add a Content.mgcb file to the project.
+
+To distribute a program, deliver everything in your project's output
+folder.
 
 Development
 ===========
 
 See the examples and their comments, starting with the basic example.
 
-To make a 3D window, you must derive a class from BlWindow3D and
-override the Setup, FrameProc, and FrameDraw methods.
+3D subsystems (OpenGL, DirectX, etc.) generally require that all 3D
+hardware resources be accessed by a single thread. MonoGame follows this
+rule, and thus you should follow the rule in your project. (There are
+certain platform-specific exceptions, but MonoGame does not use them.)
 
-When it comes time to create the 3D window, you instantiate that class
-and call its "Run" method *from the same thread that instantiated it*.
-The Run method will call the Setup, FrameProc, and FrameDraw methods
-when appropriate (explained below), and not return until the window
-closes. (For this reason, you may want to create the BlWindow3D from
-within some other thread than the main thread so that the main thread
-can handle a GUI or whatever).
+To make a 3D window, you must derive a class from BlWindow3D and
+override the Setup, FrameProc, and FrameDraw methods. When it comes time
+to create the 3D window, you instantiate that class and call its "Run"
+method *from the same thread that instantiated it*. The Run method will
+call the Setup, FrameProc, and FrameDraw methods when appropriate
+(explained below), and not return until the window closes. (For this
+reason, you may want to create the BlWindow3D from within some other
+thread than the main thread so that the main thread can handle a GUI or
+whatever).
 
 We will call the abovementioned thread the "3D thread".
 
-All code that accesses 3D hardware resources must be done in the 3D
-thread, including code that creates and uses all Blotch3D and MonoGame
-objects. Note that this rule also applies to any code structure
-(Parallel, async, etc.) that may internally use other threads, as well.
-This is necessary because certain 3D subsystems (OpenGL, DirectX, etc.)
-generally require that 3D resources be accessed by a single thread.
-Since sometimes it's hard to know exactly what 3D task really does hit
-the 3D hardware, its best to assume all of them do (like creation and
-use of Blotch3D and MonoGame objects). Even so, there are some
-platform-specific exceptions, but MonoGame does not use them.
-
-Of course, this pattern and these rules are also used by MonoGame. In
-fact, the BlWindow3D class inherits from MonoGame's "Game" class. But
-instead of overriding certain "Game" class methods, you override
-BlWindow3D's Setup, FrameProc, and FrameDraw methods. Other "Game" class
-methods and events can still be overridden, if needed.
+The rule to access 3D hardware resources by a single thread also applies
+to any code structure (Parallel, async, etc.) that may internally use
+other threads, as well. Since sometimes it's hard to know exactly what
+3D task really does hit the 3D hardware, its best to assume all of them
+do (like creation and use of Blotch3D and MonoGame objects).
 
 The Setup, FrameProc, and FrameDraw methods are called by the 3D thread
 as follows:
