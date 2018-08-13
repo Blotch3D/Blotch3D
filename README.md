@@ -7,8 +7,8 @@ Quick start
 On your development machine ...
 
 1.  Get the installer for the latest release of MonoGame from
-    <http://www.monogame.net/downloads/> and run it. Do NOT get the
-    current development version nor the NuGet package.
+    <http://www.monogame.net/downloads/> and run it. (Do NOT get the
+    current development version nor a NuGet package.)
 
 2.  Get the Blotch3D repository zip from
     <https://github.com/Blotch3D/Blotch3D> and unzip it.
@@ -143,7 +143,8 @@ implement the features it demonstrates \[TBD: the "full" example needs
 to be split to several simpler examples\].
 
 All the provided projects are configured to build for the Microsoft
-Windows x64 platform. See below for other platforms.
+Windows x64 platform, or AnyCPU. See below for details on other
+platforms.
 
 Creating a new project
 ======================
@@ -159,10 +160,13 @@ To create a new project from scratch, select File/New/Project/MonoGame,
 and select the type of MonoGame project you want. Then add the source,
 or a reference to the source, of Blotch3D.
 
-To add Blotch3D/MonoGame to an existing non-MonoGame project, in most
-cases you can just add a reference to the appropriate MonoGame binary
-(typically in "\\Program Files (x86)\\MSBuild\\MonoGame\\v3.0\\\...".
-Then add a reference to, or the source of, Blotch3D.
+To add Blotch3D/MonoGame to an existing non-MonoGame project, add a
+reference to the appropriate MonoGame binary (typically in "\\Program
+Files (x86)\\MSBuild\\MonoGame\\v3.0\\\...". Also add a reference to, or
+the source of, Blotch3D. If you want to use custom models, fonts, etc.
+in your 3D window, you will need to add a Content.mgcb file as described
+in the [Making and using 3D models](#making-and-using-3d-models)
+section.
 
 If you are copying the Blotch3D library binary (like Blotch3D.dll on
 Windows) to a project or packages folder instead of including its source
@@ -172,9 +176,6 @@ IntelliSense.
 To create a project for another platform, generally you follow the same
 procedure described here but you may need to look online for particular
 instructions on creating a MonoGame project for the target platform.
-
-See [Making and using 3D models](#making-and-using-3d-models) for cases
-where you need to manually add a Content.mgcb file to the project.
 
 To distribute a program, deliver everything in your project's output
 folder.
@@ -306,14 +307,15 @@ Making and using 3D models
 ==========================
 
 There are several primitive models available with Blotch3D. If the
-Blotch3D project is included in your solution, you can use them as is
-shown in the examples (in fact, to do this you don't even need the
-MonoGame "Content.mgcb" file in your project). Otherwise you will need
-to add the content explicitly to your "Content.mgcb" via the pipeline
-manager (which you start by double-clicking the "Content.mgcb" in your
-project). See <http://rbwhitaker.wikidot.com/monogame-managing-content>
-for more information. (You also add any other type of content, like
-fonts, etc. by use of the MonoGame "Content.mgcb" file.)
+source to Blotch3D is included in your solution, you can use the
+provided models as is shown in the examples (in fact, to do this you
+don't even need the MonoGame "Content.mgcb" file in your project).
+Otherwise you will need to add the content explicitly to your
+"Content.mgcb" via the pipeline manager (which you start by
+double-clicking the "Content.mgcb" in your project). See
+<http://rbwhitaker.wikidot.com/monogame-managing-content> for more
+information. (You also add any other type of content, like fonts, etc.
+by use of the MonoGame "Content.mgcb" file.)
 
 To create a new model, you can either programmatically create it by
 specifying the vertices and normals (see the example that creates custom
@@ -327,10 +329,10 @@ countless tutorials online, like
 Also, you may be able to import certain existing models from the web,
 but mind their copyright.
 
-If for some reason you created a non-MonoGame project (without a
-"Content.mgcb" file), then do the following...
+If you have a non-MonoGame project but want to use Blotch3D with it,
+then do the following...
 
-1.  If not already done, add a reference to MonoGame.
+1.  If not already done, add a reference to MonoGame and Blotch3D.
 
 2.  Copy the Content folder from the Blotch3D project folder (or any
     other MonoGame project with a content folder) to your project folder
@@ -342,13 +344,12 @@ If for some reason you created a non-MonoGame project (without a
 5.  Set the "Build Action" to "MonoGameContentReference"
 
 If the "MonoGameContentReference" build option is not available in the
-drop-down list because, for example, you have created a non-MonoGame
-project from scratch, then try this:
+drop-down, then try this:
 
 (from
 <http://www.infinitespace-studios.co.uk/general/monogame-content-pipeline-integration/>)
 
-1.  Open your application .csproj in an Editor.
+1.  Open your application .csproj in a text Editor.
 
 2.  In the first \<PropertyGroup\> section
     add \<MonoGamePlatform\>\$(Platform)\</MonoGamePlatform\>, where
@@ -394,29 +395,34 @@ when viewed from underneath, which is when you would otherwise see the
 artifacts in that example. (Note: subsprites are drawn in the order they
 are added.)
 
-The reason such artifacts occur is because the default MonoGame "Effect"
-used to draw models (the "BasicEffect" effect) provides a pixel shader
-that does not do "alpha testing". Alpha testing is the process of
-completely neglecting to draw transparent texture pixels, and thus
-neglecting to update the depth buffer at that window pixel. Most typical
-textures with an alpha channel use an alpha value of only zero or one
-(or close to them), indicating absence or presence of visible pixels.
-Alpha testing works well with textures like that. For alpha values
-specifically intended to show partial translucency (alpha values near
-0.5), it doesn't work well. In those cases, you can live with the
-artifacts, or beyond that at a minimum you will have to control
-translucent sprite drawing order (draw all opaque sprites normally, and
-then draw translucent sprites far to near), and if translucent sprites
-still intersect or a translucent surface still occludes another surface
-of the same sprite, you can look online for more advanced solutions.
+One way to mitigate most of these artifacts is by using alpha testing.
+Alpha testing is the process of completely neglecting to draw
+transparent texture pixels, and thus neglecting to update the depth
+buffer at that window pixel. Most typical textures with an alpha channel
+use an alpha value of only zero or one (or close to them), indicating
+absence or presence of visible pixels. Alpha testing works well with
+textures like that. For alpha values specifically intended to show
+partial translucency (alpha values near 0.5), it doesn't work well. In
+those cases, you can live with the artifacts, or beyond that at a
+minimum you will have to control translucent sprite drawing order (draw
+all opaque sprites normally, and then draw translucent sprites far to
+near). For some textures it might be worth it to draw without updating
+the depth buffer at all (do a
+\"Graphics.GraphicsDevice.DepthStencilState =
+Graphics.DepthStencilStateDisabled" in the BlSprite.PreDraw delegate,
+and set it back to DepthStencilStateEnabled in the BlSprite.DrawCleanup
+delegate). These are only partial solutions to the alpha problem. You
+can look online for more advanced solutions.
 
-MonoGame does provide a separate "AlphaTestEffect" effect that supports
-alpha test. But AlphaTestEffect does not support directional lights, as
-are supported in BasicEffect. So, don't bother with AlphaTestEffect
-unless you don't care about the directional lights (i.e. you are using
-only emission lighting).
+The default MonoGame "Effect" used to draw models (the "BasicEffect"
+effect) uses a pixel shader that does not do alpha testing. MonoGame
+does provide a separate "AlphaTestEffect" effect that supports alpha
+test. But AlphaTestEffect does not support directional lights, as are
+supported in BasicEffect. So, don't bother with AlphaTestEffect unless
+you don't care about the directional lights (i.e. you are using only
+emission lighting).
 
-For these reasons Blotch3D includes a custom effect called
+For these reasons Blotch3D includes a custom shader file called
 BlBasicEffectAlphaTest (to be held in code as a BlBasicEffect object)
 that provides everything that MonoGame's BasicEffect provides, but also
 provides alpha testing. See the SpriteAlphaTexture example to see how it
@@ -434,14 +440,14 @@ is used. Essentially your program must do the following:
     File.ReadAllBytes(\"BlBasicEffectAlphaTest.mgfxo\"); // (or
     'BlBasicEffectAlphaTestOGL.mgfxo' for OpenGL)
 
-    BlBasicEffectAlphaTest = new BlBasicEffect(Graphics.GraphicsDevice,
-    bytes);
+    MyBlBasicEffectAlphaTest = new
+    BlBasicEffect(Graphics.GraphicsDevice, bytes);
 
 3.  And it specifies the alpha threshold level that merits drawing the
     pixel, like this, for example (this could also be done in the
     delegate described below):
 
-    BlBasicEffectAlphaTest.Parameters\[\"AlphaTestThreshold\"\].SetValue(.3f);
+    MyBlBasicEffectAlphaTest.Parameters\[\"AlphaTestThreshold\"\].SetValue(.3f);
 
 4.  And then for sprites that have translucent textures your program
     assigns a delegate to the BlSprite's SetEffect delegate field. For
@@ -451,13 +457,13 @@ is used. Essentially your program must do the following:
 
     {
 
-    s.SetupBasicEffect(BlBasicEffectAlphaTest);
+    s.SetupBasicEffect(MyBlBasicEffectAlphaTest);
 
-    return BlBasicEffectAlphaTest;
+    return MyBlBasicEffectAlphaTest;
 
     };
 
-Blotch3D also includes a BlBasicEffectClipColor effect, which "creates"
+Blotch3D also includes a BlBasicEffectClipColor shader, which "creates"
 its own alpha channel from a specified texture color. Use it like
 BlBasicEffectAlphaTest but instead of setting the AlphaTestThreshold
 variable, set the ClipColor and ClipColorTolerance variables. ClipColor
@@ -471,30 +477,30 @@ Note that the custom effects provided by Blotch3D may be slightly slower
 than the default (BasicEffect) effect when drawing mostly opaque
 textures, so only use them when needed.
 
-The provided custom effect files are already compiled in the Blotch3D
+The provided custom shader files are already compiled in the Blotch3D
 delivery from GitHub. The shader source code (HLSL) can be found in the
 Blotch3D Content/Effects folder. It is just the original MonoGame
-BasicEffect code with a few lines added for alpha test. The
-"make\_effects.bat" file in the Blotch3D source folder builds them, but
-first be sure to add the path to 2MGFX.exe to the 'path' environment
-variable. Typically the path is something like "\\Program Files
+BasicEffect shader code with a few lines added. The "make\_effects.bat"
+file in the Blotch3D source folder builds them, but first be sure to add
+the path to 2MGFX.exe to the 'path' environment variable. Typically the
+path is something like "\\Program Files
 (x86)\\MSBuild\\MonoGame\\v3.0\\Tools".
 
 Setting and dynamically changing a sprite's scale, orientation, and position
 ============================================================================
 
-Each sprite has a "Matrix" member that defines its orientation and
-position relative to its parent sprite, or to an unmodified coordinate
-system if there is no parent. There are many static and instance methods
-of the Matrix class that let you easily set and change the scaling,
-translation, rotation, etc. of a matrix.
+Each sprite has a "Matrix" member that defines its orientation, scale,
+position, etc. relative to its parent sprite, or to an unmodified
+coordinate system if there is no parent. There are many static and
+instance methods of the Matrix class that let you easily set and change
+the scaling, position, rotation, etc. of a matrix.
 
 When you change anything about a sprite's matrix, you also change it for
 the child sprites, if any. That is, subsprites reside in the parent
 sprite's coordinate system. For example, if a child sprite's matrix
 scales it by 3, and its parent sprite's matrix scales by 4, then the
 child sprite will be scaled by 12 in world space. Likewise, rotation,
-shear, and translation are inherited, as well.
+shear, and position are inherited, as well.
 
 There are also static and instance Matrix methods and operator overloads
 to "multiply" matrices to form a single matrix which combines the
