@@ -83,6 +83,7 @@ namespace Blotch
 {
 	/// <summary>
 	/// This holds everything having to do with an output device. BlWindow3D creates one of these for itself.
+	/// This derives from MonoGame GraphicsDeviceManager.
 	/// </summary>
 	public class BlGraphicsDeviceManager : GraphicsDeviceManager, ICloneable
 	{

@@ -16,10 +16,12 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Blotch
 {
 	/// <summary>
-	/// Holds a Blotch3D custom effect that is exactly like MonoGame's BasicEffect but with certain added features.
-	/// To make a BlBasicEffect you must also pass a byte array containing the shader code. There are currently two
-	/// shaders that you can pass to this constructor: BlBasicEffectAlphaTest and BlBasicEffectClipColor. See the
-	/// SpriteAlphaTexture and VideoWithTransparency examples for details on how to make and use objects of this class.
+	/// Holds a Blotch3D custom effect (like BlBasicEffectAlphaTest and BlBasicEffectClipColor) that is exactly
+	/// like MonoGame's BasicEffect but with certain added features.
+	/// To make a BlBasicEffect, you must pass a byte array to the constructor containing the shader code loaded
+	/// from the shader file (mgfxo file extension). See the SpriteAlphaTexture example and the section on Translucency
+	/// for details on how to make
+	/// and use objects of this class.
 	/// </summary>
 	public class BlBasicEffect : Effect, IEffectMatrices, IEffectLights, IEffectFog
 	{

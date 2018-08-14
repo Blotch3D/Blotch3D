@@ -36,7 +36,7 @@ namespace Blotch
 	/// This static class holds the debug flags.
 	/// Many flags are initialized according to whether its a Debug build or Release build.
 	/// Some flags enable exceptions for probable errors, and many flags cause warning messages to be sent
-	/// to the console window, if it exist. For this reason you should first test your app as a debug build console app.
+	/// to the console window, if there is one. For this reason you should first test your app as a debug build console app.
 	/// </summary>
 	public static class BlDebug
 	{
@@ -60,9 +60,10 @@ namespace Blotch
 #endif
 		}
 		/// <summary>
-		/// Display a debug message and save it to the logfile if writeToLogFile is true.
+		/// Display a debug message that includes the ThreadId, DateTime, SrcFile, SrcLineNumber, CallingMethod, and Message.
+		/// 
 		/// Call it like this, for example:
-		/// if (Debug.drawables) Debug.Message(String.Format("Drawables: {0}", runModeDrawables));
+		/// BlDebug.Message(String.Format("MyInfo {0}", Info));
 		/// </summary>
 		/// <param name="message">The text message to log</param>
 		public static void Message(
@@ -108,7 +109,7 @@ namespace Blotch
 			/*
 			if (writeToLogFile)
 			{
-				using (var stream = new StreamWriter(logFilePath))
+				using (var stream = new StreamWriter(logFilePath,true))
 				{
 					stream.WriteLine(msg);
 				}
