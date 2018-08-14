@@ -8,7 +8,7 @@ using System.IO;
 namespace BlotchExample
 {
 	/// <summary>
-	/// The 3D window. This must inherit from BlWindow3D. See BlWindow3D for detils.
+	/// The 3D window. This must inherit from BlWindow3D. See BlWindow3D for details.
 	/// </summary>
 	public class Example : BlWindow3D
 	{
@@ -108,7 +108,7 @@ Shift          - Fine control
 			Graphics.DoDefaultGui();
 		}
 		/// <summary>
-		/// See BlWindow3D for detils.
+		/// See BlWindow3D for details.
 		/// </summary>
 		/// <param name="timeInfo">Provides a snapshot of timing values.</param>
 		protected override void FrameDraw(GameTime timeInfo)

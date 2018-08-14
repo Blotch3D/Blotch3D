@@ -1,17 +1,16 @@
 ﻿#region File Description
 //-----------------------------------------------------------------------------
-// BasicEffectWithAlphaTest.cs
+// BasicEffectWithAlphaTest is adapted from BasicEffect
 //
+// BasicEffect is part of
 // Microsoft XNA Community Game Platform
 // Copyright (C) Microsoft Corporation. All rights reserved.
 //-----------------------------------------------------------------------------
 #endregion
 
 #region Using Statements
-using Blotch;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
 #endregion
 
 namespace Blotch

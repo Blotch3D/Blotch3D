@@ -15,14 +15,12 @@ On your development machine ...
 
 3.  Open the Visual Studio solution file (Blotch3D.sln).
 
-4.  Build and run the example projects. (For other platforms, you'll
-    need the appropriate Visual Studio add-on and you will need to
-    create a separate project for that platform.)
+4.  Build and run the example projects.
 
 5.  Use IntelliSense to see the reference documentation, or see
     "Blotch3DManual.pdf".
 
-6.  Create a new Blotch3D project by following the instructions in the
+6.  To create a new Blotch3D project, follow the instructions in the
     [Creating a new project](#creating-a-new-project) section.
 
 Introduction
@@ -152,15 +150,11 @@ Creating a new project
 To develop with Blotch3D, you must first follow the steps in the [Quick
 start](#blotch3d) section to install MonoGame. Then...
 
-If the target platform is different from Microsoft Windows, you must
-also install any Visual Studio add-ons, etc. for the desired platform.
-For example, for Android you'd need the Xamarin for Android add-on.
-
 To create a new project from scratch, select File/New/Project/MonoGame,
 and select the type of MonoGame project you want. Then add the source,
 or a reference to the source, of Blotch3D.
 
-To add Blotch3D/MonoGame to an existing non-MonoGame project, add a
+To add MonoGame plus Blotch3D to an existing non-MonoGame project, add a
 reference to the appropriate MonoGame binary (typically in "\\Program
 Files (x86)\\MSBuild\\MonoGame\\v3.0\\\...". Also add a reference to, or
 the source of, Blotch3D. If you want to use custom models, fonts, etc.
@@ -173,9 +167,12 @@ Windows) to a project or packages folder instead of including its source
 code, be sure to also copy Blotch3D.xml so you still get the
 IntelliSense.
 
-To create a project for another platform, generally you follow the same
-procedure described here but you may need to look online for particular
-instructions on creating a MonoGame project for the target platform.
+To create a project for another platform besides Microsoft Windows,
+generally you follow the same procedure described here but you will need
+to install any Visual Studio add-ons, etc. for the desired platform. For
+example, for Android you'd need the Xamarin for Android add-on. You also
+may need to look online for particular instructions on creating a
+MonoGame project for the target platform.
 
 To distribute a program, deliver everything in your project's output
 folder.
@@ -187,7 +184,7 @@ See the examples and their comments, starting with the basic example.
 
 3D subsystems (OpenGL, DirectX, etc.) generally require that all 3D
 hardware resources be accessed by a single thread. MonoGame follows this
-rule, and thus you should follow the rule in your project. (There are
+rule, and thus you must follow the rule in your project. (There are
 certain platform-specific exceptions, but MonoGame does not use them.)
 
 To make a 3D window, you must derive a class from BlWindow3D and
@@ -233,8 +230,8 @@ should put drawing code (BlSprite.Draw,
 BlGraphicsDeviceManager.DrawText, etc.). For apps that may suffer from
 severe CPU exhaustion (at least for the 3D thread), you may also want to
 put your app code in this method, as well, so it is called less
-frequently, as long as that code can properly handle being called at
-variable rates.
+frequently, assuming that application code can properly handle being
+called at variable rates.
 
 You can use a variety of methods to draw things in FrameDraw. Blotch3D
 provides methods to draw text and textures in 2D (just draw them after
@@ -244,9 +241,9 @@ all its subsprites are also drawn. So, oftentimes you may want to have a
 "Top" sprite that holds others, and call the Draw method of the Top
 sprite to draw all other sprites. (BlSprite inherits from
 Dictionary\<string, BlSprite\>, where the string key is the subsprite
-name.) You can also draw things with MonoGame. For example, it is faster
-to draw multiple 2D textures and text using MonoGame's SpriteBatch
-class.
+name.) You can also draw things directly with MonoGame. For example, it
+is faster to draw multiple 2D textures and text using MonoGame's
+SpriteBatch class.
 
 By default, lighting, background color, and sprite coloring are set so
 that it is most probable you will see them. These may need to be changed
@@ -276,7 +273,9 @@ not work in later MonoGame releases.
 
 To properly make the MonoGame window be a child window of an existing
 GUI, you need to explicitly size, position, and convey Z order to the 3D
-window so that it is overlaid over the child window.
+window so that it is overlaid over the child window. The
+BlWindow3D.WindowForm field will be useful for this (Microsoft Windows
+only).
 
 All MonoGame features remain available and accessible in Blotch3D. For
 examples:
@@ -371,29 +370,41 @@ drop-down, then try this:
 Translucency and Custom Effects
 ===============================
 
-Translucent pixels in text or textures drawn using the 2D Blotch3D
-drawing methods (BlGraphicsDeviceManager\#DrawText and
-BlGraphicsDeviceManager\#DrawTexture) or any MonoGame 2D drawing methods
-will always correctly show the things behind them. Just be sure to call
-those methods after all other 3D things are drawn in FrameDraw.
+Each pixel of a texture has a red, a green, and a blue intensity value.
+These are denoted by "RGB". Some textures can also have an "alpha" value
+to indicate how translucent the pixel should be. So, they have four
+values for each pixel (RGBA) rather than three (RGB). The alpha value
+indicates how much of any coloration behind that pixel (farther from the
+viewer) should show through the pixel. Alpha values of 1 indicate the
+texture pixel is opaque and no colration from farther values should show
+through. Values of zero indicate the pixel is completely transparent.
 
-However, a 3D translucent texture, like a translucent texture applied to
-a sprite, may require special handling.
+RGBA textures drawn using the 2D Blotch3D drawing methods
+(BlGraphicsDeviceManager\#DrawText,
+BlGraphicsDeviceManager\#DrawTexture, and BlGuiControl) or any MonoGame
+2D drawing methods (by use of MonoGame's SpriteBatch class) will always
+correctly show the things behind them according to the pixel's alpha
+channel. Just be sure to call those methods after all other 3D things
+are drawn in FrameDraw.
 
-If you simply apply the translucent texture to a sprite as if it's just
-like any other texture, you will not see through the transparent texture
-when a near surface with translucency is drawn before a far surface that
-it occludes. This is because drawing the near surface also updates the
-depth buffer, so the far surface is not drawn. For some translucent
-textures the artifacts can be negligible, or your particular application
-may avoid the artifacts entirely because of camera constraints, sprite
-position constraints, and drawing order. In those cases, you don't need
-any other special code. We do this in the "full" example because the
-draw order of the translucent sprites, and their positions, are such
-that you won't see the artifacts because you can't even see the sprites
-when viewed from underneath, which is when you would otherwise see the
-artifacts in that example. (Note: subsprites are drawn in the order they
-are added.)
+But 3D translucent textures, like a translucent texture applied to a
+sprite, may require special handling.
+
+If you simply apply the RGBA texture to a sprite as if it's just like
+any other texture, you will not see through the translucent pixels when
+they are drawn before anything farther away because drawing the near
+surface also updates the depth buffer (see Depth Buffer in the
+glossary). Since the depth buffer records the nearer pixel, it prevents
+further pixels from being drawn. For some translucent textures the
+artifacts can be negligible, or your particular application may avoid
+the artifacts entirely because of camera constraints, sprite position
+constraints, and drawing order. In those cases, you don't need any other
+special code. We do this in the "full" example because the draw order of
+the translucent sprites, and their positions, are such that you won't
+see the artifacts because you can't even see the sprites when viewed
+from underneath, which is when you would otherwise see the artifacts in
+that example. (Note: subsprites are drawn in the order they are added to
+the parent sprite.)
 
 One way to mitigate most of these artifacts is by using alpha testing.
 Alpha testing is the process of completely neglecting to draw
@@ -402,11 +413,11 @@ buffer at that window pixel. Most typical textures with an alpha channel
 use an alpha value of only zero or one (or close to them), indicating
 absence or presence of visible pixels. Alpha testing works well with
 textures like that. For alpha values specifically intended to show
-partial translucency (alpha values near 0.5), it doesn't work well. In
-those cases, you can live with the artifacts, or beyond that at a
-minimum you will have to control translucent sprite drawing order (draw
-all opaque sprites normally, and then draw translucent sprites far to
-near). For some textures it might be worth it to draw without updating
+partial translucency (alpha values nearer to 0.5), it doesn't work well.
+In those cases, you can either live with the artifacts, or beyond that
+at a minimum you will have to control translucent sprite drawing order
+(draw all opaque sprites normally, and then draw translucent sprites far
+to near). For some scenes it might be worth it to draw without updating
 the depth buffer at all (do a
 \"Graphics.GraphicsDevice.DepthStencilState =
 Graphics.DepthStencilStateDisabled" in the BlSprite.PreDraw delegate,
@@ -420,13 +431,14 @@ does provide a separate "AlphaTestEffect" effect that supports alpha
 test. But AlphaTestEffect does not support directional lights, as are
 supported in BasicEffect. So, don't bother with AlphaTestEffect unless
 you don't care about the directional lights (i.e. you are using only
-emission lighting).
+emission lighting). (If you do want to use AlphaTestEffect, see online
+for details.)
 
 For these reasons Blotch3D includes a custom shader file called
 BlBasicEffectAlphaTest (to be held in code as a BlBasicEffect object)
 that provides everything that MonoGame's BasicEffect provides, but also
 provides alpha testing. See the SpriteAlphaTexture example to see how it
-is used. Essentially your program must do the following:
+is used. Essentially you must do the following:
 
 1.  Copy the "BlBasicEffectAlphaTest.mgfxo" (or
     "BlBasicEffectAlphaTestOGL.mgfxo" for platforms that use OpenGL)
@@ -464,14 +476,14 @@ is used. Essentially your program must do the following:
     };
 
 Blotch3D also includes a BlBasicEffectClipColor shader, which "creates"
-its own alpha channel from a specified texture color. Use it like
-BlBasicEffectAlphaTest but instead of setting the AlphaTestThreshold
-variable, set the ClipColor and ClipColorTolerance variables. ClipColor
-is the texture color that should indicate transparency (a Vector3 or
-Vector4), and ClipColorTolerance is a float that indicates how close to
-ClipColor (0 to .999) the texture color must be to cause transparency.
-BlBasicEffectClipColor is especially useful for videos that neglected to
-include an alpha channel.
+its own alpha channel from a specified texture color. Use it with RGB
+textures. Use it like BlBasicEffectAlphaTest but instead of setting the
+AlphaTestThreshold variable, set the ClipColor and ClipColorTolerance
+variables. ClipColor is the texture color that should indicate
+transparency (a Vector3 or Vector4), and ClipColorTolerance is a float
+that indicates how close to ClipColor (0 to .999) the texture color must
+be to cause transparency. BlBasicEffectClipColor is especially useful
+for videos that neglected to include an alpha channel.
 
 Note that the custom effects provided by Blotch3D may be slightly slower
 than the default (BasicEffect) effect when drawing mostly opaque
@@ -480,11 +492,11 @@ textures, so only use them when needed.
 The provided custom shader files are already compiled in the Blotch3D
 delivery from GitHub. The shader source code (HLSL) can be found in the
 Blotch3D Content/Effects folder. It is just the original MonoGame
-BasicEffect shader code with a few lines added. The "make\_effects.bat"
-file in the Blotch3D source folder builds them, but first be sure to add
-the path to 2MGFX.exe to the 'path' environment variable. Typically the
-path is something like "\\Program Files
-(x86)\\MSBuild\\MonoGame\\v3.0\\Tools".
+BasicEffect shader code with a few lines added. If for some reason you
+want to recompile the effects, use the "make\_effects.bat" file in the
+Blotch3D source folder to build them. But first be sure to add the path
+to 2MGFX.exe to the 'path' environment variable. Typically the path is
+something like "\\Program Files (x86)\\MSBuild\\MonoGame\\v3.0\\Tools".
 
 Setting and dynamically changing a sprite's scale, orientation, and position
 ============================================================================
