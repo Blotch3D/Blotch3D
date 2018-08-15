@@ -1,6 +1,10 @@
 Blotch3D
 ========
 
+Blotch3D was written because no other C\# library was found that was
+completely free (see license for details), required only a few lines of
+code to use, and provided real-time performance.
+
 Quick start
 ===========
 
@@ -70,11 +74,11 @@ code you can...
 
 -   Implement a skybox sprite.
 
--   Get a list of sprites touching a ray, to implement weapons fire,
-    etc.
+-   Get a list of sprites touching a ray (within a sprite radius), to
+    implement weapons fire, etc.
 
--   Get a list of sprites under the mouse position, to implement mouse
-    selection, tooltips, pop-up menus, etc.
+-   Get a list of sprites under the mouse position (within a sprite
+    radius), to implement mouse selection, tooltips, pop-up menus, etc.
 
 -   Implement levels-of-detail.
 
@@ -156,11 +160,11 @@ or a reference to the source, of Blotch3D.
 
 To add MonoGame plus Blotch3D to an existing non-MonoGame project, add a
 reference to the appropriate MonoGame binary (typically in "\\Program
-Files (x86)\\MSBuild\\MonoGame\\v3.0\\\...". Also add a reference to, or
-the source of, Blotch3D. If you want to use custom models, fonts, etc.
-in your 3D window, you will need to add a Content.mgcb file as described
-in the [Making and using 3D models](#making-and-using-3d-models)
-section.
+Files (x86)\\MSBuild\\MonoGame\\v3.0\\\..."). Also add a reference to,
+or the source of, Blotch3D. If you want to use custom models, fonts,
+etc. in your 3D window, you will need to add a Content.mgcb file as
+described in the [Making and using 3D
+models](#making-and-using-3d-models) section.
 
 If you are copying the Blotch3D library binary (like Blotch3D.dll on
 Windows) to a project or packages folder instead of including its source

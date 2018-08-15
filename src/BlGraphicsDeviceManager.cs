@@ -29,22 +29,23 @@ A "contributor" is any person that distributes its contribution under this licen
 /*
 TODO:
 
+Trails
+More models, w/LODs (cone, cylinder, box)
+heightfield w/ normals & texture coords
+
+
 Write a fairly elaborate program to tweak and test everything
 
-Copy generic text from GWin3D doc to Blotch3D doc
+Copy more generic text from GWin3D doc to Blotch3D doc
 
-Add a library of common models w/LODs
-Blob
-Box
-Tetrahedron
-Torus
 
-Model helpers:
-Extend (takes a 2D shape and extends it in Z)
-Terrain generator/heightfield
+Add shader that offsets and scales texture (applies 2d matrix, and then normalizes coords between 0 and 1)
 
-Doc:
-Add a troubleshooting section
+bumpmaps
+
+
+Extrude (takes a 2D shape and extends it in Z)
+
 
 Examples:
 BlotchExample01_Basic (base code for all examples. Displays 2D text and a single 3D object)
@@ -75,6 +76,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -369,6 +371,143 @@ namespace Blotch
 			GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 			ApplyChanges();
 		}
+
+		/// <summary>
+		/// Creates a surface mesh from the height information in an image. The mesh can be assigned to an element of BlSprite#LODs.
+		/// The last channel of each image pixel represents the height (Z) of the surface at that pixel location.
+		/// For example, if its an RGB image, then blue intensity is the height.
+		/// Other channels are ignored.
+		/// </summary>
+		/// <param name="tex">The image that represents the height (Z) of each vertex.</param>
+		/// <returns>a mesh</returns>
+		public VertexPositionNormalTexture[] CreateHeightField(Texture2D tex)
+		{
+			var width = tex.Width;
+			var height = tex.Height;
+
+			var vertices = new VertexPositionNormalTexture[width * height];
+			var mesh = new VertexPositionNormalTexture[width * height * 6];
+
+			var pixels = new int[width * height];
+			tex.GetData(pixels);
+
+			// calc position and texturePosition per vertex and put at end of array (then we'll fill array with actual triangle
+			// vertices from the beginning in the next step)
+			for(int x=0;x<width;x++)
+			//Parallel.For(0, width, (x) =>
+			{
+				for (int y = 0; y < height; y++)
+				//Parallel.For(0, height, (y) =>
+				{
+					var xNormalized = (float)x / width;
+					var yNormalized = (float)y / height;
+					var ofst = x + width * y;
+					vertices[ofst].Position = new Vector3(xNormalized, yNormalized, (pixels[x + (height - y - 1)*width] & 0xFF)/255f);
+					vertices[ofst].TextureCoordinate = new Vector2(xNormalized, yNormalized);
+				}
+			}
+			// calculate each vertex normal from the triangles that vertex participates in.
+			for(int x=0;x<width;x++)
+			//Parallel.For(0, width, (x) =>
+			{
+				for (int y = 0; y < height; y++)
+				//Parallel.For(0, height, (y) =>
+				{
+					var ofst = x + width * y;
+
+					var elem00 = vertices[ofst];
+
+					// average of all the normals of the triangles that the vertex is a part of.
+					var totalNormal = new Vector3();
+
+					// add the normals from the upper left quad
+					if (x > 0 && y < height - 1)
+					{
+						var middleVertex = vertices[x - 1 + width * (y + 1)];
+						var rightVertex = vertices[x + width * (y + 1)];
+						var leftVertex = vertices[x - 1 + width * y];
+
+						var rightVector = rightVertex.Position - elem00.Position;
+						var middleVector = middleVertex.Position - elem00.Position;
+						var leftVector = leftVertex.Position - elem00.Position;
+
+						totalNormal += Vector3.Cross(rightVector, middleVector);
+						totalNormal += Vector3.Cross(middleVector, leftVector);
+					}
+					// add the normals from the upper right quad
+					if (x < width - 1 && y < height - 1)
+					{
+						var middleVertex = vertices[x + 1 + width * (y + 1)];
+						var rightVertex = vertices[x + 1 + width * y];
+						var leftVertex = vertices[x + width * (y + 1)];
+
+						var rightVector = rightVertex.Position - elem00.Position;
+						var middleVector = middleVertex.Position - elem00.Position;
+						var leftVector = leftVertex.Position - elem00.Position;
+
+						totalNormal += Vector3.Cross(rightVector, middleVector);
+						totalNormal += Vector3.Cross(middleVector, leftVector);
+					}
+					// add the normals from the lower left quad
+					if (x > 0 && y > 0)
+					{
+						var middleVertex = vertices[x - 1 + width * (y - 1)];
+						var rightVertex = vertices[x - 1 + width * y];
+						var leftVertex = vertices[x + width * (y - 1)];
+
+						var rightVector = rightVertex.Position - elem00.Position;
+						var middleVector = middleVertex.Position - elem00.Position;
+						var leftVector = leftVertex.Position - elem00.Position;
+
+						totalNormal += Vector3.Cross(rightVector, middleVector);
+						totalNormal += Vector3.Cross(middleVector, leftVector);
+					}
+					// add the normals from the lower right quad
+					if (x < width - 1 && y > 0)
+					{
+						var middleVertex = vertices[x + 1 + width * (y - 1)];
+						var rightVertex = vertices[x + width * (y - 1)];
+						var leftVertex = vertices[x + 1 + width * y];
+
+						var rightVector = rightVertex.Position - elem00.Position;
+						var middleVector = middleVertex.Position - elem00.Position;
+						var leftVector = leftVertex.Position - elem00.Position;
+
+						totalNormal += Vector3.Cross(rightVector, middleVector);
+						totalNormal += Vector3.Cross(middleVector, leftVector);
+					}
+
+					totalNormal.Normalize();
+					vertices[ofst].Normal = totalNormal;
+				}
+			}
+
+			// create triangles
+			Parallel.For(0,tex.Width-1,(x)=>
+			{
+				Parallel.For(0, tex.Height-1, (y) =>
+				{
+					var srcOffset = x + y * width;
+					var destOffset = (x + y * width) * 6;
+
+					var elem00 = vertices[srcOffset];
+					var elem10 = vertices[srcOffset + 1];
+					var elem01 = vertices[srcOffset + width];
+					var elem11 = vertices[srcOffset + width + 1];
+
+					mesh[destOffset] = elem00;
+					mesh[destOffset+1] = elem11;
+					mesh[destOffset+2] = elem10;
+					mesh[destOffset+3] = elem00;
+					mesh[destOffset+4] = elem01;
+					mesh[destOffset+5] = elem11;
+				});
+			});
+
+			return mesh;
+		}
+
+
 		/// <summary>
 		/// Informs the auto-clipping code of an object that should be included in the clipping region. This is
 		/// mainly for internal use. Application code should control clipping with #NearClip and #FarClip.

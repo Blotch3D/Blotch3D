@@ -63,7 +63,7 @@ namespace Blotch
 		/// Display a debug message that includes the ThreadId, DateTime, SrcFile, SrcLineNumber, CallingMethod, and Message.
 		/// 
 		/// Call it like this, for example:
-		/// BlDebug.Message(String.Format("MyInfo {0}", Info));
+		/// BlDebug.Message(String.Format("MyInfo: {0}", Info));
 		/// </summary>
 		/// <param name="message">The text message to log</param>
 		public static void Message(

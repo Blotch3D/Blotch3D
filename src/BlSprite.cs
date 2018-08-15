@@ -414,7 +414,7 @@ namespace Blotch
 			this[s.Name] = s;
 		}
 		/// <summary>
-		/// Returns the current view coordinates of the sprite (for passing to DrawText, for example),
+		/// Returns the current 2D view coordinates of the sprite (for passing to DrawText, for example),
 		/// or null if it's behind the camera.
 		/// </summary>
 		/// <returns>The view coords of the sprite</returns>
