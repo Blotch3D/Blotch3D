@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlotchExample05_SpriteAlpha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlotchExample06_Heightfield", "examples\BlotchExample06_Heightfield\BlotchExample06_Heightfield.csproj", "{11633A94-E75E-4872-8316-B26E6B4A6806}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlotchExample07_3DGraph", "examples\BlotchExample07_3DGraph\BlotchExample07_3DGraph.csproj", "{E837580A-6459-4F99-A3B8-5694EDBFE928}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -135,6 +137,18 @@ Global
 		{11633A94-E75E-4872-8316-B26E6B4A6806}.Release|x64.Build.0 = Release|x64
 		{11633A94-E75E-4872-8316-B26E6B4A6806}.Release|x86.ActiveCfg = Release|Any CPU
 		{11633A94-E75E-4872-8316-B26E6B4A6806}.Release|x86.Build.0 = Release|Any CPU
+		{E837580A-6459-4F99-A3B8-5694EDBFE928}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E837580A-6459-4F99-A3B8-5694EDBFE928}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E837580A-6459-4F99-A3B8-5694EDBFE928}.Debug|x64.ActiveCfg = Debug|x64
+		{E837580A-6459-4F99-A3B8-5694EDBFE928}.Debug|x64.Build.0 = Debug|x64
+		{E837580A-6459-4F99-A3B8-5694EDBFE928}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{E837580A-6459-4F99-A3B8-5694EDBFE928}.Debug|x86.Build.0 = Debug|Any CPU
+		{E837580A-6459-4F99-A3B8-5694EDBFE928}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E837580A-6459-4F99-A3B8-5694EDBFE928}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E837580A-6459-4F99-A3B8-5694EDBFE928}.Release|x64.ActiveCfg = Release|x64
+		{E837580A-6459-4F99-A3B8-5694EDBFE928}.Release|x64.Build.0 = Release|x64
+		{E837580A-6459-4F99-A3B8-5694EDBFE928}.Release|x86.ActiveCfg = Release|Any CPU
+		{E837580A-6459-4F99-A3B8-5694EDBFE928}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

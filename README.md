@@ -84,6 +84,12 @@ code you can...
 
 -   Implement mipmaps.
 
+-   Implement height fields (a surface with a height that maps from an
+    image)
+
+-   Implement 3D graphs (a surface with a height that follows an
+    equation or an array of height values)
+
 -   Create sprite models programmatically (custom vertices).
 
 -   Use with WPF and WinForms, on Microsoft Windows.

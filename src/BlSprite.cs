@@ -57,7 +57,7 @@ namespace Blotch
 		/// <summary>
 		/// The objects (levels of detail) to draw for this sprite. Only one element is drawn
 		/// depending on the ApparentSize. Each element can be a Model, a triangle list
-		/// (VertexPositionNormalTexture[]), or null (indicating nothing should be drawn). Elements with lower indices are
+		/// (VertexPositionNormalTexture[]), or null (indicating nothing should be drawn for that LOD). Elements with lower indices are
 		/// higher LODs. So index 0 has the highest detail, index 1 is second highest, etc. LOD decreases (the index increases) for
 		/// every halving of the object's apparent size. You can adjust how close the LODs must be to the camera with
 		/// #LodScale. When the calculated LOD index is higher than the last element,
@@ -152,7 +152,7 @@ namespace Blotch
 		/// If true, maintain a constant apparent size for the sprite regardless of camera distance or zoom. This is typically
 		/// used along with one of the Billboarding effects (see #SphericalBillboard, #CylindricalBillboardX, etc.).
 		/// Note that if ConstSize is true, ApparentSize, LodScale, and MipmapScale still act as if it is false, and therefore in that case you
-		/// may want to disable them (set them to large negative values. If both #ConstSize
+		/// may want to disable them (set them to large negative values). If both #ConstSize
 		/// and any Billboarding is enabled and you have asymmetric scaling (different scaling for each dimension), then you'll
 		/// need to separate those operations into different levels of the sprite tree to obtain the desired behavior. You'll also
 		/// probably want to disable the depth stencil buffer and control which sprite is drawn first so that certain sprites are

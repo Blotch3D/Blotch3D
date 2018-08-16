@@ -373,26 +373,55 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// Creates a surface mesh from the height information in an image. The mesh can be assigned to an element of BlSprite#LODs.
-		/// The last channel of each image pixel represents the height (Z) of the surface at that pixel location.
-		/// For example, if its an RGB image, then blue intensity is the height.
-		/// Other channels are ignored.
+		/// Creates a surface mesh in the form of a triangle list, from the height information in an image. The mesh
+		/// can be assigned to an element of BlSprite#LODs. Also see #CreateMeshSurface.
 		/// </summary>
-		/// <param name="tex">The image that represents the height (Z) of each vertex.</param>
-		/// <returns>a mesh</returns>
-		public VertexPositionNormalTexture[] CreateHeightField(Texture2D tex)
+		/// <param name="tex">The texture that represents the height (Z) of each vertex.</param>
+		/// <param name="yScale">Multiplier to apply to the height</param>
+		/// <param name="numSignificantBits">Number of pixel bits to use for a pixel's height. The default value of '8' means use
+		/// only the blue channel. Higher values typically would require you to generate the texture programmatically
+		/// or with a special image editor because
+		/// they would include the other 'channels' as more significant bits of the height.
+		/// Specifically, use SetData(int[]).</param>
+		/// <param name="mirrorY">If true, then reflect image's Y</param>
+		/// <returns>A 'terrain' from the specified image</returns>
+		public VertexPositionNormalTexture[] CreateMeshSurfaceFromImage(Texture2D tex, double yScale = 1, bool mirrorY = false, int numSignificantBits = 8)
 		{
 			var width = tex.Width;
 			var height = tex.Height;
 
-			var vertices = new VertexPositionNormalTexture[width * height];
-			var mesh = new VertexPositionNormalTexture[width * height * 6];
-
 			var pixels = new int[width * height];
 			tex.GetData(pixels);
 
-			// calc position and texturePosition per vertex and put at end of array (then we'll fill array with actual triangle
-			// vertices from the beginning in the next step)
+			return CreateMeshSurface(pixels, width, height, yScale, mirrorY, numSignificantBits);
+		}
+		/// <summary>
+		/// Creates a surface mesh in the form of a triangle list, from an int array. The mesh
+		/// can be assigned to an element of BlSprite#LODs. Also see #CreateMeshSurfaceFromImage.
+		/// </summary>
+		/// <param name="heightMap">A one-dimensional array of each vertex's height, where a 2D vertex is indexed with (x + width*y)</param>
+		/// <param name="width">X size</param>
+		/// <param name="height">Y size</param>
+		/// <param name="yScale">Multiplier to apply to the height</param>
+		/// <param name="numSignificantBits">Number of significant bits in each array element (used when creating from image data)</param>
+		/// <param name="mirrorY">Whether to reflect Y</param>
+		/// <returns></returns>
+		public VertexPositionNormalTexture[] CreateMeshSurface
+		(
+			int[] heightMap,
+			int width,
+			int height,
+			double yScale = 1,
+			bool mirrorY = false,
+			int numSignificantBits = 32
+		)
+		{
+			var vertices = new VertexPositionNormalTexture[width * height];
+			var mesh = new VertexPositionNormalTexture[width * height * 6];
+
+			var mask = (ulong)(Math.Pow(2, numSignificantBits)-1);
+
+			// calc Position and textureCoordinates per vertex
 			for(int x=0;x<width;x++)
 			//Parallel.For(0, width, (x) =>
 			{
@@ -402,7 +431,24 @@ namespace Blotch
 					var xNormalized = (float)x / width;
 					var yNormalized = (float)y / height;
 					var ofst = x + width * y;
-					vertices[ofst].Position = new Vector3(xNormalized, yNormalized, (pixels[x + (height - y - 1)*width] & 0xFF)/255f);
+
+					ulong pixel;
+					if (mirrorY)
+					{
+						pixel = (ulong)(heightMap[x + (height - y - 1) * width]);
+					}
+					else
+					{
+						pixel = (ulong)(heightMap[x + y * width]);
+					}
+
+					if(pixel!=0)
+					{
+						int zz = 0;
+					}
+					float pixelHeight = (float)((pixel & mask) * yScale);
+
+					vertices[ofst].Position = new Vector3(xNormalized, yNormalized, pixelHeight);
 					vertices[ofst].TextureCoordinate = new Vector2(xNormalized, yNormalized);
 				}
 			}
@@ -483,9 +529,9 @@ namespace Blotch
 			}
 
 			// create triangles
-			Parallel.For(0,tex.Width-1,(x)=>
+			Parallel.For(0,width-1,(x)=>
 			{
-				Parallel.For(0, tex.Height-1, (y) =>
+				Parallel.For(0, height-1, (y) =>
 				{
 					var srcOffset = x + y * width;
 					var destOffset = (x + y * width) * 6;
@@ -1045,8 +1091,9 @@ namespace Blotch
 		/// Loads a texture directly from an image file.
 		/// </summary>
 		/// <param name="fileName">An image file of any standard type supported by MonoGame (jpg, png, etc.)</param>
+		/// <param name="mirrorY">If true, then mirror Y</param>
 		/// <returns>The texture that was loaded</returns>
-		public Texture2D LoadFromImageFile(string fileName)
+		public Texture2D LoadFromImageFile(string fileName,bool mirrorY=false)
 		{
 			if (BlDebug.ShowThreadWarnings && CreationThread != Thread.CurrentThread.ManagedThreadId)
 				throw new Exception(String.Format("BlGraphicsDeviceManager.LoadFromImageFile() was called by thread {0} instead of thread {1}", Thread.CurrentThread.ManagedThreadId, CreationThread));
@@ -1056,6 +1103,31 @@ namespace Blotch
 			{
 				texture = Texture2D.FromStream(GraphicsDevice, fileStream);
 			}
+
+			if(mirrorY)
+			{
+				var totalPixels = texture.Width * texture.Height;
+				var pixels = new Color[totalPixels];
+
+				texture.GetData(pixels);
+
+				var width = texture.Width;
+				var height = texture.Height;
+
+				Parallel.For(0, width, (x) =>
+				{
+					Parallel.For(0, height/2, (y) =>
+					{
+						var i = x + width * y;
+						var im = x + width * (height - y - 1);
+						var p = pixels[i];
+						pixels[i] = pixels[im];
+						pixels[im] = p;
+					});
+				});
+				texture.SetData(pixels);
+			}
+
 			return texture;
 		}
 
