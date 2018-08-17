@@ -66,6 +66,7 @@ Shift          - Fine control
 
 			var data = new int[totalVertices];
 
+			/// Calc each height
 			Parallel.For (0, width, (x) =>
 			{
 				Parallel.For(0, height, (y) =>
@@ -77,7 +78,7 @@ Shift          - Fine control
 			});
 
 			// The vertices of the surface
-			var SurfaceArray = Graphics.CreateMeshSurface(data,width,height,1e-7);
+			var SurfaceArray = Graphics.CreateMeshSurface(data,width,height,5e-8);
 
 			// The sprite we draw in this window
 			Surface = new BlSprite(Graphics, "Surface");
@@ -85,6 +86,11 @@ Shift          - Fine control
 			Surface.BoundSphere = new BoundingSphere(Vector3.Zero, 1);
 			Surface.SetAllMaterialBlack();
 			Surface.Color = new Vector3(1, 1, 1);
+			Surface.PreDraw=(s)=>
+			{
+				Graphics.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
+				return BlSprite.PreDrawCmd.Continue;
+			};
 		}
 
 		/// <summary>

@@ -1,9 +1,9 @@
 Blotch3D
 ========
 
-Blotch3D was written because no other C\# library was found that was
-completely free (see license for details), required only a few lines of
-code to use, and provided real-time performance.
+Blotch3D was written because no other C\# library could be found that
+was completely free (see license for details), required only a few lines
+of code to use, and provided real-time performance.
 
 Quick start
 ===========

@@ -29,22 +29,14 @@ A "contributor" is any person that distributes its contribution under this licen
 /*
 TODO:
 
+Add shader that transforms texture with tiling
+configurable GUI controls
+More default models w/LODs: cone, cylinder, box, various prisms and gems
 Trails
-More models, w/LODs (cone, cylinder, box)
-heightfield w/ normals & texture coords
-
-
+bumpmaps
+Extrude (takes a 2D shape and extends it in Z)
 Write a fairly elaborate program to tweak and test everything
 
-Copy more generic text from GWin3D doc to Blotch3D doc
-
-
-Add shader that offsets and scales texture (applies 2d matrix, and then normalizes coords between 0 and 1)
-
-bumpmaps
-
-
-Extrude (takes a 2D shape and extends it in Z)
 
 
 Examples:
@@ -448,7 +440,7 @@ namespace Blotch
 					}
 					float pixelHeight = (float)((pixel & mask) * yScale);
 
-					vertices[ofst].Position = new Vector3(xNormalized, yNormalized, pixelHeight);
+					vertices[ofst].Position = new Vector3(xNormalized-.5f, yNormalized-.5f, pixelHeight);
 					vertices[ofst].TextureCoordinate = new Vector2(xNormalized, yNormalized);
 				}
 			}
@@ -787,9 +779,11 @@ namespace Blotch
 		/// Wheel=Dolly, CTRL-wheel=Zoom, Left-drag=Truck, Right-drag=Rotate, CTRL-left-drag=Pan, Esc=Reset.
 		/// Also, SHIFT causes all the previous controls to be fine rather than coarse. If CTRL is pressed
 		/// and mouse left or right button is clicked, then returns a ray into window
-		/// at mouse position.
+		/// at mouse position. To control each camera attribute individually and programatically or override the
+		/// GUI controls, see AdjustCameraZoom, AdjustCameraDolly, AdjustCameraRotation, AdjustCameraPan,
+		/// AdjustCameraTruck, ResetCamera, SetCameraToSprite. Or see the more basic fields of Zoom, Aspect, TargetEye, and TargetLookAt.
 		/// </summary>
-		/// <returns>If a mouse left or right click occurred, returns the Ray into the screen at that position. Otherwsie
+		/// <returns>If a mouse left or right click occurred, returns the Ray into the screen at that position. Otherwise
 		/// returns null</returns>
 		public Ray? DoDefaultGui()
 		{
