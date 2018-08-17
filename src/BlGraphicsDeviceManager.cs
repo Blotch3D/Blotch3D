@@ -29,12 +29,10 @@ A "contributor" is any person that distributes its contribution under this licen
 /*
 TODO:
 
-Add shader that transforms texture with tiling
 configurable GUI controls
+Add shader that transforms texture with tiling
 More default models w/LODs: cone, cylinder, box, various prisms and gems
-Trails
 bumpmaps
-Extrude (takes a 2D shape and extends it in Z)
 Write a fairly elaborate program to tweak and test everything
 
 
@@ -156,7 +154,7 @@ namespace Blotch
 		};
 
 		/// <summary>
-		/// The current camera position. Note: To change the camera position, set #TargetEye. Also see #CameraSpeed.
+		/// The current camera position. See #TargetEye.
 		/// </summary>
 		public Vector3 Eye
 		{
@@ -173,7 +171,7 @@ namespace Blotch
 		Vector3 _eye;
 
 		/// <summary>
-		/// The current camera LookAt position. Note: To change the camera LookAt, set #TargetLookAt. Also see #CameraSpeed.
+		/// The current camera LookAt position. See #TargetLookAt.
 		/// </summary>
 		public Vector3 LookAt
 		{
@@ -190,12 +188,16 @@ namespace Blotch
 		Vector3 _lookAt;
 
 		/// <summary>
-		/// The point that #Eye migrates to, according to #CameraSpeed. See #Eye for more information.
+		/// The point that #Eye migrates to, according to #CameraSpeed. This is normally controlled by #DoDefaultGui, but can also be controlled
+		/// by the AdjustCameraxxx methods. The easiest way to control the camera
+		/// exactly (including camera roll), is to use SetCameraToSprite and then set the sprite's matrix as desired.
 		/// </summary>
 		public Vector3 TargetEye;
 
 		/// <summary>
-		/// The point that #LookAt migrates to, according to #CameraSpeed. See #LookAt for more information.
+		/// The point that #LookAt migrates to, according to #CameraSpeed. This is normally controlled by #DoDefaultGui, but can also be controlled
+		/// by the AdjustCameraxxx methods. The easiest way to control the camera
+		/// exactly (including camera roll), is to use SetCameraToSprite and then set the sprite's matrix as desired.
 		/// </summary>
 		public Vector3 TargetLookAt;
 
@@ -780,8 +782,9 @@ namespace Blotch
 		/// Also, SHIFT causes all the previous controls to be fine rather than coarse. If CTRL is pressed
 		/// and mouse left or right button is clicked, then returns a ray into window
 		/// at mouse position. To control each camera attribute individually and programatically or override the
-		/// GUI controls, see AdjustCameraZoom, AdjustCameraDolly, AdjustCameraRotation, AdjustCameraPan,
-		/// AdjustCameraTruck, ResetCamera, SetCameraToSprite. Or see the more basic fields of Zoom, Aspect, TargetEye, and TargetLookAt.
+		/// GUI controls, use AdjustCameraZoom, AdjustCameraDolly, AdjustCameraRotation, AdjustCameraPan,
+		/// AdjustCameraTruck, ResetCamera, and/or SetCameraToSprite. Or see the more basic fields of Zoom, Aspect,
+		/// TargetEye, and TargetLookAt.
 		/// </summary>
 		/// <returns>If a mouse left or right click occurred, returns the Ray into the screen at that position. Otherwise
 		/// returns null</returns>

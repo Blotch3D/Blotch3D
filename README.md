@@ -2,8 +2,23 @@ Blotch3D
 ========
 
 Blotch3D was written because no other C\# library could be found that
-was completely free (see license for details), required only a few lines
-of code to use, and provided real-time performance.
+required only a few lines of code to use, provided real-time performance
+even with lots of 3D content, provided higher-level functions common to
+3D apps, and was free (see license for details).
+
+WPF and VTK, and libs that use them like Helix toolkit and ActiViz.NET,
+can be slow and choppy with anything more than a handful of 3D objects.
+OpenGL and Direct3D wrappers (like OpenTK and SharpDX) are fast but are
+low-level and require pretty deep knowledge and a decent amount of code
+just to get something on the screen with reasonable camera controls, and
+you still have to write all other basic functions common to most 3D
+apps. Unity3D is not quite as difficult to learn and certainly contains
+higher-level functions, but is very large and not free except in the
+most limited sense (see its license for details). MonoGame is close to
+what was needed, but still lacks certain necessary and common functions
+to most 3D apps. VPython is also close, but it's called by an
+interpreted language and still lacks some needed essential
+functionality.
 
 Quick start
 ===========
@@ -63,7 +78,7 @@ code you can...
 -   Create billboard sprites.
 
 -   Show a video as a 2D or 3D texture (See
-    <http://rbwhitaker.wikidot.com/video-playback> for details)
+    <http://rbwhitaker.wikidot.com/video-playback> for details).
 
 -   Connect sprites to the camera to implement HUD models and text.
 
@@ -85,10 +100,10 @@ code you can...
 -   Implement mipmaps.
 
 -   Implement height fields (a surface with a height that maps from an
-    image)
+    image).
 
 -   Implement 3D graphs (a surface with a height that follows an
-    equation or an array of height values)
+    equation or an array of height values).
 
 -   Create sprite models programmatically (custom vertices).
 
@@ -98,9 +113,9 @@ code you can...
     provided WinForms Form object of the window (Microsoft Windows
     only).
 
--   Detect collisions between sprites.
+-   Detect sprite radius collisions.
 
--   Implement fog
+-   Implement fog.
 
 -   Define ambient lighting, and up to three point-light sources. (More
     lights can be defined if a custom shader is used.)
@@ -386,8 +401,9 @@ to indicate how translucent the pixel should be. So, they have four
 values for each pixel (RGBA) rather than three (RGB). The alpha value
 indicates how much of any coloration behind that pixel (farther from the
 viewer) should show through the pixel. Alpha values of 1 indicate the
-texture pixel is opaque and no colration from farther values should show
-through. Values of zero indicate the pixel is completely transparent.
+texture pixel is opaque and no coloration from farther values should
+show through. Values of zero indicate the pixel is completely
+transparent.
 
 RGBA textures drawn using the 2D Blotch3D drawing methods
 (BlGraphicsDeviceManager\#DrawText,
