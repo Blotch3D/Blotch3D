@@ -11,6 +11,7 @@
 #region Using Statements
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.IO;
 #endregion
 
 namespace Blotch
@@ -347,8 +348,22 @@ namespace Blotch
 		/// <summary>
 		/// Creates a new BlBasicEffect with default parameter settings. See class description for more info.
 		/// </summary>
+		public BlBasicEffect(GraphicsDevice device, string filename)
+			: base(device, File.ReadAllBytes(filename))
+		{
+			Init(device);
+		}
+
+		/// <summary>
+		/// Creates a new BlBasicEffect with default parameter settings. See class description for more info.
+		/// </summary>
 		public BlBasicEffect(GraphicsDevice device, byte[] bytes)
 			: base(device, bytes)
+		{
+			Init(device);
+		}
+
+		void Init(GraphicsDevice device)
 		{
 			CacheEffectParameters(null);
 

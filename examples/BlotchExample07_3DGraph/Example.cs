@@ -42,12 +42,6 @@ Shift          - Fine control
 		/// </summary>
 		protected override void Setup()
 		{
-			Graphics.Lights.Clear();
-			var light = new BlGraphicsDeviceManager.Light();
-			light.LightDiffuseColor = new Vector3(1, 1, .5f);
-			light.LightDirection = new Vector3(1, 0, 0);
-			Graphics.Lights.Add(light);
-
 			// We need to create one ContentManager object for each top-level content folder we'll be
 			// loading things from. Here "Content" is the most senior folder name of the content tree.
 			// (Content [models, fonts, etc.] are added to the project with the Content utility. Double-click
@@ -72,12 +66,12 @@ Shift          - Fine control
 				Parallel.For(0, height, (y) =>
 				{
 					// The '1e6' makes sure we use most of the resolution of an int
-					var v = (int)(1e6*(Math.Sin((x * y) / 9000.0)+1));
+					var v = (int)(1e6*(Math.Sin(((x-width/2) * (y-height/2)) / 3000.0)+1));
 					data[x + width * y] = v;
 				});
 			});
 
-			// The vertices of the surface
+			// Create the surface vertices
 			var SurfaceArray = Graphics.CreateMeshSurface(data,width,height,5e-8);
 
 			// The sprite we draw in this window

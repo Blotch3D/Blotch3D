@@ -33,16 +33,18 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Blotch
 {
 	/// <summary>
-	/// A mipmap of textures for a given BlSprite. You could load this from an image file and then assign
-	/// it to a BlSprite#Mipmap. Note that this is a software mipmap (i.e. it isn't implemented
-	/// in the 3D hardware). That is, only one resolution texture is used at time.
+	/// A BlMipmap holds a list of different resolutions of a texture, where one is applied to a sprite,
+	/// depending on the ApparentSize of that sprite. You
+	/// would assign it to a BlSprite#Mipmap. Note that this is a software mipmap (i.e. it isn't implemented
+	/// in the 3D hardware). That is, unlike a hardware mipmap where different resolutions of the texture may appear on different
+	/// parts of the sprite, only one resolution texture is used at time.
 	/// </summary>
 	public class BlMipmap: List<Texture2D>,IDisposable
 	{
 		BlGraphicsDeviceManager Graphics;
 
 		/// <summary>
-		/// Creates the mipmaps.
+		/// Creates the mipmaps from the specified texture.
 		/// </summary>
 		/// <param name="graphics">Graphics device (typically the one owned by your BlWindow3D)</param>
 		/// <param name="tex">Texture from which to create mipmaps, typically gotten from BlGraphics#LoadFromImageFile.</param>

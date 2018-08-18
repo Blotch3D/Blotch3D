@@ -25,6 +25,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlotchExample06_Heightfield
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlotchExample07_3DGraph", "examples\BlotchExample07_3DGraph\BlotchExample07_3DGraph.csproj", "{E837580A-6459-4F99-A3B8-5694EDBFE928}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlotchExample08_TextureTransform", "examples\BlotchExample08_TextureTransform\BlotchExample08_TextureTransform.csproj", "{D5F09A77-F9F6-4370-9EF4-59F6B1483525}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -121,6 +123,14 @@ Global
 		{E837580A-6459-4F99-A3B8-5694EDBFE928}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E837580A-6459-4F99-A3B8-5694EDBFE928}.Release|x64.ActiveCfg = Release|x64
 		{E837580A-6459-4F99-A3B8-5694EDBFE928}.Release|x64.Build.0 = Release|x64
+		{D5F09A77-F9F6-4370-9EF4-59F6B1483525}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5F09A77-F9F6-4370-9EF4-59F6B1483525}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5F09A77-F9F6-4370-9EF4-59F6B1483525}.Debug|x64.ActiveCfg = Debug|x64
+		{D5F09A77-F9F6-4370-9EF4-59F6B1483525}.Debug|x64.Build.0 = Debug|x64
+		{D5F09A77-F9F6-4370-9EF4-59F6B1483525}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5F09A77-F9F6-4370-9EF4-59F6B1483525}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5F09A77-F9F6-4370-9EF4-59F6B1483525}.Release|x64.ActiveCfg = Release|x64
+		{D5F09A77-F9F6-4370-9EF4-59F6B1483525}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

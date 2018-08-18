@@ -13,9 +13,9 @@ namespace BlotchExample
 	public class Example : BlWindow3D
 	{
 		/// <summary>
-		/// This will be the torus model we draw in the window
+		/// This will be the Plane model we draw in the window
 		/// </summary>
-		BlSprite Torus;
+		BlSprite Plane;
 
 		/// <summary>
 		/// This will be the font for the help menu we draw in the window
@@ -23,9 +23,19 @@ namespace BlotchExample
 		SpriteFont Font;
 
 		/// <summary>
-		/// Texture for the torus
+		/// Texture for the Plane
 		/// </summary>
 		Texture2D MyTexture;
+
+		/// <summary>
+		/// Dynamic texture translation
+		/// </summary>
+		float TexTrans = 0;
+
+		/// <summary>
+		/// Dynamic texture transform angle
+		/// </summary>
+		float TexRotAngle = 0;
 
 		/// <summary>
 		/// The help menu text that we draw in the window
@@ -45,7 +55,7 @@ Shift          - Fine control
 		/// Same as BasicEffect, but also does alpha test (and has a AlphaTestThreshold variable)
 		/// Note that this does NOT inherit from BasicEffect and cannot be used in its place
 		/// </summary>
-		BlBasicEffect BlBasicEffectAlphaTest;
+		BlBasicEffect BlBasicEffectXformTexture;
 
 		/// <summary>
 		/// See BlWindow3D for details.
@@ -64,24 +74,50 @@ Shift          - Fine control
 			Font = MyContent.Load<SpriteFont>("Arial14");
 
 			// The model of the toroid
-			var TorusModel = MyContent.Load<Model>("torus");
+			var PlaneModel = MyContent.Load<Model>("plane");
 						
 			// The sprite we draw in this window
-			Torus = new BlSprite(Graphics,"Torus");
+			Plane = new BlSprite(Graphics,"Plane");
 
 			// We use a custom effect rather than the default effect
-			BlBasicEffectAlphaTest = new BlBasicEffect(Graphics.GraphicsDevice, "Content/BlBasicEffectAlphaTest.mgfxo");
-			BlBasicEffectAlphaTest.Parameters["AlphaTestThreshold"].SetValue(.5f);
+			BlBasicEffectXformTexture = new BlBasicEffect(Graphics.GraphicsDevice, "Content/BlBasicEffectAlphaTestXformTex.mgfxo");
+			BlBasicEffectXformTexture.Parameters["AlphaTestThreshold"].SetValue(.5f);
 
-			// See Blotch3D documentation for details on translucency
-			Torus.SetEffect = (s,effect) =>
+			// Set the delegate
+			Plane.SetEffect = (s,effect) =>
 			{
-				s.SetupBasicEffect(BlBasicEffectAlphaTest);	
+				// Rotate the texture.
+				TexRotAngle += .0234f;
 
-				return BlBasicEffectAlphaTest;
+				// avoid eventual visible floating point errors
+				if (TexRotAngle > Math.PI)
+					TexRotAngle -= (float)(2 * Math.PI);
+				if (TexRotAngle < 0)
+					TexRotAngle += (float)(2 * Math.PI);
+
+				// There is no Matrix2x2, so here we pass only the first two rows and columns of a 4x4 matrix
+				// mainly to demonstrate it can be done easily. This could be done more efficiently.
+				// (Also note that we pass the four elements as a Vector4)
+				var m = Matrix.CreateRotationZ(TexRotAngle);
+				BlBasicEffectXformTexture.Parameters["TextureTransform"].SetValue(new Vector4(m.M11, m.M12, m.M21, m.M22));
+
+				// Let's also change the texture offset.
+				TexTrans += .01f;
+
+				// avoid eventual visible floating point errors
+				if (TexTrans > 1)
+					TexTrans -= (int)TexTrans;
+				if (TexTrans < 0)
+					TexTrans += (int)-TexTrans + 1;
+
+				BlBasicEffectXformTexture.Parameters["TextureTranslate"].SetValue(new Vector2(TexTrans, 2*TexTrans));
+
+				s.SetupBasicEffect(BlBasicEffectXformTexture);	
+
+				return BlBasicEffectXformTexture;
 			};
 
-			Torus.LODs.Add(TorusModel);
+			Plane.LODs.Add(PlaneModel);
 
 			// Load the image into a Texture2D
 			MyTexture = Graphics.LoadFromImageFile("image_with_alpha.png");
@@ -89,7 +125,7 @@ Shift          - Fine control
 			// Set the sprite's mipmap
 			// NOTE: The texture mapping is up to the model designer, because
 			// the texture coordinates for each vertex are embedded in the model file.
-			Torus.Mipmap = new BlMipmap(Graphics, MyTexture);
+			Plane.Mipmap = new BlMipmap(Graphics, MyTexture);
 		}
 
 		/// <summary>
@@ -116,7 +152,7 @@ Shift          - Fine control
 			// Draw things here using BlSprite.Draw(), graphics.DrawText(), etc.
 			//
 
-			Torus.Draw();
+			Plane.Draw();
 
 			var MyMenuText = String.Format("{0}\nEye: {1}\nLookAt: {2}\nMaxDistance: {3}\nMinistance: {4}\nViewAngle: {5}\nModelLod: {6}\nModelApparentSize: {7}",
 				Help,
@@ -125,8 +161,8 @@ Shift          - Fine control
 				Graphics.MaxCamDistance,
 				Graphics.MinCamDistance,
 				Graphics.Zoom,
-				Torus.LodTarget,
-				Torus.ApparentSize
+				Plane.LodTarget,
+				Plane.ApparentSize
 			);
 
 			// handle undrawable characters for the specified font(like the infinity symbol)

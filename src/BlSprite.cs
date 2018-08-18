@@ -77,8 +77,8 @@ namespace Blotch
 		public double LodScale = 9;
 
 		/// <summary>
-		/// BlMipmap to apply to the model, or a single texture (Texture2D). The model must include texture coordinates. It must
-		/// also include normals if lighting other than 'emissive' is desired. If BlMipmap, it will work the same as
+		/// A BlMipmap or a single Texture2D object. The model must include texture coordinates for this to be visible. It must
+		/// also include normals if lighting other than 'emissive' is desired. If it's a BlMipmap, it will work the same as
 		/// LODs (see LODs for more information). Specifically, the mipmap texture applied
 		/// depends on the apparent size of the model. The next higher mipmap is used for every doubling
 		/// of model size, where element zero is the highest resolution, used when the apparent size is largest.
@@ -205,13 +205,13 @@ namespace Blotch
 		/// <summary>
 		/// The color of the material. This is lit by both diffuse and ambient light. If null, MonoGame's default color is kept.
 		/// </summary>
-		public Vector3? Color = new Vector3(.5f, .5f, 1);
+		public Vector3? Color = new Vector3(.5f, 1, .5f);
 
 		/// <summary>
 		/// The emissive color. If null, MonoGame's default is kept.
 		/// </summary>
 		
-		public Vector3? EmissiveColor = new Vector3(.1f, .1f, .2f);
+		public Vector3? EmissiveColor = new Vector3(.1f, .1f, .1f);
 		/// <summary>
 		/// The specular color. If null, MonoGame's default is kept.
 		/// </summary>
@@ -220,7 +220,7 @@ namespace Blotch
 		/// <summary>
 		/// If a specular color is specified, this is the specular power.
 		/// </summary>
-		public float SpecularPower = 8;
+		public float SpecularPower = 4;
 
 		/// <summary>
 		/// See #FrameProc

@@ -29,10 +29,9 @@ A "contributor" is any person that distributes its contribution under this licen
 /*
 TODO:
 
-configurable GUI controls
-Add shader that transforms texture with tiling
 More default models w/LODs: cone, cylinder, box, various prisms and gems
-bumpmaps
+Add shader that transforms texture with tiling
+bumpmaps (use rbwhitaker's)
 Write a fairly elaborate program to tweak and test everything
 
 
@@ -314,7 +313,7 @@ namespace Blotch
 		public BlWindow3D Window;
 
 		/// <summary>
-		/// A SpriteBatch for use by certain text and teture drawing methods.
+		/// A SpriteBatch for use by certain text and texture drawing methods.
 		/// </summary>
 		public SpriteBatch SpriteBatch=null;
 
@@ -332,12 +331,12 @@ namespace Blotch
 			window.IsFixedTimeStep = false;
 
 			var light = new Light();
-			light.LightDiffuseColor = new Vector3(1, 1, 0);
+			light.LightDiffuseColor = new Vector3(1, .5f, 0);
 			light.LightDirection = new Vector3(1, 0, 0);
 			Lights.Add(light);
 
 			light = new Light();
-			light.LightDiffuseColor = new Vector3(0, 1, 1);
+			light.LightDiffuseColor = new Vector3(0, .5f, 1);
 			light.LightDirection = new Vector3(-1, 0, 0);
 			Lights.Add(light);
 

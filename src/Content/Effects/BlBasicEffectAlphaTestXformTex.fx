@@ -38,11 +38,12 @@ BEGIN_CONSTANTS
     float4x4 World                  _vs(c19)          _cb(c15);
     float3x3 WorldInverseTranspose  _vs(c23)          _cb(c19);
 
-	float4 ClipColor;
-	float ClipColorTolerance;
+	float AlphaTestThreshold;
+	float2 TextureTranslate;
 MATRIX_CONSTANTS
 
     float4x4 WorldViewProj          _vs(c15)          _cb(c0);
+    float4 TextureTransform;
 
 END_CONSTANTS
 
@@ -271,7 +272,7 @@ VSOutputTx VSBasicOneLightTxVc(VSInputNmTxVc vin)
     return vout;
 }
 
-
+/*
 // Vertex shader: pixel lighting.
 VSOutputPixelLighting VSBasicPixelLighting(VSInputNm vin)
 {
@@ -330,18 +331,14 @@ VSOutputPixelLightingTx VSBasicPixelLightingTxVc(VSInputNmTxVc vin)
     
     return vout;
 }
-
+*/
 
 // Pixel shader: basic.
 float4 PSBasic(VSOutput pin) : SV_Target0
 {
     float4 color = pin.Diffuse;
-
-	float dr = abs(color.r - ClipColor.r);
-	float dg = abs(color.g - ClipColor.g);
-	float db = abs(color.b - ClipColor.b);
-
-	clip( dr+dg+db < ClipColorTolerance ? -1:1 );
+    
+	clip( color.a < AlphaTestThreshold ? -1:1 );
 
     ApplyFog(color, pin.Specular.w);
     
@@ -352,28 +349,34 @@ float4 PSBasic(VSOutput pin) : SV_Target0
 // Pixel shader: no fog.
 float4 PSBasicNoFog(VSOutputNoFog pin) : SV_Target0
 {
-	float4 color = pin.Diffuse;
 
-	float dr = abs(color.r - ClipColor.r);
-	float dg = abs(color.g - ClipColor.g);
-	float db = abs(color.b - ClipColor.b);
-
-	clip(dr + dg + db < ClipColorTolerance ? -1 : 1);
+	clip(pin.Diffuse.a < AlphaTestThreshold ? -1 : 1);
 
 	return pin.Diffuse;
+}
+
+float2 XformTex(float2 texCoord)
+{
+	float2 texCoordOut;
+	texCoordOut = mul(texCoord, (float2x2)TextureTransform);
+	texCoordOut += TextureTranslate;
+	if(texCoordOut.x < 0)
+		texCoordOut.x += (int)(-texCoordOut.x+1);
+	if (texCoordOut.y < 0)
+		texCoordOut.y += (int)(-texCoordOut.y + 1);
+	texCoordOut.x %= 1;
+	texCoordOut.y %= 1;
+	return texCoordOut;
 }
 
 
 // Pixel shader: texture.
 float4 PSBasicTx(VSOutputTx pin) : SV_Target0
 {
+	pin.TexCoord = XformTex(pin.TexCoord);
     float4 color = SAMPLE_TEXTURE(Texture, pin.TexCoord) * pin.Diffuse;
 
-	float dr = abs(color.r - ClipColor.r);
-	float dg = abs(color.g - ClipColor.g);
-	float db = abs(color.b - ClipColor.b);
-
-	clip(dr + dg + db < ClipColorTolerance ? -1 : 1);
+    clip(color.a < AlphaTestThreshold ? -1 : 1);
 
     ApplyFog(color, pin.Specular.w);
     
@@ -384,14 +387,9 @@ float4 PSBasicTx(VSOutputTx pin) : SV_Target0
 // Pixel shader: texture, no fog.
 float4 PSBasicTxNoFog(VSOutputTxNoFog pin) : SV_Target0
 {
-	float4 color = SAMPLE_TEXTURE(Texture, pin.TexCoord) * pin.Diffuse;
-
-	float dr = abs(color.r - ClipColor.r);
-	float dg = abs(color.g - ClipColor.g);
-	float db = abs(color.b - ClipColor.b);
-
-	clip(dr + dg + db < ClipColorTolerance ? -1 : 1);
-
+	pin.TexCoord = XformTex(pin.TexCoord);
+    float4 color = SAMPLE_TEXTURE(Texture, pin.TexCoord) * pin.Diffuse;
+	clip(color.a < AlphaTestThreshold ? -1 : 1);
 	return color;
 }
 
@@ -399,13 +397,9 @@ float4 PSBasicTxNoFog(VSOutputTxNoFog pin) : SV_Target0
 // Pixel shader: vertex lighting.
 float4 PSBasicVertexLighting(VSOutput pin) : SV_Target0
 {
-	float4 color = pin.Diffuse;
+    float4 color = pin.Diffuse;
 
-	float dr = abs(color.r - ClipColor.r);
-	float dg = abs(color.g - ClipColor.g);
-	float db = abs(color.b - ClipColor.b);
-
-	clip(dr + dg + db < ClipColorTolerance ? -1 : 1);
+	clip(color.a < AlphaTestThreshold ? -1 : 1);
 
     AddSpecular(color, pin.Specular.rgb);
     ApplyFog(color, pin.Specular.w);
@@ -417,14 +411,10 @@ float4 PSBasicVertexLighting(VSOutput pin) : SV_Target0
 // Pixel shader: vertex lighting, no fog.
 float4 PSBasicVertexLightingNoFog(VSOutput pin) : SV_Target0
 {
-	float4 color = pin.Diffuse;
-
-	float dr = abs(color.r - ClipColor.r);
-	float dg = abs(color.g - ClipColor.g);
-	float db = abs(color.b - ClipColor.b);
-
-	clip(dr + dg + db < ClipColorTolerance ? -1 : 1);
-
+    float4 color = pin.Diffuse;
+    
+	clip(color.a < AlphaTestThreshold ? -1 : 1);
+	
 	AddSpecular(color, pin.Specular.rgb);
     
     return color;
@@ -434,14 +424,11 @@ float4 PSBasicVertexLightingNoFog(VSOutput pin) : SV_Target0
 // Pixel shader: vertex lighting + texture.
 float4 PSBasicVertexLightingTx(VSOutputTx pin) : SV_Target0
 {
-    float4 color = SAMPLE_TEXTURE(Texture, pin.TexCoord) * pin.Diffuse;
-
-	float dr = abs(color.r - ClipColor.r);
-	float dg = abs(color.g - ClipColor.g);
-	float db = abs(color.b - ClipColor.b);
-
-	clip(dr + dg + db < ClipColorTolerance ? -1 : 1);
-
+	pin.TexCoord = XformTex(pin.TexCoord);
+	float4 color = SAMPLE_TEXTURE(Texture, pin.TexCoord) * pin.Diffuse;
+    
+	clip(color.a < AlphaTestThreshold ? -1 : 1);
+	
 	AddSpecular(color, pin.Specular.rgb);
     ApplyFog(color, pin.Specular.w);
     
@@ -452,31 +439,24 @@ float4 PSBasicVertexLightingTx(VSOutputTx pin) : SV_Target0
 // Pixel shader: vertex lighting + texture, no fog.
 float4 PSBasicVertexLightingTxNoFog(VSOutputTx pin) : SV_Target0
 {
+	pin.TexCoord = XformTex(pin.TexCoord);
     float4 color = SAMPLE_TEXTURE(Texture, pin.TexCoord) * pin.Diffuse;
-
-	float dr = abs(color.r - ClipColor.r);
-	float dg = abs(color.g - ClipColor.g);
-	float db = abs(color.b - ClipColor.b);
-
-	clip(dr + dg + db < ClipColorTolerance ? -1 : 1);
-
+    
+	clip(color.a < AlphaTestThreshold ? -1 : 1);
+	
 	AddSpecular(color, pin.Specular.rgb);
     
     return color;
 }
 
-
+/*
 // Pixel shader: pixel lighting.
 float4 PSBasicPixelLighting(VSOutputPixelLighting pin) : SV_Target0
 {
-	float4 color = pin.Diffuse;
+    float4 color = pin.Diffuse;
 
-	float dr = abs(color.r - ClipColor.r);
-	float dg = abs(color.g - ClipColor.g);
-	float db = abs(color.b - ClipColor.b);
-
-	clip(dr + dg + db < ClipColorTolerance ? -1 : 1);
-
+	clip(color.a < AlphaTestThreshold ? -1 : 1);
+	
 	float3 eyeVector = normalize(EyePosition - pin.PositionWS.xyz);
     float3 worldNormal = normalize(pin.NormalWS);
     
@@ -494,14 +474,11 @@ float4 PSBasicPixelLighting(VSOutputPixelLighting pin) : SV_Target0
 // Pixel shader: pixel lighting + texture.
 float4 PSBasicPixelLightingTx(VSOutputPixelLightingTx pin) : SV_Target0
 {
+	pin.TexCoord = XformTex(pin.TexCoord);
     float4 color = SAMPLE_TEXTURE(Texture, pin.TexCoord) * pin.Diffuse;
     
-	float dr = abs(color.r - ClipColor.r);
-	float dg = abs(color.g - ClipColor.g);
-	float db = abs(color.b - ClipColor.b);
-
-	clip(dr + dg + db < ClipColorTolerance ? -1 : 1);
-
+	clip(color.a < AlphaTestThreshold ? -1 : 1);
+	
 	float3 eyeVector = normalize(EyePosition - pin.PositionWS.xyz);
     float3 worldNormal = normalize(pin.NormalWS);
     
@@ -514,7 +491,7 @@ float4 PSBasicPixelLightingTx(VSOutputPixelLightingTx pin) : SV_Target0
     
     return color;
 }
-
+*/
 
 // NOTE: The order of the techniques here are
 // defined to match the indexing in BasicEffect.cs.
@@ -545,7 +522,7 @@ TECHNIQUE( BasicEffect_OneLight_Texture,					VSBasicOneLightTx,		PSBasicVertexLi
 TECHNIQUE( BasicEffect_OneLight_Texture_NoFog,				VSBasicOneLightTx,		PSBasicVertexLightingTxNoFog );
 TECHNIQUE( BasicEffect_OneLight_Texture_VertexColor,		VSBasicOneLightTxVc,	PSBasicVertexLightingTx );
 TECHNIQUE( BasicEffect_OneLight_Texture_VertexColor_NoFog,	VSBasicOneLightTxVc,	PSBasicVertexLightingTxNoFog );
-
+/*
 TECHNIQUE( BasicEffect_PixelLighting,							VSBasicPixelLighting,		PSBasicPixelLighting );
 TECHNIQUE( BasicEffect_PixelLighting_NoFog,						VSBasicPixelLighting,		PSBasicPixelLighting );
 TECHNIQUE( BasicEffect_PixelLighting_VertexColor,				VSBasicPixelLightingVc,		PSBasicPixelLighting );
@@ -554,3 +531,4 @@ TECHNIQUE( BasicEffect_PixelLighting_Texture,					VSBasicPixelLightingTx,		PSBas
 TECHNIQUE( BasicEffect_PixelLighting_Texture_NoFog,				VSBasicPixelLightingTx,		PSBasicPixelLightingTx );
 TECHNIQUE( BasicEffect_PixelLighting_Texture_VertexColor,		VSBasicPixelLightingTxVc,	PSBasicPixelLightingTx );
 TECHNIQUE( BasicEffect_PixelLighting_Texture_VertexColor_NoFog,	VSBasicPixelLightingTxVc,	PSBasicPixelLightingTx );
+*/
