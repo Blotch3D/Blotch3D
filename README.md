@@ -104,6 +104,8 @@ code you can...
 -   Define ambient lighting, and up to three point-light sources. (More
     lights can be defined if a custom shader is used.)
 
+-   All other MonoGame feature remain available.
+
 -   Build for many platforms. Currently supports all Microsoft Windows
     platforms, iOS, Android, MacOS, Linux, PS4, PSVita, Xbox One, and
     Switch.
@@ -166,10 +168,7 @@ or a reference to the source, of Blotch3D.
 To add MonoGame plus Blotch3D to an existing non-MonoGame project, add a
 reference to the appropriate MonoGame binary (typically in "\\Program
 Files (x86)\\MSBuild\\MonoGame\\v3.0\\\..."). Also add a reference to,
-or the source of, Blotch3D. If you want to use custom models, fonts,
-etc. in your 3D window, you will need to add a Content.mgcb file as
-described in the [Making and using 3D
-models](#making-and-using-3d-models) section.
+or the source of, Blotch3D.
 
 If you are copying the Blotch3D library binary (like Blotch3D.dll on
 Windows) to a project or packages folder instead of including its source
@@ -311,48 +310,56 @@ with them and you are not otherwise terminating the program.
 See the examples, reference documentation (doc/Blotch3DManual.pdf), and
 IntelliSense for more information.
 
-Making and using 3D models
-==========================
+Making and using 3D resources
+=============================
 
-There are several primitive models available with Blotch3D. If the
-source to Blotch3D is included in your solution, you can use the
-provided models as is shown in the examples (in fact, to do this you
-don't even need the MonoGame "Content.mgcb" file in your project).
-Otherwise you will need to add the content explicitly to your
-"Content.mgcb" via the pipeline manager (which you start by
-double-clicking the "Content.mgcb" in your project). See
-<http://rbwhitaker.wikidot.com/monogame-managing-content> for more
-information. (You also add any other type of content, like fonts, etc.
-by use of the MonoGame "Content.mgcb" file.)
+All 3D resources like models, texture images, fonts, etc. must be
+"compiled" into "XNB" files by MonoGame's *pipeline manager*. (Although
+Blotch3D does provide a way to load an image file directly.)
+
+The Blotch3D project already has a pipeline manager and several models
+that are compiled when Blotch3D is built. If the source to Blotch3D is
+included in your solution, you can use the provided models (the various
+resolution spheres, plane, torus, images, etc.) as is shown in the
+examples without worrying about where the XNB files are. You can also
+just copy the XNB files from the Blotch3D output folder to a project's
+output folder.
 
 To create a new model, you can either programmatically create it by
 specifying the vertices and normals (see the example that creates custom
-vertices), or create a model with, for example, the Blender 3D modeler
-and then add that model to the project with the pipeline manager. The
-pipeline manager can import several model file types. You can also
-instruct Blender to include texture (UV) mapping by using one of the
-countless tutorials online, like
+vertices), or create a model with, for example, the Blender 3D modeler.
+You can also instruct Blender to include texture (UV) mapping by using
+one of the countless tutorials online, like
 <https://www.youtube.com/watch?v=2xTzJIaKQFY> or
 <https://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/UV_Map_Basics> .
-Also, you may be able to import certain existing models from the web,
-but mind their copyright.
 
-If you have a non-MonoGame project but want to use Blotch3D with it,
-then do the following...
+Once the model is created, it must be compiled to an XNB file by a
+pipeline manager. (The pipeline manager can import several model file
+types.) To do this, you can either add that standard model file to the
+pipeline manager in the Blotch3D project (double-click the Content.mgcb
+file in the Blotch3D project. See
+<http://rbwhitaker.wikidot.com/monogame-managing-content> for details.)
+so that it gets compiled next time Blotch3D is built, or you could make
+sure the resource is added to a pipeline manager in your own project.
 
-1.  If not already done, add a reference to MonoGame and Blotch3D.
+When you create a MonoGame project from scratch, a Content.mgcb file is
+added to the project by the MonoGame project wizard, and you can start
+the pipeline manager by double-clicking that file. If you have a project
+without a Content.mgcb file and you want it to have one, then do the
+following...
 
-2.  Copy the Content folder from the Blotch3D project folder (or any
+1.  Copy the Content folder from the Blotch3D project folder (or any
     other MonoGame project with a content folder) to your project folder
 
-3.  Add the "Content.mgcb" file in that folder to your project
+2.  Add the "Content.mgcb" file in that folder to your project
 
-4.  Right-click it and select "Properties"
+3.  Right-click it and select "Properties"
 
-5.  Set the "Build Action" to "MonoGameContentReference"
+4.  Set the "Build Action" to "MonoGameContentReference"
 
 If the "MonoGameContentReference" build option is not available in the
-drop-down, then try this:
+drop-down (for example, because the project wasn't originally created by
+the MonoGame wizard), then try this:
 
 (from
 <http://www.infinitespace-studios.co.uk/general/monogame-content-pipeline-integration/>)
@@ -396,7 +403,8 @@ that control the feature provided by the effect. These are set with the
 BlBasicEffect.Parameters\[\].SetValue method. They can be set at any
 time.
 
-For example, for the AlphaTest effect, do something like this:
+For example, for the BlBasicEffectAlphaTest effect, do something like
+this:
 
 // Create the BlBasicEffect (alternatively you can specify
 'BlBasicEffectAlphaTestOGL.mgfxo' if you are on an OpenGL platform)
