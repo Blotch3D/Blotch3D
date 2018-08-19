@@ -22,6 +22,7 @@ Right-drag     - Rotate
 CTRL-left-drag - Pan
 Esc            - Reset
 Shift          - Fine control
+Ctrl-click object - Console msg pick 
 ";
 
 		BlSprite TopSprite = null;

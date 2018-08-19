@@ -7,8 +7,9 @@ Quick start for Windows
 On your development machine ...
 
 1.  Get the installer for the latest release of MonoGame from
-    <http://www.monogame.net/downloads/> and run it. (Do NOT get the
-    current development version nor a NuGet package.)
+    <http://www.monogame.net/downloads/> and run it with the default
+    settings. (Do NOT get the current development version nor a NuGet
+    package.)
 
 2.  Get the Blotch3D repository zip from
     <https://github.com/Blotch3D/Blotch3D> and unzip it.
@@ -20,9 +21,9 @@ On your development machine ...
 5.  Use IntelliSense to see the reference documentation, or see
     "Blotch3DManual.pdf".
 
-6.  To create a new Blotch3D project, add it to an existing project, or
-    build for another platform, follow the instructions in the [Creating
-    a new project](#creating-a-new-project) section.
+6.  To create a new Blotch3D project, or add Blotch3D to an existing
+    project, or build for another platform, follow the instructions in
+    the [Creating a new project](#creating-a-new-project) section.
 
 Features
 ========
@@ -170,18 +171,11 @@ reference to the appropriate MonoGame binary (typically in "\\Program
 Files (x86)\\MSBuild\\MonoGame\\v3.0\\\..."). Also add a reference to,
 or the source of, Blotch3D.
 
-If you are copying the Blotch3D library binary (like Blotch3D.dll on
-Windows) to a project or packages folder instead of including its source
-code, be sure to also copy Blotch3D.xml so you still get the
-IntelliSense.
-
 To create a project for another platform besides Microsoft Windows,
 generally you follow the same procedure described here but you will need
 to install any Visual Studio add-ons, etc. for the desired platform. For
-example, for Android you'd need the Xamarin for Android add-on. You also
-may need to get a MonoGame NuGet package for the platform and/or look
-online for particular instructions on creating a MonoGame project for
-the target platform.
+example, for Android you'd need the Xamarin for Android add-on. For some
+platforms you may need to do some research to create a project.
 
 To distribute a program, deliver everything in your project's output
 folder.
@@ -387,35 +381,37 @@ the MonoGame wizard), then try this:
 Custom effects
 ==============
 
-Blotch3D provides several custom effects that are the same as the
+Blotch3D provides several custom shaders that are the same as the
 default MonoGame BasicEffect, but they provide added features. Examples
-are provided that demonstrate them.
+are provided that demonstrate how to use them.
 
-To use a custom effect, first copy the shader file from the Blotch3D
-Content/Effects folder to your program's output folder (for example, you
-could add a link to it in your project and set its properties so it is
-copied to the output folder).
+The shader source and the compiled shader files are in the Blotch3D
+Content/Effects folder. To use a custom shader, first copy the shader
+file to your program's output folder (for example, you could add a link
+to it in your project and set its properties so it is copied to the
+output folder).
 
 When your program runs, it specifies that file in the BlBasicEffect
-constructor. Then when the sprite is drawn, the effect is "applied".
+constructor. Then when the sprite is drawn, the effect must be
+"applied".
 
 Each effect also typically has certain parameters that must be specified
 that control the feature provided by the effect. These are set with the
 BlBasicEffect.Parameters\[\].SetValue method. They can be set at any
 time.
 
-For example, for the BlBasicEffectAlphaTest effect, do something like
-this:
+For example, the BlBasicEffectAlphaTest effect is used like this:
 
-// Create the BlBasicEffect (alternatively you can specify
-'BlBasicEffectAlphaTestOGL.mgfxo' if you are on an OpenGL platform)
+// Create the BlBasicEffect and specify the shader file (you can also
+specify 'BlBasicEffectAlphaTestOGL.mgfxo' if you are on an OpenGL
+platform)
 
 MyBlBasicEffectAlphaTest = new BlBasicEffect(Graphics.GraphicsDevice,
 "BlBasicEffectAlphaTest.mgfxo");
 
-// Now specify the alpha threshold below which the pixel is not drawn.
+// Now specify the alpha threshold below which pixels are not drawn.
 
-// This can be done at any time, including from within the following
+// This can be done at any time, including from within the below
 delegate
 
 MyBlBasicEffectAlphaTest.Parameters\[\"AlphaTestThreshold\"\].SetValue(.3f);
@@ -426,69 +422,64 @@ MyTranslucentSprite.SetEffect = (s,effect) =\>
 
 {
 
+// Setup the standard BasicEffect texture and lighting parameters
+
 s.SetupBasicEffect(MyBlBasicEffectAlphaTest);
 
 return MyBlBasicEffectAlphaTest;
 
 };
 
-Note that the custom effects provided by Blotch3D may be slightly slower
-than the default MonoGame BasicEffect in certain cases, so only use them
-when needed.
-
-The provided custom shader files are already compiled in the Blotch3D
-delivery from GitHub. The shader source code (HLSL) for them can be
-found in the Blotch3D Content/Effects folder. It is just the original
-MonoGame BasicEffect shader code with a few lines added. If for some
-reason you want to recompile the effects, use the "make\_effects.bat"
-file in the Blotch3D source folder to build them. But first be sure to
-add the path to 2MGFX.exe to the 'path' environment variable. Typically
-the path is something like "\\Program Files
+The shader source code (HLSL) for each BlBasicEffect shader is just the
+original MonoGame BasicEffect shader code with a few lines added. If for
+some reason you want to recompile the effects, use the
+"make\_effects.bat" file in the Blotch3D source folder to build them.
+But first be sure to add the path to 2MGFX.exe to the 'path' environment
+variable. Typically the path is something like "\\Program Files
 (x86)\\MSBuild\\MonoGame\\v3.0\\Tools".
 
 You can create your own shader files that are based on BlBasicEffect and
 compile and load it as shown above. Just be sure it is based on the
-original HLSL code for BasicEffect.
+original HLSL code for BasicEffect, or one of the provided custom
+shaders.
 
 Translucency
 ============
 
-Each pixel of a texture has a red, a green, and a blue intensity value.
-These are denoted by "RGB". Some textures can also have an "alpha" value
-to indicate how translucent the pixel should be. So, they have four
-values for each pixel (RGBA) rather than three (RGB). The alpha value
-indicates how much of any coloration behind that pixel (farther from the
-viewer) should show through the pixel. Alpha values of 1 indicate the
-texture pixel is opaque and no coloration from farther values should
-show through. Values of zero indicate the pixel is completely
-transparent.
+Each pixel of a texture has a red, a green, a blue intensity value. Some
+textures also have an "alpha" value for each pixel, to indicate how
+translucent the pixel should be. Specifically, the alpha value indicates
+how much of any coloration behind that pixel (farther from the viewer)
+should show through the pixel. Alpha values of 1 indicate the texture
+pixel is opaque and no coloration from farther values should show
+through. Values of zero indicate the pixel is completely transparent.
 
-RGBA textures drawn using the 2D Blotch3D drawing methods
+Translucent textures drawn using the 2D Blotch3D drawing methods
 (BlGraphicsDeviceManager\#DrawText,
 BlGraphicsDeviceManager\#DrawTexture, and BlGuiControl) or any MonoGame
 2D drawing methods (for example, by use of MonoGame's SpriteBatch class)
 will always correctly show the things behind them according to the
-pixel's alpha channel. Just be sure to call those methods after all
-other 3D things are drawn.
+pixel's alpha channel as long as they are called after all other 3D
+things are drawn.
 
 But translucent textures applied to a 3D sprite may require special
 handling.
 
-If you simply apply the RGBA texture to a sprite as if it's just like
-any other texture, you will not see through the translucent pixels when
-they happen to be drawn *before* anything farther away because drawing
-the near surface also updates the depth buffer (see Depth Buffer in the
-glossary). Since the depth buffer records the nearer pixel, it prevents
-further pixels from being drawn. For some translucent textures the
-artifacts can be negligible, or your particular application may avoid
-the artifacts entirely because of camera constraints, sprite position
-constraints, and drawing order. In those cases, you don't need any other
-special code. We do this in the "full" example because the draw order of
-the translucent sprites, and their positions, are such that you won't
-see the artifacts because you can't even see the sprites when viewed
-from underneath, which is when you would otherwise see the artifacts in
-that example. (Note: subsprites are drawn in the order they are added to
-the parent sprite.)
+If you simply apply the translucent texture to a sprite as if it's just
+like any other texture, you will not see through the translucent pixels
+when they happen to be drawn chronologically *before* anything farther
+away, because drawing the near surface also updates the depth buffer
+(see Depth Buffer in the glossary). Since the depth buffer records the
+nearer pixel, it prevents further pixels from being drawn afterward. For
+some translucent textures the artifacts can be negligible, or your
+particular application may avoid the artifacts entirely because of
+camera constraints, sprite position constraints, and drawing order. In
+those cases, you don't need any other special code. We do this in the
+"full" example because the draw order of the translucent sprites, and
+their positions, are such that you won't see the artifacts because you
+can't even see the sprites when viewed from underneath, which is when
+you would otherwise see the artifacts in that example. (Note: subsprites
+are drawn in the order they are added to the parent sprite.)
 
 One way to mitigate most of these artifacts is by using alpha testing.
 Alpha testing is the process of completely neglecting to draw
@@ -501,8 +492,10 @@ partial translucency (alpha values nearer to 0.5), it doesn't work well.
 In those cases, you can either live with the artifacts, or beyond that
 at a minimum you will have to control translucent sprite drawing order
 (draw all opaque sprites normally, and then draw translucent sprites far
-to near). For some scenes it might be worth it to draw without updating
-the depth buffer at all (do a
+to near), which will take care of all artifacts except those that occur
+when sprites intersect or two surfaces of a single sprite occupy the
+same screen pixel. For some scenes it might be worth it to draw without
+updating the depth buffer at all (do a
 \"Graphics.GraphicsDevice.DepthStencilState =
 Graphics.DepthStencilStateDisabled" in the BlSprite.PreDraw delegate,
 and set it back to DepthStencilStateEnabled in the BlSprite.DrawCleanup
@@ -512,17 +505,18 @@ can look online for more advanced solutions.
 The default MonoGame "Effect" used to draw models (the "BasicEffect"
 effect) uses a pixel shader that does not do alpha testing. MonoGame
 does provide a separate "AlphaTestEffect" effect that supports alpha
-test. But AlphaTestEffect is *not* based on BasicEffect, and does not
-support directional lights, as are supported in BasicEffect. So, don't
-bother with AlphaTestEffect unless you don't care about the directional
-lights (i.e. you are using only emission lighting). (If you do want to
-use AlphaTestEffect, see online for details.)
+test. But AlphaTestEffect is *not* based on BasicEffect (and therefore
+must be handled differently in code), and does not support directional
+lights, as are supported in BasicEffect. So, don't bother with
+AlphaTestEffect unless you don't care about the directional lights (i.e.
+you are using only emission lighting). (If you do want to use
+AlphaTestEffect, see online for details.)
 
 For these reasons Blotch3D includes a custom shader file called
 BlBasicEffectAlphaTest (to be held in code as a BlBasicEffect object)
 that provides everything that MonoGame's BasicEffect provides, but also
 provides alpha testing. Set its "AlphaTestThreshold" to specify what
-alpha merits drawing the pixel. See the [Custom
+alpha value merits drawing the pixel. See the [Custom
 effects](#custom-effects) section and the SpriteAlphaTexture example for
 details.
 
@@ -532,14 +526,14 @@ Dynamically creating an alpha channel
 Blotch3D includes a BlBasicEffectClipColor shader
 ("BlBasicEffectClipColor.mgfxo" and "BlBasicEffectClipColorOGL.mgfxo"
 for OpenGL), which "creates" its own alpha channel from a specified
-texture color. Use it with RGB textures. Use it like
-BlBasicEffectAlphaTest but instead of setting the AlphaTestThreshold
-variable, set the ClipColor and ClipColorTolerance variables. ClipColor
-is the texture color that should indicate transparency (a Vector3 or
-Vector4), and ClipColorTolerance is a float that indicates how close to
-ClipColor (0 to .999) the texture color must be to cause transparency.
-BlBasicEffectClipColor is especially useful for videos that neglected to
-include an alpha channel.
+texture color. Use it with non-translucent textures for which you want
+some translucency. Use it like BlBasicEffectAlphaTest but instead of
+setting the AlphaTestThreshold variable, set the ClipColor and
+ClipColorTolerance variables. ClipColor is the texture color that should
+indicate transparency (a Vector3 or Vector4), and ClipColorTolerance is
+a float that indicates how close to ClipColor (0 to .999) the texture
+color must be to cause transparency. BlBasicEffectClipColor is
+especially useful for videos that neglected to include an alpha channel.
 
 See the [Custom effects](#custom-effects) section for details on using a
 custom effect.
@@ -553,12 +547,6 @@ The BlBasicEffectAlphaTestXformTex shader
 thing as BlBasicEffectAlphaTest, but adds a feature that let's you
 transform the texture.
 
-Note that because there are limited arithmetic processors in the GPU
-model used during compilation, this shader has had the PixelLighting
-code removed. (PixelLighting is a feature of BasicEffect that is an
-advanced and more versatile form of bump mapping. Look online for
-details).
-
 Parameters are AlphaTestThreshold (same as used by the
 BlBasicEffectAlphaTest shader), TextureTranslate (a Vector2 that
 translates the texture), and TextureTransform (a 2x2 matrix that
@@ -567,6 +555,10 @@ matrix in MonoGame).
 
 See the TextureTransform example and the [Custom
 effects](#custom-effects) section for details.
+
+(Note: To make room for the extra arithmetic operations required by this
+shader, the code from the original BasicEffect for pixel lighting \[an
+advanced form of bump mapping\] has not been included in this shader.)
 
 Setting and dynamically changing a sprite's scale, orientation, and position
 ============================================================================
