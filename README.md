@@ -1,8 +1,8 @@
 Blotch3D
 ========
 
-Quick start
-===========
+Quick start for Windows
+=======================
 
 On your development machine ...
 
@@ -20,9 +20,9 @@ On your development machine ...
 5.  Use IntelliSense to see the reference documentation, or see
     "Blotch3DManual.pdf".
 
-6.  To create a new Blotch3D project or add it to an existing project,
-    follow the instructions in the [Creating a new
-    project](#creating-a-new-project) section.
+6.  To create a new Blotch3D project, add it to an existing project, or
+    build for another platform, follow the instructions in the [Creating
+    a new project](#creating-a-new-project) section.
 
 Features
 ========
@@ -179,8 +179,9 @@ To create a project for another platform besides Microsoft Windows,
 generally you follow the same procedure described here but you will need
 to install any Visual Studio add-ons, etc. for the desired platform. For
 example, for Android you'd need the Xamarin for Android add-on. You also
-may need to look online for particular instructions on creating a
-MonoGame project for the target platform.
+may need to get a MonoGame NuGet package for the platform and/or look
+online for particular instructions on creating a MonoGame project for
+the target platform.
 
 To distribute a program, deliver everything in your project's output
 folder.

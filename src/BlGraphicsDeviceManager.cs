@@ -332,12 +332,12 @@ namespace Blotch
 
 			var light = new Light();
 			light.LightDiffuseColor = new Vector3(1, .5f, 0);
-			light.LightDirection = new Vector3(1, 0, 0);
+			light.LightDirection = new Vector3(1, 0, -1);
 			Lights.Add(light);
 
 			light = new Light();
 			light.LightDiffuseColor = new Vector3(0, .5f, 1);
-			light.LightDirection = new Vector3(-1, 0, 0);
+			light.LightDirection = new Vector3(-1, 0, -1);
 			Lights.Add(light);
 
 			ResetCamera();
