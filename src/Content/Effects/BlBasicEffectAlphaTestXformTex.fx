@@ -349,7 +349,6 @@ float4 PSBasic(VSOutput pin) : SV_Target0
 // Pixel shader: no fog.
 float4 PSBasicNoFog(VSOutputNoFog pin) : SV_Target0
 {
-
 	clip(pin.Diffuse.a < AlphaTestThreshold ? -1 : 1);
 
 	return pin.Diffuse;
@@ -361,9 +360,9 @@ float2 XformTex(float2 texCoord)
 	texCoordOut = mul(texCoord, (float2x2)TextureTransform);
 	texCoordOut += TextureTranslate;
 	if(texCoordOut.x < 0)
-		texCoordOut.x += (int)(-texCoordOut.x+1);
+		texCoordOut.x -= (int)texCoordOut.x - 1;
 	if (texCoordOut.y < 0)
-		texCoordOut.y += (int)(-texCoordOut.y + 1);
+		texCoordOut.y -= (int)texCoordOut.y - 1;
 	texCoordOut.x %= 1;
 	texCoordOut.y %= 1;
 	return texCoordOut;
