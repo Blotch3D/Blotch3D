@@ -6,7 +6,7 @@ Quick start for Windows
 
 On your development machine ...
 
-1.  Get the installer for the latest release of MonoGame from
+1.  Get the installer for the latest release of the MonoGame SDK from
     <http://www.monogame.net/downloads/> and run it with the default
     settings. (Do NOT get the current development version nor a NuGet
     package.)
@@ -88,7 +88,7 @@ code you can...
 -   Implement 3D graphs (a surface with a height that follows an
     equation or an array of height values).
 
--   Dynamically transform (animate) a texture.
+-   Dynamically transform a texture on a surface.
 
 -   Create sprite models programmatically (custom vertices).
 
@@ -105,7 +105,7 @@ code you can...
 -   Define ambient lighting, and up to three point-light sources. (More
     lights can be defined if a custom shader is used.)
 
--   All other MonoGame feature remain available.
+-   All other MonoGame features remain available.
 
 -   Build for many platforms. Currently supports all Microsoft Windows
     platforms, iOS, Android, MacOS, Linux, PS4, PSVita, Xbox One, and
@@ -184,15 +184,6 @@ Development
 
 See the examples, starting with the basic example.
 
-3D subsystems (OpenGL, DirectX, etc.) generally require that a single
-thread access all 3D hardware resources for a given 3D window. There are
-certain platform-specific exceptions to this rule, but we don't use
-them. This rule also applies to any code structure (like Parallel, etc.)
-that may internally use other threads, as well. Also, since sometimes
-it's hard to know exactly what 3D operations really do hit the 3D
-hardware, its best to assume all of them do, like creation and use of
-Blotch3D and MonoGame objects.
-
 Define a 3D window by deriving a class from BlWindow3D and overriding
 some of its methods. Open the window by instantiating that class and
 calling its "Run" method *from the same thread*. The Run method then
@@ -200,17 +191,24 @@ calls those overridden methods when appropriate, and does not return
 until the window has closed.
 
 All code that accesses the 3D hardware must be in those overridden
-methods.
+methods. This is because 3D subsystems (OpenGL, DirectX, etc.) generally
+require that a single thread access all 3D hardware resources for a
+given 3D window. There are certain platform-specific exceptions to this
+rule, but we don't use them. This rule also applies to any code
+structure (like Parallel, etc.) that may internally use other threads,
+as well. Also, since sometimes it's hard to know exactly what 3D
+operations really do hit the 3D hardware, its best to assume all of them
+do, like creation and use of Blotch3D and MonoGame objects.
 
-In theory you could put all your 3D code in a certain one of the
-overridden methods (FrameDraw), but there are several overridable
-methods for your convenience. There is a Setup method that is called
+You can put all your 3D code in the one overridden method called
+"FrameDraw", if you like, but there are several overridable methods
+provided for your convenience. There is a Setup method that is called
 once at the beginning, a FrameProc method that is called every frame,
-and a FrameDraw method that is called after each FrameProc call only if
-there is enough CPU available. You are welcome to put whatever you like
-in any of those three methods, except that actual drawing code (code
-that causes things to appear in the window) must be in the FrameDraw
-method.
+and the FrameDraw method that is called after each FrameProc call only
+if there is enough CPU available. You are welcome to put whatever you
+like in any of those three methods, except that actual drawing code
+(code that causes things to appear in the window) must be in the
+FrameDraw method.
 
 For apps that may suffer from severe CPU exhaustion (at least for the 3D
 thread), it might be best to put all your periodic 3D code in FrameDraw
@@ -218,14 +216,9 @@ and not bother with FrameProc. In this way your code will be called less
 often under high-CPU loads. Of course, then your periodic code should
 handle being called at a variable rate.
 
-BlWindow3D derives from MonoGame's "Game" class, so you can also
-override other Game class overridable methods. Just be sure to call the
-base method from within a Game class overridden method.
-
-You can also pass a delegate with 3D code to the BlSprite constructor.
-The delegate will be executed every frame. The effect is the same as
-putting the code in FrameProc, but it better encapsulates
-sprite-specific code.
+You can pass a delegate with 3D code to the BlSprite constructor. The
+delegate will be executed every frame. The effect is the same as putting
+the code in FrameProc, but it better encapsulates sprite-specific code.
 
 A single-threaded application would have all its code in the overridden
 methods or delegates. If you are developing a multithreaded program,
@@ -246,6 +239,11 @@ all its subsprites are also drawn. So, oftentimes you may want to have a
 Top sprite to cause the other sprites to be drawn. You can also draw
 things using MonoGame methods. For example, it is faster to draw
 multiple 2D textures and text using MonoGame's SpriteBatch class.
+
+BlWindow3D derives from MonoGame's "Game" class, so you can also
+override other Game class overridable methods. Just be sure to call the
+base method from within a Game class overridden method. On Microsoft
+Windows the BlWindow3D.WindowForm field provides certain callbacks.
 
 Because multiple windows are not conducive to some of the supported
 platforms, MonoGame, and thus Blotch3D, do not support more than one 3D
