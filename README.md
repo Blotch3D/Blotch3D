@@ -111,10 +111,11 @@ code you can...
     platforms, iOS, Android, MacOS, Linux, PS4, PSVita, Xbox One, and
     Switch.
 
-Blotch3D sits on top of MonoGame. MonoGame is a widely used 3D library
-for C\#. It is free, fast, cross platform, actively developed by a large
-community, and used in many professional games. There is a plethora of
-MonoGame documentation, tutorials, examples, and discussions on line.
+Blotch3D sits on top of MonoGame, and all MonoGame's features are still
+available. MonoGame is a widely used 3D library for C\#. It is free,
+fast, cross platform, actively developed by a large community, and used
+in many professional games. There is a plethora of MonoGame
+documentation, tutorials, examples, and discussions on line.
 
 Reference documentation of Blotch3D (classes, methods, fields,
 properties, etc.) is available through Visual Studio IntelliSense, and
@@ -163,8 +164,8 @@ To develop with Blotch3D, you must first follow the steps in the [Quick
 start](#blotch3d) section to install MonoGame. Then...
 
 To create a new project from scratch, select File/New/Project/MonoGame,
-and select the type of MonoGame project you want. Then add the source,
-or a reference to the source, of Blotch3D.
+and select the type of MonoGame project you want. Then add the source or
+a reference to Blotch3D.
 
 To add MonoGame plus Blotch3D to an existing non-MonoGame project, add a
 reference to the appropriate MonoGame binary (typically in "\\Program
@@ -175,7 +176,7 @@ To create a project for another platform besides Microsoft Windows,
 generally you follow the same procedure described here but you will need
 to install any Visual Studio add-ons, etc. for the desired platform. For
 example, for Android you'd need the Xamarin for Android add-on. For some
-platforms you may need to do some research to create a project.
+platforms you may need to do some research to properly create a project.
 
 To distribute a program, deliver everything in your project's output
 folder.
@@ -183,83 +184,69 @@ folder.
 Development
 ===========
 
-See the examples and their comments, starting with the basic example.
+See the examples, starting with the basic example.
 
-3D subsystems (OpenGL, DirectX, etc.) generally require that all 3D
-hardware resources be accessed by a single thread. MonoGame follows this
-rule, and thus you must follow the rule in your project. (There are
-certain platform-specific exceptions, but MonoGame does not use them.)
+3D subsystems (OpenGL, DirectX, etc.) generally require that a single
+thread access all 3D hardware resources for a given 3D window. There are
+certain platform-specific exceptions to this rule, but we don't use
+them. This rule also applies to any code structure (Parallel, async,
+etc.) that may internally use other threads, as well. Also, since
+sometimes it's hard to know exactly what 3D operations really do hit the
+3D hardware, its best to assume all of them do, like creation and use of
+Blotch3D and MonoGame objects.
 
-To make a 3D window, you must derive a class from BlWindow3D and
-override the Setup, FrameProc, and FrameDraw methods. When it comes time
-to create the 3D window, you instantiate that class and call its "Run"
-method *from the same thread that instantiated it*. The Run method will
-call the Setup, FrameProc, and FrameDraw methods when appropriate
-(explained below), and not return until the window closes. (For this
-reason, you may want to create the BlWindow3D from within some other
-thread than the main thread so that the main thread can handle a GUI or
-whatever).
+You define a 3D window by deriving a class from BlWindow3D and
+overridding certain of its methods. You should instantiate that class
+and call its "Run" method *from the same thread*. The Run method then
+calls those overridden methods when appropriate, and does not return
+until the window has closed. All code that accesses the 3D hardware must
+be in those overridden methods.
 
-We will call the abovementioned thread the "3D thread".
+In theory you could put all your 3D code in a certain one of the
+overridden methods (FrameDraw), but there are several overridable
+methods for your convenience.
 
-The rule to access 3D hardware resources by a single thread also applies
-to any code structure (Parallel, async, etc.) that may internally use
-other threads, as well. Since sometimes it's hard to know exactly what
-3D task really does hit the 3D hardware, its best to assume all of them
-do (like creation and use of Blotch3D and MonoGame objects).
+There is a Setup method that is called once at initialization, a
+FrameProc method that is called every frame, and a FrameDraw method that
+is called after a FrameProc call if there is enough CPU available. You
+are welcome to put whatever you like in those three methods, except that
+actual drawing code (code that causes things to appear in the window)
+must be in the FrameDraw method.
 
-The Setup, FrameProc, and FrameDraw methods are called by the 3D thread
-as follows:
+For apps that may suffer from severe CPU exhaustion (at least for the 3D
+thread), it might be best to put all your periodic 3D code in FrameDraw
+and not bother with FrameProc. In this way your code will be called less
+often under high-CPU loads. Of course, then your periodic code should
+handle being called at a variable rate.
 
-The Setup method is called by the 3D thread exactly once at the
-beginning. You might put time-consuming initialization of persistent
-things in there like the loading and initialization of persistent
-content (sprite models, fonts, BlSprites, etc.).
+BlWindow3D derives from MonoGame's "Game" class, so you can also
+override other Game class overridable methods. Just be sure to call the
+base method from within a Game class overridden method.
 
-The FrameProc method is called by the 3D thread once every frame. For
-single-threaded applications this is typically where the bulk of
-application code resides, except the actual drawing code. For
-multi-threaded applications, this is typically where all application
-code resides that does anything with 3D resources, except the actual
-drawing code. (Note: You can also pass a delegate to the BlSprite
-constructor, which will cause that delegate to be executed every frame.
-The effect is the same as putting the code in FrameProc, but it better
-encapsulates sprite-specific code.)
+You can also pass a delegate with 3D code to the BlSprite constructor.
+The delegate will be executed every frame. The effect is the same as
+putting the code in FrameProc, but it better encapsulates
+sprite-specific code.
 
-Once every frame the 3D thread prepares for drawing and then calls the
-FrameDraw method, but only if there is enough CPU available in the 3D
-thread. Otherwise FrameDraw is called less frequently. This is where you
-should put drawing code (BlSprite.Draw,
-BlGraphicsDeviceManager.DrawText, etc.). For apps that may suffer from
-severe CPU exhaustion (at least for the 3D thread), you may also want to
-put your app code in this method, as well, so it is called less
-frequently, assuming that application code can properly handle being
-called at variable rates.
+A single-threaded application would have all its code in the overridden
+methods or delegates. If you are developing a multithreaded program,
+then you would probably want to reserve the 3D thread only for tasks
+that access 3D hardware resources. When other threads do need to create,
+change, or destroy 3D hardware resources or otherwise do something in a
+thread-safe way with the 3D thread, they can pass a delegate to the 3D
+thread with BlWindow3D.EnqueueCommand or
+BlWindow3D.EnqueueCommandBlocking, which will be executed within one
+frame time.
 
 You can use a variety of methods to draw things in FrameDraw. Blotch3D
 provides methods to draw text and textures in 2D (just draw them after
 all 3D objects have been drawn so they aren't overwritten by them).
 Sprites are drawn with the BlSprite.Draw method. When you draw a sprite,
 all its subsprites are also drawn. So, oftentimes you may want to have a
-"Top" sprite that holds others, and call the Draw method of the Top
-sprite to draw all other sprites. (BlSprite inherits from
-Dictionary\<string, BlSprite\>, where the string key is the subsprite
-name.) You can also draw things directly with MonoGame. For example, it
-is faster to draw multiple 2D textures and text using MonoGame's
-SpriteBatch class.
-
-By default, lighting, background color, and sprite coloring are set so
-that it is most probable you will see them. These may need to be changed
-after you've verified sprites are properly created and positioned.
-
-A single-threaded application would have all its code in the three
-overridden methods: Setup, FrameProc, and FrameDraw. If you are
-developing a multithreaded program, then you would probably want to
-reserve the 3D thread only for tasks that access 3D hardware resources.
-When other threads do need to create, change, or destroy 3D hardware
-resources or otherwise do something in a thread-safe way with the 3D
-thread, they can pass a delegate via BlWindow3D.EnqueueCommand or
-BlWindow3D.EnqueueCommandBlocking.
+"Top" sprite that holds others sprites, and call the Draw method of the
+Top sprite to cause the other sprites to be drawn. You can also draw
+things using MonoGame methods. For example, it is faster to draw
+multiple 2D textures and text using MonoGame's SpriteBatch class.
 
 Because multiple windows are not conducive to some of the supported
 platforms, MonoGame, and thus Blotch3D, do not support more than one 3D
@@ -280,8 +267,12 @@ window so that it is overlaid over the child window. The
 BlWindow3D.WindowForm field will be useful for this (Microsoft Windows
 only).
 
-All MonoGame features remain available and accessible in Blotch3D. For
-examples:
+By default, lighting, background color, and sprite coloring are set so
+that it is most probable you will see them. These may need to be changed
+after you've verified sprites are properly created and positioned.
+
+All MonoGame features remain available and accessible in Blotch3D, and
+remember that Blotch3D sits on top of MonoGame. For examples:
 
 -   The models you specify for a sprite object (see the BlSprite.LODs
     field) are MonoGame "Model" objects or a VertexPositionNormalTexture
@@ -308,27 +299,27 @@ IntelliSense for more information.
 Making and using 3D resources
 =============================
 
-All 3D resources like models, texture images, fonts, etc. must be
+All 3D resources, like models, texture images, fonts, etc., must be
 "compiled" into "XNB" files by MonoGame's *pipeline manager*. (Although
 Blotch3D does provide a way to load an image file directly.)
 
 The Blotch3D project already has a pipeline manager and several models
 that are compiled when Blotch3D is built. If the source to Blotch3D is
-included in your solution, you can use the provided models (the various
-resolution spheres, plane, torus, images, etc.) as is shown in the
+included in your solution, you can use the provided models (the plane,
+various resolution spheres, torus, images, etc.) as is shown in the
 examples without worrying about where the XNB files are. You can also
 just copy the XNB files from the Blotch3D output folder to a project's
 output folder.
 
 To create a new model, you can either programmatically create it by
-specifying the vertices and normals (see the example that creates custom
-vertices), or create a model with, for example, the Blender 3D modeler.
-You can also instruct Blender to include texture (UV) mapping by using
-one of the countless tutorials online, like
+specifying the vertices and normals (see the 'full' example, that
+creates custom vertices), or create a model with, for example, the
+Blender 3D modeler. You can also instruct Blender to include texture
+(UV) mapping by using one of the countless tutorials online, like
 <https://www.youtube.com/watch?v=2xTzJIaKQFY> or
 <https://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/UV_Map_Basics> .
 
-Once the model is created, it must be compiled to an XNB file by a
+Once a model file is created, it must be compiled to an XNB file by a
 pipeline manager. (The pipeline manager can import several model file
 types.) To do this, you can either add that standard model file to the
 pipeline manager in the Blotch3D project (double-click the Content.mgcb
@@ -385,24 +376,25 @@ Blotch3D provides several custom shaders that are the same as the
 default MonoGame BasicEffect, but they provide added features. Examples
 are provided that demonstrate how to use them.
 
-The shader source and the compiled shader files are in the Blotch3D
-Content/Effects folder. To use a custom shader, first copy the shader
-file to your program's output folder (for example, you could add a link
-to it in your project and set its properties so it is copied to the
-output folder).
+The custom shader source and the compiled shader files are in the
+Blotch3D Content/Effects folder. To use a custom shader, first copy the
+compiled shader file (mgfxo file) to your program's output folder---you
+might add a link to it in your project and set its properties so it is
+copied to the output folder.
 
-When your program runs, it specifies that file in the BlBasicEffect
-constructor. Then when the sprite is drawn, the effect must be
-"applied".
+When your program runs, it specifies that file name in the BlBasicEffect
+constructor (or you can manage the bytes from the file, yourself, and
+pass the bytes to the constructor). Then when the sprite is drawn, the
+effect must be specified by the sprite's SetEffect delegate.
 
 Each effect also typically has certain parameters that must be specified
-that control the feature provided by the effect. These are set with the
-BlBasicEffect.Parameters\[\].SetValue method. They can be set at any
+that control the feature(s) provided by the effect. These are set with
+the BlBasicEffect.Parameters\[\].SetValue method. They can be set at any
 time.
 
 For example, the BlBasicEffectAlphaTest effect is used like this:
 
-// Create the BlBasicEffect and specify the shader file (you can also
+// Create a BlBasicEffect and specify the shader file (you can also
 specify 'BlBasicEffectAlphaTestOGL.mgfxo' if you are on an OpenGL
 platform)
 
@@ -416,7 +408,8 @@ delegate
 
 MyBlBasicEffectAlphaTest.Parameters\[\"AlphaTestThreshold\"\].SetValue(.3f);
 
-// set the custom effect for the sprite
+// Specify a SetEffect delegate that sets the custom effect for the
+sprite
 
 MyTranslucentSprite.SetEffect = (s,effect) =\>
 
@@ -430,21 +423,23 @@ return MyBlBasicEffectAlphaTest;
 
 };
 
-The shader source code (HLSL) for each BlBasicEffect shader is just the
-original MonoGame BasicEffect shader code with a few lines added. If for
-some reason you want to recompile the effects, use the
-"make\_effects.bat" file in the Blotch3D source folder to build them.
-But first be sure to add the path to 2MGFX.exe to the 'path' environment
-variable. Typically the path is something like "\\Program Files
-(x86)\\MSBuild\\MonoGame\\v3.0\\Tools".
+The shader source code (HLSL) for each BlBasicEffect shader is just a
+copy of the original MonoGame BasicEffect shader code, but with a few
+lines added. If for some reason you want to recompile the shaders, use
+the "make\_effects.bat" file in the Blotch3D source folder to build
+them. But first be sure to add the path to 2MGFX.exe to the 'path'
+environment variable. Typically the path is something like "\\Program
+Files (x86)\\MSBuild\\MonoGame\\v3.0\\Tools".
 
 You can create your own shader files that are based on BlBasicEffect and
 compile and load it as shown above. Just be sure it is based on the
-original HLSL code for BasicEffect, or one of the provided custom
+original HLSL code for BasicEffect or one of the provided custom
 shaders.
 
-Translucency
-============
+Documentation for individua custom shaders follow.
+
+Translucency with the BlBasicEffectAlphaTest shader
+===================================================
 
 Each pixel of a texture has a red, a green, a blue intensity value. Some
 textures also have an "alpha" value for each pixel, to indicate how
@@ -467,18 +462,16 @@ handling.
 
 If you simply apply the translucent texture to a sprite as if it's just
 like any other texture, you will not see through the translucent pixels
-when they happen to be drawn chronologically *before* anything farther
-away, because drawing the near surface also updates the depth buffer
-(see Depth Buffer in the glossary). Since the depth buffer records the
-nearer pixel, it prevents further pixels from being drawn afterward. For
-some translucent textures the artifacts can be negligible, or your
-particular application may avoid the artifacts entirely because of
-camera constraints, sprite position constraints, and drawing order. In
-those cases, you don't need any other special code. We do this in the
-"full" example because the draw order of the translucent sprites, and
-their positions, are such that you won't see the artifacts because you
-can't even see the sprites when viewed from underneath, which is when
-you would otherwise see the artifacts in that example. (Note: subsprites
+when they happen to be chronologically drawn *before* anything farther
+away, because drawing a surface also updates the depth buffer (see Depth
+Buffer in the glossary). Since the depth buffer records the nearer
+pixel, it prevents further pixels from being drawn afterward. For some
+translucent textures the artifacts can be negligible, or your particular
+application may avoid the artifacts entirely because of camera
+constraints, sprite position constraints, and drawing order. In those
+cases, you don't need any other special code. We do this in the "full"
+example because the draw order of the translucent sprites and their
+positions are such that the artifacts aren't visible. (Note: subsprites
 are drawn in the order they are added to the parent sprite.)
 
 One way to mitigate most of these artifacts is by using alpha testing.
@@ -520,8 +513,8 @@ alpha value merits drawing the pixel. See the [Custom
 effects](#custom-effects) section and the SpriteAlphaTexture example for
 details.
 
-Dynamically creating an alpha channel
-=====================================
+Dynamically creating an alpha channel with the BlBasicEffectClipColor shader
+============================================================================
 
 Blotch3D includes a BlBasicEffectClipColor shader
 ("BlBasicEffectClipColor.mgfxo" and "BlBasicEffectClipColorOGL.mgfxo"
@@ -538,14 +531,14 @@ especially useful for videos that neglected to include an alpha channel.
 See the [Custom effects](#custom-effects) section for details on using a
 custom effect.
 
-Texture transforms
-==================
+Transforming textures with the BlBasicEffectAlphaTestXformTex shader
+====================================================================
 
 The BlBasicEffectAlphaTestXformTex shader
 ("BlBasicEffectAlphaTestXformTex.mgfxo" and
 "BlBasicEffectAlphaTestXformTex OGL.mgfxo" for OpenGL) does the same
 thing as BlBasicEffectAlphaTest, but adds a feature that let's you
-transform the texture.
+transform the texture on the surface of the sprite.
 
 Parameters are AlphaTestThreshold (same as used by the
 BlBasicEffectAlphaTest shader), TextureTranslate (a Vector2 that
@@ -556,9 +549,9 @@ matrix in MonoGame).
 See the TextureTransform example and the [Custom
 effects](#custom-effects) section for details.
 
-(Note: To make room for the extra arithmetic operations required by this
-shader, the code from the original BasicEffect for pixel lighting \[an
-advanced form of bump mapping\] has not been included in this shader.)
+(Note: To make room for the required extra arithmetic operations, the
+code from the original BasicEffect for pixel lighting \[an advanced form
+of bump mapping\] has been removed from this shader.)
 
 Setting and dynamically changing a sprite's scale, orientation, and position
 ============================================================================

@@ -230,11 +230,11 @@ namespace Blotch
 		public double CurrentAspect { get; private set; }
 
 		/// <summary>
-		/// The near clipping plane, or 0 = autoclip.
+		/// The near clipping plane. If 0 then autoclip. If negative then auto-clip down to a limit of -NearClip.
 		/// </summary>
 		public double NearClip = 0;
 		/// <summary>
-		/// The far clipping plane, or 0 = autoclip.
+		/// The far clipping plane. If 0 then autoclip. If negative then auto-clip up to a limit of -FarClip.
 		/// </summary>
 		public double FarClip = 0;
 		/// <summary>
@@ -1176,12 +1176,12 @@ namespace Blotch
 				//Console.WriteLine(Window.Window.ClientBounds);
 			}
 
-			if (NearClip == 0)
+			if (NearClip <= 0)
 				CurrentNearClip = MinCamDistance;
 			else
 				CurrentNearClip = NearClip;
 
-			if (FarClip == 0)
+			if (FarClip <= 0)
 				CurrentFarClip = MaxCamDistance;
 			else
 				CurrentFarClip = FarClip;
@@ -1189,14 +1189,21 @@ namespace Blotch
 			CurrentFarClip *= 1.2;
 			CurrentNearClip *= .8;
 
-			if (CurrentFarClip > 1e+37)
-				CurrentFarClip = 1e+37;
-			if (CurrentFarClip < 1e-38)
-				CurrentFarClip = 1e-38;
-			if (CurrentNearClip > CurrentFarClip - 1e-38)
-				CurrentNearClip = CurrentFarClip - 1e-38;
-			if (CurrentNearClip < CurrentFarClip / 65535)
-				CurrentNearClip = CurrentFarClip / 65535;
+			double farLimit = 1e37;
+			if (FarClip < 0)
+				farLimit = -FarClip;
+
+			double nearLimit = 1e-37;
+			if (NearClip < 0)
+				nearLimit = -NearClip;
+
+			if (CurrentFarClip > farLimit)
+				CurrentFarClip = farLimit;
+			if (CurrentNearClip < nearLimit)
+				CurrentNearClip = nearLimit;
+
+			if (CurrentFarClip < CurrentNearClip*1.0001)
+				CurrentFarClip = CurrentNearClip * 1.0001;
 
 			View = Microsoft.Xna.Framework.Matrix.CreateLookAt(Eye, LookAt, CameraUp);
 

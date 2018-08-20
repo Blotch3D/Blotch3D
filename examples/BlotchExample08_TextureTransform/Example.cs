@@ -95,9 +95,10 @@ Shift          - Fine control
 				if (TexRotAngle < 0)
 					TexRotAngle += (float)(2 * Math.PI);
 
-				// There is no Matrix2x2, so here we pass only the first two rows and columns of a 4x4 matrix
-				// mainly to demonstrate it can be done easily. This could be done more efficiently.
-				// (Also note that we pass the four elements as a Vector4)
+				// We create a 2x2 matrix by using only the first two rows and columns of a 4x4 matrix
+				// to demonstrate it can be done easily. Of course, this could be done more efficiently
+				// with explicit 2x2 math.
+				// (Also note that we pass the four elements as a Vector4 because there is no Matrix2x2)
 				var m = Matrix.CreateRotationZ(TexRotAngle);
 				BlBasicEffectXformTexture.Parameters["TextureTransform"].SetValue(new Vector4(m.M11, m.M12, m.M21, m.M22));
 

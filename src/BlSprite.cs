@@ -784,9 +784,6 @@ namespace Blotch
 			if (ConstSize)
 			{
 				AbsoluteMatrix = Matrix.Multiply(Matrix.CreateScale((float)(1.0/ApparentSize)), AbsoluteMatrix);
-				//AbsoluteMatrix.M11 *= scale;
-				//AbsoluteMatrix.M22 *= scale;
-				//AbsoluteMatrix.M33 *= scale;
 			}
 
 			// billboard?
