@@ -29,7 +29,7 @@ Features
 ========
 
 Blotch3D is a C\# library that vastly simplifies many of the tasks in
-developing 3D applications and games.
+developing real-time 3D applications and games.
 
 Bare-bones examples are provided that show how with just a few lines of
 code you can...
@@ -37,10 +37,10 @@ code you can...
 -   Load standard 3D model file types as "sprites", and display and move
     thousands of them in 3D at high frame rates.
 
--   Set a sprite's material, texture, and lighting response.
-
 -   Load textures from standard image files, including textures with an
     alpha channel (i.e. with translucent pixels).
+
+-   Set a sprite's material, texture, and lighting response.
 
 -   Show 2D and in-world (as a texture) text in any font, size, color,
     etc. at any 2D or 3D position, and make text follow a sprite in 2D
@@ -65,7 +65,7 @@ code you can...
 
 -   Connect sprites to the camera to implement HUD models and text.
 
--   Connect the camera to a sprite to implement 'cockpit view', etc.
+-   Connect the camera to a sprite to implement 'cockpit view'.
 
 -   Implement GUI controls as dynamic 2D text or image rectangles, and
     with transparent pixels in the 3D window.
@@ -128,9 +128,7 @@ note the MonoGame version being discussed. Documentation of earlier
 versions may not be compatible with the latest.
 
 MonoGame fully implements Microsoft's (no longer supported) XNA 4
-engine, but for multiple platforms. It also implements features beyond
-XNA 4. Therefore XNA 4 documentation you come across may not show you
-the best way to do something, and documentation of earlier versions of
+engine, but for multiple platforms. Documentation of earlier versions of
 XNA (versions 2 and 3) will often not be correct. For conversion of XNA
 3 to XNA 4 see
 [http://www.nelsonhurst.com/xna-3-1-to-xna-4-0-cheatsheet/.](http://www.nelsonhurst.com/xna-3-1-to-xna-4-0-cheatsheet/)
@@ -160,8 +158,8 @@ platforms.
 Creating a new project
 ======================
 
-To develop with Blotch3D, you must first follow the steps in the [Quick
-start](#blotch3d) section to install MonoGame. Then...
+To develop with Blotch3D, you must first install MonoGame as described
+in [Quick start](#blotch3d) section. Then...
 
 To create a new project from scratch, select File/New/Project/MonoGame,
 and select the type of MonoGame project you want. Then add the source or
@@ -189,17 +187,17 @@ See the examples, starting with the basic example.
 3D subsystems (OpenGL, DirectX, etc.) generally require that a single
 thread access all 3D hardware resources for a given 3D window. There are
 certain platform-specific exceptions to this rule, but we don't use
-them. This rule also applies to any code structure (Parallel, async,
-etc.) that may internally use other threads, as well. Also, since
-sometimes it's hard to know exactly what 3D operations really do hit the
-3D hardware, its best to assume all of them do, like creation and use of
+them. This rule also applies to any code structure (like Parallel, etc.)
+that may internally use other threads, as well. Also, since sometimes
+it's hard to know exactly what 3D operations really do hit the 3D
+hardware, its best to assume all of them do, like creation and use of
 Blotch3D and MonoGame objects.
 
-You define a 3D window by deriving a class from BlWindow3D and
-overriding some of its methods. You open the window by instantiating
-that class and calling its "Run" method *from the same thread*. The Run
-method then calls those overridden methods when appropriate, and does
-not return until the window has closed.
+Define a 3D window by deriving a class from BlWindow3D and overriding
+some of its methods. Open the window by instantiating that class and
+calling its "Run" method *from the same thread*. The Run method then
+calls those overridden methods when appropriate, and does not return
+until the window has closed.
 
 All code that accesses the 3D hardware must be in those overridden
 methods.
