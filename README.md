@@ -196,11 +196,11 @@ sometimes it's hard to know exactly what 3D operations really do hit the
 Blotch3D and MonoGame objects.
 
 You define a 3D window by deriving a class from BlWindow3D and
-overridding certain of its methods. You should instantiate that class
-and call its "Run" method *from the same thread*. The Run method then
-calls those overridden methods when appropriate, and does not return
-until the window has closed. All code that accesses the 3D hardware must
-be in those overridden methods.
+overriding some of its methods. You should instantiate that class and
+call its "Run" method *from the same thread*. The Run method then calls
+those overridden methods when appropriate, and does not return until the
+window has closed. All code that accesses the 3D hardware must be in
+those overridden methods.
 
 In theory you could put all your 3D code in a certain one of the
 overridden methods (FrameDraw), but there are several overridable
