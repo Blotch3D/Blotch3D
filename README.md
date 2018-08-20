@@ -196,22 +196,23 @@ sometimes it's hard to know exactly what 3D operations really do hit the
 Blotch3D and MonoGame objects.
 
 You define a 3D window by deriving a class from BlWindow3D and
-overriding some of its methods. You should instantiate that class and
-call its "Run" method *from the same thread*. The Run method then calls
-those overridden methods when appropriate, and does not return until the
-window has closed. All code that accesses the 3D hardware must be in
-those overridden methods.
+overriding some of its methods. You open the window by instantiating
+that class and calling its "Run" method *from the same thread*. The Run
+method then calls those overridden methods when appropriate, and does
+not return until the window has closed.
+
+All code that accesses the 3D hardware must be in those overridden
+methods.
 
 In theory you could put all your 3D code in a certain one of the
 overridden methods (FrameDraw), but there are several overridable
-methods for your convenience.
-
-There is a Setup method that is called once at initialization, a
-FrameProc method that is called every frame, and a FrameDraw method that
-is called after a FrameProc call if there is enough CPU available. You
-are welcome to put whatever you like in those three methods, except that
-actual drawing code (code that causes things to appear in the window)
-must be in the FrameDraw method.
+methods for your convenience. There is a Setup method that is called
+once at the beginning, a FrameProc method that is called every frame,
+and a FrameDraw method that is called after each FrameProc call only if
+there is enough CPU available. You are welcome to put whatever you like
+in any of those three methods, except that actual drawing code (code
+that causes things to appear in the window) must be in the FrameDraw
+method.
 
 For apps that may suffer from severe CPU exhaustion (at least for the 3D
 thread), it might be best to put all your periodic 3D code in FrameDraw
