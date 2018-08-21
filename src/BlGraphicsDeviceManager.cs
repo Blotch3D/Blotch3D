@@ -369,6 +369,8 @@ namespace Blotch
 			ApplyChanges();
 		}
 
+		Random Rand = new Random();
+
 		/// <summary>
 		/// Creates a surface mesh in the form of a triangle list, from the height information in an image. The mesh
 		/// can be assigned to an element of BlSprite#LODs. Also see #CreateMeshSurface.
@@ -377,10 +379,11 @@ namespace Blotch
 		/// <param name="yScale">Multiplier to apply to the height</param>
 		/// <param name="mirrorY">If true, then reflect image's Y</param>
 		/// <param name="smooth">Whether to apply a 3x3 gaussian smoothing kernel, or not</param>
+		/// <param name="noiseLevel">How much noise to add</param>
 		/// <param name="numSignificantBits">How many bits in a pixel should be used (starting from the least significant bit).
 		/// Normally the first 8 bits are used (the last channel), but special images might combine the bits of multiple channels.</param>
 		/// <returns>A 'terrain' from the specified image</returns>
-		public VertexPositionNormalTexture[] CreateMeshSurfaceFromImage(Texture2D tex, double yScale = 1, bool mirrorY = false, bool smooth=true, int numSignificantBits=8)
+		public VertexPositionNormalTexture[] CreateMeshSurfaceFromImage(Texture2D tex, double yScale = 1, bool mirrorY = false, bool smooth = true, double noiseLevel = .8, int numSignificantBits=8)
 		{
 			var width = tex.Width;
 			var height = tex.Height;
@@ -393,10 +396,10 @@ namespace Blotch
 
 			Parallel.For(0, len, (n) =>
 			{
-				pixels[n] = pixels[n] & mask;
+				pixels[n] = (pixels[n] & mask);
 			});
 
-			return CreateMeshSurface(pixels, width, height, yScale, mirrorY, smooth);
+			return CreateMeshSurface(pixels, width, height, yScale, mirrorY, smooth, yScale * noiseLevel);
 		}
 		/// <summary>
 		/// Creates a surface mesh in the form of a triangle list, from an int array. The mesh
@@ -408,6 +411,7 @@ namespace Blotch
 		/// <param name="yScale">Multiplier to apply to the height</param>
 		/// <param name="mirrorY">Whether to reflect Y</param>
 		/// <param name="smooth">Whether to apply a 3x3 gaussian smoothing kernel, or not</param>
+		/// <param name="noiseLevel">How much noise to add</param>
 		/// <returns></returns>
 		public VertexPositionNormalTexture[] CreateMeshSurface
 		(
@@ -416,18 +420,21 @@ namespace Blotch
 			int height,
 			double yScale = 1,
 			bool mirrorY = false,
-			bool smooth = false
+			bool smooth = false,
+			double noiseLevel=0
 		)
 		{
 			var vertices = new VertexPositionNormalTexture[width * height];
 			var mesh = new VertexPositionNormalTexture[width * height * 6];
 
 			// calc Position and textureCoordinates per vertex
-			//for(int x=0;x<width;x++)
-			Parallel.For(0, width, (x) =>
+
+			// (Can't be parallel because Random is not thread safe)
+			for(int x=0;x<width;x++)
+			//Parallel.For(0, width, (x) =>
 			{
-				//for (int y = 0; y < height; y++)
-				Parallel.For(0, height, (y) =>
+				for (int y = 0; y < height; y++)
+				//Parallel.For(0, height, (y) =>
 				{
 					var xNormalized = (float)x / width;
 					var yNormalized = (float)y / height;
@@ -510,10 +517,13 @@ namespace Blotch
 
 					float pixelHeight = (float)(pixel * yScale);
 
+					if (noiseLevel != 0)
+						pixelHeight += (float)(Rand.NextDouble() * noiseLevel);
+
 					vertices[ofst].Position = new Vector3(xNormalized - .5f, yNormalized - .5f, pixelHeight);
 					vertices[ofst].TextureCoordinate = new Vector2(xNormalized, yNormalized);
-				});
-			});
+				}
+			}
 			// calculate each vertex normal from the triangles that vertex participates in.
 			//for(int x=0;x<width;x++)
 			Parallel.For(0, width, (x) =>
