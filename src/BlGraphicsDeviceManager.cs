@@ -375,22 +375,28 @@ namespace Blotch
 		/// </summary>
 		/// <param name="tex">The texture that represents the height (Z) of each vertex.</param>
 		/// <param name="yScale">Multiplier to apply to the height</param>
-		/// <param name="numSignificantBits">Number of pixel bits to use for a pixel's height. The default value of '8' means use
-		/// only the blue channel. Higher values typically would require you to generate the texture programmatically
-		/// or with a special image editor because
-		/// they would include the other 'channels' as more significant bits of the height.
-		/// Specifically, use SetData(int[]).</param>
 		/// <param name="mirrorY">If true, then reflect image's Y</param>
+		/// <param name="smooth">Whether to apply a 3x3 gaussian smoothing kernel, or not</param>
+		/// <param name="numSignificantBits">How many bits in a pixel should be used (starting from the least significant bit).
+		/// Normally the first 8 bits are used (the last channel), but special images might combine the bits of multiple channels.</param>
 		/// <returns>A 'terrain' from the specified image</returns>
-		public VertexPositionNormalTexture[] CreateMeshSurfaceFromImage(Texture2D tex, double yScale = 1, bool mirrorY = false, int numSignificantBits = 8)
+		public VertexPositionNormalTexture[] CreateMeshSurfaceFromImage(Texture2D tex, double yScale = 1, bool mirrorY = false, bool smooth=true, int numSignificantBits=8)
 		{
 			var width = tex.Width;
 			var height = tex.Height;
 
-			var pixels = new int[width * height];
+			int mask = (int)(Math.Pow(2, numSignificantBits)+.5)-1;
+
+			var len = width * height;
+			var pixels = new int[len];
 			tex.GetData(pixels);
 
-			return CreateMeshSurface(pixels, width, height, yScale, mirrorY, numSignificantBits);
+			Parallel.For(0, len, (n) =>
+			{
+				pixels[n] = pixels[n] & mask;
+			});
+
+			return CreateMeshSurface(pixels, width, height, yScale, mirrorY, smooth);
 		}
 		/// <summary>
 		/// Creates a surface mesh in the form of a triangle list, from an int array. The mesh
@@ -400,8 +406,8 @@ namespace Blotch
 		/// <param name="width">X size</param>
 		/// <param name="height">Y size</param>
 		/// <param name="yScale">Multiplier to apply to the height</param>
-		/// <param name="numSignificantBits">Number of significant bits in each array element (used when creating from image data)</param>
 		/// <param name="mirrorY">Whether to reflect Y</param>
+		/// <param name="smooth">Whether to apply a 3x3 gaussian smoothing kernel, or not</param>
 		/// <returns></returns>
 		public VertexPositionNormalTexture[] CreateMeshSurface
 		(
@@ -410,51 +416,110 @@ namespace Blotch
 			int height,
 			double yScale = 1,
 			bool mirrorY = false,
-			int numSignificantBits = 32
+			bool smooth = false
 		)
 		{
 			var vertices = new VertexPositionNormalTexture[width * height];
 			var mesh = new VertexPositionNormalTexture[width * height * 6];
 
-			var mask = (ulong)(Math.Pow(2, numSignificantBits)-1);
-
 			// calc Position and textureCoordinates per vertex
-			for(int x=0;x<width;x++)
-			//Parallel.For(0, width, (x) =>
+			//for(int x=0;x<width;x++)
+			Parallel.For(0, width, (x) =>
 			{
-				for (int y = 0; y < height; y++)
-				//Parallel.For(0, height, (y) =>
+				//for (int y = 0; y < height; y++)
+				Parallel.For(0, height, (y) =>
 				{
 					var xNormalized = (float)x / width;
 					var yNormalized = (float)y / height;
 					var ofst = x + width * y;
 
-					ulong pixel;
+					double pixel;
+
+					int ym = y;
 					if (mirrorY)
 					{
-						pixel = (ulong)(heightMap[x + (height - y - 1) * width]);
-					}
-					else
-					{
-						pixel = (ulong)(heightMap[x + y * width]);
+						ym = height - y - 1;
 					}
 
-					if(pixel!=0)
-					{
-						int zz = 0;
-					}
-					float pixelHeight = (float)((pixel & mask) * yScale);
+					pixel = heightMap[x + ym * width];
 
-					vertices[ofst].Position = new Vector3(xNormalized-.5f, yNormalized-.5f, pixelHeight);
+					if (smooth)
+					{
+						double totalWeight = 1;
+
+						// adjacents
+						double weight = .6065;
+
+						// adjacent x
+						if (x > 0)
+						{
+							pixel += weight * heightMap[x - 1 + ym * width];
+							totalWeight += weight;
+						}
+						if (x < width - 1)
+						{
+							pixel += weight * heightMap[x + 1 + ym * width];
+							totalWeight += weight;
+						}
+
+						// adjacent y
+						if (ym > 0)
+						{
+							pixel += weight * heightMap[x + (ym - 1) * width];
+							totalWeight += weight;
+						}
+						if (ym < height - 1)
+						{
+							pixel += weight * heightMap[x + (ym + 1) * width];
+							totalWeight += weight;
+						}
+
+						// diagonal
+						weight = .3679;
+
+						if (x > 0)
+						{
+							if (ym > 0)
+							{
+								pixel += weight * heightMap[x - 1 + (ym - 1) * width];
+								totalWeight += weight;
+							}
+							if (ym < height - 1)
+							{
+								pixel += weight * heightMap[x - 1 + (ym + 1) * width];
+								totalWeight += weight;
+							}
+						}
+
+						if (x < width - 1)
+						{
+							if (ym > 0)
+							{
+								pixel += weight * heightMap[x + 1 + (ym - 1) * width];
+								totalWeight += weight;
+							}
+							if (ym < height - 1)
+							{
+								pixel += weight * heightMap[x + 1 + (ym + 1) * width];
+								totalWeight += weight;
+							}
+						}
+
+						pixel /= totalWeight;
+					}
+
+					float pixelHeight = (float)(pixel * yScale);
+
+					vertices[ofst].Position = new Vector3(xNormalized - .5f, yNormalized - .5f, pixelHeight);
 					vertices[ofst].TextureCoordinate = new Vector2(xNormalized, yNormalized);
-				}
-			}
+				});
+			});
 			// calculate each vertex normal from the triangles that vertex participates in.
-			for(int x=0;x<width;x++)
-			//Parallel.For(0, width, (x) =>
+			//for(int x=0;x<width;x++)
+			Parallel.For(0, width, (x) =>
 			{
-				for (int y = 0; y < height; y++)
-				//Parallel.For(0, height, (y) =>
+				//for (int y = 0; y < height; y++)
+				Parallel.For(0, height, (y) =>
 				{
 					var ofst = x + width * y;
 
@@ -522,8 +587,8 @@ namespace Blotch
 
 					totalNormal.Normalize();
 					vertices[ofst].Normal = totalNormal;
-				}
-			}
+				});
+			});
 
 			// create triangles
 			Parallel.For(0,width-1,(x)=>
