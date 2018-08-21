@@ -434,7 +434,7 @@ compile and load it as shown above. Just be sure it is based on the
 original HLSL code for BasicEffect or one of the provided custom
 shaders.
 
-Documentation for individua custom shaders follow.
+Documentation for individual custom shaders follow.
 
 Translucency with the BlBasicEffectAlphaTest shader
 ===================================================
@@ -949,7 +949,8 @@ zero, but then the sprite, or parts of it, become black.
 
 A: A sprite's matrix also affects its normals. By setting a dimension's
 scale to zero, you may have caused some of the normals to be zeroed-out
-as well. Try setting the scale to a very small number, rather than zero.
+or made invalid. Try setting the scale to a very small number, rather
+than zero.
 
 Q: When I am zoomed-in a large amount, sprite and camera movement jumps
 as the sprite or camera move.
@@ -964,15 +965,17 @@ sprites appear in front of nearer ones, and it varies as the camera or
 sprite moves.
 
 A: The floating-point precision limitation of the depth buffer can cause
-this. Disable auto-clipping on one or both of NearClip and FarClip, and
-otherwise try increasing your near clip and/or decreasing your far clip
-so the depth buffer doesn't have to cover so much dynamic range.
+this. Disable or set limits on auto-clipping in one or both of NearClip
+and FarClip, and otherwise try increasing your near clip and/or
+decreasing your far clip so the depth buffer doesn't have to cover so
+much dynamic range.
 
 Q: I have a sprite that I want always to be visible, but I think its
 invisible because its outside the depth buffer, but I don't want to
-change the clipping planes (NearClip and FarClip).
+change the clipping planes just for that sprite (NearClip and FarClip).
 
-A: Try doing a \"Graphics.GraphicsDevice.DepthStencilState =
+A: Try disabling the depth buffer just for that sprite with a
+\"Graphics.GraphicsDevice.DepthStencilState =
 Graphics.DepthStencilStateDisabled" in the BlSprite.PreDraw delegate,
 and set it back to DepthStencilStateEnabled in the BlSprite.DrawCleanup
 delegate.

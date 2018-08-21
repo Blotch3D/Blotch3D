@@ -377,7 +377,7 @@ namespace Blotch
 		/// </summary>
 		/// <param name="tex">The texture that represents the height (Z) of each vertex.</param>
 		/// <param name="yScale">Multiplier to apply to the height</param>
-		/// <param name="mirrorY">If true, then reflect image's Y</param>
+		/// <param name="mirrorY">If true, then invert image's Y</param>
 		/// <param name="smooth">Whether to apply a 3x3 gaussian smoothing kernel, or not</param>
 		/// <param name="noiseLevel">How much noise to add</param>
 		/// <param name="numSignificantBits">How many bits in a pixel should be used (starting from the least significant bit).
