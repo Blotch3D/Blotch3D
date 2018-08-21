@@ -548,14 +548,25 @@ namespace Blotch
 
 
 		/// <summary>
-		/// Informs the auto-clipping code of an object that should be included in the clipping region. This is
-		/// mainly for internal use. Application code should control clipping with #NearClip and #FarClip.
+		/// Informs the auto-clipping code of an object that should be visible within the clipping limits. This is
+		/// mainly for internal use. Application code should control clipping with NearClip and FarClip.
 		/// </summary>
 		/// <param name="s">The sprite that should be included in the auto-clipping code</param>
 		public void ExtendClippingTo(BlSprite s)
 		{
 			var near = s.CamDistance - s.BoundSphere.Value.Radius;
 			var far = s.CamDistance + s.BoundSphere.Value.Radius;
+
+			var distDif = s.CamDistance - s.PrevCamDistance;
+
+			if (distDif > 0)
+			{
+				far += 2*distDif;
+			}
+			else
+			{
+				near += 2*distDif;
+			}
 
 			if (MaxCamDistance < far)
 			{
@@ -1186,8 +1197,8 @@ namespace Blotch
 			else
 				CurrentFarClip = FarClip;
 
-			CurrentFarClip *= 1.2;
-			CurrentNearClip *= .8;
+			CurrentFarClip *= 1.03;
+			CurrentNearClip *= .97;
 
 			double farLimit = 1e37;
 			if (FarClip < 0)
@@ -1204,6 +1215,9 @@ namespace Blotch
 
 			if (CurrentFarClip < CurrentNearClip*1.0001)
 				CurrentFarClip = CurrentNearClip * 1.0001;
+
+			if (CurrentNearClip < CurrentFarClip * 1e-6)
+				CurrentNearClip = CurrentFarClip * 1e-6;
 
 			View = Microsoft.Xna.Framework.Matrix.CreateLookAt(Eye, LookAt, CameraUp);
 

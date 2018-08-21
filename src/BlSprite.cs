@@ -166,6 +166,12 @@ namespace Blotch
 		public double CamDistance { get; private set; }
 
 		/// <summary>
+		/// Internal use only.
+		/// Used for predicting new depth clipping values
+		/// </summary>
+		public double PrevCamDistance { get; private set; }
+
+		/// <summary>
 		/// The #Draw method takes an incoming 'world' matrix parameter which is the coordinate system of its parent. #AbsoluteMatrix
 		/// is that incoming world matrix parameter times the #Matrix member and altered according to Billboarding and #ConstSize.
 		/// This is not read-only because a callback (see #PreDraw, #PreSubsprites, #PreLocal, and #SetMeshEffect) may need to
@@ -770,6 +776,8 @@ namespace Blotch
 				// collapse it
 				AbsoluteMatrix = Matrix.Multiply(Matrix, AbsoluteMatrix);
 			}
+
+			PrevCamDistance = CamDistance;
 
 			// calc cam distance
 			var pointOnCameraForward = NearestPointOnLine(Graphics.Eye, Graphics.LookAt, AbsoluteMatrix.Translation);
