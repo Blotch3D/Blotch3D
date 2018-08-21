@@ -216,7 +216,7 @@ and not bother with FrameProc. In this way your code will be called less
 often under high-CPU loads. Of course, then your periodic code should
 handle being called at a variable rate.
 
-You can pass a delegate with 3D code to the BlSprite constructor. The
+You can also specify a delegate to the BlSprite constructor. The
 delegate will be executed every frame. The effect is the same as putting
 the code in FrameProc, but it better encapsulates sprite-specific code.
 
@@ -243,7 +243,8 @@ multiple 2D textures and text using MonoGame's SpriteBatch class.
 BlWindow3D derives from MonoGame's "Game" class, so you can also
 override other Game class overridable methods. Just be sure to call the
 base method from within a Game class overridden method. On Microsoft
-Windows the BlWindow3D.WindowForm field provides certain callbacks.
+Windows, you can also add window event handlers to
+BlWindow3D.WindowForm.
 
 Because multiple windows are not conducive to some of the supported
 platforms, MonoGame, and thus Blotch3D, do not support more than one 3D
