@@ -246,6 +246,10 @@ namespace Blotch
 		/// </summary>
 		public double CurrentFarClip { get; private set; }
 
+		/// <summary>
+		/// Extend clipping range by this much
+		/// </summary>
+		public double ClipRangeExcess = 5;
 
 		/// <summary>
 		/// The background color.
@@ -561,11 +565,11 @@ namespace Blotch
 
 			if (distDif > 0)
 			{
-				far += 2*distDif;
+				far += 1.2*distDif;
 			}
 			else
 			{
-				near += 2*distDif;
+				near += 1.2*distDif;
 			}
 
 			if (MaxCamDistance < far)
@@ -1187,37 +1191,58 @@ namespace Blotch
 				//Console.WriteLine(Window.Window.ClientBounds);
 			}
 
+			double nearLimit = 1e-2;
+
 			if (NearClip <= 0)
+			{
 				CurrentNearClip = MinCamDistance;
+
+				if (NearClip < 0)
+					nearLimit = -NearClip;
+			}
 			else
+			{
 				CurrentNearClip = NearClip;
+			}
+
+
+
+			double farLimit = 1e29;
 
 			if (FarClip <= 0)
+			{
 				CurrentFarClip = MaxCamDistance;
+
+				if (FarClip < 0)
+					farLimit = -FarClip;
+			}
 			else
+			{
 				CurrentFarClip = FarClip;
+			}
 
-			CurrentFarClip *= 1.03;
-			CurrentNearClip *= .97;
+			CurrentFarClip += ClipRangeExcess;
+			CurrentNearClip -= ClipRangeExcess;
 
-			double farLimit = 1e37;
-			if (FarClip < 0)
-				farLimit = -FarClip;
-
-			double nearLimit = 1e-37;
-			if (NearClip < 0)
-				nearLimit = -NearClip;
-
-			if (CurrentFarClip > farLimit)
-				CurrentFarClip = farLimit;
 			if (CurrentNearClip < nearLimit)
 				CurrentNearClip = nearLimit;
 
-			if (CurrentFarClip < CurrentNearClip*1.0001)
-				CurrentFarClip = CurrentNearClip * 1.0001;
+			if (CurrentNearClip > farLimit)
+				CurrentNearClip = farLimit;
 
-			if (CurrentNearClip < CurrentFarClip * 1e-6)
-				CurrentNearClip = CurrentFarClip * 1e-6;
+			if (CurrentFarClip < nearLimit)
+				CurrentFarClip = nearLimit;
+
+			if (CurrentFarClip > farLimit)
+				CurrentFarClip = farLimit;
+
+			if (CurrentNearClip < CurrentFarClip * 1e-5)
+				CurrentNearClip = CurrentFarClip * 1e-5;
+
+			if (CurrentNearClip > CurrentFarClip * .9)
+				CurrentNearClip = CurrentFarClip * .9;
+
+			//Console.WriteLine("{0} {1}", CurrentNearClip, CurrentFarClip);
 
 			View = Microsoft.Xna.Framework.Matrix.CreateLookAt(Eye, LookAt, CameraUp);
 

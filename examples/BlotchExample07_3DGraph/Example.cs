@@ -76,8 +76,8 @@ Shift          - Fine control
 
 			// The sprite we draw in this window
 			Surface = new BlSprite(Graphics, "Surface");
-			Surface.LODs.Add(SurfaceArray);
 			Surface.BoundSphere = new BoundingSphere(Vector3.Zero, 1);
+			Surface.LODs.Add(SurfaceArray);
 			Surface.SetAllMaterialBlack();
 			Surface.Color = new Vector3(1, 1, 1);
 			Surface.PreDraw=(s)=>
