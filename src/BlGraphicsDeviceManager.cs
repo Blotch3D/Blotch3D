@@ -29,9 +29,8 @@ A "contributor" is any person that distributes its contribution under this licen
 /*
 TODO:
 
-More default models w/LODs: cone, cylinder, box, various prisms and gems
-Add shader that transforms texture with tiling
-bumpmaps (use rbwhitaker's)
+More default models w/LODs: cone, cylinder, box, various prisms and gems, various springs
+or maybe write programmatic models with parameters
 Write a fairly elaborate program to tweak and test everything
 
 

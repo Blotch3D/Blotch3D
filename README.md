@@ -146,7 +146,7 @@ library project with source, and the example projects.
 Example.cs contains the example code. Other example projects also
 contain an Example.cs, which is similar to the one from the basic
 example but with a few additions to it to demonstrate a certain feature.
-In fact, you can do a diff between the basic Examples.cs file and
+In fact, you can do a diff between the basic Example.cs files and
 another example's source file to see what extra code must be added to
 implement the features it demonstrates \[TBD: the "full" example needs
 to be split to several simpler examples\].
@@ -235,7 +235,7 @@ provides methods to draw text and textures in 2D (just draw them after
 all 3D objects have been drawn so they aren't overwritten by them).
 Sprites are drawn with the BlSprite.Draw method. When you draw a sprite,
 all its subsprites are also drawn. So, oftentimes you may want to have a
-"Top" sprite that holds others sprites, and call the Draw method of the
+"Top" sprite that holds other sprites, and call the Draw method of the
 Top sprite to cause the other sprites to be drawn. You can also draw
 things using MonoGame methods. For example, it is faster to draw
 multiple 2D textures and text using MonoGame's SpriteBatch class.
@@ -352,7 +352,7 @@ the MonoGame wizard), then try this:
 
 2.  In the first \<PropertyGroup\> section
     add \<MonoGamePlatform\>\$(Platform)\</MonoGamePlatform\>, where
-    \$(Platform) is the system you are targeting e.g Windows, iOS,
+    \$(Platform) is the system you are targeting e.g. Windows, iOS,
     Android. For example:
     \<MonoGamePlatform\>Windows\</MonoGamePlatform\>
 
@@ -377,7 +377,7 @@ are provided that demonstrate how to use them.
 The custom shader source and the compiled shader files are in the
 Blotch3D Content/Effects folder. To use a custom shader, first copy the
 compiled shader file (mgfxo file) to your program's output folder---you
-might add a link to it in your project and set its properties so it is
+might add a link to it in your project and set its properties, so it is
 copied to the output folder.
 
 When your program runs, it specifies that file name in the BlBasicEffect
@@ -426,7 +426,7 @@ copy of the original MonoGame BasicEffect shader code, but with a few
 lines added. If for some reason you want to recompile the shaders, use
 the "make\_effects.bat" file in the Blotch3D source folder to build
 them. But first be sure to add the path to 2MGFX.exe to the 'path'
-environment variable. Typically the path is something like "\\Program
+environment variable. Typically, the path is something like "\\Program
 Files (x86)\\MSBuild\\MonoGame\\v3.0\\Tools".
 
 You can create your own shader files that are based on BlBasicEffect and
@@ -534,8 +534,8 @@ Transforming textures with the BlBasicEffectAlphaTestXformTex shader
 
 The BlBasicEffectAlphaTestXformTex shader
 ("BlBasicEffectAlphaTestXformTex.mgfxo" and
-"BlBasicEffectAlphaTestXformTex OGL.mgfxo" for OpenGL) does the same
-thing as BlBasicEffectAlphaTest, but adds a feature that let's you
+"BlBasicEffectAlphaTestXformTexOGL.mgfxo" for OpenGL) does the same
+thing as BlBasicEffectAlphaTest, but adds a feature that lets you
 transform the texture on the surface of the sprite.
 
 Parameters are AlphaTestThreshold (same as used by the
