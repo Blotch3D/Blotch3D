@@ -21,7 +21,7 @@ On your development machine ...
 5.  Use IntelliSense to see the reference documentation, or see
     "Blotch3DManual.pdf".
 
-6.  To create a new Blotch3D project, or add Blotch3D to an existing
+6.  To create a new Blotch3D project, add Blotch3D to an existing
     project, or build for another platform, follow the instructions in
     the [Creating a new project](#creating-a-new-project) section.
 

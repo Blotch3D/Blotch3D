@@ -72,7 +72,7 @@ Shift          - Fine control
 			});
 
 			// Create the surface vertices
-			var SurfaceArray = Graphics.CreateMeshSurface(data,width,height,5e-8);
+			var SurfaceArray = BlGeometry.CreateMeshSurface(data,width,height,5e-8);
 
 			// The sprite we draw in this window
 			Surface = new BlSprite(Graphics, "Surface");

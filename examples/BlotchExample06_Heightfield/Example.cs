@@ -62,7 +62,7 @@ Shift          - Fine control
 			var terrain = Graphics.LoadFromImageFile("terrain.png", true);
 
 			// The vertices of the surface
-			var SurfaceArray = Graphics.CreateMeshSurfaceFromImage(terrain,.001);
+			var SurfaceArray = BlGeometry.CreateMeshSurfaceFromImage(terrain,.001);
 
 			// The sprite we draw in this window
 			Surface = new BlSprite(Graphics, "Surface");

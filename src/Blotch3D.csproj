@@ -72,6 +72,7 @@
     <Compile Include="BlBasicEffect.cs" />
     <Compile Include="BlDebug.cs" />
     <Compile Include="BlEffectHelpers.cs" />
+    <Compile Include="BlGeometry.cs" />
     <Compile Include="BlSprite.cs" />
     <Compile Include="BlGraphicsDeviceManager.cs" />
     <Compile Include="BlMipmap.cs" />
