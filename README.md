@@ -40,6 +40,8 @@ code you can...
 -   Load textures from standard image files, including textures with an
     alpha channel (i.e. with translucent pixels).
 
+-   Programmatically create a variety of models.
+
 -   Set a sprite's material, texture, and lighting response.
 
 -   Show 2D and in-world (as a texture) text in any font, size, color,

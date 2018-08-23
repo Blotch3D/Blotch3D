@@ -27,7 +27,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlotchExample07_3DGraph", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlotchExample08_TextureTransform", "examples\BlotchExample08_TextureTransform\BlotchExample08_TextureTransform.csproj", "{D5F09A77-F9F6-4370-9EF4-59F6B1483525}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlotchExample09_GeomObjects", "examples\BlotchExample09_GeomObjects\BlotchExample09_GeomObjects.csproj", "{F1B701F4-CECF-49CE-9627-91299BB1BADF}"
+EndProject
 Global
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Debug|x64 = Debug|x64
@@ -131,6 +136,14 @@ Global
 		{D5F09A77-F9F6-4370-9EF4-59F6B1483525}.Release|Any CPU.Build.0 = Release|Any CPU
 		{D5F09A77-F9F6-4370-9EF4-59F6B1483525}.Release|x64.ActiveCfg = Release|x64
 		{D5F09A77-F9F6-4370-9EF4-59F6B1483525}.Release|x64.Build.0 = Release|x64
+		{F1B701F4-CECF-49CE-9627-91299BB1BADF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F1B701F4-CECF-49CE-9627-91299BB1BADF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F1B701F4-CECF-49CE-9627-91299BB1BADF}.Debug|x64.ActiveCfg = Debug|x64
+		{F1B701F4-CECF-49CE-9627-91299BB1BADF}.Debug|x64.Build.0 = Debug|x64
+		{F1B701F4-CECF-49CE-9627-91299BB1BADF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F1B701F4-CECF-49CE-9627-91299BB1BADF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F1B701F4-CECF-49CE-9627-91299BB1BADF}.Release|x64.ActiveCfg = Release|x64
+		{F1B701F4-CECF-49CE-9627-91299BB1BADF}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

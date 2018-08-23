@@ -116,10 +116,12 @@ Ctrl-click object - Console msg pick
 			verts[5].TextureCoordinate = new Vector2(1, 0);
 			verts[5].Normal = norm;
 
+			var vertBuf = BlGeometry.TrianglesToVertexBuffer(Graphics.GraphicsDevice, verts);
+
 			Model.LODs.Add(sphere);
-			Model.LODs.Add(verts);
+			Model.LODs.Add(vertBuf);
 			Model.LODs.Add(sphere);
-			Model.LODs.Add(verts);
+			Model.LODs.Add(vertBuf);
 			Model.LODs.Add(null);
 			Model.BoundSphere = new BoundingSphere(Vector3.Zero, 1);
 

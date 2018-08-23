@@ -56,8 +56,8 @@ namespace Blotch
 
 		/// <summary>
 		/// The objects (levels of detail) to draw for this sprite. Only one element is drawn
-		/// depending on the ApparentSize. Each element can be a Model, a triangle list
-		/// (VertexPositionNormalTexture[]), or null (indicating nothing should be drawn for that LOD). Elements with lower indices are
+		/// depending on the ApparentSize. Each element can be a Model, a VertexBuffer, or null (indicating nothing should be drawn for that LOD).
+		/// Elements with lower indices are
 		/// higher LODs. So index 0 has the highest detail, index 1 is second highest, etc. LOD decreases (the index increases) for
 		/// every halving of the object's apparent size. You can adjust how close the LODs must be to the camera with
 		/// #LodScale. When the calculated LOD index is higher than the last element,
@@ -696,10 +696,9 @@ namespace Blotch
 						mesh.Draw();
 					}
 				}
-
-				if (obj is VertexPositionNormalTexture[])
+				else if (obj is VertexBuffer)
 				{
-					var Vertices = obj as VertexPositionNormalTexture[];
+					var vertexBuffer = obj as VertexBuffer;
 
 					if (SetEffect != null)
 					{
@@ -716,15 +715,22 @@ namespace Blotch
 						SetupBasicEffect((BasicEffect)VerticesEffect);
 					}
 
-					//VerticesEffect.Techniques[0].Passes[0].Apply();
+					Graphics.GraphicsDevice.SetVertexBuffer(vertexBuffer);
 
-					Vector3 avg = Vector3.Zero;
 					foreach (var pass in VerticesEffect.CurrentTechnique.Passes)
 					{
 						pass.Apply();
 
-						Graphics.GraphicsDevice.DrawUserPrimitives(PrimitiveType.TriangleList, Vertices, 0, Vertices.Length / 3);
+						Graphics.GraphicsDevice.DrawPrimitives(PrimitiveType.TriangleList, 0, vertexBuffer.VertexCount / 3);
 					}
+				}
+				else if (obj is VertexPositionNormalTexture[])
+				{
+					BlDebug.Message("Error: BlSprite no longer supports drawing a VertexPositionNormalTexture[] because it is extremely inefficient, and converting it to a VertexBuffer with BlGeometry.TrianglesToVertexBuffer is a cinch");
+				}
+				else
+				{
+					BlDebug.Message(String.Format("Error: BlSprite cannot draw a {0}",obj.GetType()));
 				}
 
 				if (boundSphere != null)

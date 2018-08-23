@@ -246,7 +246,7 @@ namespace Blotch
 		public double CurrentFarClip { get; private set; }
 
 		/// <summary>
-		/// Extend clipping range by this much
+		/// Increase far clipping and decrease near clipping by this much. See NearClip and FarClip.
 		/// </summary>
 		public double ClipRangeExcess = 5;
 
@@ -334,13 +334,13 @@ namespace Blotch
 			window.IsFixedTimeStep = false;
 
 			var light = new Light();
-			light.LightDiffuseColor = new Vector3(1, .5f, 0);
+			light.LightDiffuseColor = new Vector3(.9f, .4f, .4f);
 			light.LightDirection = new Vector3(1, 0, -1);
 			Lights.Add(light);
 
 			light = new Light();
-			light.LightDiffuseColor = new Vector3(0, .5f, 1);
-			light.LightDirection = new Vector3(-1, 0, -1);
+			light.LightDiffuseColor = new Vector3(.4f, .4f, .9f);
+			light.LightDirection = new Vector3(-1, 0,-1);
 			Lights.Add(light);
 
 			ResetCamera();

@@ -53,8 +53,8 @@ Shift          - Fine control
 			// "Arial14" is the pathname to the font file
 			Font = MyContent.Load<SpriteFont>("Arial14");
 
-			var width = 512;
-			var height = 512;
+			var width = 128;
+			var height = 128;
 
 			var totalVertices = width * height;
 
@@ -65,19 +65,26 @@ Shift          - Fine control
 			{
 				Parallel.For(0, height, (y) =>
 				{
-					// The '1e6' makes sure we use most of the resolution of an int
-					var v = (int)(1e6*(Math.Sin(((x-width/2) * (y-height/2)) / 3000.0)+1));
+					// The '1e6' makes sure we use a lot more resolution of the int
+					var v = (int)(1e6*(Math.Sin(((x-width/2) * (y-height/2)) / 300.0)+1));
 					data[x + width * y] = v;
 				});
 			});
 
 			// Create the surface vertices
-			var SurfaceArray = BlGeometry.CreateMeshSurface(data,width,height,5e-8);
+			var SurfaceArray = BlGeometry.CreatePlanarSurface(data,width,height);
+
+			// Scale it back down to something reasonable
+			var m = Matrix.CreateScale(1, 1, 5e-8f);
+			SurfaceArray = BlGeometry.TransformMesh(SurfaceArray, m);
+
+			// convert to vertex buffer
+			var vertexBuf = BlGeometry.TrianglesToVertexBuffer(Graphics.GraphicsDevice, SurfaceArray);
 
 			// The sprite we draw in this window
 			Surface = new BlSprite(Graphics, "Surface");
 			Surface.BoundSphere = new BoundingSphere(Vector3.Zero, 1);
-			Surface.LODs.Add(SurfaceArray);
+			Surface.LODs.Add(vertexBuf);
 			Surface.SetAllMaterialBlack();
 			Surface.Color = new Vector3(1, 1, 1);
 			Surface.PreDraw=(s)=>

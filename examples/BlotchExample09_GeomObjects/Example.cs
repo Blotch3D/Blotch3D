@@ -12,9 +12,9 @@ namespace BlotchExample
 	public class Example : BlWindow3D
 	{
 		/// <summary>
-		/// This will be the torus model we draw in the window
+		/// This will be the geomodel model we draw in the window
 		/// </summary>
-		BlSprite Surface;
+		BlSprite GeoObj;
 
 		/// <summary>
 		/// This will be the font for the help menu we draw in the window
@@ -41,12 +41,6 @@ Shift          - Fine control
 		/// </summary>
 		protected override void Setup()
 		{
-			Graphics.Lights.Clear();
-			var light = new BlGraphicsDeviceManager.Light();
-			light.LightDiffuseColor = new Vector3(1, 1, .5f);
-			light.LightDirection = new Vector3(1, 0, 0);
-			Graphics.Lights.Add(light);
-
 			// We need to create one ContentManager object for each top-level content folder we'll be
 			// loading things from. Here "Content" is the most senior folder name of the content tree.
 			// (Content [models, fonts, etc.] are added to the project with the Content utility. Double-click
@@ -58,26 +52,41 @@ Shift          - Fine control
 			// "Arial14" is the pathname to the font file
 			Font = MyContent.Load<SpriteFont>("Arial14");
 
-			// load the terrain image
-			var terrain = Graphics.LoadFromImageFile("terrain.png", true);
+			// The model
+			var geoModel = BlGeometry.CreateCylindroidMeshSurface(32,2,.7);
 
-			// The vertices of the surface
-			var SurfaceArray = BlGeometry.CreateSurfaceFromImage(terrain);
+			// Uncomment this to transform it
+			//geoModel = BlGeometry.TransformMesh(geoModel, Matrix.CreateScale(1, 1, .2f));
 
-			// Scale it back down to something reasonable
-			var m = Matrix.CreateScale(1, 1, .001f);
-			SurfaceArray = BlGeometry.TransformMesh(SurfaceArray, m);
+			// Uncomment this to generate face normals (for example, if the previous transform totally flattened the model)
+			//geoModel = BlGeometry.CalcFacetNormals(geoModel);
+
+			// Uncomment this to set texture to planar
+			//geoModel = BlGeometry.SetTextureToXY(geoModel);
 
 			// convert to vertex buffer
-			var vertexBuf = BlGeometry.TrianglesToVertexBuffer(Graphics.GraphicsDevice, SurfaceArray);
+			var geoVertexBuffer = BlGeometry.TrianglesToVertexBuffer(Graphics.GraphicsDevice, geoModel);
+
+			var tex = Graphics.LoadFromImageFile("image.png");
 
 			// The sprite we draw in this window
-			Surface = new BlSprite(Graphics, "Surface");
-			Surface.Mipmap = terrain;
-			Surface.LODs.Add(vertexBuf);
-			Surface.BoundSphere = new BoundingSphere(Vector3.Zero, 1);
-			Surface.SetAllMaterialBlack();
-			Surface.Color = new Vector3(1, 1, 1);
+			GeoObj = new BlSprite(Graphics, "geomodel");
+			GeoObj.LODs.Add(geoVertexBuffer);
+			GeoObj.BoundSphere = new BoundingSphere(new Vector3(), 1);
+			GeoObj.Mipmap = tex;
+
+			/*
+			// Uncomment this to show insides, also
+			GeoObj.PreDraw = (s) =>
+			{
+				Graphics.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
+				return BlSprite.PreDrawCmd.Continue;
+			};
+			GeoObj.DrawCleanup = (s) =>
+			{
+				Graphics.GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
+			};
+			*/
 		}
 
 		/// <summary>
@@ -104,7 +113,7 @@ Shift          - Fine control
 			// Draw things here using BlSprite.Draw(), graphics.DrawText(), etc.
 			//
 
-			Surface.Draw();
+			GeoObj.Draw();
 
 			var MyMenuText = String.Format("{0}\nEye: {1}\nLookAt: {2}\nMaxDistance: {3}\nMinistance: {4}\nViewAngle: {5}\nModelLod: {6}\nModelApparentSize: {7}",
 				Help,
@@ -113,8 +122,8 @@ Shift          - Fine control
 				Graphics.MaxCamDistance,
 				Graphics.MinCamDistance,
 				Graphics.Zoom,
-				Surface.LodTarget,
-				Surface.ApparentSize
+				GeoObj.LodTarget,
+				GeoObj.ApparentSize
 			);
 
 			// handle undrawable characters for the specified font(like the infinity symbol)
