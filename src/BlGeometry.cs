@@ -23,7 +23,8 @@ namespace Blotch
 		static Random Rand = new Random();
 
 		/// <summary>
-		/// Creates a 3D surface from a heightfield image. Returns a triangle array. Also see #CreatePlanarMeshSurface.
+		/// Creates a square in XY but with variation of its Z depending on the pixels in a heightfield image.
+		/// Returns a triangle array. Also see #CreatePlanarMeshSurface.
 		/// </summary>
 		/// <param name="tex">The texture that represents the height (Z) of each vertex.</param>
 		/// <param name="mirrorY">If true, then invert image's Y dimension</param>
@@ -32,7 +33,7 @@ namespace Blotch
 		/// <param name="numSignificantBits">How many bits in a pixel should be used (starting from the least significant bit).
 		/// Normally the first 8 bits are used (the last channel), but special images might combine the bits of multiple channels.</param>
 		/// <returns>The triangles of a terrain from the specified image</returns>
-		static public VertexPositionNormalTexture[] CreateSurfaceFromImage
+		static public VertexPositionNormalTexture[] CreatePlanarSurfaceFromImage
 		(
 			Texture2D tex,
 			bool mirrorY = false,
@@ -55,15 +56,16 @@ namespace Blotch
 				pixels[n] = (pixels[n] & mask);
 			});
 
-			return CreatePlanarSurface(pixels, width, height, mirrorY, smooth, noiseLevel);
+			return CreatePlanarSurface(pixels, width, mirrorY, smooth, noiseLevel);
 		}
 		/// <summary>
-		/// Creates a 3D surface from an int array of height values. Returns a triangle array. Also
+		/// Creates a square in XY but with variation of its Z depending on the elements of an int array of height values.
+		/// Returns a triangle array. Also
 		/// see #CreateMeshSurfaceFromImage.
+		/// numY is assumed to be heightMap.Length/numX.
 		/// </summary>
 		/// <param name="heightMap">A flattened array (in row-major order) of vertex heights</param>
 		/// <param name="numX">The number of X elements in a row</param>
-		/// <param name="numY">The number of Y elements in a column</param>
 		/// <param name="mirrorY">Whether to invert Y</param>
 		/// <param name="smooth">Whether to apply a 3x3 gaussian smoothing kernel, or not</param>
 		/// <param name="noiseLevel">How much noise to add</param>
@@ -72,20 +74,24 @@ namespace Blotch
 		(
 			int[] heightMap,
 			int numX,
-			int numY,
 			bool mirrorY = false,
 			bool smooth = false,
 			double noiseLevel = 0
 		)
 		{
+			var numY = heightMap.Length / numX;
+
+			if (numY * numX != heightMap.Length)
+				throw new Exception("BlGeometry.CreatePlanarSurface: length of heightMap array not divisible by numX");
+
 			// calc Position and textureCoordinates per vertex
-			var mesh = CalcPlanarVerticesAndTexcoords(heightMap, numX, numY, noiseLevel, mirrorY, smooth);
+			var mesh = CalcPlanarVerticesAndTexcoords(heightMap, numX, noiseLevel, mirrorY, smooth);
 
 			// calculate each vertex normal from the adjacent vertices.
-			CalcSmoothMeshNormals(mesh, numX, numY);
+			CalcSmoothMeshNormals(mesh, numX);
 
 			// create triangles
-			var triangles = VerticesToTriangles(mesh, numX, numY);
+			var triangles = VerticesToTriangles(mesh, numX);
 
 			return triangles;
 		}
@@ -97,7 +103,8 @@ namespace Blotch
 		/// produce a cylinder, cone, washer, disk, vertical prism of any number of facets, vertical tetrahedron, vertical
 		/// pyramid of any number of facets, and many other shapes. End caps can be generated separately
 		/// and added to the resulting triangle array.
-		/// If a heightMap is specified, the resulting model can be any convex shape. Before passing the result to TransformMesh,
+		/// If a heightMap is specified, the resulting model can be any convex shape.
+		/// Before passing the result to TransformMesh,
 		/// the center of the cylindroid is the origin, the diameter of the base is 1, and the diameter of the top is topDiameter.
 		/// Note: If it is conical, texture mapping will
 		/// look better if numVertVertices is closer to the value of numHorizVertices.
@@ -106,9 +113,10 @@ namespace Blotch
 		/// <param name="numVertVertices">The number of vertical vertices in a column</param>
 		/// <param name="topDiameter">Diameter of top of cylindroid</param>
 		/// <param name="facetedNormals">If true, create normals per triangle. If false, create smooth normals</param>
-		/// <param name="heightMap">If specified, then the value of each element of this array is first divided by 1e4 and then added to the
-		/// current 'diameter' of the corresponding pixel. This is a flattened (row-major) array and must have a length of
-		/// numX*numY.</param>
+		/// <param name="heightMap">If specified, then this is mapped onto the cylindroid, and the value of each element
+		/// divided by 1e4 is then added to the
+		/// current 'diameter' of the corresponding pixel. This is a flattened (row-major) array and must have the
+		/// dimensions numHorizVertices x numVertVertices.</param>
 		/// <returns>A triangle list of the cylindroid</returns>
 		static public VertexPositionNormalTexture[] CreateCylindroidMeshSurface
 		(
@@ -126,11 +134,11 @@ namespace Blotch
 			if(!facetedNormals)
 			{
 				// calculate each vertex normal from the adjacent vertices.
-				mesh = CalcSmoothMeshNormals(mesh, numHorizVertices, numVertVertices,true);
+				mesh = CalcSmoothMeshNormals(mesh, numHorizVertices, true);
 			}
 
 			// create triangles
-			var triangles = VerticesToTriangles(mesh, numHorizVertices, numVertVertices);
+			var triangles = VerticesToTriangles(mesh, numHorizVertices);
 
 			if (facetedNormals)
 			{
@@ -144,14 +152,15 @@ namespace Blotch
 
 		/// <summary>
 		/// Like CreateCylindroidMeshSurface, but returns the vertices rather than a triangle list, and doesn't calculate the
-		/// normals. multiple such arrays can be concatentated to produce a single list.
+		/// normals.
 		/// </summary>
 		/// <param name="numX">The number of X elements in a row</param>
 		/// <param name="numY">The number of Y elements in a column</param>
 		/// <param name="topDiameter">Diameter of top of cylindroid</param>
-		/// <param name="heightMap">If specified, then each element of this array is first divided by 1e4 and then added to the
-		/// current 'diameter' of the corresponding pixel. This is a flattened (row-major) array and must have a length of
-		/// numX*numY.</param>
+		/// <param name="heightMap">If specified, then this is mapped onto the cylindroid, and the value of each element
+		/// divided by 1e4 is then added to the
+		/// current 'diameter' of the corresponding pixel. This is a flattened (row-major) array and must have the
+		/// dimensions numHorizVertices x numVertVertices.</param>
 		/// <returns>A list of the cylindroid's vertices</returns>
 		static public VertexPositionNormalTexture[] CalcCylindroidVerticesAndTexcoords
 		(
@@ -198,18 +207,22 @@ namespace Blotch
 		}
 
 		/// <summary>
-		///  Given a 2D array of 3D points in a grid, return an array of triangles (where every three vertices is a triangle) 
+		///  Given a regular 2D array of vertices, return an array of triangles.
+		///  numY is assumed to be the length of vertices/numX.
 		/// </summary>
 		/// <param name="vertices">A flattened 2D (in row-major order) array of points</param>
 		/// <param name="numX">The number of X elements in a row</param>
-		/// <param name="numY">The number of Y elements in a column</param>
 		/// <returns>Triangle mesh</returns>
 		static public VertexPositionNormalTexture[] VerticesToTriangles(
 			VertexPositionNormalTexture[] vertices,
-			int numX,
-			int numY
+			int numX
 		)
 		{
+			var numY = vertices.Length / numX;
+
+			if (numY * numX != vertices.Length)
+				throw new Exception("BlGeometry.VerticesToTriangles: length of vertices array not divisible by numX");
+
 			// Allocate triangle array
 			var triangles = new VertexPositionNormalTexture[(numX - 1) * (numY - 1) * 6];
 
@@ -314,10 +327,10 @@ namespace Blotch
 		/// For a regular mesh (i.e. NOT triangles), calculates a normal for each point in the mesh. The normal for a given point
 		/// is an average of the normals of the (typically eight) triangles that the vertex would participates in. (The
 		/// triangles have not yet been separated-out.)
+		/// numY is assumed to be vertices.Length/numX.
 		/// </summary>
 		/// <param name="vertices">A flattened (in row-major order) 2D array of vertices (this method may change the contents of this mesh)</param>
 		/// <param name="numX">The number of X elements in a row</param>
-		/// <param name="numY">The number of Y elements in a column</param>
 		/// <param name="xIsWrapped">Include the row-wrapped ponts in the calculation of normals on the row edge.
 		/// Closed cylindroids where x is wrapped would need this.</param>
 		/// <param name="invert">Inverts the normals (typically when viewing faces from the inside)</param>
@@ -325,11 +338,15 @@ namespace Blotch
 		static public VertexPositionNormalTexture[] CalcSmoothMeshNormals(
 			VertexPositionNormalTexture[] vertices,
 			int numX,
-			int numY,
 			bool xIsWrapped=false,
 			bool invert=false
 		)
 		{
+			var numY = vertices.Length / numX;
+
+			if (numY * numX != vertices.Length)
+				throw new Exception("BlGeometry.CalcSmoothMeshNormals: length of vertices array not divisible by numX");
+
 			//for(int x=0;x<numX;x++)
 			Parallel.For(0, numX, (x) =>
 			{
@@ -523,10 +540,10 @@ namespace Blotch
 
 		/// <summary>
 		/// Calculate vertices and texture coordinates, but not normals, from a specified heightmap int array.
+		/// numY is assumed to be heightMap.Length/numX.
 		/// </summary>
 		/// <param name="heightMap">A flattened array of 2D heights in row-major order</param>
 		/// <param name="numX">The number of X elements in a row</param>
-		/// <param name="numY">The number of Y elements in a column</param>
 		/// <param name="noiseLevel">How much noise to add</param>
 		/// <param name="mirrorY">Whether to invert the Y dimension</param>
 		/// <param name="smooth">Whether to apply a 3x3 gaussian blur on each pixel height</param>
@@ -534,12 +551,16 @@ namespace Blotch
 		(
 			int[] heightMap,
 			int numX,
-			int numY,
 			double noiseLevel = 0,
 			bool mirrorY = false,
 			bool smooth = false
 		)
 		{
+			var numY = heightMap.Length / numX;
+
+			if (numY * numX != heightMap.Length)
+				throw new Exception("BlGeometry.CalcPlanarVerticesAndTexcoords: length of heightMap array not divisible by numX");
+
 			var vertices = new VertexPositionNormalTexture[numX * numY];
 
 			// This local function is called by either the non-parallel or the parallel following code

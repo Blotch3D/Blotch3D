@@ -62,7 +62,7 @@ Shift          - Fine control
 			var terrain = Graphics.LoadFromImageFile("terrain.png", true);
 
 			// The vertices of the surface
-			var SurfaceArray = BlGeometry.CreateSurfaceFromImage(terrain);
+			var SurfaceArray = BlGeometry.CreatePlanarSurfaceFromImage(terrain);
 
 			// Scale it back down to something reasonable
 			var m = Matrix.CreateScale(1, 1, .001f);

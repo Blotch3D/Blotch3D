@@ -72,7 +72,7 @@ Shift          - Fine control
 			});
 
 			// Create the surface vertices
-			var SurfaceArray = BlGeometry.CreatePlanarSurface(data,width,height);
+			var SurfaceArray = BlGeometry.CreatePlanarSurface(data,width);
 
 			// Scale it back down to something reasonable
 			var m = Matrix.CreateScale(1, 1, 5e-8f);
