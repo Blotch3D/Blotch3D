@@ -5,3 +5,4 @@ cd latex
 pdflatex refman.tex
 pdflatex refman.tex
 copy refman.pdf ..\Blotch3DManual.pdf
+pause

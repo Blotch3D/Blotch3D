@@ -241,7 +241,7 @@ namespace Blotch
 		/// </summary>
 		/// <param name="graphicsDevice">The graphics device to use</param>
 		/// <param name="vertices">The triangles to convert to a VertexBuffer</param>
-		/// <returns>The VertexBuffer that contins the triangle list</returns>
+		/// <returns>The VertexBuffer that contains the triangle list</returns>
 		static public VertexBuffer TrianglesToVertexBuffer(GraphicsDevice graphicsDevice, VertexPositionNormalTexture[] vertices)
 		{
 			var vertexBuffer = new VertexBuffer(graphicsDevice, typeof(VertexPositionNormalTexture), vertices.Length, BufferUsage.WriteOnly);
@@ -483,7 +483,7 @@ namespace Blotch
 		/// Calculates one normal for each triangle in an existing 2D array of triangles (NOT a regular grid of points). The normal for each
 		/// triangle is orthogonal to its surface.
 		/// </summary>
-		/// <param name="vertices">A flattened (in row-major order) 2D array of <see langword="virtual"/>(this array is changed to be the putput array)</param>
+		/// <param name="vertices">A flattened (in row-major order) 2D array of triangles (this array is changed to be the putput array)</param>
 		/// <param name="invert">Inverts the normals (typically when viewing faces from the inside)</param>
 		/// <returns>Array with normals calculated</returns>
 		static public VertexPositionNormalTexture[] CalcFacetNormals(
