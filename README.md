@@ -177,8 +177,9 @@ that project), then use the wizard to create your project and add a
 reference to that Blotch3D assembly. For some platforms you may also
 need to do some more research to properly create a project.
 
-To distribute a program, deliver everything in your project's output
-folder.
+To distribute a program for Microsoft Windows, deliver everything in
+your project's output folder. Other platforms require different methods.
+See online for more information.
 
 Development
 ===========
