@@ -168,11 +168,14 @@ reference to the appropriate MonoGame binary (typically in "\\Program
 Files (x86)\\MSBuild\\MonoGame\\v3.0\\\..."). Also add a reference to,
 or the source of, Blotch3D.
 
-To create a project for another platform besides Microsoft Windows,
-generally you follow the same procedure described here but you will need
-to install any Visual Studio add-ons, etc. for the desired platform. For
-example, for Android you'd need the Xamarin for Android add-on. For some
-platforms you may need to do some research to properly create a project.
+To create a project for another platform besides Microsoft Windows:
+First you will need to install any Visual Studio add-ons, etc. for the
+desired platform. For example, for Android you'd need the Xamarin for
+Android add-on. Then use the MonoGame project wizard to create both a
+project for the Blotch3D class library (and add the Blotch3D source to
+that project), then use the wizard to create your project and add a
+reference to that Blotch3D assembly. For some platforms you may also
+need to do some more research to properly create a project.
 
 To distribute a program, deliver everything in your project's output
 folder.
@@ -603,7 +606,8 @@ result in final model vertices of (6,2) and (5,4). In that case we have
 Matrices certainly support translation. But first let's talk about
 moving a vertex *relative to its current position from the origin,*
 because that's what gives matrices the power to shear, rotate, and scale
-a model about the origin. This is because those operations affect each
+a model about the origin. (After such an operation one could then
+translate the model.) This is because those operations affect each
 vertex differently depending on its relationship to the origin.
 
 If we want to scale (stretch) the X relative to the origin, we can
