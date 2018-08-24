@@ -21,7 +21,7 @@ On your development machine ...
 5.  Use IntelliSense to see the reference documentation, or see
     "Blotch3DManual.pdf".
 
-6.  To create a new Blotch3D project, add Blotch3D to an existing
+6.  To create a new Blotch3D project, or add Blotch3D to an existing
     project, or build for another platform, follow the instructions in
     the [Creating a new project](#creating-a-new-project) section.
 
@@ -37,10 +37,13 @@ code you can...
 -   Load standard 3D model file types as "sprites", and display and move
     thousands of them in 3D at high frame rates.
 
+-   Programmatically create a variety of cylindroid and convex sprite
+    types.
+
+-   Create sprites by defining individual polygons.
+
 -   Load textures from standard image files, including textures with an
     alpha channel (i.e. with translucent pixels).
-
--   Programmatically create a variety of models.
 
 -   Set a sprite's material, texture, and lighting response.
 
@@ -69,8 +72,8 @@ code you can...
 
 -   Connect the camera to a sprite to implement 'cockpit view'.
 
--   Implement GUI controls as dynamic 2D text or image rectangles, and
-    with transparent pixels in the 3D window.
+-   Implement GUI controls in the 3D window as dynamic 2D text or image
+    rectangles, and with transparent pixels.
 
 -   Implement a skybox sprite.
 
@@ -91,8 +94,6 @@ code you can...
     equation or an array of height values).
 
 -   Dynamically transform a texture on a surface.
-
--   Create sprite models programmatically (custom vertices).
 
 -   Use with WPF and WinForms, on Microsoft Windows.
 
@@ -121,8 +122,8 @@ documentation, tutorials, examples, and discussions on line.
 
 Reference documentation of Blotch3D (classes, methods, fields,
 properties, etc.) is available through Visual Studio IntelliSense, and
-in "Blotch3DManual.pdf". Note: To support Doxygen, links in the
-IntelliSense comments are preceded with '\#'.
+in "Blotch3DManual.pdf". Note: To support Doxygen documentation
+generator, links in the IntelliSense comments are preceded with '\#'.
 
 See MonoGame.net for the official MonoGame documentation. When searching
 on-line for other MonoGame documentation and discussions, be sure to
@@ -150,12 +151,7 @@ contain an Example.cs, which is similar to the one from the basic
 example but with a few additions to it to demonstrate a certain feature.
 In fact, you can do a diff between the basic Example.cs files and
 another example's source file to see what extra code must be added to
-implement the features it demonstrates \[TBD: the "full" example needs
-to be split to several simpler examples\].
-
-All the provided projects are configured to build for AnyCPU and the
-Microsoft Windows x64 platform. See below for details on other
-platforms.
+implement the features it demonstrates.
 
 Creating a new project
 ======================
@@ -167,7 +163,7 @@ To create a new project from scratch, select File/New/Project/MonoGame,
 and select the type of MonoGame project you want. Then add the source or
 a reference to Blotch3D.
 
-To add MonoGame plus Blotch3D to an existing non-MonoGame project, add a
+To add MonoGame + Blotch3D to an existing non-MonoGame project, add a
 reference to the appropriate MonoGame binary (typically in "\\Program
 Files (x86)\\MSBuild\\MonoGame\\v3.0\\\..."). Also add a reference to,
 or the source of, Blotch3D.
@@ -200,10 +196,10 @@ rule, but we don't use them. This rule also applies to any code
 structure (like Parallel, etc.) that may internally use other threads,
 as well. Also, since sometimes it's hard to know exactly what 3D
 operations really do hit the 3D hardware, its best to assume all of them
-do, like creation and use of Blotch3D and MonoGame objects.
+do, like creation and use of all Blotch3D and MonoGame objects.
 
 You can put all your 3D code in the one overridden method called
-"FrameDraw", if you like, but there are several overridable methods
+"FrameDraw", if you like, but there are some other overridable methods
 provided for your convenience. There is a Setup method that is called
 once at the beginning, a FrameProc method that is called every frame,
 and the FrameDraw method that is called after each FrameProc call only
@@ -271,12 +267,12 @@ By default, lighting, background color, and sprite coloring are set so
 that it is most probable you will see them. These may need to be changed
 after you've verified sprites are properly created and positioned.
 
-All MonoGame features remain available and accessible in Blotch3D, and
-remember that Blotch3D sits on top of MonoGame. For examples:
+All MonoGame features remain available and accessible when using
+Blotch3D, and remember that Blotch3D sits on top of MonoGame. For
+examples:
 
 -   The models you specify for a sprite object (see the BlSprite.LODs
-    field) are MonoGame "Model" objects or a VertexPositionNormalTexture
-    array.
+    field) are MonoGame "Model" or "VertexBuffer" objects.
 
 -   The BlWindow3D class derives from the MonoGame "Game" class. The
     Setup, FrameProc, and FrameDraw methods are called by certain
@@ -296,37 +292,41 @@ with them and you are not otherwise terminating the program.
 See the examples, reference documentation (doc/Blotch3DManual.pdf), and
 IntelliSense for more information.
 
-Making and using 3D resources
-=============================
+Making and using 3D models
+==========================
 
-All 3D resources, like models, texture images, fonts, etc., must be
+You can load 3D model files, or use BlGeometry to make a variety of
+objects programmatically, or define the actual vertices of a model. See
+BlGeometry, and examples that use it, for more information on creating
+models programmatically. See the "full" example for creating a model
+from raw polygons (triangles). The rest of this section discusses
+loading standard 3D model files.
+
+All 3D resource files (like models, fonts, images, etc.) must be
 "compiled" into "XNB" files by MonoGame's *pipeline manager*. (Although
 Blotch3D does provide a way to load an image file directly.)
 
-The Blotch3D project already has a pipeline manager and several models
-that are compiled when Blotch3D is built. If the source to Blotch3D is
-included in your solution, you can use the provided models (the plane,
-various resolution spheres, torus, images, etc.) as is shown in the
-examples without worrying about where the XNB files are. You can also
-just copy the XNB files from the Blotch3D output folder to a project's
-output folder.
+The Blotch3D project already has a pipeline manager and several
+primitive models that are compiled when Blotch3D is built. If the source
+to Blotch3D is included in your solution, you can use the provided
+models (the plane, various resolution spheres, torus, images, etc.) as
+is shown in the examples without worrying about where the XNB files are.
+You can also just copy the XNB files from the Blotch3D output folder to
+a project's output folder.
 
-To create a new model, you can either programmatically create it by
-specifying the vertices and normals (see the 'full' example, that
-creates custom vertices), or create a model with, for example, the
-Blender 3D modeler. You can also instruct Blender to include texture
-(UV) mapping by using one of the countless tutorials online, like
+To create a new model file, use the Blender 3D modeler. You can also
+instruct Blender to include texture (UV) mapping by using one of the
+countless tutorials online, like
 <https://www.youtube.com/watch?v=2xTzJIaKQFY> or
 <https://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/UV_Map_Basics> .
 
-Once a model file is created, it must be compiled to an XNB file by a
-pipeline manager. (The pipeline manager can import several model file
-types.) To do this, you can either add that standard model file to the
-pipeline manager in the Blotch3D project (double-click the Content.mgcb
-file in the Blotch3D project. See
-<http://rbwhitaker.wikidot.com/monogame-managing-content> for details.)
-so that it gets compiled next time Blotch3D is built, or you could make
-sure the resource is added to a pipeline manager in your own project.
+To use the pipeline manager to compile the model into an XNB file, you
+can either add that standard model file to the pipeline manager in the
+Blotch3D project (double-click the Content.mgcb file in the Blotch3D
+project. See <http://rbwhitaker.wikidot.com/monogame-managing-content>
+for details.) so that it gets compiled next time Blotch3D is built, or
+you could make sure the resource is added to a pipeline manager in your
+own project.
 
 When you create a MonoGame project from scratch, a Content.mgcb file is
 added to the project by the MonoGame project wizard, and you can start
