@@ -16,15 +16,17 @@ namespace Blotch
 	/// and VertexBuffers. You can concatenate multiple vertex arrays to produce one vertex array, and you can
 	/// concatentate multiple triangle arrays to produce one triangle array. You can transform either type of
 	/// array with TransformMesh. You can create facet or smooth normals. You can set texture (UV) coordinates.
-	/// Finally, you can convert a triangle array to a VertexBuffer suitable for adding to BlSprite.LODs.
+	/// Finally, you can convert a triangle array to a VertexBuffer suitable for adding to a BlSprite.LODs field.
 	/// </summary>
 	public class BlGeometry
 	{
 		static Random Rand = new Random();
 
 		/// <summary>
-		/// Creates a square in XY but with variation of its Z depending on the pixels in a heightfield image.
-		/// Returns a triangle array. Also see #CreatePlanarMeshSurface.
+		/// Creates a square surface in XY but with variation of its Z depending on the pixels in an image (heightfield).
+		/// Returns a triangle array. Because the X and Y dimensions of the surface are 1 and because a pixel value of
+		/// '1' moves the height up by 1, you will probably want to call TransformMesh on the triangle array so that the
+		/// width, depth, and height are more reasonable. Also see #CreatePlanarMeshSurface.
 		/// </summary>
 		/// <param name="tex">The texture that represents the height (Z) of each vertex.</param>
 		/// <param name="mirrorY">If true, then invert image's Y dimension</param>
@@ -59,9 +61,10 @@ namespace Blotch
 			return CreatePlanarSurface(pixels, width, mirrorY, smooth, noiseLevel);
 		}
 		/// <summary>
-		/// Creates a square in XY but with variation of its Z depending on the elements of an int array of height values.
-		/// Returns a triangle array. Also
-		/// see #CreateMeshSurfaceFromImage.
+		/// Creates a square 1x1 surface in XY but with variation of its Z depending on the elements of an int array of height values.
+		/// Returns a triangle array. Because the X and Y dimensions of the surface are 1 and because a heightMap element value of
+		/// '1' moves the height up by 1, you will probably want to call TransformMesh on the triangle array so that the
+		/// width, depth, and height are more reasonable. Also see #CreateMeshSurfaceFromImage.
 		/// numY is assumed to be heightMap.Length/numX.
 		/// </summary>
 		/// <param name="heightMap">A flattened array (in row-major order) of vertex heights</param>
@@ -98,16 +101,15 @@ namespace Blotch
 
 		/// <summary>
 		/// Creates a cylindroid (including texture coords and normals) with the given parameters, and
-		/// returns a triangle array..
+		/// returns a triangle array.
 		/// With a subsequent call to TransformMesh, parameters can be defined to
 		/// produce a cylinder, cone, washer, disk, vertical prism of any number of facets, vertical tetrahedron, vertical
 		/// pyramid of any number of facets, and many other shapes. End caps can be generated separately
-		/// and added to the resulting triangle array.
+		/// and added to the resulting triangle array. For some shapes you may also want to re-calculate normals with
+		/// CalcSmoothMeshNormals or CalcFacetNormals. And use the ScaleNormals method to invert them, as needed.
 		/// If a heightMap is specified, the resulting model can be any convex shape.
 		/// Before passing the result to TransformMesh,
 		/// the center of the cylindroid is the origin, the diameter of the base is 1, and the diameter of the top is topDiameter.
-		/// Note: If it is conical, texture mapping will
-		/// look better if numVertVertices is closer to the value of numHorizVertices.
 		/// </summary>
 		/// <param name="numHorizVertices">The number of horizontal vertices in a row</param>
 		/// <param name="numVertVertices">The number of vertical vertices in a column</param>
@@ -152,7 +154,7 @@ namespace Blotch
 
 		/// <summary>
 		/// Like CreateCylindroidMeshSurface, but returns the vertices rather than a triangle list, and doesn't calculate the
-		/// normals.
+		/// normals, so you'll need to do that separately with the appropriate functions.
 		/// </summary>
 		/// <param name="numX">The number of X elements in a row</param>
 		/// <param name="numY">The number of Y elements in a column</param>

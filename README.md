@@ -174,8 +174,8 @@ desired platform. For example, for Android you'd need the Xamarin for
 Android add-on. Then use the MonoGame project wizard to create both a
 project for the Blotch3D class library (and add the Blotch3D source to
 that project), then use the wizard to create your project and add a
-reference to that Blotch3D assembly. For some platforms you may also
-need to do some more research to properly create a project.
+reference to Blotch3D. For some platforms you may also need to do some
+more research to properly create a project.
 
 To distribute a program for Microsoft Windows, deliver everything in
 your project's output folder. Other platforms require different methods.
@@ -272,11 +272,10 @@ that it is most probable you will see them. These may need to be changed
 after you've verified sprites are properly created and positioned.
 
 All MonoGame features remain available and accessible when using
-Blotch3D, and remember that Blotch3D sits on top of MonoGame. For
-examples:
+Blotch3D. For examples:
 
--   The models you specify for a sprite object (see the BlSprite.LODs
-    field) are MonoGame "Model" or "VertexBuffer" objects.
+-   The Models and VertexBuffers that you can add to BlSprite.LODs are
+    MonoGame objects.
 
 -   The BlWindow3D class derives from the MonoGame "Game" class. The
     Setup, FrameProc, and FrameDraw methods are called by certain
@@ -290,8 +289,9 @@ examples:
 
 -   All other MonoGame features are available, like audio, etc.
 
-Remember that most Blotch3D objects must be Disposed when you are done
-with them and you are not otherwise terminating the program.
+Remember that most Blotch3D and MonoGame objects must be Disposed when
+you are done with them and you are not otherwise terminating the
+program.
 
 See the examples, reference documentation (doc/Blotch3DManual.pdf), and
 IntelliSense for more information.
@@ -299,79 +299,48 @@ IntelliSense for more information.
 Making and using 3D models
 ==========================
 
-You can load 3D model files, or use BlGeometry to make a variety of
-objects programmatically, or define the actual vertices of a model. See
-BlGeometry, and examples that use it, for more information on creating
-models programmatically. See the "full" example for creating a model
-from raw polygons (triangles). The rest of this section discusses
-loading standard 3D model files.
+You can use the BlGeometry class to make a variety of objects
+programmatically. See the examples and that class for more information.
+A few primitive models are also included with Blotch3D. They can be used
+as is done in the examples if the Blotch3D project is included in your
+solution.
 
-All 3D resource files (like models, fonts, images, etc.) must be
-"compiled" into "XNB" files by MonoGame's *pipeline manager*. (Although
-Blotch3D does provide a way to load an image file directly.)
+You can also convert standard 3D model files, fonts, etc. to "XNB" files
+for use by your MonoGame project. The MonoGame "pipeline manager" is
+used to make this conversion.
 
-The Blotch3D project already has a pipeline manager and several
-primitive models that are compiled when Blotch3D is built. If the source
-to Blotch3D is included in your solution, you can use the provided
-models (the plane, various resolution spheres, torus, images, etc.) as
-is shown in the examples without worrying about where the XNB files are.
-You can also just copy the XNB files from the Blotch3D output folder to
-a project's output folder.
+The Blotch3D project is already set up with the pipeline manager and
+several primitive models that are converted to XNB files when Blotch3D
+is built. If the source to Blotch3D is included in your solution, you
+can use those XNB file (the plane, various resolution spheres, torus,
+images, etc.) as is shown in the examples without worrying about where
+the XNB files are. You can double-click "Content.mgcb" in the Blotch
+project to add more standard files and resource. You can also copy an
+XNB files to a project's output folder, where the program can load it.
+
+When you create a new MonoGame project with the wizard, it sets up a
+"Content.mgcb" file in the new project that manages your content and
+runs the MonoGame pipeline manager as needed or when you double-click
+"Content.mgcb" to add more content.
+
+That's fine for projects created with the project wizard. But it is a
+pain to add this feature to existing non-MonoGame projects, and
+certainly not necessary.
+
+Since typically such standard resources need to be converted to XNB
+files only once, one can consider it a separate manual step that should
+be done immediately after creating/choosing the standard resource during
+development. For example, after creating a 3D model with a 3D modeler,
+run it through the pipeline manager to create your XNB file. Then add
+that XNB file to your project and set its project properties so it is
+copied to the output folder for loading at run time. See
+<http://www.monogame.net/documentation/?page=MGCB> for more information.
 
 To create a new model file, use the Blender 3D modeler. You can also
 instruct Blender to include texture (UV) mapping by using one of the
 countless tutorials online, like
 <https://www.youtube.com/watch?v=2xTzJIaKQFY> or
 <https://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/UV_Map_Basics> .
-
-To use the pipeline manager to compile the model into an XNB file, you
-can either add that standard model file to the pipeline manager in the
-Blotch3D project (double-click the Content.mgcb file in the Blotch3D
-project. See <http://rbwhitaker.wikidot.com/monogame-managing-content>
-for details.) so that it gets compiled next time Blotch3D is built, or
-you could make sure the resource is added to a pipeline manager in your
-own project.
-
-When you create a MonoGame project from scratch, a Content.mgcb file is
-added to the project by the MonoGame project wizard, and you can start
-the pipeline manager by double-clicking that file. If you have a project
-without a Content.mgcb file and you want it to have one, then do the
-following...
-
-1.  Copy the Content folder from the Blotch3D project folder (or any
-    other MonoGame project with a content folder) to your project folder
-
-2.  Add the "Content.mgcb" file in that folder to your project
-
-3.  Right-click it and select "Properties"
-
-4.  Set the "Build Action" to "MonoGameContentReference"
-
-If the "MonoGameContentReference" build option is not available in the
-drop-down (for example, because the project wasn't originally created by
-the MonoGame wizard), then try this:
-
-(from
-<http://www.infinitespace-studios.co.uk/general/monogame-content-pipeline-integration/>)
-
-1.  Open your application .csproj in a text Editor.
-
-2.  In the first \<PropertyGroup\> section
-    add \<MonoGamePlatform\>\$(Platform)\</MonoGamePlatform\>, where
-    \$(Platform) is the system you are targeting e.g. Windows, iOS,
-    Android. For example:
-    \<MonoGamePlatform\>Windows\</MonoGamePlatform\>
-
-3.  Add the following lines right underneath the \<MonoGamePlatform /\>
-    element:
-    \<MonoGameInstallDirectory Condition=\"\'\$(OS)\' != \'Unix\' \"\>\$(MSBuildProgramFiles32)\</MonoGameInstallDirectory\>
-
-    \<MonoGameInstallDirectory Condition=\"\'\$(OS)\' == \'Unix\' \"\>\$(MSBuildExtensionsPath)\</MonoGameInstallDirectory\>
-
-4.  Find the \<Import/\> element for the CSharp (or FSharp) targets and
-    underneath add:
-
-    \<Import Project=\"\$(MSBuildExtensionsPath)\\MonoGame\\v3.0\\MonoGame.Content.Builder.targets\" /\>
 
 Custom effects
 ==============
