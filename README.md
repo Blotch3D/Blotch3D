@@ -178,8 +178,8 @@ reference to Blotch3D. For some platforms you may also need to do some
 more research to properly create a project.
 
 To distribute a program for Microsoft Windows, deliver everything in
-your project's output folder. Other platforms require different methods.
-See online for more information.
+your project's output folder. Other platforms may require different
+delivery methods. See online for more information.
 
 Development
 ===========
@@ -310,7 +310,7 @@ for use by your MonoGame project. The MonoGame "pipeline manager" is
 used to make this conversion.
 
 The Blotch3D project is already set up with the pipeline manager to
-convert the several primitive models it has to XNB files when Blotch3D
+convert the several primitive models it has, to XNB files when Blotch3D
 is built. You can double-click "Content.mgcb" in the Blotch project to
 add more standard files and resources. You can also copy an XNB files to
 a project's output folder, where the program can load it.

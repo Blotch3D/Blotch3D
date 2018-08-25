@@ -100,25 +100,29 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// Creates a cylindroid (including texture coords and normals) with the given parameters, and
-		/// returns a triangle array.
-		/// With a subsequent call to TransformMesh, parameters can be defined to
-		/// produce a cylinder, cone, washer, disk, vertical prism of any number of facets, vertical tetrahedron, vertical
-		/// pyramid of any number of facets, and many other shapes. End caps can be generated separately
-		/// and added to the resulting triangle array. For some shapes you may also want to re-calculate normals with
-		/// CalcSmoothMeshNormals or CalcFacetNormals. And use the ScaleNormals method to invert them, as needed.
-		/// If a heightMap is specified, the resulting model can be any convex shape.
-		/// Before passing the result to TransformMesh,
-		/// the center of the cylindroid is the origin, the diameter of the base is 1, and the diameter of the top is topDiameter.
+		/// Creates a cylindroid (including texture coords and normals) with the given parameters, and returns
+		/// a triangle array. Assuming a possible subsequent call to TransformMesh, many fundamental rotationally
+		/// symmetric shapes can be generated, like a cylinder, cone, washer, disk, prism of any number of facets,
+		/// tetrahedron, pyramid of any number of facets, etc. If no heightMap is specified and before passing the
+		/// result to TransformMesh, the center of the cylindroid is the origin, its height is 1, the diameter of
+		/// the base is 1, and the diameter of the top is topDiameter. If heightMap is specified, it is mapped onto
+		/// the object such that the heightMap X wraps around horizontally and the heightMap Y maps to the height (Z)
+		/// of the object. A corresponding heightMap element divided by 1e4 is added to the parameterized diameter
+		/// at the corresponding point. For example, if the topDiameter is equal to 2, then the parameterized
+		/// diameter without a heightField at the halfway point is 1.5 (half way between a bottom diameter of 1 and
+		/// top diameter of 2), but if the corresponding heightField value at that position is -2e3, then the
+		/// diameter at that point is 1.5 + -2e3/1e4 = 1.3. Multiple triangle arrays can be concatenated. For some
+		/// shapes you may also want to re-calculate normals with CalcFacetNormals (for example, if the the
+		/// sunsequent transform caused some normals to become invalid), and/or use ScaleNormals method to
+		/// invert them, where needed.
 		/// </summary>
 		/// <param name="numHorizVertices">The number of horizontal vertices in a row</param>
 		/// <param name="numVertVertices">The number of vertical vertices in a column</param>
-		/// <param name="topDiameter">Diameter of top of cylindroid</param>
+		/// <param name="topDiameter">Diameter of top of cylindroid (if heightMap==null)</param>
 		/// <param name="facetedNormals">If true, create normals per triangle. If false, create smooth normals</param>
-		/// <param name="heightMap">If specified, then this is mapped onto the cylindroid, and the value of each element
-		/// divided by 1e4 is then added to the
-		/// current 'diameter' of the corresponding pixel. This is a flattened (row-major) array and must have the
-		/// dimensions numHorizVertices x numVertVertices.</param>
+		/// <param name="heightMap">If not null, then this is mapped onto the surface to modify the diameter. See method
+		/// description for details. This must be a flattened (row-major) array and must have the dimensions
+		/// numHorizVertices x numVertVertices.</param>
 		/// <returns>A triangle list of the cylindroid</returns>
 		static public VertexPositionNormalTexture[] CreateCylindroidMeshSurface
 		(
@@ -144,7 +148,7 @@ namespace Blotch
 
 			if (facetedNormals)
 			{
-				// calculate each vertex normal from the adjacent vertices.
+				// calculate each vertex normal from the associated triangle.
 				triangles = CalcFacetNormals(triangles);
 			}
 
@@ -158,11 +162,8 @@ namespace Blotch
 		/// </summary>
 		/// <param name="numX">The number of X elements in a row</param>
 		/// <param name="numY">The number of Y elements in a column</param>
-		/// <param name="topDiameter">Diameter of top of cylindroid</param>
-		/// <param name="heightMap">If specified, then this is mapped onto the cylindroid, and the value of each element
-		/// divided by 1e4 is then added to the
-		/// current 'diameter' of the corresponding pixel. This is a flattened (row-major) array and must have the
-		/// dimensions numHorizVertices x numVertVertices.</param>
+		/// <param name="topDiameter">Diameter of top of cylindroid (if heightMap==null)</param>
+		/// <param name="heightMap">See CreateCylindroidMeshSurface</param>
 		/// <returns>A list of the cylindroid's vertices</returns>
 		static public VertexPositionNormalTexture[] CalcCylindroidVerticesAndTexcoords
 		(
