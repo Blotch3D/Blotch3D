@@ -309,14 +309,11 @@ You can also convert standard 3D model files, fonts, etc. to "XNB" files
 for use by your MonoGame project. The MonoGame "pipeline manager" is
 used to make this conversion.
 
-The Blotch3D project is already set up with the pipeline manager and
-several primitive models that are converted to XNB files when Blotch3D
-is built. If the source to Blotch3D is included in your solution, you
-can use those XNB file (the plane, various resolution spheres, torus,
-images, etc.) as is shown in the examples without worrying about where
-the XNB files are. You can double-click "Content.mgcb" in the Blotch
-project to add more standard files and resource. You can also copy an
-XNB files to a project's output folder, where the program can load it.
+The Blotch3D project is already set up with the pipeline manager to
+convert the several primitive models it has to XNB files when Blotch3D
+is built. You can double-click "Content.mgcb" in the Blotch project to
+add more standard files and resources. You can also copy an XNB files to
+a project's output folder, where the program can load it.
 
 When you create a new MonoGame project with the wizard, it sets up a
 "Content.mgcb" file in the new project that manages your content and
@@ -327,13 +324,14 @@ That's fine for projects created with the project wizard. But it is a
 pain to add this feature to existing non-MonoGame projects, and
 certainly not necessary.
 
-Since typically such standard resources need to be converted to XNB
+Since typically such standard file types need to be converted to XNB
 files only once, one can consider it a separate manual step that should
 be done immediately after creating/choosing the standard resource during
 development. For example, after creating a 3D model with a 3D modeler,
-run it through the pipeline manager to create your XNB file. Then add
-that XNB file to your project and set its project properties so it is
-copied to the output folder for loading at run time. See
+run it through the pipeline manager to create your XNB file, such as the
+one available from the Blotch3D project. Then add that XNB file to your
+project and set its project properties so it is copied to the output
+folder for loading at run time. See
 <http://www.monogame.net/documentation/?page=MGCB> for more information.
 
 To create a new model file, use the Blender 3D modeler. You can also
