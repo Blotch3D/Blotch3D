@@ -10,12 +10,13 @@ using Microsoft.Xna.Framework.Input;
 namespace Blotch
 {
 	/// <summary>
-	/// Methods and helpers for creating various geometric objects. These methods create and manage vertex
-	/// array meshes (as a flattened row-major VertexPositionNormalTexture[]), triangle arrays (also as a flattened
-	/// row-major VertexPositionNormalTexture[]), and VertexBuffers. You can concatenate multiple vertex
-	/// arrays to produce one vertex array, and you can concatentate multiple triangle arrays to produce one
-	/// triangle array. You can transform either type of array with TransformMesh. You can create facet or
-	/// smooth normals. You can set texture (UV) coordinates. You can convert a vertex array to a triangle
+	/// Methods and helpers for creating various geometric objects. These methods create and manage regular
+	/// grids of vertices as a flattened row-major VertexPositionNormalTexture[], triangle arrays
+	/// (also as a flattened row-major VertexPositionNormalTexture[]), and VertexBuffers. You can concatenate
+	/// multiple regular grids to produce one regular grid if they have the same number of columns, and you can
+	/// concatentate multiple triangle arrays to produce one triangle array. You can transform either type of
+	/// array with TransformVertices. You can create smooth normals for a regular grid and facet normals for a
+	/// triangle array. You can set texture (UV) coordinates. You can convert a regular grid to a triangle
 	/// array. Finally, you can convert a triangle array to a VertexBuffer suitable for adding to a
 	/// BlSprite.LODs field.
 	/// </summary>
@@ -26,8 +27,8 @@ namespace Blotch
 		/// <summary>
 		/// Creates a square 1x1 surface in XY but with variation of its Z depending on the pixels in an image (heightfield).
 		/// Returns a triangle array. Because the X and Y dimensions of the surface are 1 and because a pixel value of
-		/// '1' moves the height up by 1, you will probably want to call TransformMesh on the triangle array so that the
-		/// width, depth, and height are more reasonable. Also see #CreatePlanarMeshSurface.
+		/// '1' moves the height up by 1, you will probably want to call TransformVertices on the triangle array so that the
+		/// width, depth, and height are more reasonable. Also see #CreatePlanarSurface.
 		/// </summary>
 		/// <param name="tex">The texture that represents the height (Z) of each vertex.</param>
 		/// <param name="mirrorY">If true, then invert image's Y dimension</param>
@@ -64,8 +65,8 @@ namespace Blotch
 		/// <summary>
 		/// Creates a square 1x1 surface in XY but with variation of its Z depending on the elements of an int array of height values.
 		/// Returns a triangle array. Because the X and Y dimensions of the surface are 1 and because a heightMap element value of
-		/// '1' moves the height up by 1, you will probably want to call TransformMesh on the triangle array so that the
-		/// width, depth, and height are more reasonable. Also see #CreateMeshSurfaceFromImage.
+		/// '1' moves the height up by 1, you will probably want to call TransformVertices on the triangle array so that the
+		/// width, depth, and height are more reasonable. Also see #CreateSurfaceFromImage.
 		/// numY is assumed to be heightMap.Length/numX.
 		/// </summary>
 		/// <param name="heightMap">A flattened array (in row-major order) of vertex heights</param>
@@ -89,23 +90,23 @@ namespace Blotch
 				throw new Exception("BlGeometry.CreatePlanarSurface: length of heightMap array not divisible by numX");
 
 			// calc Position and textureCoordinates per vertex
-			var mesh = CalcPlanarVerticesAndTexcoords(heightMap, numX, noiseLevel, mirrorY, smooth);
+			var grid = CalcPlanarVerticesAndTexcoords(heightMap, numX, noiseLevel, mirrorY, smooth);
 
 			// calculate each vertex normal from the adjacent vertices.
-			CalcSmoothMeshNormals(mesh, numX);
+			CalcSmoothNormals(grid, numX);
 
 			// create triangles
-			var triangles = VerticesToTriangles(mesh, numX);
+			var triangles = VerticesToTriangles(grid, numX);
 
 			return triangles;
 		}
 
 		/// <summary>
 		/// Creates a cylindroid (including texture coords and normals) with the given parameters, and returns
-		/// a triangle array. Assuming a possible subsequent call to TransformMesh, many fundamental rotationally
+		/// a triangle array. Assuming a possible subsequent call to TransformVertices, many fundamental rotationally
 		/// symmetric shapes can be generated, like a cylinder, cone, washer, disk, prism of any number of facets,
 		/// tetrahedron, pyramid of any number of facets, etc. If no heightMap is specified and before passing the
-		/// result to TransformMesh, the center of the cylindroid is the origin, its height is 1, the diameter of
+		/// result to TransformVertices, the center of the cylindroid is the origin, its height is 1, the diameter of
 		/// the base is 1, and the diameter of the top is topDiameter. If heightMap is specified, it is mapped onto
 		/// the object such that the heightMap X wraps around horizontally and the heightMap Y maps to the height (Z)
 		/// of the object. A corresponding heightMap element divided by 1e4 is added to the parameterized diameter
@@ -125,7 +126,7 @@ namespace Blotch
 		/// description for details. This must be a flattened (row-major) array and must have the dimensions
 		/// numHorizVertices x numVertVertices.</param>
 		/// <returns>A triangle list of the cylindroid</returns>
-		static public VertexPositionNormalTexture[] CreateCylindroidMeshSurface
+		static public VertexPositionNormalTexture[] CreateCylindroidSurface
 		(
 			int numHorizVertices=32,
 			int numVertVertices=2,
@@ -136,16 +137,16 @@ namespace Blotch
 		{
 			numHorizVertices++;
 			// calc Position and textureCoordinates per vertex
-			var mesh = CalcCylindroidVerticesAndTexcoords(numHorizVertices, numVertVertices, topDiameter, heightMap);
+			var grid = CalcCylindroidVerticesAndTexcoords(numHorizVertices, numVertVertices, topDiameter, heightMap);
 
 			if(!facetedNormals)
 			{
 				// calculate each vertex normal from the adjacent vertices.
-				mesh = CalcSmoothMeshNormals(mesh, numHorizVertices, true);
+				grid = CalcSmoothNormals(grid, numHorizVertices, true);
 			}
 
 			// create triangles
-			var triangles = VerticesToTriangles(mesh, numHorizVertices);
+			var triangles = VerticesToTriangles(grid, numHorizVertices);
 
 			if (facetedNormals)
 			{
@@ -153,18 +154,17 @@ namespace Blotch
 				triangles = CalcFacetNormals(triangles);
 			}
 
-
 			return triangles;
 		}
 
 		/// <summary>
-		/// Like CreateCylindroidMeshSurface, but returns the vertices rather than a triangle list, and doesn't calculate the
-		/// normals, so you'll need to do that separately with the appropriate functions.
+		/// Like CreateCylindroidSurface, but returns a regular grid rather than a triangle list, and
+		/// doesn't calculate the normals, so you'll need to do that separately with the appropriate functions.
 		/// </summary>
 		/// <param name="numX">The number of X elements in a row</param>
 		/// <param name="numY">The number of Y elements in a column</param>
 		/// <param name="topDiameter">Diameter of top of cylindroid (if heightMap==null)</param>
-		/// <param name="heightMap">See CreateCylindroidMeshSurface</param>
+		/// <param name="heightMap">See CreateCylindroidSurface</param>
 		/// <returns>A list of the cylindroid's vertices</returns>
 		static public VertexPositionNormalTexture[] CalcCylindroidVerticesAndTexcoords
 		(
@@ -174,7 +174,7 @@ namespace Blotch
 			int[] heightMap = null
 		)
 		{
-			var mesh = new VertexPositionNormalTexture[numX * numY];
+			var grid = new VertexPositionNormalTexture[numX * numY];
 			for (int x=0;x<numX;x++)
 			{
 				for (int y = 0; y < numY; y++)
@@ -199,24 +199,24 @@ namespace Blotch
 					yord = -Math.Cos(angle) * diameter;
 
 					var i = x + y * numX;
-					mesh[i].Position.X = (float)xord;
-					mesh[i].Position.Y = (float)yord;
-					mesh[i].Position.Z = (float)zord-.5f;
+					grid[i].Position.X = (float)xord;
+					grid[i].Position.Y = (float)yord;
+					grid[i].Position.Z = (float)zord-.5f;
 
-					mesh[i].TextureCoordinate.X = (float)offsetX;
-					mesh[i].TextureCoordinate.Y = (float)zord;
+					grid[i].TextureCoordinate.X = (float)offsetX;
+					grid[i].TextureCoordinate.Y = (float)zord;
 				}
 			}
-			return mesh;
+			return grid;
 		}
 
 		/// <summary>
-		///  Given a regular 2D array of vertices, return an array of triangles.
+		///  Given a regular grid of vertices, return an array of triangles.
 		///  numY is assumed to be the length of vertices/numX.
 		/// </summary>
 		/// <param name="vertices">A flattened 2D (in row-major order) array of points</param>
 		/// <param name="numX">The number of X elements in a row</param>
-		/// <returns>Triangle mesh</returns>
+		/// <returns>Triangle array</returns>
 		static public VertexPositionNormalTexture[] VerticesToTriangles(
 			VertexPositionNormalTexture[] vertices,
 			int numX
@@ -266,33 +266,32 @@ namespace Blotch
 			return vertexBuffer;
 		}
 		/// <summary>
-		/// Transforms the vertices of the mesh (including transforming the transpose of the inverse of each normal) according
-		/// to the specified matrix.
-		/// You can pass an array of points or an array of triangles.
-		/// If its an array of triangles, you will probably want to call CullEmptyTriangles (if the transform might cause some triangles
-		/// to have zero area) and maybe CalcSmoothNormals or
-		/// CalcFaceNormals afterward, because transforming can sometimes cause normals to be invalid or point the wrong way, causing the
-		/// surface to be black or the wrong brightness.
+		/// Transforms a regular grid or triangle array (including transforming the transpose of the inverse of each
+		/// normal) according to the specified matrix.
+		/// If its an array of triangles, you will probably want to call CullEmptyTriangles if the transform might
+		/// cause some triangles to have zero area, and maybe CalcSmoothNormals (for regular grids) or CalcFaceNormals
+		/// (for tiangles) afterward if the transform might cause normals to be invalid or point the wrong
+		/// way, causing the surface to be black or the wrong brightness (typically when a dimenson is scaled to zero).
 		/// </summary>
-		/// <param name="mesh">Input mesh (This is altered by the method)</param>
+		/// <param name="vertices">Input array (this is altered by the method)</param>
 		/// <param name="matrix">Transformation matrix</param>
-		/// <returns>The transformed mesh</returns>
-		static public VertexPositionNormalTexture[] TransformMesh(VertexPositionNormalTexture[] mesh, Matrix matrix)
+		/// <returns>The transformed array</returns>
+		static public VertexPositionNormalTexture[] TransformVertices(VertexPositionNormalTexture[] vertices, Matrix matrix)
 		{
-			var len = mesh.Length;
+			var len = vertices.Length;
 			Parallel.For(0, len, (n) =>
 			{
-				mesh[n].Position = Vector3.Transform(mesh[n].Position, matrix);
-				mesh[n].Normal = Vector3.Transform(mesh[n].Normal, Matrix.Transpose(Matrix.Invert(matrix)));
+				vertices[n].Position = Vector3.Transform(vertices[n].Position, matrix);
+				vertices[n].Normal = Vector3.Transform(vertices[n].Normal, Matrix.Transpose(Matrix.Invert(matrix)));
 			});
 
-			return mesh;
+			return vertices;
 		}
 
 		/// <summary>
 		/// Removes triangles that have zero area. Typically called after a transform.
 		/// </summary>
-		/// <param name="triangles">The input triangles (i.e. NOT a regular mesh</param>
+		/// <param name="triangles">The input triangles (i.e. NOT a regular grid)</param>
 		/// <returns>Output triangles</returns>
 		static public VertexPositionNormalTexture[] CullEmptyTriangles(VertexPositionNormalTexture[] triangles)
 		{
@@ -302,7 +301,7 @@ namespace Blotch
 
 			var numTris = len / 3;
 			if (numTris * 3 != triangles.Length)
-				throw new Exception("BlGeometry.TransformMesh expected triangles, but the number of vertices are not divisible by three.");
+				throw new Exception("BlGeometry.TransformVertices expected triangles, but the number of vertices are not divisible by three.");
 
 			for (int n = 0; n < numTris; n++)
 			{
@@ -318,28 +317,28 @@ namespace Blotch
 
 			len = newList.Count;
 
-			var newMesh = new VertexPositionNormalTexture[len];
+			var newTriangles = new VertexPositionNormalTexture[len];
 
 			for (int n = 0; n < len; n++)
 			{
-				newMesh[n] = newList[n];
+				newTriangles[n] = newList[n];
 			}
-			return newMesh;
+			return newTriangles;
 		}
 
 		/// <summary>
-		/// For a regular mesh (i.e. NOT triangles), calculates a normal for each point in the mesh. The normal for a given point
+		/// For a regular grid (i.e. NOT triangles), calculates a normal for each point in the grid. The normal for a given point
 		/// is an average of the normals of the (typically eight) triangles that the vertex would participates in. (The
 		/// triangles have not yet been separated-out.)
 		/// numY is assumed to be vertices.Length/numX.
 		/// </summary>
-		/// <param name="vertices">A flattened (in row-major order) 2D array of vertices (this method may change the contents of this mesh)</param>
+		/// <param name="vertices">A flattened (in row-major order) 2D array of vertices (this method may change the contents of this grid)</param>
 		/// <param name="numX">The number of X elements in a row</param>
 		/// <param name="xIsWrapped">Include the row-wrapped ponts in the calculation of normals on the row edge.
 		/// Closed cylindroids where x is wrapped would need this.</param>
 		/// <param name="invert">Inverts the normals (typically when viewing faces from the inside)</param>
-		/// <returns>The input mesh with smooth normals added</returns>
-		static public VertexPositionNormalTexture[] CalcSmoothMeshNormals(
+		/// <returns>The input grid with smooth normals added</returns>
+		static public VertexPositionNormalTexture[] CalcSmoothNormals(
 			VertexPositionNormalTexture[] vertices,
 			int numX,
 			bool xIsWrapped=false,
@@ -349,7 +348,7 @@ namespace Blotch
 			var numY = vertices.Length / numX;
 
 			if (numY * numX != vertices.Length)
-				throw new Exception("BlGeometry.CalcSmoothMeshNormals: length of vertices array not divisible by numX");
+				throw new Exception("BlGeometry.CalcSmoothNormals: length of vertices array not divisible by numX");
 
 			//for(int x=0;x<numX;x++)
 			Parallel.For(0, numX, (x) =>

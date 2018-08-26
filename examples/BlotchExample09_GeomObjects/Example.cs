@@ -53,7 +53,7 @@ Shift          - Fine control
 			Font = MyContent.Load<SpriteFont>("Arial14");
 
 			// The model
-			var geoModel = BlGeometry.CreateCylindroidMeshSurface(32,2,.7);
+			var geoModel = BlGeometry.CreateCylindroidSurface(32,2,.7);
 
 			// Uncomment this to transform it
 			//geoModel = BlGeometry.TransformMesh(geoModel, Matrix.CreateScale(1, 1, .2f));

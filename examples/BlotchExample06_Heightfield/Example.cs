@@ -66,7 +66,7 @@ Shift          - Fine control
 
 			// Scale it back down to something reasonable
 			var m = Matrix.CreateScale(1, 1, .001f);
-			SurfaceArray = BlGeometry.TransformMesh(SurfaceArray, m);
+			SurfaceArray = BlGeometry.TransformVertices(SurfaceArray, m);
 
 			// convert to vertex buffer
 			var vertexBuf = BlGeometry.TrianglesToVertexBuffer(Graphics.GraphicsDevice, SurfaceArray);
