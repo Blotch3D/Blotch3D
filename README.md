@@ -37,8 +37,7 @@ code you can...
 -   Load standard 3D model file types as "sprites", and display and move
     thousands of them in 3D at high frame rates.
 
--   Programmatically create a variety of cylindroid and convex sprite
-    types.
+-   Programmatically create a variety of sprite shapes.
 
 -   Create sprites by defining individual polygons.
 
