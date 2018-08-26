@@ -56,7 +56,7 @@ Shift          - Fine control
 			var geoModel = BlGeometry.CreateCylindroidSurface(32,2,.7);
 
 			// Uncomment this to transform it
-			//geoModel = BlGeometry.TransformMesh(geoModel, Matrix.CreateScale(1, 1, .2f));
+			//geoModel = BlGeometry.TransformVertices(geoModel, Matrix.CreateScale(1, 1, .2f));
 
 			// Uncomment this to generate face normals (for example, if the previous transform totally flattened the model)
 			//geoModel = BlGeometry.CalcFacetNormals(geoModel);
