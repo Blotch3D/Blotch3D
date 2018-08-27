@@ -56,9 +56,7 @@ Shift          - Fine control
 			var width = 128;
 			var height = 128;
 
-			var totalVertices = width * height;
-
-			var data = new int[totalVertices];
+			var data = new int[width,height];
 
 			/// Calc each height
 			Parallel.For (0, width, (x) =>
@@ -67,12 +65,12 @@ Shift          - Fine control
 				{
 					// The '1e6' makes sure we use a lot more resolution of the int
 					var v = (int)(1e6*(Math.Sin(((x-width/2) * (y-height/2)) / 300.0)+1));
-					data[x + width * y] = v;
+					data[x,y] = v;
 				});
 			});
 
 			// Create the surface vertices
-			var SurfaceArray = BlGeometry.CreatePlanarSurface(data,width);
+			var SurfaceArray = BlGeometry.CreatePlanarSurface(data);
 
 			// Scale it back down to something reasonable
 			var m = Matrix.CreateScale(1, 1, 5e-8f);

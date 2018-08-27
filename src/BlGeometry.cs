@@ -62,12 +62,44 @@ namespace Blotch
 
 			return CreatePlanarSurface(pixels, width, mirrorY, smooth, noiseLevel);
 		}
+
 		/// <summary>
 		/// Creates a square 1x1 surface in XY but with variation of its Z depending on the elements of an int array of height values.
 		/// Returns a triangle array. Because the X and Y dimensions of the surface are 1 and because a heightMap element value of
 		/// '1' moves the height up by 1, you will probably want to call TransformVertices on the triangle array so that the
 		/// width, depth, and height are more reasonable. Also see #CreateSurfaceFromImage.
 		/// numY is assumed to be heightMap.Length/numX.
+		/// </summary>
+		/// <param name="heightMap">A 2D array of vertex heights</param>
+		/// <param name="mirrorY">Whether to invert Y</param>
+		/// <param name="smooth">Whether to apply a 3x3 gaussian smoothing kernel, or not</param>
+		/// <param name="noiseLevel">How much noise to add</param>
+		/// <returns></returns>
+		static public VertexPositionNormalTexture[] CreatePlanarSurface
+		(
+			int[,] heightMap,
+			bool mirrorY = false,
+			bool smooth = false,
+			double noiseLevel = 0
+		)
+		{
+			var numX = heightMap.GetLength(0);
+			var numY = heightMap.GetLength(1);
+
+			var heightMap1D = new int[numX * numY];
+
+			Parallel.For(0,numX,(x)=>
+			{
+				Parallel.For(0, numY, (y) =>
+				{
+					heightMap1D[x + numX * y] = heightMap[x, y];
+				});
+			});
+
+			return CreatePlanarSurface(heightMap1D, numX, mirrorY, smooth, noiseLevel);
+		}
+		/// <summary>
+		/// Same as CreatePlanarSurface for a 2D heightMap, but here heightMap is a flattened row-major array.
 		/// </summary>
 		/// <param name="heightMap">A flattened array (in row-major order) of vertex heights</param>
 		/// <param name="numX">The number of X elements in a row</param>
