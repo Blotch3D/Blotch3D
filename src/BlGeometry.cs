@@ -103,19 +103,20 @@ namespace Blotch
 
 		/// <summary>
 		/// Creates a cylindroid (including texture coords and normals) with the given parameters, and returns
-		/// a triangle array. Assuming a possible subsequent call to TransformVertices, many fundamental rotationally
-		/// symmetric shapes can be generated, like a cylinder, cone, washer, disk, prism of any number of facets,
-		/// tetrahedron, pyramid of any number of facets, etc. If no heightMap is specified and before passing the
-		/// result to TransformVertices, the center of the cylindroid is the origin, its height is 1, the diameter of
-		/// the base is 1, and the diameter of the top is topDiameter. If heightMap is specified, it controls the
-		/// diameter at multiple points on the surface. The dimensions of heightMap can be different from the
-		/// dimensions of the cylindroid. heightMap is mapped onto the object such that the heightMap
-		/// X wraps around horizontally and the heightMap Y is mapped vertically to the height (Z) of the object. So,
-		/// if the heightMap X dimension is 1, then it defines the diameter shape that is rotated around the whole
-		/// cylindroid. A corresponding heightMap element divided by 1e4 multiplies a point's parameterized diameter.
-		/// For some shapes you may also want to re-calculate normals with CalcFacetNormals (for example, if the the
-		/// sunsequent transform caused some normals to become invalid), and/or use ScaleNormals method to invert them,
-		/// where needed. See the GeomObjects examples.
+		/// a triangle array. Assuming a possible subsequent call to TransformVertices, even without a heightMap many
+		/// fundamental rotationally symmetric shapes can be generated, like a cylinder, cone, washer, disk, prism
+		/// of any number of facets, tetrahedron, pyramid of any number of facets, etc. Before passing the result
+		/// to TransformVertices, the center of the cylindroid is the
+		/// origin, its height is 1, the diameter of the base is 1, and the diameter of the top is topDiameter. If
+		/// heightMap is specified, it controls the diameter at multiple points on the surface. The dimensions of
+		/// heightMap can be different from the dimensions of the cylindroid. heightMap is mapped onto the object
+		/// such that the heightMap X wraps around horizontally and the heightMap Y is mapped vertically to the
+		/// height (Z) of the object. For example, if the heightMap X dimension is 1, then it defines the diameter
+		/// shape that is rotated around the whole cylindroid. A corresponding heightMap element divided by 1e4
+		/// multiplies the corresponding point's parameterized diameter. For some shapes you may also want to
+		/// re-calculate normals with CalcFacetNormals (for example, if the the subsequent transform caused some
+		/// normals to become invalid), and/or use ScaleNormals method to invert them, where needed. See the
+		/// GeomObjects examples.
 		/// </summary>
 		/// <param name="numHorizVertices">The number of horizontal vertices in a row</param>
 		/// <param name="numVertVertices">The number of vertical vertices in a column</param>
