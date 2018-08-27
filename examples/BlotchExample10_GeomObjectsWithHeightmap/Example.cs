@@ -58,14 +58,14 @@ Shift          - Fine control
 
 			var heightMap = new int[numX, numY];
 
-			// make a screw shape
+			// make a tapered screw shape
 			var numThreads = 5;
 			var numTurns = 8; // (total for all threads)
 			for (int x = 0;x< numX; x++)
 			{
 				for (int y = 1; y < numY-1; y++)
 				{
-					heightMap[x, y] = (int)(Math.Sin(Math.PI * 2 * (numThreads * x / (double)numX + numTurns * y / (double)numY)) * 1e3);
+					heightMap[x, y] = (int)(5e3 + Math.Sin(Math.PI * 2 * (numThreads * x / (double)numX + numTurns * y / (double)numY)) * 1e3);
 				}
 			}
 
@@ -76,11 +76,11 @@ Shift          - Fine control
 				heightMap[x, numY-1] = (int)-5e3;
 			}
 
-			var geoModel = BlGeometry.CreateCylindroidSurface(numX, numY, 1,false,heightMap);
+			var geoModel = BlGeometry.CreateCylindroidSurface(numX, numY, 3,false,heightMap);
 			geoModel = BlGeometry.CalcFacetNormals(geoModel);
 
 			// transform it
-			geoModel = BlGeometry.TransformVertices(geoModel, Matrix.CreateScale(1, 1, 5f));
+			geoModel = BlGeometry.TransformVertices(geoModel, Matrix.CreateScale(1, 1, 2f));
 
 			// Uncomment this to generate face normals (for example, if the previous transform totally flattened the model)
 			//geoModel = BlGeometry.CalcFacetNormals(geoModel);
