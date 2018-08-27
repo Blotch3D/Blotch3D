@@ -53,13 +53,34 @@ Shift          - Fine control
 			Font = MyContent.Load<SpriteFont>("Arial14");
 
 			// The model
-			var numX = 128;
-			var numY = 2;
+			var numX = 512;
+			var numY = 512;
 
-			var geoModel = BlGeometry.CreateCylindroidSurface(numX, numY,0);
+			var heightMap = new int[numX, numY];
+
+			// make a screw shape
+			var numThreads = 5;
+			var numTurns = 8; // (total for all threads)
+			for (int x = 0;x< numX; x++)
+			{
+				for (int y = 1; y < numY-1; y++)
+				{
+					heightMap[x, y] = (int)(Math.Sin(Math.PI * 2 * (numThreads * x / (double)numX + numTurns * y / (double)numY)) * 1e3);
+				}
+			}
+
+			// Make end caps
+			for (int x = 0; x < numX; x++)
+			{
+				heightMap[x, 0] = (int)-5e3;
+				heightMap[x, numY-1] = (int)-5e3;
+			}
+
+			var geoModel = BlGeometry.CreateCylindroidSurface(numX, numY, 1,false,heightMap);
+			geoModel = BlGeometry.CalcFacetNormals(geoModel);
 
 			// transform it
-			geoModel = BlGeometry.TransformVertices(geoModel, Matrix.CreateScale(1, 1, 2f));
+			geoModel = BlGeometry.TransformVertices(geoModel, Matrix.CreateScale(1, 1, 5f));
 
 			// Uncomment this to generate face normals (for example, if the previous transform totally flattened the model)
 			//geoModel = BlGeometry.CalcFacetNormals(geoModel);
