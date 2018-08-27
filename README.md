@@ -46,9 +46,8 @@ code you can...
 
 -   Set a sprite's material, texture, and lighting response.
 
--   Show 2D and in-world (as a texture) text in any font, size, color,
-    etc. at any 2D or 3D position, and make text follow a sprite in 2D
-    or 3D.
+-   Show 2D and in-world text in any font, size, color, etc. at any 2D
+    or 3D position, and make text follow a sprite in 2D or 3D.
 
 -   Attach sprites to other sprites to create 'sprite trees' as large as
     you want. Child sprite orientation, position, scale, etc. are
@@ -155,8 +154,8 @@ implement the features it demonstrates.
 Creating a new project
 ======================
 
-To develop with Blotch3D, you must first install MonoGame as described
-in [Quick start](#blotch3d) section. Then...
+To develop with Blotch3D, you must first install the MonoGame SDK as
+described in [Quick start](#blotch3d) section. Then...
 
 To create a new project from scratch, select File/New/Project/MonoGame,
 and select the type of MonoGame project you want. Then add the source or
@@ -309,7 +308,7 @@ for use by your MonoGame project. The MonoGame "pipeline manager" is
 used to make this conversion.
 
 The Blotch3D project is already set up with the pipeline manager to
-convert the several primitive models it has, to XNB files when Blotch3D
+convert the several primitive models it has to XNB files when Blotch3D
 is built. You can double-click "Content.mgcb" in the Blotch project to
 add more standard files and resources. You can also copy an XNB files to
 a project's output folder, where the program can load it.

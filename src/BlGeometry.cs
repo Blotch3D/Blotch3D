@@ -107,24 +107,26 @@ namespace Blotch
 		/// symmetric shapes can be generated, like a cylinder, cone, washer, disk, prism of any number of facets,
 		/// tetrahedron, pyramid of any number of facets, etc. If no heightMap is specified and before passing the
 		/// result to TransformVertices, the center of the cylindroid is the origin, its height is 1, the diameter of
-		/// the base is 1, and the diameter of the top is topDiameter. If heightMap is specified, it is mapped onto
-		/// the object such that the heightMap X wraps around horizontally and the heightMap Y maps to the height (Z)
-		/// of the object. A corresponding heightMap element divided by 1e4 is added to the parameterized diameter
-		/// at the corresponding point. For example, if the topDiameter is equal to 2, then the parameterized
-		/// diameter without a heightField at the halfway point is 1.5 (half way between a bottom diameter of 1 and
-		/// top diameter of 2), but if the corresponding heightField value at that position is -2e3, then the
-		/// diameter at that point is 1.5 + -2e3/1e4 = 1.3. Multiple triangle arrays can be concatenated. For some
-		/// shapes you may also want to re-calculate normals with CalcFacetNormals (for example, if the the
-		/// sunsequent transform caused some normals to become invalid), and/or use ScaleNormals method to
-		/// invert them, where needed.
+		/// the base is 1, and the diameter of the top is topDiameter. If heightMap is specified, it controls the
+		/// diameter at multiple points on the surface. heghtMap is mapped onto the object such that the heightMap
+		/// X wraps around horizontally and the heightMap Y is mapped vertically to the height (Z) of the object.
+		/// The dimensions of heightMap can be different from the dimensions of the cylindroid. So, if the heightMap
+		/// X size is 1, then it defines the diameter shape that is rotated around the whole cylindroid. A
+		/// corresponding heightMap element divided by 1e4 is added to the parameterized diameter at the
+		/// corresponding point. For example, if the topDiameter is equal to 2, then the parameterized diameter
+		/// without a heightField at the halfway point is 1.5 (half way between a bottom diameter of 1 and top
+		/// diameter of 2), but if the corresponding heightField value at that position is -2e3, then the diameter
+		/// at that point is 1.5 + -2e3/1e4 = 1.3. For some shapes you may also want to re-calculate normals with
+		/// CalcFacetNormals (for example, if the the sunsequent transform caused some normals to become invalid),
+		/// and/or use ScaleNormals method to invert them, where needed.
 		/// </summary>
 		/// <param name="numHorizVertices">The number of horizontal vertices in a row</param>
 		/// <param name="numVertVertices">The number of vertical vertices in a column</param>
 		/// <param name="topDiameter">Diameter of top of cylindroid (if heightMap==null)</param>
 		/// <param name="facetedNormals">If true, create normals per triangle. If false, create smooth normals</param>
 		/// <param name="heightMap">If not null, then this is mapped onto the surface to modify the diameter. See method
-		/// description for details. This must be a flattened (row-major) array and must have the dimensions
-		/// numHorizVertices x numVertVertices.</param>
+		/// description for details. This need not have the same dimensions
+		/// as the cylindroid.</param>
 		/// <returns>A triangle list of the cylindroid</returns>
 		static public VertexPositionNormalTexture[] CreateCylindroidSurface
 		(
@@ -132,7 +134,7 @@ namespace Blotch
 			int numVertVertices=2,
 			double topDiameter=1,
 			bool facetedNormals=false,
-			int[] heightMap=null
+			int[,] heightMap=null
 		)
 		{
 			numHorizVertices++;
@@ -168,12 +170,20 @@ namespace Blotch
 		/// <returns>A list of the cylindroid's vertices</returns>
 		static public VertexPositionNormalTexture[] CalcCylindroidVerticesAndTexcoords
 		(
-			int numX=32,
-			int numY=2,
-			double topDiameter=1,
-			int[] heightMap = null
+			int numX = 32,
+			int numY = 2,
+			double topDiameter = 1,
+			int[,] heightMap = null
 		)
 		{
+			double hmXRatio = 0;
+			double hmYRatio = 0;
+			if (heightMap != null)
+			{
+				hmXRatio = heightMap.GetLength(0) / (double)(numX-1);
+				hmYRatio = heightMap.GetLength(1) / (double)numY;
+			}
+
 			var grid = new VertexPositionNormalTexture[numX * numY];
 			for (int x=0;x<numX;x++)
 			{
@@ -181,22 +191,24 @@ namespace Blotch
 				{
 					var zord = (double)y / (numY-1);
 
-					var diameter = (1 - zord) + zord * topDiameter;
+					var radius = (1 - zord) + zord * topDiameter;
 					
-					diameter *= .5;
+					radius *= .5;
 
 					if(heightMap!=null)
 					{
-						diameter += heightMap[x + y * numX]/1e4;
+						int hx = (int)(x * hmXRatio);
+						int hy = (int)(y * hmYRatio);
+						radius += heightMap[hx% heightMap.GetLength(0), hy]/1e4;
 					}
 
 					var offsetX = (double)x / (numX-1);
 					var angle = offsetX * Math.PI * 2;
 
-					var xord = Math.Sin(angle) * diameter;
+					var xord = Math.Sin(angle) * radius;
 
 					double yord;
-					yord = -Math.Cos(angle) * diameter;
+					yord = -Math.Cos(angle) * radius;
 
 					var i = x + y * numX;
 					grid[i].Position.X = (float)xord;

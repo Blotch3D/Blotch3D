@@ -52,8 +52,31 @@ Shift          - Fine control
 			// "Arial14" is the pathname to the font file
 			Font = MyContent.Load<SpriteFont>("Arial14");
 
+			var numX = 512;
+			var numY = 256;
+
+			var heightMap = new int[numX, numY];
+
+			// make a screw shape
+			var numThreads = 5;
+			for (int x = 0;x< numX; x++)
+			{
+				for (int y = 1; y < numY-1; y++)
+				{
+					heightMap[x, y] = (int)(Math.Sin(Math.PI * 2 * (x/(double)numX + y/ (double)numY) * numThreads) * 1e3);
+				}
+			}
+
+			// Make end caps
+			for (int x = 0; x < numX; x++)
+			{
+				heightMap[x, 0] = (int)-5e3;
+				heightMap[x, numY-1] = (int)-5e3;
+			}
+
 			// The model
-			var geoModel = BlGeometry.CreateCylindroidSurface(32,2,.7);
+			var geoModel = BlGeometry.CreateCylindroidSurface(numX, numY, 1,false,heightMap);
+			geoModel = BlGeometry.CalcFacetNormals(geoModel);
 
 			// Uncomment this to transform it
 			//geoModel = BlGeometry.TransformVertices(geoModel, Matrix.CreateScale(1, 1, .2f));
