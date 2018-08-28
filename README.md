@@ -6,10 +6,10 @@ Quick start for Windows
 
 On your development machine ...
 
-1.  Get the installer for the latest release of the MonoGame SDK from
-    <http://www.monogame.net/downloads/> and run it with the default
-    settings. (Do NOT get the current development version nor a NuGet
-    package.)
+1.  Get the installer for the latest release of the MonoGame SDK for
+    Visual Studio from <http://www.monogame.net/downloads/> and run it
+    with the default settings. (Do NOT get the current development
+    version nor a NuGet package.)
 
 2.  Get the Blotch3D repository zip from
     <https://github.com/Blotch3D/Blotch3D> and unzip it.
