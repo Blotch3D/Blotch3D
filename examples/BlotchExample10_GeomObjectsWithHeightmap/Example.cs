@@ -56,27 +56,27 @@ Shift          - Fine control
 			var numX = 512;
 			var numY = 512;
 
-			var heightMap = new int[numX, numY];
-
 			// make a tapered screw shape
 			var numThreads = 5;
 			var numTurns = 8; // (total for all threads)
-			for (int x = 0;x< numX; x++)
-			{
-				for (int y = 1; y < numY-1; y++)
+
+			var geoModel = BlGeometry.CreateCylindroidSurface
+			(
+				(x,y)=>
 				{
-					heightMap[x, y] = (int)(5e3 + Math.Sin(Math.PI * 2 * (numThreads * x / (double)numX + numTurns * y / (double)numY)) * 1e3);
-				}
-			}
+					// handle end caps
+					if (y == 0 || y == numY - 1)
+						return 0;
 
-			// Make end caps
-			for (int x = 0; x < numX; x++)
-			{
-				heightMap[x, 0] = (int)-5e3;
-				heightMap[x, numY-1] = (int)-5e3;
-			}
+					// Calculate screw shape
+					return .2*Math.Sin(Math.PI * 2 * (numThreads * x / (double)numX + numTurns * y / (double)numY)) + 1;
+				},
+				numX,
+				numY,
+				.5,
+				false
+			);
 
-			var geoModel = BlGeometry.CreateCylindroidSurface(numX, numY, 3,false,heightMap);
 			geoModel = BlGeometry.CalcFacetNormals(geoModel);
 
 			// transform it

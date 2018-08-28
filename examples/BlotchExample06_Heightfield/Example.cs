@@ -62,11 +62,7 @@ Shift          - Fine control
 			var terrain = Graphics.LoadFromImageFile("terrain.png", true);
 
 			// The vertices of the surface
-			var SurfaceArray = BlGeometry.CreatePlanarSurfaceFromImage(terrain);
-
-			// Scale it back down to something reasonable
-			var m = Matrix.CreateScale(1, 1, .001f);
-			SurfaceArray = BlGeometry.TransformVertices(SurfaceArray, m);
+			var SurfaceArray = BlGeometry.CreatePlanarSurface(terrain);
 
 			// convert to vertex buffer
 			var vertexBuf = BlGeometry.TrianglesToVertexBuffer(Graphics.GraphicsDevice, SurfaceArray);

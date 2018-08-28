@@ -56,25 +56,13 @@ Shift          - Fine control
 			var width = 128;
 			var height = 128;
 
-			var data = new int[width,height];
-
-			/// Calc each height
-			Parallel.For (0, width, (x) =>
-			{
-				Parallel.For(0, height, (y) =>
-				{
-					// The '1e6' makes sure we use a lot more resolution of the int
-					var v = (int)(1e6*(Math.Sin(((x-width/2) * (y-height/2)) / 300.0)+1));
-					data[x,y] = v;
-				});
-			});
-
 			// Create the surface vertices
-			var SurfaceArray = BlGeometry.CreatePlanarSurface(data);
-
-			// Scale it back down to something reasonable
-			var m = Matrix.CreateScale(1, 1, 5e-8f);
-			SurfaceArray = BlGeometry.TransformVertices(SurfaceArray, m);
+			var SurfaceArray = BlGeometry.CreatePlanarSurface
+			(
+				(x,y)=> .06*Math.Sin(((x - width / 2) * (y - height / 2)) / 300.0),
+				width,
+				height
+			);
 
 			// convert to vertex buffer
 			var vertexBuf = BlGeometry.TrianglesToVertexBuffer(Graphics.GraphicsDevice, SurfaceArray);

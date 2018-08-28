@@ -26,9 +26,8 @@ namespace Blotch
 
 		/// <summary>
 		/// Creates a square 1x1 surface in XY but with variation of its Z depending on the pixels in an image (heightfield).
-		/// Returns a triangle array. Because the X and Y dimensions of the surface are 1 and because a pixel value of
-		/// '1' moves the height up by 1, you will probably want to call TransformVertices on the triangle array so that the
-		/// width, depth, and height are more reasonable. Also see #CreatePlanarSurface.
+		/// The maximum height of pixels is 1.
+		/// Returns a triangle array of the surface.
 		/// </summary>
 		/// <param name="tex">The texture that represents the height (Z) of each vertex.</param>
 		/// <param name="mirrorY">If true, then invert image's Y dimension</param>
@@ -37,12 +36,12 @@ namespace Blotch
 		/// <param name="numSignificantBits">How many bits in a pixel should be used (starting from the least significant bit).
 		/// Normally the first 8 bits are used (the last channel), but special images might combine the bits of multiple channels.</param>
 		/// <returns>The triangles of a terrain from the specified image</returns>
-		static public VertexPositionNormalTexture[] CreatePlanarSurfaceFromImage
+		static public VertexPositionNormalTexture[] CreatePlanarSurface
 		(
 			Texture2D tex,
 			bool mirrorY = false,
 			bool smooth = true,
-			double noiseLevel = .8,
+			double noiseLevel = 1.0/256,
 			int numSignificantBits = 8
 		)
 		{
@@ -55,80 +54,92 @@ namespace Blotch
 			var pixels = new int[len];
 			tex.GetData(pixels);
 
-			Parallel.For(0, len, (n) =>
+			var heightMap = new double[width, height];
+
+			Parallel.For(0, width, (x) =>
 			{
-				pixels[n] = (pixels[n] & mask);
-			});
-
-			return CreatePlanarSurface(pixels, width, mirrorY, smooth, noiseLevel);
-		}
-
-		/// <summary>
-		/// Creates a square 1x1 surface in XY but with variation of its Z depending on the elements of an int array of height values.
-		/// Returns a triangle array. Because the X and Y dimensions of the surface are 1 and because a heightMap element value of
-		/// '1' moves the height up by 1, you will probably want to call TransformVertices on the triangle array so that the
-		/// width, depth, and height are more reasonable. Also see #CreateSurfaceFromImage.
-		/// numY is assumed to be heightMap.Length/numX.
-		/// </summary>
-		/// <param name="heightMap">A 2D array of vertex heights</param>
-		/// <param name="mirrorY">Whether to invert Y</param>
-		/// <param name="smooth">Whether to apply a 3x3 gaussian smoothing kernel, or not</param>
-		/// <param name="noiseLevel">How much noise to add</param>
-		/// <returns></returns>
-		static public VertexPositionNormalTexture[] CreatePlanarSurface
-		(
-			int[,] heightMap,
-			bool mirrorY = false,
-			bool smooth = false,
-			double noiseLevel = 0
-		)
-		{
-			var numX = heightMap.GetLength(0);
-			var numY = heightMap.GetLength(1);
-
-			var heightMap1D = new int[numX * numY];
-
-			Parallel.For(0,numX,(x)=>
-			{
-				Parallel.For(0, numY, (y) =>
+				Parallel.For(0, height, (y) =>
 				{
-					heightMap1D[x + numX * y] = heightMap[x, y];
+					heightMap[x,y] = (double)(pixels[x + width*y] & mask)/(mask+1);
 				});
 			});
 
-			return CreatePlanarSurface(heightMap1D, numX, mirrorY, smooth, noiseLevel);
+			return CreatePlanarSurface(heightMap, mirrorY, smooth, noiseLevel);
 		}
+
 		/// <summary>
-		/// Same as CreatePlanarSurface for a 2D heightMap, but here heightMap is a flattened row-major array.
+		/// The delegate passed to certain geometry methods.
 		/// </summary>
-		/// <param name="heightMap">A flattened array (in row-major order) of vertex heights</param>
+		/// <param name="x">The x of the surface position</param>
+		/// <param name="y">The y of the surface position</param>
+		/// <returns>The height of the surface</returns>
+		public delegate double XYToZDelegate(int x, int y);
+
+		/// <summary>
+		/// Creates a square 1x1 surface in XY but with variation of its Z depending on the
+		/// result of a delegate.
+		/// Returns a triangle array of the surface.
+		/// </summary>
+		/// <param name="pixelFunc">A delegate that takes the x and y and returns that pixel's height</param>
 		/// <param name="numX">The number of X elements in a row</param>
+		/// <param name="numY">The number of X elements in a row</param>
 		/// <param name="mirrorY">Whether to invert Y</param>
 		/// <param name="smooth">Whether to apply a 3x3 gaussian smoothing kernel, or not</param>
 		/// <param name="noiseLevel">How much noise to add</param>
-		/// <returns></returns>
+		/// <returns>Triangles of the surface</returns>
 		static public VertexPositionNormalTexture[] CreatePlanarSurface
 		(
-			int[] heightMap,
-			int numX,
+			XYToZDelegate pixelFunc,
+			int numX = 256,
+			int numY = 256,
 			bool mirrorY = false,
 			bool smooth = false,
 			double noiseLevel = 0
 		)
 		{
-			var numY = heightMap.Length / numX;
+			var heightMap = new double[numX, numY];
 
-			if (numY * numX != heightMap.Length)
-				throw new Exception("BlGeometry.CreatePlanarSurface: length of heightMap array not divisible by numX");
+			Parallel.For(0, numX, (x) =>
+			{
+				Parallel.For(0, numY, (y) =>
+				{
+					heightMap[x, y] = pixelFunc(x, y);
+				});
+			});
 
+			return CreatePlanarSurface(heightMap, mirrorY, smooth, noiseLevel);
+		}
+
+
+
+		/// <summary>
+		/// Creates a square 1x1 surface in XY but with variation of its Z depending on the
+		/// elements of a 2D array of doubles.
+		/// Returns a triangle array of the surface.
+		/// </summary>
+		/// <param name="heightMap">A flattened array (in row-major order) of vertex heights</param>
+		/// <param name="mirrorY">Whether to invert Y</param>
+		/// <param name="smooth">Whether to apply a 3x3 gaussian smoothing kernel, or not</param>
+		/// <param name="noiseLevel">How much noise to add</param>
+		/// <returns>Triangles of the surface</returns>
+		static public VertexPositionNormalTexture[] CreatePlanarSurface
+		(
+			double[,] heightMap,
+			bool mirrorY = false,
+			bool smooth = false,
+			double noiseLevel = 0
+		)
+		{
 			// calc Position and textureCoordinates per vertex
-			var grid = CalcPlanarVerticesAndTexcoords(heightMap, numX, noiseLevel, mirrorY, smooth);
+			var grid = CalcPlanarVerticesAndTexcoords(heightMap, noiseLevel, mirrorY, smooth);
+
+			var width = heightMap.GetLength(0);
 
 			// calculate each vertex normal from the adjacent vertices.
-			CalcSmoothNormals(grid, numX);
+			CalcSmoothNormals(grid, width);
 
 			// create triangles
-			var triangles = VerticesToTriangles(grid, numX);
+			var triangles = VerticesToTriangles(grid, width);
 
 			return triangles;
 		}
@@ -144,11 +155,43 @@ namespace Blotch
 		/// heightMap can be different from the dimensions of the cylindroid. heightMap is mapped onto the object
 		/// such that the heightMap X wraps around horizontally and the heightMap Y is mapped vertically to the
 		/// height (Z) of the object. For example, if the heightMap X dimension is 1, then it defines the diameter
-		/// shape that is rotated around the whole cylindroid. A corresponding heightMap element divided by 1e4
-		/// multiplies the corresponding point's parameterized diameter. For some shapes you may also want to
+		/// shape that is rotated around the whole cylindroid. A corresponding heightMap element multiplies the
+		/// corresponding point's parameterized diameter. For some shapes you may also want to
 		/// re-calculate normals with CalcFacetNormals (for example, if the the subsequent transform caused some
 		/// normals to become invalid), and/or use ScaleNormals method to invert them, where needed. See the
 		/// GeomObjects examples.
+		/// </summary>
+		/// <param name="pixelFunc">A delegate that takes an x and y and returns the height</param>
+		/// <param name="numHorizVertices">The number of horizontal vertices in a row</param>
+		/// <param name="numVertVertices">The number of vertical vertices in a column</param>
+		/// <param name="topDiameter">Diameter of top of cylindroid (if heightMap==null)</param>
+		/// <param name="facetedNormals">If true, create normals per triangle. If false, create smooth normals</param>
+		/// <returns></returns>
+		static public VertexPositionNormalTexture[] CreateCylindroidSurface
+		(
+			XYToZDelegate pixelFunc,
+			int numHorizVertices = 32,
+			int numVertVertices = 2,
+			double topDiameter = 1,
+			bool facetedNormals = false
+		)
+		{
+			var heightMap = new double[numHorizVertices, numVertVertices];
+
+			Parallel.For(0, numHorizVertices, (x) =>
+			{
+				Parallel.For(0, numVertVertices, (y) =>
+				{
+					heightMap[x, y] = pixelFunc(x, y);
+				});
+			});
+
+			return CreateCylindroidSurface(numHorizVertices, numVertVertices, topDiameter, facetedNormals, heightMap);
+		}
+
+		/// <summary>
+		/// Like the CreateCylindroidSurface overload that takes a delegate, but this takes a 2D array of
+		/// doubles, instead.
 		/// </summary>
 		/// <param name="numHorizVertices">The number of horizontal vertices in a row</param>
 		/// <param name="numVertVertices">The number of vertical vertices in a column</param>
@@ -163,7 +206,7 @@ namespace Blotch
 			int numVertVertices=2,
 			double topDiameter=1,
 			bool facetedNormals=false,
-			int[,] heightMap=null
+			double[,] heightMap=null
 		)
 		{
 			numHorizVertices++;
@@ -202,7 +245,7 @@ namespace Blotch
 			int numX = 32,
 			int numY = 2,
 			double topDiameter = 1,
-			int[,] heightMap = null
+			double[,] heightMap = null
 		)
 		{
 			double hmXRatio = 0;
@@ -228,7 +271,7 @@ namespace Blotch
 					{
 						int hx = (int)(x * hmXRatio);
 						int hy = (int)(y * hmYRatio);
-						radius *= heightMap[hx% heightMap.GetLength(0), hy]/1e4;
+						radius *= heightMap[hx% heightMap.GetLength(0), hy];
 					}
 
 					var offsetX = (double)x / (numX-1);
@@ -587,23 +630,19 @@ namespace Blotch
 		/// numY is assumed to be heightMap.Length/numX.
 		/// </summary>
 		/// <param name="heightMap">A flattened array of 2D heights in row-major order</param>
-		/// <param name="numX">The number of X elements in a row</param>
 		/// <param name="noiseLevel">How much noise to add</param>
 		/// <param name="mirrorY">Whether to invert the Y dimension</param>
 		/// <param name="smooth">Whether to apply a 3x3 gaussian blur on each pixel height</param>
 		static public VertexPositionNormalTexture[] CalcPlanarVerticesAndTexcoords
 		(
-			int[] heightMap,
-			int numX,
+			double[,] heightMap,
 			double noiseLevel = 0,
 			bool mirrorY = false,
 			bool smooth = false
 		)
 		{
-			var numY = heightMap.Length / numX;
-
-			if (numY * numX != heightMap.Length)
-				throw new Exception("BlGeometry.CalcPlanarVerticesAndTexcoords: length of heightMap array not divisible by numX");
+			var numX = heightMap.GetLength(0);
+			var numY = heightMap.GetLength(1);
 
 			var vertices = new VertexPositionNormalTexture[numX * numY];
 
@@ -623,7 +662,7 @@ namespace Blotch
 					ym = numY - y - 1;
 				}
 
-				pixel = heightMap[x + ym * numX];
+				pixel = heightMap[x, ym];
 
 				if (smooth)
 				{
@@ -635,24 +674,24 @@ namespace Blotch
 					// adjacent x
 					if (x > 0)
 					{
-						pixel += weight * heightMap[x - 1 + ym * numX];
+						pixel += weight * heightMap[x - 1, ym];
 						totalWeight += weight;
 					}
 					if (x < numX - 1)
 					{
-						pixel += weight * heightMap[x + 1 + ym * numX];
+						pixel += weight * heightMap[x + 1, ym];
 						totalWeight += weight;
 					}
 
 					// adjacent y
 					if (ym > 0)
 					{
-						pixel += weight * heightMap[x + (ym - 1) * numX];
+						pixel += weight * heightMap[x, (ym - 1)];
 						totalWeight += weight;
 					}
 					if (ym < numY - 1)
 					{
-						pixel += weight * heightMap[x + (ym + 1) * numX];
+						pixel += weight * heightMap[x, (ym + 1)];
 						totalWeight += weight;
 					}
 
@@ -663,12 +702,12 @@ namespace Blotch
 					{
 						if (ym > 0)
 						{
-							pixel += weight * heightMap[x - 1 + (ym - 1) * numX];
+							pixel += weight * heightMap[x - 1, (ym - 1)];
 							totalWeight += weight;
 						}
 						if (ym < numY - 1)
 						{
-							pixel += weight * heightMap[x - 1 + (ym + 1) * numX];
+							pixel += weight * heightMap[x - 1, (ym + 1)];
 							totalWeight += weight;
 						}
 					}
@@ -677,12 +716,12 @@ namespace Blotch
 					{
 						if (ym > 0)
 						{
-							pixel += weight * heightMap[x + 1 + (ym - 1) * numX];
+							pixel += weight * heightMap[x + 1, (ym - 1)];
 							totalWeight += weight;
 						}
 						if (ym < numY - 1)
 						{
-							pixel += weight * heightMap[x + 1 + (ym + 1) * numX];
+							pixel += weight * heightMap[x + 1, (ym + 1)];
 							totalWeight += weight;
 						}
 					}
