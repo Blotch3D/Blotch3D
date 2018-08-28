@@ -27,7 +27,7 @@ namespace Blotch
 		/// <summary>
 		/// Creates a square 1x1 surface in XY but with variation of its Z depending on the pixels in an image (heightfield).
 		/// The maximum height of pixels is 1.
-		/// Returns a triangle array of the surface.
+		/// Returns a triangle array of the surface, which includes smooth normals and texture coordinates.
 		/// </summary>
 		/// <param name="tex">The texture that represents the height (Z) of each vertex.</param>
 		/// <param name="mirrorY">If true, then invert image's Y dimension</param>
@@ -35,7 +35,7 @@ namespace Blotch
 		/// <param name="noiseLevel">How much noise to add</param>
 		/// <param name="numSignificantBits">How many bits in a pixel should be used (starting from the least significant bit).
 		/// Normally the first 8 bits are used (the last channel), but special images might combine the bits of multiple channels.</param>
-		/// <returns>The triangles of a terrain from the specified image</returns>
+		/// <returns>The triangles of a terrain from the specified image, including smooth normals and texture coordinates</returns>
 		static public VertexPositionNormalTexture[] CreatePlanarSurface
 		(
 			Texture2D tex,
@@ -78,7 +78,7 @@ namespace Blotch
 		/// <summary>
 		/// Creates a square 1x1 surface in XY but with variation of its Z depending on the
 		/// result of a delegate.
-		/// Returns a triangle array of the surface.
+		/// Returns a triangle array of the surface, which includes smooth normals and texture coordinates.
 		/// </summary>
 		/// <param name="pixelFunc">A delegate that takes the x and y and returns that pixel's height</param>
 		/// <param name="numX">The number of X elements in a row</param>
@@ -86,7 +86,7 @@ namespace Blotch
 		/// <param name="mirrorY">Whether to invert Y</param>
 		/// <param name="smooth">Whether to apply a 3x3 gaussian smoothing kernel, or not</param>
 		/// <param name="noiseLevel">How much noise to add</param>
-		/// <returns>Triangles of the surface</returns>
+		/// <returns>Triangles of the surface, including smooth normals and teture coordinates</returns>
 		static public VertexPositionNormalTexture[] CreatePlanarSurface
 		(
 			XYToZDelegate pixelFunc,
@@ -115,13 +115,13 @@ namespace Blotch
 		/// <summary>
 		/// Creates a square 1x1 surface in XY but with variation of its Z depending on the
 		/// elements of a 2D array of doubles.
-		/// Returns a triangle array of the surface.
+		/// Returns a triangle array of the surface, which includes smooth normals and texture coordinates.
 		/// </summary>
 		/// <param name="heightMap">A flattened array (in row-major order) of vertex heights</param>
 		/// <param name="mirrorY">Whether to invert Y</param>
 		/// <param name="smooth">Whether to apply a 3x3 gaussian smoothing kernel, or not</param>
 		/// <param name="noiseLevel">How much noise to add</param>
-		/// <returns>Triangles of the surface</returns>
+		/// <returns>Triangles of the surface, including smooth normals and teture coordinates</returns>
 		static public VertexPositionNormalTexture[] CreatePlanarSurface
 		(
 			double[,] heightMap,
@@ -146,10 +146,11 @@ namespace Blotch
 
 		/// <summary>
 		/// Creates a cylindroid (including texture coords and normals) with the given parameters, and returns
-		/// a triangle array. Assuming a possible subsequent call to TransformVertices, even without a heightMap many
+		/// a triangle array, which includes smooth normals and texture coordinates. Assuming a possible subsequent
+		/// call to #TransformVertices, even without a heightMap many
 		/// fundamental rotationally symmetric shapes can be generated, like a cylinder, cone, washer, disk, prism
 		/// of any number of facets, tetrahedron, pyramid of any number of facets, etc. Before passing the result
-		/// to TransformVertices, the center of the cylindroid is the
+		/// to #TransformVertices, the center of the cylindroid is the
 		/// origin, its height is 1, the diameter of the base is 1, and the diameter of the top is topDiameter. If
 		/// heightMap is specified, it controls the diameter at multiple points on the surface. The dimensions of
 		/// heightMap can be different from the dimensions of the cylindroid. heightMap is mapped onto the object
@@ -157,8 +158,8 @@ namespace Blotch
 		/// height (Z) of the object. For example, if the heightMap X dimension is 1, then it defines the diameter
 		/// shape that is rotated around the whole cylindroid. A corresponding heightMap element multiplies the
 		/// corresponding point's parameterized diameter. For some shapes you may also want to
-		/// re-calculate normals with CalcFacetNormals (for example, if the the subsequent transform caused some
-		/// normals to become invalid), and/or use ScaleNormals method to invert them, where needed. See the
+		/// re-calculate normals with #CalcFacetNormals (for example, if the the subsequent transform caused some
+		/// normals to become invalid), and/or use #ScaleNormals method to invert them, where needed. See the
 		/// GeomObjects examples.
 		/// </summary>
 		/// <param name="pixelFunc">A delegate that takes an x and y and returns the height</param>
@@ -190,7 +191,7 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// Like the CreateCylindroidSurface overload that takes a delegate, but this takes a 2D array of
+		/// Like the #CreateCylindroidSurface overload that takes a delegate, but this takes a 2D array of
 		/// doubles, instead.
 		/// </summary>
 		/// <param name="numHorizVertices">The number of horizontal vertices in a row</param>
@@ -232,7 +233,7 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// Like CreateCylindroidSurface, but returns a regular grid rather than a triangle list, and
+		/// Like #CreateCylindroidSurface, but returns a regular grid rather than a triangle list, and
 		/// doesn't calculate the normals, so you'll need to do that separately with the appropriate functions.
 		/// </summary>
 		/// <param name="numX">The number of X elements in a row</param>
@@ -352,8 +353,8 @@ namespace Blotch
 		/// <summary>
 		/// Transforms a regular grid or triangle array (including transforming the transpose of the inverse of each
 		/// normal) according to the specified matrix.
-		/// If its an array of triangles, you will probably want to call CullEmptyTriangles if the transform might
-		/// cause some triangles to have zero area, and maybe CalcSmoothNormals (for regular grids) or CalcFaceNormals
+		/// If its an array of triangles, you will probably want to call #CullEmptyTriangles if the transform might
+		/// cause some triangles to have zero area, and maybe #CalcSmoothNormals (for regular grids) or #CalcFaceNormals
 		/// (for tiangles) afterward if the transform might cause normals to be invalid or point the wrong
 		/// way, causing the surface to be black or the wrong brightness (typically when a dimenson is scaled to zero).
 		/// </summary>
@@ -527,7 +528,7 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// Scales the normals. Inverts the normals by default.
+		/// Scales the normals.
 		/// </summary>
 		/// <param name="vertices">Input array of vertices, and output array as well</param>
 		/// <param name="scale">Scales applied to each normal</param>
@@ -627,7 +628,6 @@ namespace Blotch
 
 		/// <summary>
 		/// Calculate vertices and texture coordinates, but not normals, from a specified heightmap int array.
-		/// numY is assumed to be heightMap.Length/numX.
 		/// </summary>
 		/// <param name="heightMap">A flattened array of 2D heights in row-major order</param>
 		/// <param name="noiseLevel">How much noise to add</param>
