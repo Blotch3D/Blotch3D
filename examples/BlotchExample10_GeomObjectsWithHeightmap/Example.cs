@@ -57,9 +57,12 @@ Shift          - Fine control
 			var numY = 512;
 
 			// make a tapered screw shape
+			var taperSize = .1;
 			var numThreads = 5;
 			var numTurns = 8; // (total for all threads)
+			var threadDepth = .2;
 
+			// Create the cylindroid
 			var geoModel = BlGeometry.CreateCylindroidSurface
 			(
 				(x,y)=>
@@ -69,15 +72,15 @@ Shift          - Fine control
 						return 0;
 
 					// Calculate screw shape
-					return .2*Math.Sin(Math.PI * 2 * (numThreads * x / (double)numX + numTurns * y / (double)numY)) + 1;
+					return threadDepth * Math.Sin(Math.PI * 2 * (numThreads * x / (double)numX + numTurns * y / (double)numY)) + 1;
 				},
 				numX,
 				numY,
-				.5,
-				false
+				taperSize
 			);
 
-			geoModel = BlGeometry.CalcFacetNormals(geoModel);
+			// Uncomment this for facet normals
+			//geoModel = BlGeometry.CalcFacetNormals(geoModel);
 
 			// transform it
 			geoModel = BlGeometry.TransformVertices(geoModel, Matrix.CreateScale(1, 1, 2f));
