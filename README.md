@@ -37,7 +37,8 @@ code you can...
 -   Load standard 3D model file types as "sprites", and display and move
     thousands of them in 3D at high frame rates.
 
--   Programmatically create a variety of sprite shapes.
+-   Programmatically define parameters to create a wide variety of
+    sprite shapes.
 
 -   Create sprites by defining individual polygons.
 
@@ -348,7 +349,7 @@ are provided that demonstrate how to use them.
 The custom shader source and the compiled shader files are in the
 Blotch3D Content/Effects folder. To use a custom shader, first copy the
 compiled shader file (mgfxo file) to your program's output folder---you
-might add a link to it in your project and set its properties, so it is
+might add a link to it in your project and set its properties so it is
 copied to the output folder.
 
 When your program runs, it specifies that file name in the BlBasicEffect
