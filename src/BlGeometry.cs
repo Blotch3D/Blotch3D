@@ -627,6 +627,7 @@ namespace Blotch
 
 		/// <summary>
 		/// Calculate vertices and texture coordinates, but not normals, from a specified heightmap int array.
+		/// Returns a 1x1 surface in XY, but with Z for a given position equal to the corresponding heightMap element.
 		/// </summary>
 		/// <param name="heightMap">A flattened array of 2D heights in row-major order</param>
 		/// <param name="noiseLevel">How much noise to add</param>
