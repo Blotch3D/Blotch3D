@@ -146,8 +146,8 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// Like the #CreateCylindroidSurface overload that takes a heightMap, but this takes a delegate that defines
-		/// the diameter multiplier, instead.
+		/// Like the #CreateCylindroidSurface overload that takes a heightMap (see that method for details),
+		/// but this takes a delegate that defines the diameter multiplier, instead.
 		/// </summary>
 		/// <param name="pixelFunc">A delegate that takes an x and y and returns the diameter multiplier</param>
 		/// <param name="numHorizVertices">The number of horizontal vertices in a row</param>
