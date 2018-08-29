@@ -179,8 +179,8 @@ To distribute a program for Microsoft Windows, deliver everything in
 your project's output folder. Other platforms may require different
 delivery methods. See online for more information.
 
-Development
-===========
+Development overview
+====================
 
 See the examples, starting with the basic example.
 

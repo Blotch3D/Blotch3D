@@ -12,7 +12,7 @@ namespace Blotch
 	/// <summary>
 	/// Methods and helpers for creating various geometric objects. These methods create and manage regular
 	/// grids of vertices as a flattened row-major VertexPositionNormalTexture[], triangle arrays
-	/// (also as a flattened row-major VertexPositionNormalTexture[]), and VertexBuffers. You can concatenate
+	/// (also as a VertexPositionNormalTexture[]), and VertexBuffers. You can concatenate
 	/// multiple regular grids to produce one regular grid if they have the same number of columns, and you can
 	/// concatentate multiple triangle arrays to produce one triangle array. You can transform either type of
 	/// array with TransformVertices. You can create smooth normals for a regular grid and facet normals for a
@@ -26,7 +26,8 @@ namespace Blotch
 
 		/// <summary>
 		/// Creates a square 1x1 surface in XY but with variation of its Z depending on the pixels in an image (heightfield).
-		/// The maximum height of pixels is 1.
+		/// A maximum pixel value causes the corresponding position on the surface to have a height of 1. Use TransformVertices
+		/// to alter this.
 		/// Returns a triangle array of the surface, which includes smooth normals and texture coordinates.
 		/// </summary>
 		/// <param name="tex">The texture that represents the height (Z) of each vertex.</param>
@@ -68,11 +69,11 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// The delegate passed to certain geometry methods.
+		/// The delegate passed to certain geometry methods. Given an X and Y value, return a Z value.
 		/// </summary>
 		/// <param name="x">The x of the surface position</param>
 		/// <param name="y">The y of the surface position</param>
-		/// <returns>The height of the surface</returns>
+		/// <returns>The height or diameter multiplier of the surface at the corresponding XY position</returns>
 		public delegate double XYToZDelegate(int x, int y);
 
 		/// <summary>
@@ -145,24 +146,10 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// Creates a cylindroid (including texture coords and normals) with the given parameters, and returns
-		/// a triangle array, which includes smooth normals and texture coordinates. Assuming a possible subsequent
-		/// call to #TransformVertices, even without a heightMap many
-		/// fundamental rotationally symmetric shapes can be generated, like a cylinder, cone, washer, disk, prism
-		/// of any number of facets, tetrahedron, pyramid of any number of facets, etc. Before passing the result
-		/// to #TransformVertices, the center of the cylindroid is the
-		/// origin, its height is 1, the diameter of the base is 1, and the diameter of the top is topDiameter. If
-		/// heightMap is specified, it controls the diameter at multiple points on the surface. The dimensions of
-		/// heightMap can be different from the dimensions of the cylindroid. heightMap is mapped onto the object
-		/// such that the heightMap X wraps around horizontally and the heightMap Y is mapped vertically to the
-		/// height (Z) of the object. For example, if the heightMap X dimension is 1, then it defines the diameter
-		/// shape that is rotated around the whole cylindroid. A corresponding heightMap element multiplies the
-		/// corresponding point's parameterized diameter. For some shapes you may also want to
-		/// re-calculate normals with #CalcFacetNormals (for example, if the the subsequent transform caused some
-		/// normals to become invalid), and/or use #ScaleNormals method to invert them, where needed. See the
-		/// GeomObjects examples.
+		/// Like the #CreateCylindroidSurface overload that takes a heightMap, but this takes a delegate that defines
+		/// the diameter multiplier, instead.
 		/// </summary>
-		/// <param name="pixelFunc">A delegate that takes an x and y and returns the height</param>
+		/// <param name="pixelFunc">A delegate that takes an x and y and returns the diameter multiplier</param>
 		/// <param name="numHorizVertices">The number of horizontal vertices in a row</param>
 		/// <param name="numVertVertices">The number of vertical vertices in a column</param>
 		/// <param name="topDiameter">Diameter of top of cylindroid (if heightMap==null)</param>
@@ -191,8 +178,20 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// Like the #CreateCylindroidSurface overload that takes a delegate, but this takes a 2D array of
-		/// doubles, instead.
+		/// Creates a cylindroid (including texture coords and normals) with the given parameters, and returns
+		/// a triangle array, which includes smooth normals and texture coordinates. Assuming a possible subsequent
+		/// call to #TransformVertices, even without a heightMap many
+		/// fundamental rotationally symmetric shapes can be generated, like a cylinder, cone, washer, disk, prism
+		/// of any number of facets, tetrahedron, pyramid of any number of facets, etc. Before passing the result
+		/// to #TransformVertices, the center of the cylindroid is the
+		/// origin, its height is 1, the diameter of the base is 1, and the diameter of the top is topDiameter. If
+		/// heightMap is specified, it multiplies the parameterized diameter at multiple points on the surface. The dimensions of
+		/// heightMap can be different from the dimensions of the cylindroid. heightMap is mapped onto the object
+		/// such that the heightMap X wraps around horizontally and the heightMap Y is mapped vertically to the
+		/// height (Z) of the object. For example, if the heightMap X dimension is 1, then it defines the diameter
+		/// shape that is rotated around the whole cylindroid. For some shapes you may also want to
+		/// re-calculate normals with #CalcFacetNormals (for example, if the the subsequent transform caused some
+		/// normals to become invalid). See the GeomObjects examples.
 		/// </summary>
 		/// <param name="numHorizVertices">The number of horizontal vertices in a row</param>
 		/// <param name="numVertVertices">The number of vertical vertices in a column</param>
