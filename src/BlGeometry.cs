@@ -11,7 +11,7 @@ namespace Blotch
 {
 	/// <summary>
 	/// Methods and helpers for creating various geometric objects. These methods create and manage regular
-	/// grids of vertices as a flattened column-major VertexPositionNormalTexture[], triangle arrays
+	/// (rectangular) grids of vertices as a flattened column-major ([y, x]) VertexPositionNormalTexture[], triangle arrays
 	/// (also as a VertexPositionNormalTexture[]), and VertexBuffers. You can concatenate
 	/// multiple regular grids to produce one regular grid if they have the same number of columns, and you can
 	/// concatentate multiple triangle arrays to produce one triangle array. You can transform either type of
@@ -22,6 +22,7 @@ namespace Blotch
 	/// </summary>
 	public class BlGeometry
 	{
+		// used to generate noise
 		static Random Rand = new Random();
 
 		/// <summary>
@@ -119,8 +120,7 @@ namespace Blotch
 		/// elements of a 2D array of doubles.
 		/// Returns a triangle array of the surface, which includes smooth normals and texture coordinates.
 		/// </summary>
-		/// <param name="heightMap">A flattened array (in column-major order) of vertex heights. (Note that
-		/// this means the 2D form is [y, x], because rows are the second index in C#)</param>
+		/// <param name="heightMap">A column-major [y, x] array of vertex heights.</param>
 		/// <param name="mirrorY">Whether to invert Y</param>
 		/// <param name="smooth">Whether to apply a 3x3 gaussian smoothing kernel, or not</param>
 		/// <param name="noiseLevel">How much noise to add</param>
@@ -191,7 +191,7 @@ namespace Blotch
 		/// origin, its height is 1, the diameter of the base is 1, and the diameter of the top is topDiameter. If
 		/// heightMap is specified, it multiplies the parameterized diameter at multiple points on the surface. The dimensions of
 		/// heightMap can be different from the dimensions of the cylindroid. (Note that in C#, the second index of a 2D array
-		/// is the rows. For example, [y, x].) heightMap is mapped onto the object
+		/// is the rows. So array indices must be in the form of [y, x].) heightMap is mapped onto the object
 		/// such that the heightMap X wraps around horizontally and the heightMap Y is mapped vertically to the
 		/// height (Z) of the object. For example, if the heightMap X dimension is 1, then it defines the diameter
 		/// shape that is rotated around the whole cylindroid. For some shapes you may also want to
@@ -203,7 +203,8 @@ namespace Blotch
 		/// <param name="topDiameter">Diameter of top of cylindroid (if heightMap==null)</param>
 		/// <param name="facetedNormals">If true, create normals per triangle. If false, create smooth normals</param>
 		/// <param name="heightMap">If not null, then this is mapped onto the surface to modify the diameter. See method
-		/// description for details. This need not have the same dimensions as the cylindroid.</param>
+		/// description for details, but note that indices must be of the form [y, x]. This need not have the same
+		/// dimensions as the cylindroid.</param>
 		/// <param name="endCaps">Whether to also create a cap for each end</param>
 		/// <returns>A triangle list of the cylindroid</returns>
 		static public VertexPositionNormalTexture[] CreateCylindroidSurface
@@ -662,10 +663,11 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// Calculate vertices and texture coordinates, but not normals, from a specified heightmap int array.
+		/// Calculate vertices and texture coordinates, but not normals, from a specified column-major
+		/// heightmap double array. Note that heightMap indices must be of the form [y, x].
 		/// Returns a 1x1 surface in XY, but with Z for a given position equal to the corresponding heightMap element.
 		/// </summary>
-		/// <param name="heightMap">A flattened array of 2D heights in column-major order</param>
+		/// <param name="heightMap">A column-major array [y, x] of height values</param>
 		/// <param name="noiseLevel">How much noise to add</param>
 		/// <param name="mirrorY">Whether to invert the Y dimension</param>
 		/// <param name="smooth">Whether to apply a 3x3 gaussian blur on each pixel height</param>
