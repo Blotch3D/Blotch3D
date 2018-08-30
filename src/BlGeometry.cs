@@ -11,7 +11,7 @@ namespace Blotch
 {
 	/// <summary>
 	/// Methods and helpers for creating various geometric objects. These methods create and manage regular
-	/// grids of vertices as a flattened row-major VertexPositionNormalTexture[], triangle arrays
+	/// grids of vertices as a flattened column-major VertexPositionNormalTexture[], triangle arrays
 	/// (also as a VertexPositionNormalTexture[]), and VertexBuffers. You can concatenate
 	/// multiple regular grids to produce one regular grid if they have the same number of columns, and you can
 	/// concatentate multiple triangle arrays to produce one triangle array. You can transform either type of
@@ -55,13 +55,14 @@ namespace Blotch
 			var pixels = new int[len];
 			tex.GetData(pixels);
 
-			var heightMap = new double[width, height];
+			var heightMap = new double[height, width];
 
 			Parallel.For(0, width, (x) =>
 			{
 				Parallel.For(0, height, (y) =>
 				{
-					heightMap[x,y] = (double)(pixels[x + width*y] & mask)/(mask+1);
+					// (pixels are row-major, heightMap is column-major)
+					heightMap[y,x] = (double)(pixels[x + width*y] & mask)/(mask+1);
 				});
 			});
 
@@ -98,13 +99,13 @@ namespace Blotch
 			double noiseLevel = 0
 		)
 		{
-			var heightMap = new double[numX, numY];
+			var heightMap = new double[numY, numX];
 
 			Parallel.For(0, numX, (x) =>
 			{
 				Parallel.For(0, numY, (y) =>
 				{
-					heightMap[x, y] = pixelFunc(x, y);
+					heightMap[y, x] = pixelFunc(x, y);
 				});
 			});
 
@@ -118,7 +119,8 @@ namespace Blotch
 		/// elements of a 2D array of doubles.
 		/// Returns a triangle array of the surface, which includes smooth normals and texture coordinates.
 		/// </summary>
-		/// <param name="heightMap">A flattened array (in row-major order) of vertex heights</param>
+		/// <param name="heightMap">A flattened array (in column-major order) of vertex heights. (Note that
+		/// this means the 2D form is [y, x], because rows are the second index in C#)</param>
 		/// <param name="mirrorY">Whether to invert Y</param>
 		/// <param name="smooth">Whether to apply a 3x3 gaussian smoothing kernel, or not</param>
 		/// <param name="noiseLevel">How much noise to add</param>
@@ -134,7 +136,7 @@ namespace Blotch
 			// calc Position and textureCoordinates per vertex
 			var grid = CalcPlanarVerticesAndTexcoords(heightMap, noiseLevel, mirrorY, smooth);
 
-			var width = heightMap.GetLength(0);
+			var width = heightMap.GetLength(1);
 
 			// calculate each vertex normal from the adjacent vertices.
 			CalcSmoothNormals(grid, width);
@@ -154,6 +156,7 @@ namespace Blotch
 		/// <param name="numVertVertices">The number of vertical vertices in a column</param>
 		/// <param name="topDiameter">Diameter of top of cylindroid (if heightMap==null)</param>
 		/// <param name="facetedNormals">If true, create normals per triangle. If false, create smooth normals</param>
+		/// <param name="endCaps">Whether to also create a cap for each end</param>
 		/// <returns></returns>
 		static public VertexPositionNormalTexture[] CreateCylindroidSurface
 		(
@@ -161,20 +164,21 @@ namespace Blotch
 			int numHorizVertices = 32,
 			int numVertVertices = 2,
 			double topDiameter = 1,
-			bool facetedNormals = false
+			bool facetedNormals = false,
+			bool endCaps = false
 		)
 		{
-			var heightMap = new double[numHorizVertices, numVertVertices];
+			var heightMap = new double[numVertVertices, numHorizVertices];
 
 			Parallel.For(0, numHorizVertices, (x) =>
 			{
 				Parallel.For(0, numVertVertices, (y) =>
 				{
-					heightMap[x, y] = pixelFunc(x, y);
+					heightMap[y, x] = pixelFunc(x, y);
 				});
 			});
 
-			return CreateCylindroidSurface(numHorizVertices, numVertVertices, topDiameter, facetedNormals, heightMap);
+			return CreateCylindroidSurface(numHorizVertices, numVertVertices, topDiameter, facetedNormals, heightMap, endCaps);
 		}
 
 		/// <summary>
@@ -186,7 +190,8 @@ namespace Blotch
 		/// to #TransformVertices, the center of the cylindroid is the
 		/// origin, its height is 1, the diameter of the base is 1, and the diameter of the top is topDiameter. If
 		/// heightMap is specified, it multiplies the parameterized diameter at multiple points on the surface. The dimensions of
-		/// heightMap can be different from the dimensions of the cylindroid. heightMap is mapped onto the object
+		/// heightMap can be different from the dimensions of the cylindroid. (Note that in C#, the second index of a 2D array
+		/// is the rows. For example, [y, x].) heightMap is mapped onto the object
 		/// such that the heightMap X wraps around horizontally and the heightMap Y is mapped vertically to the
 		/// height (Z) of the object. For example, if the heightMap X dimension is 1, then it defines the diameter
 		/// shape that is rotated around the whole cylindroid. For some shapes you may also want to
@@ -199,6 +204,7 @@ namespace Blotch
 		/// <param name="facetedNormals">If true, create normals per triangle. If false, create smooth normals</param>
 		/// <param name="heightMap">If not null, then this is mapped onto the surface to modify the diameter. See method
 		/// description for details. This need not have the same dimensions as the cylindroid.</param>
+		/// <param name="endCaps">Whether to also create a cap for each end</param>
 		/// <returns>A triangle list of the cylindroid</returns>
 		static public VertexPositionNormalTexture[] CreateCylindroidSurface
 		(
@@ -206,10 +212,12 @@ namespace Blotch
 			int numVertVertices=2,
 			double topDiameter=1,
 			bool facetedNormals=false,
-			double[,] heightMap=null
+			double[,] heightMap=null,
+			bool endCaps = false
 		)
 		{
 			numHorizVertices++;
+
 			// calc Position and textureCoordinates per vertex
 			var grid = CalcCylindroidVerticesAndTexcoords(numHorizVertices, numVertVertices, topDiameter, heightMap);
 
@@ -226,6 +234,34 @@ namespace Blotch
 			{
 				// calculate each vertex normal from the associated triangle.
 				triangles = CalcFacetNormals(triangles);
+			}
+
+			if(endCaps)
+			{
+				if (endCaps & heightMap != null)
+				{
+					if(topDiameter != 0)
+					{
+						int columns = heightMap.GetLength(0);
+						int rows = heightMap.GetLength(1);
+
+						double[,] topMap = new double[1, rows];
+
+						Buffer.BlockCopy(heightMap, sizeof(double) * rows * (columns - 1), topMap, 0, sizeof(double) * rows);
+
+						var topGrid = CalcCylindroidVerticesAndTexcoords(numHorizVertices, 2, 0, topMap);
+
+						// create triangles
+						var topTriangles = VerticesToTriangles(topGrid, numHorizVertices);
+
+						topTriangles = TransformVertices(topTriangles, Matrix.CreateScale(1, 1, 0));
+
+						// calculate each vertex normal from the associated triangle.
+						topTriangles = CalcFacetNormals(topTriangles);
+
+						
+					}
+				}
 			}
 
 			return triangles;
@@ -252,8 +288,8 @@ namespace Blotch
 			double hmYRatio = 0;
 			if (heightMap != null)
 			{
-				hmXRatio = heightMap.GetLength(0) / (double)(numX-1);
-				hmYRatio = heightMap.GetLength(1) / (double)numY;
+				hmXRatio = heightMap.GetLength(1) / (double)(numX-1);
+				hmYRatio = heightMap.GetLength(0) / (double)numY;
 			}
 
 			var grid = new VertexPositionNormalTexture[numX * numY];
@@ -271,7 +307,7 @@ namespace Blotch
 					{
 						int hx = (int)(x * hmXRatio);
 						int hy = (int)(y * hmYRatio);
-						radius *= heightMap[hx% heightMap.GetLength(0), hy];
+						radius *= heightMap[hy, hx % heightMap.GetLength(1)];
 					}
 
 					var offsetX = (double)x / (numX-1);
@@ -298,7 +334,7 @@ namespace Blotch
 		///  Given a regular grid of vertices, return an array of triangles.
 		///  numY is assumed to be the length of vertices/numX.
 		/// </summary>
-		/// <param name="vertices">A flattened 2D (in row-major order) array of points</param>
+		/// <param name="vertices">A flattened 2D (in column-major order) array of points</param>
 		/// <param name="numX">The number of X elements in a row</param>
 		/// <returns>Triangle array</returns>
 		static public VertexPositionNormalTexture[] VerticesToTriangles(
@@ -416,7 +452,7 @@ namespace Blotch
 		/// triangles have not yet been separated-out.)
 		/// numY is assumed to be vertices.Length/numX.
 		/// </summary>
-		/// <param name="vertices">A flattened (in row-major order) 2D array of vertices (this method may change the contents of this grid)</param>
+		/// <param name="vertices">A flattened (in column-major order) 2D array of vertices (this method may change the contents of this grid)</param>
 		/// <param name="numX">The number of X elements in a row</param>
 		/// <param name="xIsWrapped">Include the row-wrapped ponts in the calculation of normals on the row edge.
 		/// Closed cylindroids where x is wrapped would need this.</param>
@@ -587,7 +623,7 @@ namespace Blotch
 		/// Calculates one normal for each triangle in an existing 2D array of triangles (NOT a regular grid of points). The normal for each
 		/// triangle is orthogonal to its surface.
 		/// </summary>
-		/// <param name="vertices">A flattened (in row-major order) 2D array of triangles (this array is changed to be the putput array)</param>
+		/// <param name="vertices">A flattened (in column-major order) 2D array of triangles (this array is changed to be the putput array)</param>
 		/// <param name="invert">Inverts the normals (typically when viewing faces from the inside)</param>
 		/// <returns>Array with normals calculated</returns>
 		static public VertexPositionNormalTexture[] CalcFacetNormals(
@@ -629,7 +665,7 @@ namespace Blotch
 		/// Calculate vertices and texture coordinates, but not normals, from a specified heightmap int array.
 		/// Returns a 1x1 surface in XY, but with Z for a given position equal to the corresponding heightMap element.
 		/// </summary>
-		/// <param name="heightMap">A flattened array of 2D heights in row-major order</param>
+		/// <param name="heightMap">A flattened array of 2D heights in column-major order</param>
 		/// <param name="noiseLevel">How much noise to add</param>
 		/// <param name="mirrorY">Whether to invert the Y dimension</param>
 		/// <param name="smooth">Whether to apply a 3x3 gaussian blur on each pixel height</param>
@@ -662,7 +698,7 @@ namespace Blotch
 					ym = numY - y - 1;
 				}
 
-				pixel = heightMap[x, ym];
+				pixel = heightMap[ym, x];
 
 				if (smooth)
 				{
@@ -674,24 +710,24 @@ namespace Blotch
 					// adjacent x
 					if (x > 0)
 					{
-						pixel += weight * heightMap[x - 1, ym];
+						pixel += weight * heightMap[ym, x - 1];
 						totalWeight += weight;
 					}
 					if (x < numX - 1)
 					{
-						pixel += weight * heightMap[x + 1, ym];
+						pixel += weight * heightMap[ym, x + 1];
 						totalWeight += weight;
 					}
 
 					// adjacent y
 					if (ym > 0)
 					{
-						pixel += weight * heightMap[x, (ym - 1)];
+						pixel += weight * heightMap[(ym - 1), x];
 						totalWeight += weight;
 					}
 					if (ym < numY - 1)
 					{
-						pixel += weight * heightMap[x, (ym + 1)];
+						pixel += weight * heightMap[(ym + 1), x];
 						totalWeight += weight;
 					}
 
@@ -702,12 +738,12 @@ namespace Blotch
 					{
 						if (ym > 0)
 						{
-							pixel += weight * heightMap[x - 1, (ym - 1)];
+							pixel += weight * heightMap[(ym - 1), x - 1];
 							totalWeight += weight;
 						}
 						if (ym < numY - 1)
 						{
-							pixel += weight * heightMap[x - 1, (ym + 1)];
+							pixel += weight * heightMap[(ym + 1), x - 1];
 							totalWeight += weight;
 						}
 					}
@@ -716,12 +752,12 @@ namespace Blotch
 					{
 						if (ym > 0)
 						{
-							pixel += weight * heightMap[x + 1, (ym - 1)];
+							pixel += weight * heightMap[(ym - 1), x + 1];
 							totalWeight += weight;
 						}
 						if (ym < numY - 1)
 						{
-							pixel += weight * heightMap[x + 1, (ym + 1)];
+							pixel += weight * heightMap[(ym + 1), x + 1];
 							totalWeight += weight;
 						}
 					}
