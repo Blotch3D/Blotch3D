@@ -243,24 +243,63 @@ namespace Blotch
 				{
 					if(topDiameter != 0)
 					{
-						int columns = heightMap.GetLength(0);
-						int rows = heightMap.GetLength(1);
+						int yDim = heightMap.GetLength(0);
+						int xDim = heightMap.GetLength(1);
 
-						double[,] topMap = new double[1, rows];
+						double[,] topMap = new double[1, xDim];
 
-						Buffer.BlockCopy(heightMap, sizeof(double) * rows * (columns - 1), topMap, 0, sizeof(double) * rows);
+						Buffer.BlockCopy(heightMap, sizeof(double) * xDim * (yDim - 1), topMap, 0, sizeof(double) * xDim);
 
 						var topGrid = CalcCylindroidVerticesAndTexcoords(numHorizVertices, 2, 0, topMap);
 
 						// create triangles
 						var topTriangles = VerticesToTriangles(topGrid, numHorizVertices);
 
-						topTriangles = TransformVertices(topTriangles, Matrix.CreateScale(1, 1, 0));
+						var m = Matrix.CreateScale((float)topDiameter, (float)topDiameter, 0);
+						m *= Matrix.CreateTranslation(0, 0, .5f);
+
+						topTriangles = TransformVertices(topTriangles, m);
 
 						// calculate each vertex normal from the associated triangle.
 						topTriangles = CalcFacetNormals(topTriangles);
 
-						
+						var newTriangles = new VertexPositionNormalTexture[triangles.Length + topTriangles.Length];
+
+						triangles.CopyTo(newTriangles, 0);
+						topTriangles.CopyTo(newTriangles, triangles.Length);
+
+						triangles = newTriangles;
+					}
+
+					{
+						int yDim = heightMap.GetLength(0);
+						int xDim = heightMap.GetLength(1);
+
+						double[,] bottomMap = new double[1, xDim];
+
+						Buffer.BlockCopy(heightMap, 0, bottomMap, 0, sizeof(double) * xDim);
+
+						var bottomGrid = CalcCylindroidVerticesAndTexcoords(numHorizVertices, 2, 0, bottomMap);
+
+						// create triangles
+						var bottomTriangles = VerticesToTriangles(bottomGrid, numHorizVertices);
+
+						var m = Matrix.CreateScale(1, 1, 0);
+						m *= Matrix.CreateTranslation(0, 0, -.5f);
+
+						bottomTriangles = TransformVertices(bottomTriangles, m);
+
+						bottomTriangles = ReverseTriangles(bottomTriangles);
+
+						// calculate each vertex normal from the associated triangle.
+						bottomTriangles = CalcFacetNormals(bottomTriangles);
+
+						var newTriangles = new VertexPositionNormalTexture[triangles.Length + bottomTriangles.Length];
+
+						triangles.CopyTo(newTriangles, 0);
+						bottomTriangles.CopyTo(newTriangles, triangles.Length);
+
+						triangles = newTriangles;
 					}
 				}
 			}
@@ -626,11 +665,9 @@ namespace Blotch
 		/// triangle is orthogonal to its surface.
 		/// </summary>
 		/// <param name="vertices">A flattened (in column-major order) 2D array of triangles (this array is changed to be the putput array)</param>
-		/// <param name="invert">Inverts the normals (typically when viewing faces from the inside)</param>
 		/// <returns>Array with normals calculated</returns>
 		static public VertexPositionNormalTexture[] CalcFacetNormals(
-			VertexPositionNormalTexture[] vertices,
-			bool invert = false
+			VertexPositionNormalTexture[] vertices
 		)
 		{
 			int len = vertices.Length/3;
@@ -652,13 +689,37 @@ namespace Blotch
 
 				var normal = Vector3.Cross(leftVector, rightVector);
 
-				if (invert)
-					normal = -normal;
-
 				normal.Normalize();
 				vertices[m].Normal = normal;
 				vertices[m + 1].Normal = normal;
 				vertices[m + 2].Normal = normal;
+			});
+			return vertices;
+		}
+
+
+		/// <summary>
+		/// Reverses all the triangles in a triangle array
+		/// </summary>
+		/// <param name="vertices">The triangle array to reverse, and also the return array</param>
+		/// <returns>The triangle array with its triangles reversed</returns>
+		static public VertexPositionNormalTexture[] ReverseTriangles(
+			VertexPositionNormalTexture[] vertices
+		)
+		{
+			int len = vertices.Length / 3;
+
+			if (len * 3 != vertices.Length)
+				throw new Exception("BlGeometry.CalcFaceNormals expected triangles, but length of input array is not divisible by three");
+
+			//for(int n=0;n<len;n++)
+			Parallel.For(0, len, (n) =>
+			{
+				var m = n * 3;
+
+				var t = vertices[m];
+				vertices[m] = vertices[m + 1];
+				vertices[m + 1] = t;
 			});
 			return vertices;
 		}

@@ -52,7 +52,7 @@ Shift          - Fine control
 			// "Arial14" is the pathname to the font file
 			Font = MyContent.Load<SpriteFont>("Arial14");
 
-			// The model
+			// The model resolution
 			var numX = 512;
 			var numY = 512;
 
@@ -67,23 +67,21 @@ Shift          - Fine control
 			(
 				(x,y)=>
 				{
-					// handle end caps
-					if (y == 0 || y == numY - 1)
-						return 0;
-
 					// Calculate screw shape
 					return threadDepth * Math.Sin(Math.PI * 2 * (numThreads * x / (double)numX + numTurns * y / (double)numY)) + 1;
 				},
 				numX,
 				numY,
-				taperSize
+				taperSize,
+				false,
+				true
 			);
 
 			// Uncomment this for facet normals
 			//geoModel = BlGeometry.CalcFacetNormals(geoModel);
 
-			// transform it
-			geoModel = BlGeometry.TransformVertices(geoModel, Matrix.CreateScale(1, 1, 2f));
+			// uncomment this to transform it
+			//geoModel = BlGeometry.TransformVertices(geoModel, Matrix.CreateScale(1, 1, 2f));
 
 			// Uncomment this to generate face normals (for example, if the previous transform totally flattened the model)
 			//geoModel = BlGeometry.CalcFacetNormals(geoModel);
