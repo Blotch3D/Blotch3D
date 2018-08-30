@@ -269,7 +269,7 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// Like #CreateCylindroidSurface, but returns a regular grid rather than a triangle list, and
+		/// Like #CreateCylindroidSurface, but returns a column-major [y, x] regular grid rather than a triangle list, and
 		/// doesn't calculate the normals, so you'll need to do that separately with the appropriate functions.
 		/// </summary>
 		/// <param name="numX">The number of X elements in a row</param>
@@ -332,7 +332,7 @@ namespace Blotch
 		}
 
 		/// <summary>
-		///  Given a regular grid of vertices, return an array of triangles.
+		///  Given a column-major [y, x] regular grid of vertices, return an array of triangles.
 		///  numY is assumed to be the length of vertices/numX.
 		/// </summary>
 		/// <param name="vertices">A flattened 2D (in column-major order) array of points</param>
@@ -448,7 +448,8 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// For a regular grid (i.e. NOT triangles), calculates a normal for each point in the grid. The normal for a given point
+		/// For a column-major [y, x] regular grid (i.e. NOT triangles), calculates a normal for each point in the grid.
+		/// The normal for a given point
 		/// is an average of the normals of the (typically eight) triangles that the vertex would participates in. (The
 		/// triangles have not yet been separated-out.)
 		/// numY is assumed to be vertices.Length/numX.
