@@ -156,16 +156,18 @@ namespace Blotch
 		/// <param name="numVertVertices">The number of vertical vertices in a column</param>
 		/// <param name="topDiameter">Diameter of top of cylindroid (if heightMap==null)</param>
 		/// <param name="facetedNormals">If true, create normals per triangle. If false, create smooth normals</param>
-		/// <param name="endCaps">Whether to also create a cap for each end</param>
+		/// <param name="createBody">Whether to create the body of the cylindroid</param>
+		/// <param name="createEndCaps">Whether to create a cap for each end</param>
 		/// <returns></returns>
-		static public VertexPositionNormalTexture[] CreateCylindroidSurface
+		static public VertexPositionNormalTexture[] CreateCylindroid
 		(
 			XYToZDelegate pixelFunc,
 			int numHorizVertices = 32,
 			int numVertVertices = 2,
 			double topDiameter = 1,
 			bool facetedNormals = false,
-			bool endCaps = false
+			bool createBody = true,
+			bool createEndCaps = true
 		)
 		{
 			var heightMap = new double[numVertVertices, numHorizVertices];
@@ -178,7 +180,7 @@ namespace Blotch
 				});
 			});
 
-			return CreateCylindroidSurface(numHorizVertices, numVertVertices, topDiameter, facetedNormals, heightMap, endCaps);
+			return CreateCylindroid(numHorizVertices, numVertVertices, topDiameter, facetedNormals, heightMap, createBody, createEndCaps);
 		}
 
 		/// <summary>
@@ -196,7 +198,8 @@ namespace Blotch
 		/// height (Z) of the object. For example, if the heightMap X dimension is 1, then it defines the diameter
 		/// shape that is rotated around the whole cylindroid. For some shapes you may also want to
 		/// re-calculate normals with #CalcFacetNormals (for example, if the the subsequent transform caused some
-		/// normals to become invalid). See the GeomObjects examples.
+		/// normals to become invalid). You can create the body and endcaps separately so they can have different
+		/// textures, or create them together. See the GeomObjects examples.
 		/// </summary>
 		/// <param name="numHorizVertices">The number of horizontal vertices in a row</param>
 		/// <param name="numVertVertices">The number of vertical vertices in a column</param>
@@ -205,41 +208,48 @@ namespace Blotch
 		/// <param name="heightMap">If not null, then this is mapped onto the surface to modify the diameter. See method
 		/// description for details, but note that indices must be of the form [y, x]. This need not have the same
 		/// dimensions as the cylindroid.</param>
-		/// <param name="endCaps">Whether to also create a cap for each end</param>
+		/// <param name="createBody">Whether to create the body</param>
+		/// <param name="createEndCaps">Whether to create a cap for each end</param>
 		/// <returns>A triangle list of the cylindroid</returns>
-		static public VertexPositionNormalTexture[] CreateCylindroidSurface
+		static public VertexPositionNormalTexture[] CreateCylindroid
 		(
 			int numHorizVertices=32,
 			int numVertVertices=2,
 			double topDiameter=1,
 			bool facetedNormals=false,
 			double[,] heightMap=null,
-			bool endCaps = false
+			bool createBody = true,
+			bool createEndCaps = true
 		)
 		{
+			var triangles = new VertexPositionNormalTexture[0];
+
 			numHorizVertices++;
 
-			// calc Position and textureCoordinates per vertex
-			var grid = CalcCylindroidVerticesAndTexcoords(numHorizVertices, numVertVertices, topDiameter, heightMap);
-
-			if(!facetedNormals)
+			if(createBody)
 			{
-				// calculate each vertex normal from the adjacent vertices.
-				grid = CalcSmoothNormals(grid, numHorizVertices, true);
+				// calc Position and textureCoordinates per vertex
+				var grid = CalcCylindroidVerticesAndTexcoords(numHorizVertices, numVertVertices, topDiameter, heightMap);
+
+				if (!facetedNormals)
+				{
+					// calculate each vertex normal from the adjacent vertices.
+					grid = CalcSmoothNormals(grid, numHorizVertices, true);
+				}
+
+				// create triangles
+				triangles = VerticesToTriangles(grid, numHorizVertices);
+
+				if (facetedNormals)
+				{
+					// calculate each vertex normal from the associated triangle.
+					triangles = CalcFacetNormals(triangles);
+				}
 			}
 
-			// create triangles
-			var triangles = VerticesToTriangles(grid, numHorizVertices);
-
-			if (facetedNormals)
+			if (createEndCaps)
 			{
-				// calculate each vertex normal from the associated triangle.
-				triangles = CalcFacetNormals(triangles);
-			}
-
-			if(endCaps)
-			{
-				if (endCaps & heightMap != null)
+				if (createEndCaps & heightMap != null)
 				{
 					if(topDiameter != 0)
 					{

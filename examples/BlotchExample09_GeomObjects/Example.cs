@@ -56,7 +56,7 @@ Shift          - Fine control
 			var numX = 128;
 			var numY = 2;
 
-			var geoModel = BlGeometry.CreateCylindroidSurface(numX, numY,0);
+			var geoModel = BlGeometry.CreateCylindroid(numX, numY,0);
 
 			// transform it
 			geoModel = BlGeometry.TransformVertices(geoModel, Matrix.CreateScale(1, 1, 2f));

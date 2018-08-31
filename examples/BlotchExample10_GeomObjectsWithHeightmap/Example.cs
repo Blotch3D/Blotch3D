@@ -63,7 +63,7 @@ Shift          - Fine control
 			var threadDepth = .2;
 
 			// Create the cylindroid
-			var geoModel = BlGeometry.CreateCylindroidSurface
+			var geoModel = BlGeometry.CreateCylindroid
 			(
 				(x,y)=>
 				{
@@ -72,9 +72,7 @@ Shift          - Fine control
 				},
 				numX,
 				numY,
-				taperSize,
-				false,
-				true
+				taperSize
 			);
 
 			// Uncomment this for facet normals
