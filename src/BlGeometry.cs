@@ -471,7 +471,7 @@ namespace Blotch
 
 			var numTris = len / 3;
 			if (numTris * 3 != triangles.Length)
-				throw new Exception("BlGeometry.TransformVertices expected triangles, but the number of vertices are not divisible by three.");
+				throw new Exception("BlGeometry.CullEmptyTriangles expected triangles, but the number of vertices are not divisible by three.");
 
 			for (int n = 0; n < numTris; n++)
 			{
@@ -683,7 +683,7 @@ namespace Blotch
 			int len = vertices.Length/3;
 
 			if (len * 3 != vertices.Length)
-				throw new Exception("BlGeometry.CalcFaceNormals expected triangles, but length of input array is not divisible by three");
+				throw new Exception("BlGeometry.CalcFacetNormals expected triangles, but length of input array is not divisible by three");
 
 			//for(int n=0;n<len;n++)
 			Parallel.For(0, len, (n) =>
@@ -720,7 +720,7 @@ namespace Blotch
 			int len = vertices.Length / 3;
 
 			if (len * 3 != vertices.Length)
-				throw new Exception("BlGeometry.CalcFaceNormals expected triangles, but length of input array is not divisible by three");
+				throw new Exception("BlGeometry.ReverseTriangles expected triangles, but length of input array is not divisible by three");
 
 			//for(int n=0;n<len;n++)
 			Parallel.For(0, len, (n) =>
