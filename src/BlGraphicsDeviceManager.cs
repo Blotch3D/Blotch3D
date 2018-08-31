@@ -965,8 +965,18 @@ namespace Blotch
 
 		void UpdateViewDirection()
 		{
+			var vec = Eye - LookAt;
+
 			LookAt = (1-(float)CameraSpeed) * LookAt + (float)CameraSpeed * TargetLookAt;
 			Eye = (1 - (float)CameraSpeed) * Eye + (float)CameraSpeed * TargetEye;
+
+			var newVec = Eye - LookAt;
+
+			var difDist = newVec.Length() - vec.Length();
+
+			MaxCamDistance += difDist;
+			MinCamDistance += difDist;
+
 			SetCameraRollToZero();
 		}
 
