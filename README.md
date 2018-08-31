@@ -20,12 +20,12 @@ On your development machine ...
 4.  Use IntelliSense and see "Blotch3DManual.pdf" for the reference
     documentation.
 
-5.  To deliver an app, just deliver the contents of your project's
-    output folder.
-
-6.  See [Creating a new project](#creating-a-new-project) for details on
+5.  See [Creating a new project](#creating-a-new-project) for details on
     creating projects, adding Blotch3D to an existing project, or
     building for another platform.
+
+6.  To deliver an app, just deliver the contents of your project's
+    output folder.
 
 Features
 ========
@@ -39,8 +39,7 @@ code you can...
 -   Load standard 3D model file types as "sprites", and display and move
     thousands of them in 3D at high frame rates.
 
--   Programmatically define parameters to create a wide variety of
-    sprite shapes.
+-   Programmatically create a wide variety of sprite shapes.
 
 -   Create sprites by defining individual polygons.
 
@@ -55,7 +54,7 @@ code you can...
 -   Attach sprites to other sprites to create 'sprite trees' as large as
     you want. Child sprite orientation, position, scale, etc. are
     relative to the parent sprite, and can be changed dynamically (i.e.
-    the sprite trees are dynamic scene graphs.)
+    the sprite trees are real-time dynamic scene graphs.)
 
 -   Override all steps in the drawing of each sprite.
 
@@ -66,7 +65,7 @@ code you can...
 
 -   Create billboard sprites.
 
--   Show a video as a 2D or 3D texture (See
+-   Show a video as a 2D or 3D texture on a sprite (See
     <http://rbwhitaker.wikidot.com/video-playback> for details).
 
 -   Connect sprites to the camera to implement HUD models and text.
@@ -158,7 +157,8 @@ Creating a new project
 ======================
 
 To develop with Blotch3D, you must first install the MonoGame SDK as
-described in [Quick start](#blotch3d) section. Then...
+described in the [Quick start for Windows](#quick-start-for-windows)
+section. Then...
 
 To create a new project from scratch, select File/New/Project/MonoGame,
 and select the type of MonoGame project you want. Then add the source or
@@ -187,31 +187,31 @@ Development overview
 
 See the examples, starting with the basic example.
 
-Define a 3D window by deriving a class from BlWindow3D and overriding
-some of its methods. Open the window by instantiating that class and
-calling its "Run" method *from the same thread*. The Run method then
-calls those overridden methods when appropriate, and does not return
-until the window has closed.
+You define a 3D window by deriving a class from BlWindow3D and
+overriding at least the FrameDraw method. Open the window by
+instantiating that class and calling its "Run" method *from the same
+thread*. The Run method then calls the methods you've overridden, when
+appropriate, and does not return until the window has closed.
 
-All code that accesses the 3D hardware must be in those overridden
-methods. This is because 3D subsystems (OpenGL, DirectX, etc.) generally
-require that a single thread access all 3D hardware resources for a
-given 3D window. There are certain platform-specific exceptions to this
-rule, but we don't use them. This rule also applies to any code
-structure (like Parallel, etc.) that may internally use other threads,
-as well. Also, since sometimes it's hard to know exactly what 3D
-operations really do hit the 3D hardware, its best to assume all of them
-do, like creation and use of all Blotch3D and MonoGame objects.
+All code that accesses the 3D hardware must be in overridden methods.
+This is because 3D subsystems (OpenGL, DirectX, etc.) generally require
+that a single thread access all 3D hardware resources for a given 3D
+window. There are certain platform-specific exceptions to this rule, but
+we don't use them. This rule also applies to any code structure (like
+Parallel, etc.) that may internally use other threads, as well. Also,
+since sometimes it's hard to know exactly what 3D operations really do
+hit the 3D hardware, its best to assume all of them do, like creation
+and use of all Blotch3D and MonoGame objects.
 
 You can put all your 3D code in the one overridden method called
-"FrameDraw", if you like, but there are some other overridable methods
-provided for your convenience. There is a Setup method that is called
-once at the beginning, a FrameProc method that is called every frame,
-and the FrameDraw method that is called after each FrameProc call only
-if there is enough CPU available. You are welcome to put whatever you
-like in any of those three methods, except that actual drawing code
-(code that causes things to appear in the window) must be in the
-FrameDraw method.
+"FrameDraw", if you like, but there are a couple of other overridable
+methods provided for your convenience. There is a Setup method that is
+called once at the beginning and a FrameProc method that is called every
+frame. The FrameDraw method is also called each frame, but only when
+there is enough CPU available. You are welcome to put whatever you like
+in any of those three methods, except that actual drawing code (code
+that causes things to appear in the window) must be in the FrameDraw
+method.
 
 For apps that may suffer from severe CPU exhaustion (at least for the 3D
 thread), it might be best to put all your periodic 3D code in FrameDraw
@@ -220,42 +220,44 @@ often under high-CPU loads. Of course, then your periodic code should
 handle being called at a variable rate.
 
 You can also specify a delegate to the BlSprite constructor. The
-delegate will be executed every frame. The effect is the same as putting
-the code in FrameProc, but it better encapsulates sprite-specific code.
+delegate will also be executed every frame. The effect is the same as
+putting the code in FrameProc, but it better encapsulates
+sprite-specific code.
 
 A single-threaded application would have all its code in the overridden
 methods or delegates. If you are developing a multithreaded program,
-then you would probably want to reserve the 3D thread only for tasks
-that access 3D hardware resources. When other threads do need to create,
-change, or destroy 3D hardware resources or otherwise do something in a
-thread-safe way with the 3D thread, they can pass a delegate to the 3D
-thread with BlWindow3D.EnqueueCommand or
+then you would probably want to reserve the 3D thread (the overrides)
+only for tasks that access 3D hardware resources. When other threads do
+need to create, change, or destroy 3D hardware resources or otherwise do
+something in a thread-safe way with the 3D thread, they can pass a
+delegate to the 3D thread with BlWindow3D.EnqueueCommand or
 BlWindow3D.EnqueueCommandBlocking, which will be executed within one
 frame time.
 
-You can use a variety of methods to draw things in FrameDraw. Blotch3D
-provides methods to draw text and textures in 2D (just draw them after
-all 3D objects have been drawn so they aren't overwritten by them).
-Sprites are drawn with the BlSprite.Draw method. When you draw a sprite,
-all its subsprites are also drawn. So, oftentimes you may want to have a
-"Top" sprite that holds other sprites, and call the Draw method of the
-Top sprite to cause the other sprites to be drawn. You can also draw
-things using MonoGame methods. For example, it is faster to draw
-multiple 2D textures and text using MonoGame's SpriteBatch class.
+You can use a variety of methods to draw things in FrameDraw. Sprites
+are drawn with the BlSprite.Draw method. When you draw a sprite, all its
+subsprites are also drawn. So, oftentimes you may want to have a "Top"
+sprite that holds other sprites, and call the Draw method of the Top
+sprite to cause the other sprites to be drawn. There are also methods to
+draw text and textures in 2D (just draw them after all 3D objects have
+been drawn so they aren't overwritten by them). You can also draw things
+using the lower-level MonoGame methods. For example, it is faster to
+draw multiple 2D textures and text using MonoGame's SpriteBatch class.
 
 BlWindow3D derives from MonoGame's "Game" class, so you can also
 override other Game class overridable methods. Just be sure to call the
 base method from within a Game class overridden method. On Microsoft
-Windows, you can also add window event handlers to
+Windows, you can also better control the window and add window event
+handlers with the associated Windows 'Forms' object,
 BlWindow3D.WindowForm.
 
 Because multiple windows are not conducive to some of the supported
 platforms, MonoGame, and thus Blotch3D, do not support more than one 3D
-window. (You can create any number of other, non-3D windows you like.)
-You can *create* multiple 3D windows, but MonoGame does not support them
-correctly (input sometimes goes to the wrong window) and in certain
-situations will crash. If you want to be able to "close" and "re-open" a
-window, you can just hide and show the same window.
+window. You can *create* multiple 3D windows, but MonoGame does not
+handle them correctly (input sometimes goes to the wrong window and in
+certain situations will crash). If you want to be able to "close" and
+"re-open" a window, you can just hide and show the same window. You can,
+of course, create any number of non-3D windows you like.
 
 Officially, MonoGame must create the 3D window, and does not allow you
 to specify an existing window to use as the 3D window. There are some
@@ -311,10 +313,11 @@ for use by your MonoGame project. The MonoGame "pipeline manager" is
 used to make this conversion.
 
 The Blotch3D project is already set up with the pipeline manager to
-convert the several primitive models it has to XNB files when Blotch3D
-is built. You can double-click "Content.mgcb" in the Blotch project to
-add more standard files and resources. You can also copy an XNB files to
-a project's output folder, where the program can load it.
+convert the several primitive models to XNB files when Blotch3D is
+built. You can double-click "Content.mgcb" in the Blotch project to add
+more standard files and resources and to convert to XNB outside of the
+build process. You can also copy an XNB files to a project's output
+folder, where the program can load it.
 
 When you create a new MonoGame project with the wizard, it sets up a
 "Content.mgcb" file in the new project that manages your content and
