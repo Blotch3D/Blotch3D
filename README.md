@@ -14,8 +14,8 @@ On your development machine ...
 2.  Download the Blotch3D repository zip from the GitHub page and unzip
     it.
 
-3.  Open the Visual Studio solution file (Blotch3D.sln) to build and run
-    the example projects.
+3.  Open the Visual Studio solution file (Blotch3D.sln) and build and
+    run the example projects.
 
 4.  Use IntelliSense and see "Blotch3DManual.pdf" for the reference
     documentation.
