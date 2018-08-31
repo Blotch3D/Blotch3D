@@ -845,6 +845,10 @@ namespace Blotch
 			if (BlDebug.ShowThreadWarnings && CreationThread != Thread.CurrentThread.ManagedThreadId)
 				throw new Exception(String.Format("BlGraphicsDeviceManager.TextToTexture() was called by thread {0} instead of thread {1}", Thread.CurrentThread.ManagedThreadId, CreationThread));
 
+			// we don't handle empty strings so well
+			if (text == "")
+				text = " ";
+
 			var v = font.MeasureString(text);
 			var renderTarget = new RenderTarget2D(GraphicsDevice, (int)(v.X+.99), (int)(v.Y+.99));
 
