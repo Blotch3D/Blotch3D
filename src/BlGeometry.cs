@@ -11,14 +11,14 @@ namespace Blotch
 {
 	/// <summary>
 	/// Methods and helpers for creating various geometric objects. These methods create and manage regular
-	/// (rectangular) grids of vertices as a flattened column-major ([y, x]) VertexPositionNormalTexture[], triangle arrays
-	/// (also as a VertexPositionNormalTexture[]), and VertexBuffers. You can concatenate
-	/// multiple regular grids to produce one regular grid if they have the same number of columns, and you can
-	/// concatentate multiple triangle arrays to produce one triangle array. You can transform either type of
-	/// array with TransformVertices. You can create smooth normals for a regular grid and facet normals for a
-	/// triangle array. You can set texture (UV) coordinates. You can convert a regular grid to a triangle
-	/// array. Finally, you can convert a triangle array to a VertexBuffer suitable for adding to a
-	/// BlSprite.LODs field.
+	/// (rectangular) grids of vertices as a flattened row-major array (if indexed as [y, x])
+	/// of VertexPositionNormalTexture[], triangle arrays (also as a VertexPositionNormalTexture[]), and
+	/// VertexBuffers. You can concatenate multiple regular grids to produce one regular grid if they have
+	/// the same number of columns, and you can concatentate multiple triangle arrays to produce one triangle
+	/// array. If you are confused by this, see the examples. You can transform either type of array with
+	/// TransformVertices. You can create smooth normals for a regular grid and facet normals for a triangle
+	/// array. You can set texture (UV) coordinates. You can convert a regular grid to a triangle array.
+	/// Finally, you can convert a triangle array to a VertexBuffer suitable for adding to a BlSprite.LODs field.
 	/// </summary>
 	public class BlGeometry
 	{
@@ -62,7 +62,6 @@ namespace Blotch
 			{
 				Parallel.For(0, height, (y) =>
 				{
-					// (pixels are row-major, heightMap is column-major)
 					heightMap[y,x] = (double)(pixels[x + width*y] & mask)/(mask+1);
 				});
 			});
@@ -120,7 +119,7 @@ namespace Blotch
 		/// elements of a 2D array of doubles.
 		/// Returns a triangle array of the surface, which includes smooth normals and texture coordinates.
 		/// </summary>
-		/// <param name="heightMap">A column-major [y, x] array of vertex heights.</param>
+		/// <param name="heightMap">A row-major (must be indexed as [y, x]) array of vertex heights.</param>
 		/// <param name="mirrorY">Whether to invert Y</param>
 		/// <param name="smooth">Whether to apply a 3x3 gaussian smoothing kernel, or not</param>
 		/// <param name="noiseLevel">How much noise to add</param>
@@ -148,8 +147,8 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// Like the #CreateCylindroidSurface overload that takes a heightMap (see that method for details),
-		/// but this takes a delegate that defines the diameter multiplier, instead.
+		/// Like the CreateCylindroidSurface overload that takes a heightMap (see that method for details),
+		/// but rather than a heightMap, this takes a delegate that defines the diameter multiplier.
 		/// </summary>
 		/// <param name="pixelFunc">A delegate that takes an x and y and returns the diameter multiplier</param>
 		/// <param name="numHorizVertices">The number of horizontal vertices in a row</param>
@@ -184,22 +183,24 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// Creates a cylindroid (including texture coords and normals) with the given parameters, and returns
-		/// a triangle array, which includes smooth normals and texture coordinates. Assuming a possible subsequent
-		/// call to #TransformVertices, even without a heightMap many
+		/// Creates a cylindroid (including texture coords and normals) and/or the end caps of the cylindroid, with
+		/// the given parameters and returns a triangle array, which includes smooth normals and texture coordinates.
+		/// Assuming a possible subsequent call to #TransformVertices, even without a heightMap many
 		/// fundamental rotationally symmetric shapes can be generated, like a cylinder, cone, washer, disk, prism
 		/// of any number of facets, tetrahedron, pyramid of any number of facets, etc. Before passing the result
 		/// to #TransformVertices, the center of the cylindroid is the
 		/// origin, its height is 1, the diameter of the base is 1, and the diameter of the top is topDiameter. If
-		/// heightMap is specified, it multiplies the parameterized diameter at multiple points on the surface. The dimensions of
+		/// heightMap is specified, each element multiplies the parameterized diameter at the corresponding point
+		/// on the surface. The dimensions of
 		/// heightMap can be different from the dimensions of the cylindroid. (Note that in C#, the second index of a 2D array
-		/// is the rows. So array indices must be in the form of [y, x].) heightMap is mapped onto the object
+		/// is the rows. So heightMap array indices must be of the form [y, x].) heightMap is mapped onto the object
 		/// such that the heightMap X wraps around horizontally and the heightMap Y is mapped vertically to the
 		/// height (Z) of the object. For example, if the heightMap X dimension is 1, then it defines the diameter
 		/// shape that is rotated around the whole cylindroid. For some shapes you may also want to
 		/// re-calculate normals with #CalcFacetNormals (for example, if the the subsequent transform caused some
-		/// normals to become invalid). You can create the body and endcaps separately so they can have different
-		/// textures, or create them together. See the GeomObjects examples.
+		/// normals to become invalid). You can create the body and endcaps separately so they can be assigned to
+		/// different sprites and thus have different
+		/// textures, or create them together. See the GeomObjectsWithHeightmap example.
 		/// </summary>
 		/// <param name="numHorizVertices">The number of horizontal vertices in a row</param>
 		/// <param name="numVertVertices">The number of vertical vertices in a column</param>
@@ -318,7 +319,8 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// Like #CreateCylindroidSurface, but returns a column-major [y, x] regular grid rather than a triangle list, and
+		/// Like #CreateCylindroidSurface, but returns a row-major regular grid
+		/// rather than a triangle list, and
 		/// doesn't calculate the normals, so you'll need to do that separately with the appropriate functions.
 		/// </summary>
 		/// <param name="numX">The number of X elements in a row</param>
@@ -381,10 +383,10 @@ namespace Blotch
 		}
 
 		/// <summary>
-		///  Given a column-major [y, x] regular grid of vertices, return an array of triangles.
+		///  Given a row-major [y, x] regular grid of vertices, return an array of triangles.
 		///  numY is assumed to be the length of vertices/numX.
 		/// </summary>
-		/// <param name="vertices">A flattened 2D (in column-major order) array of points</param>
+		/// <param name="vertices">A flattened row-major array of points</param>
 		/// <param name="numX">The number of X elements in a row</param>
 		/// <returns>Triangle array</returns>
 		static public VertexPositionNormalTexture[] VerticesToTriangles(
@@ -441,7 +443,8 @@ namespace Blotch
 		/// If its an array of triangles, you will probably want to call #CullEmptyTriangles if the transform might
 		/// cause some triangles to have zero area, and maybe #CalcSmoothNormals (for regular grids) or #CalcFaceNormals
 		/// (for tiangles) afterward if the transform might cause normals to be invalid or point the wrong
-		/// way, causing the surface to be black or the wrong brightness (typically when a dimenson is scaled to zero).
+		/// way, causing the surface to be black or the wrong brightness (typically when a dimenson is scaled to zero
+		/// or inverted).
 		/// </summary>
 		/// <param name="vertices">Input array (this is altered by the method)</param>
 		/// <param name="matrix">Transformation matrix</param>
@@ -497,13 +500,13 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// For a column-major [y, x] regular grid (i.e. NOT triangles), calculates a normal for each point in the grid.
+		/// For a row-major (indexed as [y, x]) regular grid (i.e. NOT triangles), calculates a normal for each point in the grid.
 		/// The normal for a given point
-		/// is an average of the normals of the (typically eight) triangles that the vertex would participates in. (The
-		/// triangles have not yet been separated-out.)
+		/// is an average of the normals of the (typically eight) triangles that the vertex would participate in.
+		/// (Of course, the triangles have not yet been separated-out.)
 		/// numY is assumed to be vertices.Length/numX.
 		/// </summary>
-		/// <param name="vertices">A flattened (in column-major order) 2D array of vertices (this method may change the contents of this grid)</param>
+		/// <param name="vertices">A flattened (in row-major order) 2D array of vertices (this method may change the contents of this grid)</param>
 		/// <param name="numX">The number of X elements in a row</param>
 		/// <param name="xIsWrapped">Include the row-wrapped ponts in the calculation of normals on the row edge.
 		/// Closed cylindroids where x is wrapped would need this.</param>
@@ -671,10 +674,11 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// Calculates one normal for each triangle in an existing 2D array of triangles (NOT a regular grid of points). The normal for each
-		/// triangle is orthogonal to its surface.
+		/// Calculates one normal for each triangle in an existing 2D array of triangles (NOT a regular grid of points).
+		/// The normal for each triangle is orthogonal to its surface.
 		/// </summary>
-		/// <param name="vertices">A flattened (in column-major order) 2D array of triangles (this array is changed to be the putput array)</param>
+		/// <param name="vertices">A flattened (in row-major order) 2D array of triangles (this array is changed to be the
+		/// output array)</param>
 		/// <returns>Array with normals calculated</returns>
 		static public VertexPositionNormalTexture[] CalcFacetNormals(
 			VertexPositionNormalTexture[] vertices
@@ -711,7 +715,7 @@ namespace Blotch
 		/// <summary>
 		/// Reverses all the triangles in a triangle array
 		/// </summary>
-		/// <param name="vertices">The triangle array to reverse, and also the return array</param>
+		/// <param name="vertices">The triangle array to reverse, and also altered to be the return array</param>
 		/// <returns>The triangle array with its triangles reversed</returns>
 		static public VertexPositionNormalTexture[] ReverseTriangles(
 			VertexPositionNormalTexture[] vertices
@@ -735,11 +739,11 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// Calculate vertices and texture coordinates, but not normals, from a specified column-major
-		/// heightmap double array. Note that heightMap indices must be of the form [y, x].
+		/// Calculate vertices and texture coordinates, but not normals, from a specified row-major
+		/// (indexed as [y, x]) heightmap double array.
 		/// Returns a 1x1 surface in XY, but with Z for a given position equal to the corresponding heightMap element.
 		/// </summary>
-		/// <param name="heightMap">A column-major array [y, x] of height values</param>
+		/// <param name="heightMap">A row-major array (indexed as [y, x]) of height values</param>
 		/// <param name="noiseLevel">How much noise to add</param>
 		/// <param name="mirrorY">Whether to invert the Y dimension</param>
 		/// <param name="smooth">Whether to apply a 3x3 gaussian blur on each pixel height</param>

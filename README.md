@@ -11,19 +11,21 @@ On your development machine ...
     with the default settings. (Do NOT get the current development
     version nor a NuGet package.)
 
-2.  Get the Blotch3D repository zip from
-    <https://github.com/Blotch3D/Blotch3D> and unzip it.
+2.  Download the Blotch3D repository zip from the GitHub page and unzip
+    it.
 
-3.  Open the Visual Studio solution file (Blotch3D.sln).
+3.  Open the Visual Studio solution file (Blotch3D.sln) to build and run
+    the example projects.
 
-4.  Build and run the example projects.
+4.  Use IntelliSense and see "Blotch3DManual.pdf" for the reference
+    documentation.
 
-5.  Use IntelliSense to see the reference documentation, or see
-    "Blotch3DManual.pdf".
+5.  To deliver an app, just deliver the contents of your project's
+    output folder.
 
-6.  To create a new Blotch3D project, or add Blotch3D to an existing
-    project, or build for another platform, follow the instructions in
-    the [Creating a new project](#creating-a-new-project) section.
+6.  See [Creating a new project](#creating-a-new-project) for details on
+    creating projects, adding Blotch3D to an existing project, or
+    building for another platform.
 
 Features
 ========
