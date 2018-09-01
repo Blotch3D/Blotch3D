@@ -95,7 +95,7 @@ Shift          - Fine control
 			// The sprite we draw in this window
 			GeoObj = new BlSprite(Graphics, "geomodel");
 			GeoObj.LODs.Add(geoVertexBuffer);
-			GeoObj.BoundSphere = new BoundingSphere(new Vector3(), 1);
+			GeoObj.BoundSphere = BlGeometry.GetBoundingSphere(geoModel);
 			GeoObj.Mipmap = tex;
 
 			/*

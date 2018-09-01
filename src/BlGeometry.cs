@@ -462,6 +462,45 @@ namespace Blotch
 		}
 
 		/// <summary>
+		/// Returns the BoundingSphere for the specified vertices or triangles
+		/// </summary>
+		/// <param name="vertices">Vertices or triangles to get the BoundingSphere for</param>
+		/// <returns>The BoundingSphere for the specified vertices or triangles</returns>
+		static public BoundingSphere GetBoundingSphere(VertexPositionNormalTexture[] vertices)
+		{
+			var minExtents = new Vector3(1e30f, 1e30f, 1e30f);
+			var maxExtents = new Vector3(-1e30f, -1e30f, -1e30f);
+
+			var len = vertices.Length;
+			for(int n=0; n<len; n++)
+			{
+				var pos = vertices[n].Position;
+
+				if (minExtents.X > pos.X)
+					minExtents.X = pos.X;
+				if (minExtents.Y > pos.Y)
+					minExtents.Y = pos.Y;
+				if (minExtents.Z > pos.Z)
+					minExtents.Z = pos.Z;
+
+				if (maxExtents.X < pos.X)
+					maxExtents.X = pos.X;
+				if (maxExtents.Y < pos.Y)
+					maxExtents.Y = pos.Y;
+				if (maxExtents.Z < pos.Z)
+					maxExtents.Z = pos.Z;
+			}
+
+			var center = (minExtents + maxExtents) / 2;
+
+			var radius = (center - minExtents).Length();
+
+			var sphere = new BoundingSphere(center, radius);
+
+			return sphere;
+		}
+
+		/// <summary>
 		/// Removes triangles that have zero area. Typically called after a transform.
 		/// </summary>
 		/// <param name="triangles">The input triangles (i.e. NOT a regular grid)</param>
