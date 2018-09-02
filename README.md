@@ -175,12 +175,12 @@ desired platform. For example, for Android you'd need the Xamarin for
 Android add-on. Then use the MonoGame project wizard to create both a
 project for the Blotch3D class library (and add the Blotch3D source to
 that project), then use the wizard to create your project and add a
-reference to Blotch3D. For some platforms you may also need to do some
-more research to properly create a project.
+reference to Blotch3D. For some platforms you may need to do some online
+research to properly create the project.
 
 To distribute a program for Microsoft Windows, deliver everything in
 your project's output folder. Other platforms may require different
-delivery methods. See online for more information.
+delivery methods.
 
 Development overview
 ====================

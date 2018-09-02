@@ -56,7 +56,7 @@ Shift          - Fine control
 			var numX = 512;
 			var numY = 512;
 
-			// make a tapered screw shape
+			// tapered screw shape parameters
 			var taperSize = .1;
 			var numThreads = 5;
 			var numTurns = 8; // (total for all threads)
@@ -85,6 +85,7 @@ Shift          - Fine control
 			//geoModel = BlGeometry.CalcFacetNormals(geoModel);
 
 			// Uncomment this to set texture to planar
+			// (note: to control the planar direction, transform the vertices, call this method, then transform them back)
 			//geoModel = BlGeometry.SetTextureToXY(geoModel);
 
 			// convert to vertex buffer
@@ -99,7 +100,7 @@ Shift          - Fine control
 			GeoObj.Mipmap = tex;
 
 			/*
-			// Uncomment this to show insides, also
+			// Uncomment this to make insides visible, also.
 			GeoObj.PreDraw = (s) =>
 			{
 				Graphics.GraphicsDevice.RasterizerState = RasterizerState.CullNone;

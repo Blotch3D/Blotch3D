@@ -998,7 +998,7 @@ namespace Blotch
 				// regulate frame rate
 				var now = DateTime.Now;
 				var elapsed = now - LastUpdateTime;
-				//Console.WriteLine("{0}  {1}",SleepTime,elapsed);
+
 				LastUpdateTime = now;
 
 				var sleepTime = 2 * FramePeriod - elapsed.TotalSeconds;
@@ -1019,8 +1019,10 @@ namespace Blotch
 			{
 				PreferredBackBufferWidth = Window.Window.ClientBounds.Width;
 				PreferredBackBufferHeight = Window.Window.ClientBounds.Height;
-				//Console.WriteLine(Window.Window.ClientBounds);
 			}
+
+
+			// auto clipping
 
 			double nearLimit = 1e-2;
 
@@ -1035,8 +1037,6 @@ namespace Blotch
 			{
 				CurrentNearClip = NearClip;
 			}
-
-
 
 			double farLimit = 1e29;
 
@@ -1073,8 +1073,6 @@ namespace Blotch
 			if (CurrentNearClip > CurrentFarClip * .9)
 				CurrentNearClip = CurrentFarClip * .9;
 
-			//Console.WriteLine("{0} {1}", CurrentNearClip, CurrentFarClip);
-
 			View = Microsoft.Xna.Framework.Matrix.CreateLookAt(Eye, LookAt, CameraUp);
 
 			CurrentAspect = Aspect;
@@ -1088,7 +1086,6 @@ namespace Blotch
 			GraphicsDevice.Clear(ClearColor);
 
 			GraphicsDevice.DepthStencilState = DepthStencilState.Default;
-
 		}
 
 		/// <summary>
