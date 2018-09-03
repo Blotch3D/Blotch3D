@@ -65,11 +65,7 @@ Shift          - Fine control
 			// Create the cylindroid
 			var geoModel = BlGeometry.CreateCylindroid
 			(
-				(x,y)=>
-				{
-					// Calculate screw shape
-					return threadDepth * Math.Sin(Math.PI * 2 * (numThreads * x / (double)numX + numTurns * y / (double)numY)) + 1;
-				},
+				(x,y) => threadDepth * Math.Sin(Math.PI * 2 * (numThreads * x / (double)numX + numTurns * y / (double)numY)) + 1,
 				numX,
 				numY,
 				taperSize

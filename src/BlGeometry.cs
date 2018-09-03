@@ -34,7 +34,8 @@ namespace Blotch
 		/// <param name="tex">The texture that represents the height (Z) of each vertex.</param>
 		/// <param name="mirrorY">If true, then invert image's Y dimension</param>
 		/// <param name="smooth">Whether to apply a 3x3 gaussian smoothing kernel, or not</param>
-		/// <param name="noiseLevel">How much noise to add</param>
+		/// <param name="noiseLevel">How much noise to add. If it's Double.NaN, then automatically calculate a little
+		/// noise according to overcome quantization from limited numSignificantBits</param>
 		/// <param name="numSignificantBits">How many bits in a pixel should be used (starting from the least significant bit).
 		/// Normally the first 8 bits are used (the last channel), but special images might combine the bits of multiple channels.</param>
 		/// <returns>The triangles of a terrain from the specified image, including smooth normals and texture coordinates</returns>
@@ -43,7 +44,7 @@ namespace Blotch
 			Texture2D tex,
 			bool mirrorY = false,
 			bool smooth = true,
-			double noiseLevel = 1.0/256,
+			double noiseLevel = Double.NaN,
 			int numSignificantBits = 8
 		)
 		{
@@ -52,21 +53,18 @@ namespace Blotch
 
 			int mask = (int)(Math.Pow(2, numSignificantBits) + .5) - 1;
 
+			if (Double.IsNaN(noiseLevel))
+				noiseLevel = .7 / mask;
+
 			var len = width * height;
 			var pixels = new int[len];
 			tex.GetData(pixels);
 
-			var heightMap = new double[height, width];
-
-			Parallel.For(0, width, (x) =>
+			return CreatePlanarSurface((x,y)=>
 			{
-				Parallel.For(0, height, (y) =>
-				{
-					heightMap[y,x] = (double)(pixels[x + width*y] & mask)/(mask+1);
-				});
-			});
-
-			return CreatePlanarSurface(heightMap, mirrorY, smooth, noiseLevel);
+				return (double)(pixels[x + width * y] & mask) / (mask + 1); 
+			},
+			width, height, mirrorY, smooth, noiseLevel);
 		}
 
 		/// <summary>
@@ -76,6 +74,14 @@ namespace Blotch
 		/// <param name="y">The y of the surface position</param>
 		/// <returns>The height or diameter multiplier of the surface at the corresponding XY position</returns>
 		public delegate double XYToZDelegate(int x, int y);
+
+		/// <summary>
+		/// The delegate passed to certain geometry methods. Given an X and Y value, return a Vector3.
+		/// </summary>
+		/// <param name="x">The x of the surface position</param>
+		/// <param name="y">The y of the surface position</param>
+		/// <returns>The position of the surface for the corresponding vertex grid XY</returns>
+		public delegate Vector3 XYToVector3Delegate(int x, int y);
 
 		/// <summary>
 		/// Creates a square 1x1 surface in XY but with variation of its Z depending on the
