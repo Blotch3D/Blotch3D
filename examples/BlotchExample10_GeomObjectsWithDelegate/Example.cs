@@ -62,8 +62,8 @@ Shift          - Fine control
 			var numTurns = 8; // (total for all threads)
 			var threadDepth = .2;
 
-			// Create the cylindroid
-			var geoModel = BlGeometry.CreateCylindroid
+			// Create the tapered screw
+			var triangles = BlGeometry.CreateCylindroid
 			(
 				(x,y) => threadDepth * Math.Sin(Math.PI * 2 * (numThreads * x / (double)numX + numTurns * y / (double)numY)) + 1,
 				numX,
@@ -85,15 +85,13 @@ Shift          - Fine control
 			//geoModel = BlGeometry.SetTextureToXY(geoModel);
 
 			// convert to vertex buffer
-			var geoVertexBuffer = BlGeometry.TrianglesToVertexBuffer(Graphics.GraphicsDevice, geoModel);
-
-			var tex = Graphics.LoadFromImageFile("image.png");
-
+			var geoVertexBuffer = BlGeometry.TrianglesToVertexBuffer(Graphics.GraphicsDevice, triangles);
+			
 			// The sprite we draw in this window
 			GeoObj = new BlSprite(Graphics, "geomodel");
 			GeoObj.LODs.Add(geoVertexBuffer);
-			GeoObj.BoundSphere = BlGeometry.GetBoundingSphere(geoModel);
-			GeoObj.Mipmap = tex;
+			GeoObj.BoundSphere = BlGeometry.GetBoundingSphere(triangles);
+			GeoObj.Mipmap = new BlMipmap(Graphics, Graphics.LoadFromImageFile("image.png"));
 
 			/*
 			// Uncomment this to make insides visible, also.

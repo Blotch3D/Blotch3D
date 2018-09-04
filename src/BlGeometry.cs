@@ -27,17 +27,18 @@ namespace Blotch
 
 		/// <summary>
 		/// Creates a square 1x1 surface in XY but with variation of its Z depending on the pixels in an image (heightfield).
-		/// A maximum pixel value causes the corresponding position on the surface to have a height of 1. Use TransformVertices
-		/// to alter this.
+		/// A maximum pixel value (according to numSignificantBits) causes the corresponding position on the surface to have
+		/// a height of 1. Use TransformVertices to alter this.
 		/// Returns a triangle array of the surface, which includes smooth normals and texture coordinates.
 		/// </summary>
 		/// <param name="tex">The texture that represents the height (Z) of each vertex.</param>
 		/// <param name="mirrorY">If true, then invert image's Y dimension</param>
 		/// <param name="smooth">Whether to apply a 3x3 gaussian smoothing kernel, or not</param>
 		/// <param name="noiseLevel">How much noise to add. If it's Double.NaN, then automatically calculate a little
-		/// noise according to overcome quantization from limited numSignificantBits</param>
+		/// noise to overcome quantization from limited numSignificantBits</param>
 		/// <param name="numSignificantBits">How many bits in a pixel should be used (starting from the least significant bit).
-		/// Normally the first 8 bits are used (the last channel), but special images might combine the bits of multiple channels.</param>
+		/// Normally the first 8 bits are used (the last channel), but special images might combine the bits of multiple
+		/// channels.</param>
 		/// <returns>The triangles of a terrain from the specified image, including smooth normals and texture coordinates</returns>
 		static public VertexPositionNormalTexture[] CreatePlanarSurface
 		(
@@ -60,11 +61,15 @@ namespace Blotch
 			var pixels = new int[len];
 			tex.GetData(pixels);
 
-			return CreatePlanarSurface((x,y)=>
-			{
-				return (double)(pixels[x + width * y] & mask) / (mask + 1); 
-			},
-			width, height, mirrorY, smooth, noiseLevel);
+			return CreatePlanarSurface
+			(
+				(x,y)=>(double)(pixels[x + width * y] & mask) / (mask + 1),
+				width,
+				height,
+				mirrorY,
+				smooth,
+				noiseLevel
+			);
 		}
 
 		/// <summary>
@@ -77,6 +82,7 @@ namespace Blotch
 
 		/// <summary>
 		/// The delegate passed to certain geometry methods. Given an X and Y value, return a Vector3.
+		/// [Not yet used]
 		/// </summary>
 		/// <param name="x">The x of the surface position</param>
 		/// <param name="y">The y of the surface position</param>

@@ -244,6 +244,13 @@ been drawn so they aren't overwritten by them). You can also draw things
 using the lower-level MonoGame methods. For example, it is faster to
 draw multiple 2D textures and text using MonoGame's SpriteBatch class.
 
+The easiest way to set the camera position and orientation is to
+periodically call to Graphics.DoDefaultGui(). Typically, this is done in
+the FrameProc method, but could be done in the FrameDraw method as well.
+If you want other ways to control the camera, then see the various
+Graphics.AdjustCamera... methods, the Graphics.SetCameraToSprite method,
+and the View, Eye, and LookAt fields.
+
 BlWindow3D derives from MonoGame's "Game" class, so you can also
 override other Game class overridable methods. Just be sure to call the
 base method from within a Game class overridden method. On Microsoft
@@ -314,9 +321,9 @@ used to make this conversion.
 
 The Blotch3D project is already set up with the pipeline manager to
 convert the several primitive models to XNB files when Blotch3D is
-built. You can double-click "Content.mgcb" in the Blotch project to add
-more standard files and resources and to convert to XNB outside of the
-build process. You can also copy an XNB files to a project's output
+built. You can double-click "Content.mgcb" in the Blotch3D project to
+add more standard files and resources and to convert to XNB outside of
+the build process. You can also copy an XNB files to a project's output
 folder, where the program can load it.
 
 When you create a new MonoGame project with the wizard, it sets up a
@@ -774,7 +781,10 @@ A 2D image applied to the surface of a model. For this to work, each
 vertex of the model must have a texture coordinate associated with it,
 which is an X,Y coordinate of the 2D bitmap image that should be aligned
 with that vertex. Pixels across the surface of a polygon are
-interpolated from the texture coordinates specified for each vertex.
+interpolated from the texture coordinates specified for each vertex. To
+discriminate a texture's (X,Y) coordinate from a vertex's 3D (X, Y, Z)
+coordinate, texture (X,Y) is more often called the texture's (U,V)
+coordinate.
 
 Normal
 
@@ -792,15 +802,18 @@ polygons can still be made to look quite smooth.
 
 X-axis
 
-The axis that extends right from the origin.
+The axis that extends right from the origin in an untransformed
+coordinate system.
 
 Y-axis
 
-The axis that extends forward from the origin.
+The axis that extends forward from the origin in an untransformed
+coordinate system.
 
 Z-axis
 
-The axis that extends up from the origin.
+The axis that extends up from the origin in an untransformed coordinate
+system.
 
 Origin
 
@@ -864,11 +877,16 @@ Depth buffer
 any) at each 2D window pixel so that they know to draw the nearer pixel
 over the farther pixel in the 2D display. The depth buffer is an array
 with one element per 2D window pixel, where each element is (typically)
-a 32-bit floating point value indicating the nearest (to the camera)
-depth of that point. In that way pixels that are farther away need not
-be drawn. You can override this behavior for special cases. See
-BlGraphicsDeviceManager.NearClip, BlGraphicsDeviceManager.FarClip. and
-search the web for MonoGame depth information.
+a 32-bit floating point value indicating the last drawn nearest (to the
+camera) depth of that point. In that way pixels that are farther away
+need not be drawn. NearClip defines the nearest distance kept track of,
+and FarClip defines the farthest (objects outside that range are not
+drawn). If the range is too great, then limited floating point
+resolution in the 32-bit distance value will cause artifacts. See the
+troubleshooting question about depth. You can disable the depth testing
+for special cases. See BlGraphicsDeviceManager.NearClip,
+BlGraphicsDeviceManager.FarClip. and search the web for MonoGame depth
+information.
 
 Near clipping plane (NearClip)
 
@@ -884,13 +902,13 @@ drawn.
 Model space
 
 The untransformed three-dimensional space that models are initially
-created/defined in. Typically, a model is centered on the origin of
+created/defined in. Typically, a model is centered on the origin of its
 model space.
 
 World space
 
 The three-dimensional space that you see through the two-dimensional
-view of the window. A model is transformed from model space to world
+view of the screen. A model is transformed from model space to world
 space by its final matrix (that is, the matrix we get *after* a sprite's
 matrix is multiplied by its parent sprite matrices, if any).
 

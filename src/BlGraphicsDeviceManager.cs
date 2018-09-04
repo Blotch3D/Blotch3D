@@ -230,10 +230,16 @@ namespace Blotch
 
 		/// <summary>
 		/// The near clipping plane. If 0 then autoclip. If negative then auto-clip down to a limit of -NearClip.
+		/// (Auto-clipping has a one-frame latency. A mechanism is employed in the camera control methods to somewhat alleviate
+		/// this, but in certain cases you may still see a one frame dropout in visibility.) See the description for the
+		/// depth buffer for more information.
 		/// </summary>
 		public double NearClip = 0;
 		/// <summary>
 		/// The far clipping plane. If 0 then autoclip. If negative then auto-clip up to a limit of -FarClip.
+		/// (Auto-clipping has a one-frame latency. A mechanism is employed in the camera control methods to somewhat alleviate
+		/// this, but in certain cases you may still see a one frame dropout in visibility.) See the description for the
+		/// depth buffer for more information.
 		/// </summary>
 		public double FarClip = 0;
 		/// <summary>
@@ -246,7 +252,8 @@ namespace Blotch
 		public double CurrentFarClip { get; private set; }
 
 		/// <summary>
-		/// Increase far clipping and decrease near clipping by this much. See NearClip and FarClip.
+		/// Increase far clipping and decrease near clipping by this much. Use this to alleviate certain auto-clipping
+		/// artifacts. See NearClip and FarClip.
 		/// </summary>
 		public double ClipRangeExcess = 5;
 
