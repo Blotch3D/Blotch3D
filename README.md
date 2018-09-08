@@ -98,15 +98,20 @@ code you can...
 -   Use with WPF and WinForms, on Microsoft Windows.
 
 -   Access and override many window features and functions using the
-    provided WinForms Form object of the window (Microsoft Windows
-    only).
+    provided WinForms Form object of the window (Microsoft Windows only,
+    and see the description before using).
 
 -   Detect sprite radius collisions.
 
 -   Implement fog.
 
--   Define ambient lighting, and up to three point-light sources. (More
-    lights can be defined if a custom shader is used.)
+-   Define ambient lighting and up to three point-light sources.
+
+-   Several shaders are provided to support texture transforms, alpha
+    textures with lighting, etc.
+
+-   Easily write your own custom shaders using the provided shader code
+    as a template.
 
 -   All other MonoGame features remain available.
 

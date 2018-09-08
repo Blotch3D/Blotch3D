@@ -56,11 +56,15 @@ Shift          - Fine control
 			var numX = 512;
 			var numY = 512;
 
-			// tapered screw shape parameters
+			// tapered bent screw shape parameters
 			var taperSize = .1;
 			var numThreads = 5;
 			var numTurns = 8; // (total for all threads)
 			var threadDepth = .2;
+			var bend = .001;
+
+			// Create bending matrix (this could also include scale and translation)
+			var matrix = Matrix.CreateRotationX((float)bend);
 
 			// Create the tapered screw
 			var triangles = BlGeometry.CreateCylindroid
@@ -68,7 +72,11 @@ Shift          - Fine control
 				(x,y) => threadDepth * Math.Sin(Math.PI * 2 * (numThreads * x / (double)numX + numTurns * y / (double)numY)) + 1,
 				numX,
 				numY,
-				taperSize
+				taperSize,
+				false,
+				true,
+				true,
+				matrix
 			);
 
 			// Uncomment this for facet normals

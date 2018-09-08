@@ -169,6 +169,7 @@ namespace Blotch
 		/// <param name="facetedNormals">If true, create normals per triangle. If false, create smooth normals</param>
 		/// <param name="createBody">Whether to create the body of the cylindroid</param>
 		/// <param name="createEndCaps">Whether to create a cap for each end</param>
+		/// <param name="matrix">Matrix to transform each increment of y level from previous y level</param>
 		/// <returns></returns>
 		static public VertexPositionNormalTexture[] CreateCylindroid
 		(
@@ -178,7 +179,8 @@ namespace Blotch
 			double topDiameter = 1,
 			bool facetedNormals = false,
 			bool createBody = true,
-			bool createEndCaps = true
+			bool createEndCaps = true,
+			Matrix? matrix = null
 		)
 		{
 			var heightMap = new double[numVertVertices, numHorizVertices];
@@ -191,7 +193,7 @@ namespace Blotch
 				});
 			});
 
-			return CreateCylindroid(numHorizVertices, numVertVertices, topDiameter, facetedNormals, heightMap, createBody, createEndCaps);
+			return CreateCylindroid(numHorizVertices, numVertVertices, topDiameter, facetedNormals, heightMap, createBody, createEndCaps, matrix);
 		}
 
 		/// <summary>
@@ -223,6 +225,7 @@ namespace Blotch
 		/// dimensions as the cylindroid.</param>
 		/// <param name="createBody">Whether to create the body</param>
 		/// <param name="createEndCaps">Whether to create a cap for each end</param>
+		/// <param name="matrix">Matrix to transform each increment of y level from previous y level</param>
 		/// <returns>A triangle list of the cylindroid</returns>
 		static public VertexPositionNormalTexture[] CreateCylindroid
 		(
@@ -232,9 +235,15 @@ namespace Blotch
 			bool facetedNormals=false,
 			double[,] heightMap=null,
 			bool createBody = true,
-			bool createEndCaps = true
+			bool createEndCaps = true,
+			Matrix? matrix = null
 		)
 		{
+			var maty = Matrix.Identity;
+
+			if (matrix != null)
+				maty = (Matrix)matrix;
+
 			var triangles = new VertexPositionNormalTexture[0];
 
 			numHorizVertices++;
@@ -242,7 +251,7 @@ namespace Blotch
 			if(createBody)
 			{
 				// calc Position and textureCoordinates per vertex
-				var grid = CalcCylindroidVerticesAndTexcoords(numHorizVertices, numVertVertices, topDiameter, heightMap);
+				var grid = CalcCylindroidVerticesAndTexcoords(numHorizVertices, numVertVertices, topDiameter, heightMap, matrix);
 
 				if (!facetedNormals)
 				{
@@ -285,6 +294,14 @@ namespace Blotch
 
 						// calculate each vertex normal from the associated triangle.
 						topTriangles = CalcFacetNormals(topTriangles);
+
+						var mat = Matrix.Identity;
+						for (int n = 0; n < numVertVertices-1; n++)
+						{
+							mat *= maty;
+						}
+
+						topTriangles = TransformVertices(topTriangles, mat);
 
 						var newTriangles = new VertexPositionNormalTexture[triangles.Length + topTriangles.Length];
 
@@ -339,15 +356,26 @@ namespace Blotch
 		/// <param name="numY">The number of Y elements in a column</param>
 		/// <param name="topDiameter">Diameter of top of cylindroid (if heightMap==null)</param>
 		/// <param name="heightMap">See CreateCylindroidSurface</param>
+		/// <param name="matrix">Matrix to transform each increment of y level from previous y level</param>
 		/// <returns>A list of the cylindroid's vertices</returns>
 		static public VertexPositionNormalTexture[] CalcCylindroidVerticesAndTexcoords
 		(
 			int numX = 32,
 			int numY = 2,
 			double topDiameter = 1,
-			double[,] heightMap = null
+			double[,] heightMap = null,
+			Matrix? matrix = null
 		)
 		{
+			// modify matrixy by this, each time y increments
+			Matrix m = Matrix.Identity;
+
+			if (matrix != null)
+				m = (Matrix)matrix;
+
+			// matrix to use on current y
+			var matrixy = Matrix.Identity;
+
 			double hmXRatio = 0;
 			double hmYRatio = 0;
 			if (heightMap != null)
@@ -356,14 +384,16 @@ namespace Blotch
 				hmYRatio = heightMap.GetLength(0) / (double)numY;
 			}
 
-			var grid = new VertexPositionNormalTexture[numX * numY];
-			for (int x=0;x<numX;x++)
-			{
-				for (int y = 0; y < numY; y++)
-				{
-					var zord = (double)y / (numY-1);
+			var pos = new Vector3();
 
-					var radius = (1 - zord) + zord * topDiameter;
+			var grid = new VertexPositionNormalTexture[numX * numY];
+			for (int y = 0; y < numY; y++)
+			{
+				for (int x = 0; x < numX; x++)
+				{
+					pos.Z = (float)y / (numY-1);
+
+					var radius = (1 - pos.Z) + pos.Z * topDiameter;
 					
 					radius *= .5;
 
@@ -377,19 +407,22 @@ namespace Blotch
 					var offsetX = (double)x / (numX-1);
 					var angle = offsetX * Math.PI * 2;
 
-					var xord = Math.Sin(angle) * radius;
+					pos.X = (float)(Math.Sin(angle) * radius);
 
-					double yord;
-					yord = -Math.Cos(angle) * radius;
+					pos.Y = (float)(-Math.Cos(angle) * radius);
+
+					pos.Z -= .5f;
+
+					pos = Vector3.Transform(pos, matrixy);
 
 					var i = x + y * numX;
-					grid[i].Position.X = (float)xord;
-					grid[i].Position.Y = (float)yord;
-					grid[i].Position.Z = (float)zord-.5f;
 
 					grid[i].TextureCoordinate.X = (float)offsetX;
-					grid[i].TextureCoordinate.Y = (float)zord;
+					grid[i].TextureCoordinate.Y = pos.Z + .5f;
+
+					grid[i].Position = pos;
 				}
+				matrixy = Matrix.Multiply(matrixy, m);
 			}
 			return grid;
 		}
@@ -548,6 +581,61 @@ namespace Blotch
 				newTriangles[n] = newList[n];
 			}
 			return newTriangles;
+		}
+
+		/// <summary>
+		/// If any triangles in the triangle array have vertex normals that vary in direction more than the
+		/// specified angular value (thresholdAngle), then set all the normals in that triangle to facet normals
+		/// (i.e. perpendicular to the triangle).
+		/// </summary>
+		/// <param name="triangles">The input (and output) triangles (i.e. NOT a regular grid)</param>
+		/// <param name="thresholdAngle">The angle, in radians, that normals must vary in a given triangle to
+		/// merit setting facet normals for that triangle</param>
+		/// <returns>The output (and input) triangles, altered to reflect this unsmooth function</returns>
+		static public VertexPositionNormalTexture[] UnsmoothEdgeNormals(VertexPositionNormalTexture[] triangles,double thresholdAngle=.2)
+		{
+			var newList = new List<VertexPositionNormalTexture>();
+
+			var cosine = Math.Cos(thresholdAngle);
+
+			var len = triangles.Length;
+
+			var numTris = len / 3;
+			if (numTris * 3 != triangles.Length)
+				throw new Exception("BlGeometry.UnsmoothEdgeNormals expected triangles, but the number of vertices are not divisible by three.");
+
+			for (int n = 0; n < numTris; n++)
+			{
+				var m = n * 3;
+
+				Vector3.Dot(ref triangles[m].Normal, ref triangles[m + 1].Normal, out float dot01);
+				var cos01 = dot01 / (triangles[m].Normal.Length() * triangles[m + 1].Normal.Length());
+
+				Vector3.Dot(ref triangles[m].Normal, ref triangles[m + 2].Normal, out float dot02);
+				var cos02 = dot02 / (triangles[m].Normal.Length() * triangles[m + 2].Normal.Length());
+
+				Vector3.Dot(ref triangles[m + 1].Normal, ref triangles[m + 2].Normal, out float dot12);
+				var cos12 = dot12 / (triangles[m + 1].Normal.Length() * triangles[m + 2].Normal.Length());
+
+				if(cos01 < cosine || cos02 < cosine || cos12 < cosine)
+				{
+					var middleVertex = triangles[m];
+					var rightVertex = triangles[m + 1];
+					var leftVertex = triangles[m + 2];
+
+					var rightVector = middleVertex.Position - rightVertex.Position;
+					var leftVector = middleVertex.Position - leftVertex.Position;
+
+					var normal = Vector3.Cross(leftVector, rightVector);
+
+					normal.Normalize();
+					triangles[m].Normal = normal;
+					triangles[m + 1].Normal = normal;
+					triangles[m + 2].Normal = normal;
+				}
+			}
+
+			return triangles;
 		}
 
 		/// <summary>

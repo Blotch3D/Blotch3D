@@ -56,7 +56,7 @@ Shift          - Fine control
 			var width = 128;
 			var height = 128;
 
-			// Create the surface vertices
+			// Create the surface triangles
 			var SurfaceArray = BlGeometry.CreatePlanarSurface
 			(
 				(x,y)=> .06*Math.Sin(((x - width / 2) * (y - height / 2)) / 300.0),

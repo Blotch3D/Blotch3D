@@ -82,7 +82,7 @@ namespace Blotch
 #if WINDOWS
 		/// <summary>
 		/// A WinForms wrapper to the window. (This is only present in Windows.)
-		/// This gives you much more control of the window.
+		/// This gives you much more control of the window. Use this only from the 3D thread!
 		/// </summary>
 		public Form WindowForm = null;
 #endif
