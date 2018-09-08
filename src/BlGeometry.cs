@@ -418,7 +418,7 @@ namespace Blotch
 					var i = x + y * numX;
 
 					grid[i].TextureCoordinate.X = (float)offsetX;
-					grid[i].TextureCoordinate.Y = pos.Z + .5f;
+					grid[i].TextureCoordinate.Y = (float)y/numY;
 
 					grid[i].Position = pos;
 				}
