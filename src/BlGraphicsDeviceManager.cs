@@ -880,7 +880,7 @@ namespace Blotch
 		public void DrawTexture(Texture2D texture, Rectangle windowRect, Microsoft.Xna.Framework.Color? color = null)
 		{
 			if (BlDebug.ShowThreadWarnings && CreationThread != Thread.CurrentThread.ManagedThreadId)
-				throw new Exception(String.Format("BlGraphicsDeviceManager.DrawText() was called by thread {0} instead of thread {1}", Thread.CurrentThread.ManagedThreadId, CreationThread));
+				throw new Exception(String.Format("BlGraphicsDeviceManager.DrawTexture() was called by thread {0} instead of thread {1}", Thread.CurrentThread.ManagedThreadId, CreationThread));
 
 			if (SpriteBatch == null)
 				SpriteBatch = new SpriteBatch(GraphicsDevice);

@@ -328,7 +328,7 @@ The Blotch3D project is already set up with the pipeline manager to
 convert the several primitive models to XNB files when Blotch3D is
 built. You can double-click "Content.mgcb" in the Blotch3D project to
 add more standard files and resources and to convert to XNB outside of
-the build process. You can also copy an XNB files to a project's output
+the build process. You can also copy an XNB file to a project's output
 folder, where the program can load it.
 
 When you create a new MonoGame project with the wizard, it sets up a
