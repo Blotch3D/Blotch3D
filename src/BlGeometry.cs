@@ -485,9 +485,9 @@ namespace Blotch
 		/// <summary>
 		/// Transforms a regular grid or triangle array (including transforming the transpose of the inverse of each
 		/// normal) according to the specified matrix.
-		/// If its an array of triangles, you will probably want to call #CullEmptyTriangles if the transform might
-		/// cause some triangles to have zero area, and maybe #CalcSmoothNormals (for regular grids) or #CalcFaceNormals
-		/// (for tiangles) afterward if the transform might cause normals to be invalid or point the wrong
+		/// If it's an array of triangles, you will probably want to call #CullEmptyTriangles if the transform might
+		/// cause some triangles to have zero area, and maybe #CalcSmoothNormals (for regular grids) or #CalcFacetNormals
+		/// (for triangles) afterward if the transform might cause normals to be invalid or point the wrong
 		/// way, causing the surface to be black or the wrong brightness (typically when a dimenson is scaled to zero
 		/// or inverted).
 		/// </summary>
