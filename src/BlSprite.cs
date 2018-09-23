@@ -34,12 +34,13 @@ namespace Blotch
 {
 	/// <summary>
 	/// A BlSprite is a single 3D object. Each sprite can also hold any number of subsprites, so you can make
-	/// a sprite tree (a scene graph). In that case the child sprites 'follow' the orientation and position of the parent
+	/// a sprite tree (a scene graph). Subsprites are drawn in the order of their sorted names. Child sprites
+	/// 'follow' the orientation and position of the parent
 	/// sprite. That is, they exist in the coordinate system of the parent sprite. The location and orientation of a
 	/// sprite in its parent's coordinate system is defined by the sprite's #Matrix member. Subsprites, #LODs, and #Mipmap are NOT disposed
 	/// when the sprite is disposed, so you can assign the same one to multiple sprites.
 	/// </summary>
-	public class BlSprite : Dictionary<string, BlSprite> , IComparable, IDisposable
+	public class BlSprite : SortedDictionary<string, BlSprite> , IComparable, IDisposable
 	{
 		/// <summary>
 		/// This is proportional to the apparent 2D size of the sprite. (Calculated from the last
@@ -53,6 +54,16 @@ namespace Blotch
 		/// and the flags argument passed to it is zero.
 		/// </summary>
 		public ulong Flags = 0xFFFFFFFFFFFFFFFF;
+
+		/// <summary>
+		/// When you use
+		/// the Add() method of a parent sprite to add a child sprite, the child sprite's Parent field is set to
+		/// the Parent. If you add a child sprite in any other way, and you want the child's Parent field to
+		/// reflect the parent, you'll have to assign it, yourself. This field is solely for reading by
+		/// application code. It is not read by Blotch3D code.You might need this, for example, to implement
+		/// particles via the FrameProc delegate. See particles example.
+		/// </summary>
+		public BlSprite Parent = null;
 
 		/// <summary>
 		/// The objects (levels of detail) to draw for this sprite. Only one element is drawn
@@ -399,7 +410,9 @@ namespace Blotch
 		/// </summary>
 		/// <param name="graphicsIn">The BlGraphicsDeviceManager that operates on this sprite</param>
 		/// <param name="name">The name of the sprite (must be unique among other sprites in the same subsprite list)</param>
-		/// <param name="frameProc">The delegate to run every frame</param>
+		/// <param name="frameProc">The delegate to run every frame. (Note that this is NOT called from within the Draw method.
+		/// Rather, it is called separately only once every frame. Therefore you can, for example, delete and add
+		/// other subsprites of this sprite's Parent. See #Parent for more information.)</param>
 		public BlSprite(BlGraphicsDeviceManager graphicsIn, string name,FrameProcType frameProc=null)
 		{
 			FrameProc = frameProc;
@@ -417,6 +430,7 @@ namespace Blotch
 		/// <param name="s"></param>
 		public void Add(BlSprite s)
 		{
+			s.Parent = this;
 			this[s.Name] = s;
 		}
 		/// <summary>

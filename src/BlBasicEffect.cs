@@ -19,8 +19,8 @@ namespace Blotch
 	/// <summary>
 	/// Holds a Blotch3D custom effect (like BlBasicEffectAlphaTest and BlBasicEffectClipColor) that is exactly
 	/// like MonoGame's BasicEffect but with certain added features.
-	/// To make a BlBasicEffect, you must pass a byte array to the constructor containing the shader code loaded
-	/// from the shader file (mgfxo file extension). See the SpriteAlphaTexture example and the section on Translucency
+	/// To make a BlBasicEffect, you must pass the mgfxo file name, or a byte array of its contents, to the
+	/// constructor. See the SpriteAlphaTexture example and the section on Translucency
 	/// for details on how to make
 	/// and use objects of this class.
 	/// </summary>

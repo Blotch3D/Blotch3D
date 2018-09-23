@@ -271,7 +271,12 @@ namespace Blotch
 
 			if (createEndCaps)
 			{
-				if (createEndCaps & heightMap != null)
+				if(heightMap == null)
+				{
+					heightMap = new double[1, 1];
+					heightMap[0, 0] = 1;
+				}
+				if (createEndCaps)
 				{
 					if(topDiameter != 0)
 					{

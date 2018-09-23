@@ -29,34 +29,11 @@ A "contributor" is any person that distributes its contribution under this licen
 /*
 TODO:
 
-More default models w/LODs: cone, cylinder, box, various prisms and gems, various springs
-or maybe write programmatic models with parameters
+Particle systems
+Reflective surfaces (including ripples for water)
 Write a fairly elaborate program to tweak and test everything
 
 
-
-Examples:
-BlotchExample01_Basic (base code for all examples. Displays 2D text and a single 3D object)
-BlotchExample02_ObjectTree (sprite tree)
-BlotchExample03_MovingObject (sprite tree with changing orientation and movement)
-BlotchExample04_TextBesideObject (font size doesn't change when window resizes)
-BlotchExample05_BillboardTextBesideObject (font size changes with window resize)
-BlotchExample06_ObjectOnCamera (HUD and untransformed object)
-BlotchExample07_CameraSettings (Changes to Eye, LookAt, and CameraSpeed)
-BlotchExample08_CameraOnObject (first person view)
-BlotchExample09_MouseObjects (sprites under mouse position, or sprites near a ray) 
-BlotchExample10_ObjectCollisions
-BlotchExample11_LevelsOfDetail
-BlotchExample12_Imposters
-BlotchExample13_DynamicObject (custom vertices)
-BlotchExample14_Translucency
-BlotchExample15_Stereoscopy (anaglyph)
-BlotchExample16_WPF
-BlotchExample17_WinForms
-BlotchExample18_Skybox (PreDraw: graphics.GraphicsDevice.RasterizerState = RasterizerState.CullClockwise)
-BlotchExample19_Android (Same as BlotchExample01_Basic, but for Android)
-
-BlotchExampleFull (all features)
 
 */
 
