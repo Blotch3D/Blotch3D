@@ -459,7 +459,7 @@ constraints, sprite position constraints, and drawing order. In those
 cases, you don't need any other special code. We do this in the "full"
 example because the draw order of the translucent sprites and their
 positions are such that the artifacts aren't visible. (Note: subsprites
-are drawn in the order their names.)
+are drawn in the order of their names.)
 
 One way to mitigate most of these artifacts is by using alpha testing.
 Alpha testing is the process of completely neglecting to draw
