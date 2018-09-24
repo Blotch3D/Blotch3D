@@ -105,6 +105,8 @@ code you can...
 
 -   Implement fog.
 
+-   Create particle systems
+
 -   Define ambient lighting and up to three point-light sources.
 
 -   Several shaders are provided to support texture transforms, alpha
@@ -163,25 +165,24 @@ Creating a new project
 
 To develop with Blotch3D, you must first install the MonoGame SDK as
 described in the [Quick start for Windows](#quick-start-for-windows)
-section. Then...
+section.
 
-To create a new project from scratch, select File/New/Project/MonoGame,
-and select the type of MonoGame project you want. Then add the source or
-a reference to Blotch3D.
+The easiest way to create a new project that uses MonoGame + Blotch3D is
+to copy an existing example project (like the basic example) and rename
+it.
 
-To add MonoGame + Blotch3D to an existing non-MonoGame project, add a
-reference to the appropriate MonoGame binary (typically in "\\Program
-Files (x86)\\MSBuild\\MonoGame\\v3.0\\\..."). Also add a reference to,
-or the source of, Blotch3D.
+To add MonoGame + Blotch3D to an existing project, add a reference to
+the appropriate MonoGame binary (typically in "\\Program Files
+(x86)\\MSBuild\\MonoGame\\v3.0\\\..."). Also add a reference to, or the
+source of, Blotch3D.
 
 To create a project for another platform besides Microsoft Windows:
 First you will need to install any Visual Studio add-ons, etc. for the
 desired platform. For example, for Android you'd need the Xamarin for
-Android add-on. Then use the MonoGame project wizard to create both a
-project for the Blotch3D class library (and add the Blotch3D source to
-that project), then use the wizard to create your project and add a
-reference to Blotch3D. For some platforms you may need to do some online
-research to properly create the project.
+Android add-on. Then create a project for the Blotch3D library and add
+the source to it. Then create your project and add a reference to that
+Blotch3D project. For some platforms you may need to do some online
+research to properly create projects.
 
 To distribute a program for Microsoft Windows, deliver everything in
 your project's output folder. Other platforms may require different
@@ -362,7 +363,7 @@ Particles
 Particle systems in Blotch3D are implemented by specifying
 BlSprite.FrameProc delegates. So, particles systems are completely
 configurable. For example, you can implement nonlinear or abrupt changes
-in the particle's life, or make particle trees structures. See the
+in the particle's life, or make particle tree structures. See the
 Particle example.
 
 Custom effects
@@ -487,13 +488,14 @@ at a minimum you will have to control translucent sprite drawing order
 (draw all opaque sprites normally, and then draw translucent sprites far
 to near), which will take care of all artifacts except those that occur
 when sprites intersect or two surfaces of a single sprite occupy the
-same screen pixel. For some scenes it might be worth it to draw without
-updating the depth buffer at all (do a
+same screen pixel. For some scenes it might be worth it to draw
+translucent sprites without updating the depth buffer at all (do a
 \"Graphics.GraphicsDevice.DepthStencilState =
 Graphics.DepthStencilStateDisabled" in the BlSprite.PreDraw delegate,
 and set it back to DepthStencilStateEnabled in the BlSprite.DrawCleanup
-delegate). These are only partial solutions to the alpha problem. You
-can look online for more advanced solutions.
+delegate). These are only partial solutions to the alpha problem and
+still may exhibit various artifacts. You can look online for more
+advanced solutions.
 
 The default MonoGame "Effect" used to draw models (the "BasicEffect"
 effect) uses a pixel shader that does not do alpha testing. MonoGame
@@ -525,8 +527,10 @@ setting the AlphaTestThreshold variable, set the ClipColor and
 ClipColorTolerance variables. ClipColor is the texture color that should
 indicate transparency (a Vector3 or Vector4), and ClipColorTolerance is
 a float that indicates how close to ClipColor (0 to .999) the texture
-color must be to cause transparency. BlBasicEffectClipColor is
-especially useful for videos that neglected to include an alpha channel.
+color must be to cause transparency (specifically, it's a threshold of
+the square of the difference between pixel color and ClipColor).
+BlBasicEffectClipColor is especially useful for videos that neglected to
+include an alpha channel.
 
 See the [Custom effects](#custom-effects) section for details on using a
 custom effect.
@@ -602,10 +606,9 @@ result in final model vertices of (6,2) and (5,4). In that case we have
 
 Matrices certainly support translation. But first let's talk about
 moving a vertex *relative to its current position from the origin,*
-because that's what gives matrices the power to shear, rotate, and scale
-a model about the origin. (After such an operation one could then
-translate the model.) This is because those operations affect each
-vertex differently depending on its relationship to the origin.
+because that's what gives matrices the power to also shear, rotate, and
+scale a model about the origin. This is because those operations affect
+each vertex differently depending on its relationship to the origin.
 
 If we want to scale (stretch) the X relative to the origin, we can
 multiply the X of each vertex by 2.
