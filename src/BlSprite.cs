@@ -698,9 +698,6 @@ namespace Blotch
 						{
 							foreach (var part in mesh.MeshParts)
 							{
-								var be = (BasicEffect)part.Effect;
-								be.Alpha = (float)Alpha;
-
 								var ret = SetEffect(this, part.Effect);
 								if (ret == null)
 									continue;
@@ -711,9 +708,6 @@ namespace Blotch
 						{
 							foreach (var effect in mesh.Effects)
 							{
-								var be = (BasicEffect)effect;
-								be.Alpha = (float)Alpha;
-
 								SetupBasicEffect((BasicEffect)effect);
 							}
 						}
@@ -962,6 +956,8 @@ namespace Blotch
 
 			}
 			while (false);
+
+			effect.Alpha = (float)Alpha;
 
 			if (Color != null)
 				effect.DiffuseColor = (Vector3)Color;
