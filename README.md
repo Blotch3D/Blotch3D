@@ -356,6 +356,16 @@ countless tutorials online, like
 <https://www.youtube.com/watch?v=2xTzJIaKQFY> or
 <https://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/UV_Map_Basics> .
 
+Particles
+=========
+
+Particle systems in Blotch3D are implemented by specifying
+BlSprite.FrameProc delegates. See the Particle example for details.
+
+Because the implementation is purely functional (via the delegates),
+particles are completely configurable. You can even make particle trees,
+for example.
+
 Custom effects
 ==============
 

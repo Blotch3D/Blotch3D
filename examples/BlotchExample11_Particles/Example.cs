@@ -76,6 +76,9 @@ Shift          - Fine control
 			// Maximum number of particles
 			long MaxParticles = 30;
 
+			// How much to change the overall alpha
+			double AlphaChange = -.06;
+
 			// how many frames to wait between particle creation
 			double ParticlesPerSecond = 60;
 
@@ -108,7 +111,9 @@ Shift          - Fine control
 					var part = new BlSprite(Graphics, particleName, (p) =>
 					{
 						p.Matrix *= ChangeMatrix;
-						//TODO: Add dynamic alpha to BlBasicEffect shaders
+						p.Alpha += AlphaChange;
+						if (p.Alpha > 1) p.Alpha = 1;
+						if (p.Alpha < 0) p.Alpha = 0;
 					});
 
 					part.LODs.Add(TorusModel);

@@ -56,6 +56,11 @@ namespace Blotch
 		public ulong Flags = 0xFFFFFFFFFFFFFFFF;
 
 		/// <summary>
+		/// Overall alpha of the current texture. (Not to be confused with pixel alpha)
+		/// </summary>
+		public double Alpha = 1;
+
+		/// <summary>
 		/// When you use
 		/// the Add() method of a parent sprite to add a child sprite, the child sprite's Parent field is set to
 		/// the Parent. If you add a child sprite in any other way, and you want the child's Parent field to
@@ -693,6 +698,9 @@ namespace Blotch
 						{
 							foreach (var part in mesh.MeshParts)
 							{
+								var be = (BasicEffect)part.Effect;
+								be.Alpha = (float)Alpha;
+
 								var ret = SetEffect(this, part.Effect);
 								if (ret == null)
 									continue;
@@ -703,6 +711,9 @@ namespace Blotch
 						{
 							foreach (var effect in mesh.Effects)
 							{
+								var be = (BasicEffect)effect;
+								be.Alpha = (float)Alpha;
+
 								SetupBasicEffect((BasicEffect)effect);
 							}
 						}
