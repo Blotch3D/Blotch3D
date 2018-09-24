@@ -258,18 +258,25 @@ namespace Blotch
 		}
 		void ExecuteSpriteFrameProcs()
 		{
+			var tmpSpriteList = new List<BlSprite>();
 			try
 			{
 				FrameProcSpritesMutex.WaitOne();
 
 				foreach (var s in FrameProcSprites)
 				{
-					s.ExecuteFrameProc();
+					tmpSpriteList.Add(s);
 				}
+
 			}
 			finally
 			{
 				FrameProcSpritesMutex.ReleaseMutex();
+			}
+
+			foreach (var s in tmpSpriteList)
+			{
+				s.ExecuteFrameProc();
 			}
 		}
 		void ExecutePendingCommands()

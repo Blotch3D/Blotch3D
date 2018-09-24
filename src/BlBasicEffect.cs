@@ -402,7 +402,7 @@ namespace Blotch
 
 
 		/// <summary>
-		/// Creates a clone of the current BasicEffectWithAlphaTest instance.
+		/// Creates a clone of the current BasicEffect instance.
 		/// </summary>
 		public override Effect Clone()
 		{

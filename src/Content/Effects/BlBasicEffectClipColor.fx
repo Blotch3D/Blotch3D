@@ -331,17 +331,25 @@ VSOutputPixelLightingTx VSBasicPixelLightingTxVc(VSInputNmTxVc vin)
     return vout;
 }
 
+float Float4DifSqr(float4 a, float4 b)
+{
+	float dr = abs(a.r - b.r);
+	float dg = abs(a.g - b.g);
+	float db = abs(a.b - b.b);
+	float da = abs(a.a - b.a);
+
+	return dr * dr + dg * dg + db * db + da * da;
+}
+
 
 // Pixel shader: basic.
 float4 PSBasic(VSOutput pin) : SV_Target0
 {
     float4 color = pin.Diffuse;
 
-	float dr = abs(color.r - ClipColor.r);
-	float dg = abs(color.g - ClipColor.g);
-	float db = abs(color.b - ClipColor.b);
+	float difSqr = Float4DifSqr(color, ClipColor);
 
-	clip( dr+dg+db < ClipColorTolerance ? -1:1 );
+	clip( difSqr < ClipColorTolerance ? -1:1 );
 
     ApplyFog(color, pin.Specular.w);
     
@@ -354,11 +362,9 @@ float4 PSBasicNoFog(VSOutputNoFog pin) : SV_Target0
 {
 	float4 color = pin.Diffuse;
 
-	float dr = abs(color.r - ClipColor.r);
-	float dg = abs(color.g - ClipColor.g);
-	float db = abs(color.b - ClipColor.b);
+	float difSqr = Float4DifSqr(color, ClipColor);
 
-	clip(dr + dg + db < ClipColorTolerance ? -1 : 1);
+	clip(difSqr < ClipColorTolerance ? -1 : 1);
 
 	return pin.Diffuse;
 }
@@ -369,11 +375,9 @@ float4 PSBasicTx(VSOutputTx pin) : SV_Target0
 {
     float4 color = SAMPLE_TEXTURE(Texture, pin.TexCoord) * pin.Diffuse;
 
-	float dr = abs(color.r - ClipColor.r);
-	float dg = abs(color.g - ClipColor.g);
-	float db = abs(color.b - ClipColor.b);
+	float difSqr = Float4DifSqr(color, ClipColor);
 
-	clip(dr + dg + db < ClipColorTolerance ? -1 : 1);
+	clip(difSqr < ClipColorTolerance ? -1 : 1);
 
     ApplyFog(color, pin.Specular.w);
     
@@ -386,11 +390,9 @@ float4 PSBasicTxNoFog(VSOutputTxNoFog pin) : SV_Target0
 {
 	float4 color = SAMPLE_TEXTURE(Texture, pin.TexCoord) * pin.Diffuse;
 
-	float dr = abs(color.r - ClipColor.r);
-	float dg = abs(color.g - ClipColor.g);
-	float db = abs(color.b - ClipColor.b);
+	float difSqr = Float4DifSqr(color, ClipColor);
 
-	clip(dr + dg + db < ClipColorTolerance ? -1 : 1);
+	clip(difSqr < ClipColorTolerance ? -1 : 1);
 
 	return color;
 }
@@ -401,11 +403,9 @@ float4 PSBasicVertexLighting(VSOutput pin) : SV_Target0
 {
 	float4 color = pin.Diffuse;
 
-	float dr = abs(color.r - ClipColor.r);
-	float dg = abs(color.g - ClipColor.g);
-	float db = abs(color.b - ClipColor.b);
+	float difSqr = Float4DifSqr(color, ClipColor);
 
-	clip(dr + dg + db < ClipColorTolerance ? -1 : 1);
+	clip(difSqr < ClipColorTolerance ? -1 : 1);
 
     AddSpecular(color, pin.Specular.rgb);
     ApplyFog(color, pin.Specular.w);
@@ -419,11 +419,9 @@ float4 PSBasicVertexLightingNoFog(VSOutput pin) : SV_Target0
 {
 	float4 color = pin.Diffuse;
 
-	float dr = abs(color.r - ClipColor.r);
-	float dg = abs(color.g - ClipColor.g);
-	float db = abs(color.b - ClipColor.b);
+	float difSqr = Float4DifSqr(color, ClipColor);
 
-	clip(dr + dg + db < ClipColorTolerance ? -1 : 1);
+	clip(difSqr < ClipColorTolerance ? -1 : 1);
 
 	AddSpecular(color, pin.Specular.rgb);
     
@@ -436,11 +434,9 @@ float4 PSBasicVertexLightingTx(VSOutputTx pin) : SV_Target0
 {
     float4 color = SAMPLE_TEXTURE(Texture, pin.TexCoord) * pin.Diffuse;
 
-	float dr = abs(color.r - ClipColor.r);
-	float dg = abs(color.g - ClipColor.g);
-	float db = abs(color.b - ClipColor.b);
+	float difSqr = Float4DifSqr(color, ClipColor);
 
-	clip(dr + dg + db < ClipColorTolerance ? -1 : 1);
+	clip(difSqr < ClipColorTolerance ? -1 : 1);
 
 	AddSpecular(color, pin.Specular.rgb);
     ApplyFog(color, pin.Specular.w);
@@ -454,11 +450,9 @@ float4 PSBasicVertexLightingTxNoFog(VSOutputTx pin) : SV_Target0
 {
     float4 color = SAMPLE_TEXTURE(Texture, pin.TexCoord) * pin.Diffuse;
 
-	float dr = abs(color.r - ClipColor.r);
-	float dg = abs(color.g - ClipColor.g);
-	float db = abs(color.b - ClipColor.b);
+	float difSqr = Float4DifSqr(color, ClipColor);
 
-	clip(dr + dg + db < ClipColorTolerance ? -1 : 1);
+	clip(difSqr < ClipColorTolerance ? -1 : 1);
 
 	AddSpecular(color, pin.Specular.rgb);
     
@@ -471,11 +465,9 @@ float4 PSBasicPixelLighting(VSOutputPixelLighting pin) : SV_Target0
 {
 	float4 color = pin.Diffuse;
 
-	float dr = abs(color.r - ClipColor.r);
-	float dg = abs(color.g - ClipColor.g);
-	float db = abs(color.b - ClipColor.b);
+	float difSqr = Float4DifSqr(color, ClipColor);
 
-	clip(dr + dg + db < ClipColorTolerance ? -1 : 1);
+	clip(difSqr < ClipColorTolerance ? -1 : 1);
 
 	float3 eyeVector = normalize(EyePosition - pin.PositionWS.xyz);
     float3 worldNormal = normalize(pin.NormalWS);
@@ -496,11 +488,9 @@ float4 PSBasicPixelLightingTx(VSOutputPixelLightingTx pin) : SV_Target0
 {
     float4 color = SAMPLE_TEXTURE(Texture, pin.TexCoord) * pin.Diffuse;
     
-	float dr = abs(color.r - ClipColor.r);
-	float dg = abs(color.g - ClipColor.g);
-	float db = abs(color.b - ClipColor.b);
+	float difSqr = Float4DifSqr(color, ClipColor);
 
-	clip(dr + dg + db < ClipColorTolerance ? -1 : 1);
+	clip(difSqr < ClipColorTolerance ? -1 : 1);
 
 	float3 eyeVector = normalize(EyePosition - pin.PositionWS.xyz);
     float3 worldNormal = normalize(pin.NormalWS);

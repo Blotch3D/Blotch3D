@@ -363,11 +363,12 @@ Blotch3D provides several custom shaders that are the same as the
 default MonoGame BasicEffect, but they provide added features. Examples
 are provided that demonstrate how to use them.
 
-The custom shader source and the compiled shader files are in the
-Blotch3D Content/Effects folder. To use a custom shader, first copy the
-compiled shader file (mgfxo file) to your program's output folder---you
-might add a link to it in your project and set its properties so it is
-copied to the output folder.
+The custom shader source and the compiled shader files for DirectX and
+OpenGL are in the Blotch3D Content/Effects folder. See below for
+compiling for different platforms. To use a custom shader, first copy
+the compiled shader file (mgfxo file) to your program's output
+folder---you might add a link to it in your project and set its
+properties so it is copied to the output folder.
 
 When your program runs, it specifies that file name in the BlBasicEffect
 constructor (or you can manage the bytes from the file, yourself, and
@@ -412,11 +413,14 @@ return MyBlBasicEffectAlphaTest;
 
 The shader source code (HLSL) for each BlBasicEffect shader is just a
 copy of the original MonoGame BasicEffect shader code, but with a few
-lines added. If for some reason you want to recompile the shaders, use
-the "make\_effects.bat" file in the Blotch3D source folder to build
-them. But first be sure to add the path to 2MGFX.exe to the 'path'
-environment variable. Typically, the path is something like "\\Program
-Files (x86)\\MSBuild\\MonoGame\\v3.0\\Tools".
+lines added. To compile the shaders (for example, because the target
+platform uses something other than DirectX or OpenGL), edit the
+"make\_effects.bat" file in the Blotch3D source folder to change the
+Profile arguments to each call of 2MGFX in that file. Then be sure to
+add the path to 2MGFX.exe to the 'path' environment variable. Typically,
+the path is something like "\\Program Files
+(x86)\\MSBuild\\MonoGame\\v3.0\\Tools". Then run the make\_effects.bat
+file.
 
 You can create your own shader files that are based on BlBasicEffect and
 compile and load it as shown above. Just be sure it is based on the

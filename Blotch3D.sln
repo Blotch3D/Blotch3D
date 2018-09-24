@@ -31,6 +31,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlotchExample09_GeomObjects
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlotchExample10_GeomObjectsWithDelegate", "examples\BlotchExample10_GeomObjectsWithDelegate\BlotchExample10_GeomObjectsWithDelegate.csproj", "{CE7F9DDA-BAE4-449D-A06B-A27414EA7B30}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlotchExample11_Particles", "examples\BlotchExample11_Particles\BlotchExample11_Particles.csproj", "{5161A5D4-BE49-4FA7-BE92-011738B5AC10}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -151,6 +153,14 @@ Global
 		{CE7F9DDA-BAE4-449D-A06B-A27414EA7B30}.Release|Any CPU.Build.0 = Release|Any CPU
 		{CE7F9DDA-BAE4-449D-A06B-A27414EA7B30}.Release|x64.ActiveCfg = Release|x64
 		{CE7F9DDA-BAE4-449D-A06B-A27414EA7B30}.Release|x64.Build.0 = Release|x64
+		{5161A5D4-BE49-4FA7-BE92-011738B5AC10}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5161A5D4-BE49-4FA7-BE92-011738B5AC10}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5161A5D4-BE49-4FA7-BE92-011738B5AC10}.Debug|x64.ActiveCfg = Debug|x64
+		{5161A5D4-BE49-4FA7-BE92-011738B5AC10}.Debug|x64.Build.0 = Debug|x64
+		{5161A5D4-BE49-4FA7-BE92-011738B5AC10}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5161A5D4-BE49-4FA7-BE92-011738B5AC10}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5161A5D4-BE49-4FA7-BE92-011738B5AC10}.Release|x64.ActiveCfg = Release|x64
+		{5161A5D4-BE49-4FA7-BE92-011738B5AC10}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
