@@ -179,10 +179,11 @@ source of, Blotch3D.
 To create a project for another platform besides Microsoft Windows:
 First you will need to install any Visual Studio add-ons, etc. for the
 desired platform. For example, for Android you'd need the Xamarin for
-Android add-on. Then create a project for the Blotch3D library and add
-the source to it. Then create your project and add a reference to that
-Blotch3D project. For some platforms you may need to do some online
-research to properly create projects.
+Android add-on. Then create a project for that platform and add the
+Blotch3D library source to it. Then create your project for that
+platform and add a reference to that Blotch3D project. For some
+platforms you may need to do some online research to properly create
+projects.
 
 To distribute a program for Microsoft Windows, deliver everything in
 your project's output folder. Other platforms may require different
