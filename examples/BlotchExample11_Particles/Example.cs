@@ -69,14 +69,14 @@ Shift          - Fine control
 			// How to alter FirstMatrix each time a new particle is created
 			var ConsecutiveMatrix = Matrix.CreateRotationY(.1f);
 
-			// How to alter a particle for each frame
+			// How to alter a particle with particle age
 			var ChangeMatrix = Matrix.CreateTranslation(.03f, 0, .03f);
 			ChangeMatrix *= Matrix.CreateScale(.98f);
 
 			// Maximum number of particles
 			long MaxParticles = 30;
 
-			// How much to change the overall alpha
+			// How much to change the overall alpha with particle age
 			double AlphaChange = -.06;
 
 			// how many frames to wait between particle creation

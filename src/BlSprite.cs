@@ -49,7 +49,7 @@ namespace Blotch
 		public double ApparentSize { get; private set; }
 
 		/// <summary>
-		/// The Flags field can be used by callbacks of #Draw (#PreDraw, #PreSubsprites, #PreLocal, and #SetMeshEffect) to
+		/// The Flags field can be used by callbacks of #Draw (#PreDraw, #PreSubsprites, #PreLocal, and #SetEffect) to
 		/// indicate various user attributes of the sprite. Also, #GetRayIntersections won't hit if the bitwise AND of this value
 		/// and the flags argument passed to it is zero.
 		/// </summary>
@@ -190,7 +190,7 @@ namespace Blotch
 		/// <summary>
 		/// The #Draw method takes an incoming 'world' matrix parameter which is the coordinate system of its parent. #AbsoluteMatrix
 		/// is that incoming world matrix parameter times the #Matrix member and altered according to Billboarding and #ConstSize.
-		/// This is not read-only because a callback (see #PreDraw, #PreSubsprites, #PreLocal, and #SetMeshEffect) may need to
+		/// This is not read-only because a callback (see #PreDraw, #PreSubsprites, #PreLocal, and #SetEffect) may need to
 		/// change it from within the #Draw method. This is the matrix that is also passed to subsprites as their 'world' matrix.
 		/// </summary>
 		public Matrix AbsoluteMatrix = Matrix.Identity;
@@ -203,13 +203,13 @@ namespace Blotch
 
 		/// <summary>
 		/// Current incoming graphics parameter to the #Draw method. Typically this would be of interest to a callback function (see
-		/// #PreDraw, #PreSubsprites, #PreLocal, and #SetMeshEffect).
+		/// #PreDraw, #PreSubsprites, #PreLocal, and #SetEffect).
 		/// </summary>
 		public BlGraphicsDeviceManager Graphics = null;
 
 		/// <summary>
 		/// Current incoming world matrix parameter to the #Draw method. Typically this would be of interest to a callback function (see
-		/// #PreDraw, #PreSubsprites, #PreLocal, and #SetMeshEffect).
+		/// #PreDraw, #PreSubsprites, #PreLocal, and #SetEffect).
 		/// </summary>
 		public Matrix? LastWorldMatrix = null;
 
@@ -220,7 +220,7 @@ namespace Blotch
 
 		/// <summary>
 		/// Current incoming flags parameter to the Draw method. Typically this would be of interest to a callback function (see
-		/// #PreDraw, #PreSubsprites, #PreLocal, and #SetMeshEffect).
+		/// #PreDraw, #PreSubsprites, #PreLocal, and #SetEffect).
 		/// </summary>
 		public ulong FlagsParameter = 0;
 
@@ -351,7 +351,7 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// See #SetMeshEffect
+		/// See #SetEffect
 		/// </summary>
 		/// <param name="sprite"></param>
 		/// <param name="effect"></param>
@@ -360,7 +360,9 @@ namespace Blotch
 
 		/// <summary>
 		/// If this not null, then the #Draw method executes this delegate for each model mesh effect instead using the
-		/// default BasicEffects. See the SpriteAlphaTexture for an example. The return value is the new or altered effect.
+		/// default BasicEffects. See the SpriteAlphaTexture for an example. If you use this but the effect is still of
+		/// type BlBasicEffect, then you might want to call SetupBasicEffect from within this delegate to set all the
+		/// effect's parameters, rather than doing it yourself. The return value is the new or altered effect.
 		/// If this is called when the thing to draw is a VertexPositionNormalTexture, then the effect parameter passed in
 		/// is a null.
 		/// </summary>
@@ -535,7 +537,7 @@ namespace Blotch
 		/// </summary>
 		/// <param name="worldMatrixIn">Defines the position and orientation of the sprite</param>
 		/// <param name="flagsIn">Copied to LastFlags for use by any callback of Draw (PreDraw, PreSubspriteDraw, PreLocalDraw,
-		/// and SetMeshEffect) that wants it</param>
+		/// and SetEffect) that wants it</param>
 		public void Draw(Matrix? worldMatrixIn = null, ulong flagsIn = 0xFFFFFFFFFFFFFFFF)
 		{
 			if (BlDebug.ShowThreadWarnings && CreationThread != Thread.CurrentThread.ManagedThreadId)

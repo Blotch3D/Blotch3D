@@ -360,11 +360,10 @@ Particles
 =========
 
 Particle systems in Blotch3D are implemented by specifying
-BlSprite.FrameProc delegates. See the Particle example for details.
-
-Because the implementation is purely functional (via the delegates),
-particles are completely configurable. You can even make particle trees,
-for example.
+BlSprite.FrameProc delegates. So, particles systems are completely
+configurable. For example, you can implement nonlinear or abrupt changes
+in the particle's life, or make particle trees structures. See the
+Particle example.
 
 Custom effects
 ==============
