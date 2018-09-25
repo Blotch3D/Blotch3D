@@ -169,7 +169,7 @@ section.
 
 The easiest way to create a new project for Windows that uses MonoGame +
 Blotch3D is to copy an existing example project (like the basic example)
-and rename it.
+and then rename it using Visual Studio.
 
 To add MonoGame + Blotch3D to an existing Windows project, add a
 reference to the appropriate MonoGame binary (typically in "\\Program
@@ -247,12 +247,13 @@ frame time.
 You can use a variety of methods to draw things in FrameDraw. Sprites
 are drawn with the BlSprite.Draw method. When you draw a sprite, all its
 subsprites are also drawn. So, oftentimes you may want to have a "Top"
-sprite that holds other sprites, and call the Draw method of the Top
-sprite to cause the other sprites to be drawn. There are also methods to
-draw text and textures in 2D (just draw them after all 3D objects have
-been drawn so they aren't overwritten by them). You can also draw things
-using the lower-level MonoGame methods. For example, it is faster to
-draw multiple 2D textures and text using MonoGame's SpriteBatch class.
+sprite that holds other sprites as its subsprites, and call the Draw
+method of the Top sprite to cause the other sprites to be drawn. There
+are also methods to draw text and textures in 2D (just draw them after
+all 3D objects have been drawn so they aren't overwritten by them). You
+can also draw things using the lower-level MonoGame methods. For
+example, it is faster to draw multiple 2D textures and text using
+MonoGame's SpriteBatch class.
 
 The easiest way to set the camera position and orientation is to
 periodically call to Graphics.DoDefaultGui(). Typically, this is done in
@@ -272,9 +273,8 @@ Because multiple windows are not conducive to some of the supported
 platforms, MonoGame, and thus Blotch3D, do not support more than one 3D
 window. You can *create* multiple 3D windows, but MonoGame does not
 handle them correctly (input sometimes goes to the wrong window and in
-certain situations will crash). If you want to be able to "close" and
-"re-open" a window, you can just hide and show the same window. You can,
-of course, create any number of non-3D windows you like.
+certain situations will crash). You can, of course, create any number of
+non-3D windows you like.
 
 Officially, MonoGame must create the 3D window, and does not allow you
 to specify an existing window to use as the 3D window. There are some
@@ -320,10 +320,10 @@ Making and using 3D models
 ==========================
 
 You can use the BlGeometry class to make a variety of objects
-programmatically. See the examples and that class for more information.
-A few primitive models are also included with Blotch3D. They can be used
-as is done in the examples if the Blotch3D project is included in your
-solution.
+programmatically. See the geometry examples and that class for more
+information. A few primitive models are also included with Blotch3D.
+They can be used as is done in the examples if the Blotch3D project is
+included in your solution.
 
 You can also convert standard 3D model files, fonts, etc. to "XNB" files
 for use by your MonoGame project. The MonoGame "pipeline manager" is
@@ -347,12 +347,12 @@ certainly not necessary.
 
 Since typically such standard file types need to be converted to XNB
 files only once, one can consider it a separate manual step that should
-be done immediately after creating/choosing the standard resource during
-development. For example, after creating a 3D model with a 3D modeler,
-run it through the pipeline manager to create your XNB file, such as the
-one available from the Blotch3D project. Then add that XNB file to your
-project and set its project properties so it is copied to the output
-folder for loading at run time. See
+be done immediately after creating, choosing, or changing the standard
+resource during development. For example, after creating a 3D model with
+a 3D modeler, run it through the pipeline manager to create your XNB
+file, such as the one available from the Blotch3D project. Then add that
+XNB file to your project and set its project properties so it is copied
+to the output folder for loading at run time. See
 <http://www.monogame.net/documentation/?page=MGCB> for more information.
 
 To create a new model file, use the Blender 3D modeler. You can also
