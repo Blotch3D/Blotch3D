@@ -181,11 +181,13 @@ First you will need to install any Visual Studio add-ons, etc. for the
 desired platform. For example, for Android you'd need the Xamarin for
 Android add-on. Then use the MonoGame Visual Studio project wizard to
 create a project for that platform that will be the Blotch3D class
-library. Delete the default source file created by the wizard and add
-the source to the Blotch3D library. Then use the same wizard to create a
-project for that platform that will be your app, and add a reference to
-that Blotch3D project you created first. For some platforms you may need
-to do some online research to properly create projects.
+library. Delete any default source files created by the wizard and add
+the source files of the Blotch3D library. Go to project properties and
+change the project type from an executable to a class library. Then use
+the same wizard to create a project for that same platform that will be
+your app, and add a reference to that Blotch3D project you created
+first. For some platforms you may need to do some online research to
+properly create projects.
 
 To distribute a program for Microsoft Windows, deliver everything in
 your project's output folder. Other platforms may require different
