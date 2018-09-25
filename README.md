@@ -167,23 +167,26 @@ To develop with Blotch3D, you must first install the MonoGame SDK as
 described in the [Quick start for Windows](#quick-start-for-windows)
 section.
 
-The easiest way to create a new project that uses MonoGame + Blotch3D is
-to copy an existing example project (like the basic example) and rename
-it.
+The easiest way to create a new project for Windows that uses MonoGame +
+Blotch3D is to copy an existing example project (like the basic example)
+and rename it.
 
-To add MonoGame + Blotch3D to an existing project, add a reference to
-the appropriate MonoGame binary (typically in "\\Program Files
-(x86)\\MSBuild\\MonoGame\\v3.0\\\..."). Also add a reference to, or the
-source of, Blotch3D.
+To add MonoGame + Blotch3D to an existing Windows project, add a
+reference to the appropriate MonoGame binary (typically in "\\Program
+Files (x86)\\MSBuild\\MonoGame\\v3.0\\\..."). Also add a reference to,
+or the source of, Blotch3D.
 
 To create a project for another platform besides Microsoft Windows:
 First you will need to install any Visual Studio add-ons, etc. for the
 desired platform. For example, for Android you'd need the Xamarin for
-Android add-on. Then create a project for that platform and add the
-Blotch3D library source to it. Then create your project for that
-platform and add a reference to that Blotch3D project. For some
-platforms you may need to do some online research to properly create
-projects.
+Android add-on. Then use the MonoGame Visual Studio project wizard to
+create a project for that platform. Delete the default source file
+created by the wizard and add the source to the Blotch3D library. This
+will be your Blotch3D class library for the platform you want. Then use
+the same wizard to create project for that platform that will be your
+app, and add a reference to that Blotch3D project you just created. For
+some platforms you may need to do some online research to properly
+create projects.
 
 To distribute a program for Microsoft Windows, deliver everything in
 your project's output folder. Other platforms may require different
