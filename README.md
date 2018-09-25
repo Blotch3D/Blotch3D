@@ -167,9 +167,9 @@ To develop with Blotch3D, you must first install the MonoGame SDK as
 described in the [Quick start for Windows](#quick-start-for-windows)
 section.
 
-The easiest way to create a new project for Windows that uses MonoGame +
-Blotch3D is to copy an existing example project (like the basic example)
-and then rename it using Visual Studio.
+The easiest way to create a new project for Windows is to copy an
+existing example project (like the basic example) and then rename it
+using Visual Studio.
 
 To add MonoGame + Blotch3D to an existing Windows project, add a
 reference to the appropriate MonoGame binary (typically in "\\Program
