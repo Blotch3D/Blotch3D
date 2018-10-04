@@ -105,7 +105,7 @@ code you can...
 
 -   Implement fog.
 
--   Create particle systems
+-   Create totally configurable particle systems.
 
 -   Define ambient lighting and up to three point-light sources.
 
@@ -143,11 +143,12 @@ XNA (versions 2 and 3) will often not be correct. For conversion of XNA
 3 to XNA 4 see
 [http://www.nelsonhurst.com/xna-3-1-to-xna-4-0-cheatsheet/.](http://www.nelsonhurst.com/xna-3-1-to-xna-4-0-cheatsheet/)
 
-Note that to support all the platforms, certain limitations were
-necessary. Currently you can only have one 3D window. Also, there is no
-official cross-platform way to specify an existing window to use as the
-3D window---MonoGame must create it. See below for details and
-work-arounds.
+Note that to support all the platforms there are certain limitations in
+MonoGame. Currently you can only have one 3D window. (Creating multiple
+3D windows is buggy---unless you do it from separate processes.) Also,
+there is no official cross-platform way to specify an existing window to
+use as the 3D window---MonoGame must create it. See below for details
+and work-arounds.
 
 The provided Visual Studio solution file contains both the Blotch3D
 library project with source, and the example projects.
@@ -185,7 +186,7 @@ library. Delete any default source files created by the wizard and add
 the source files of the Blotch3D library. Go to project properties and
 change the project type from an executable to a class library. Then use
 the same wizard to create a project for that same platform that will be
-your app, and add a reference to that Blotch3D project you created
+your app, and add to it a reference to that Blotch3D project you created
 first. For some platforms you may need to do some online research to
 properly create projects.
 
@@ -247,7 +248,7 @@ frame time.
 
 You can use a variety of methods to draw things in FrameDraw. Sprites
 are drawn with the BlSprite.Draw method. When you draw a sprite, all its
-subsprites are also drawn. So, oftentimes you may want to have a "Top"
+subsprites are also drawn. So oftentimes you may want to have a "Top"
 sprite that holds other sprites as its subsprites, and call the Draw
 method of the Top sprite to cause the other sprites to be drawn. There
 are also methods to draw text and textures in 2D (just draw them after
@@ -366,7 +367,7 @@ Particles
 =========
 
 Particle systems in Blotch3D are implemented by specifying
-BlSprite.FrameProc delegates. So, particles systems are completely
+BlSprite.FrameProc delegates. So particles systems are completely
 configurable. For example, you can implement nonlinear or abrupt changes
 in the particle's life, or make particle tree structures. See the
 Particle example.
@@ -374,25 +375,33 @@ Particle example.
 Custom effects
 ==============
 
-Blotch3D provides several custom shaders that are the same as the
-default MonoGame BasicEffect, but they provide added features. Examples
-are provided that demonstrate how to use them.
+By default, Blotch3D draws sprites using a standard shader that comes
+with MonoGame which is managed by a MonoGame BasicEffect object.
+
+Blotch3D also provides several custom shaders that are the same as that
+managed by BasicEffect, but they provide added features. To use them,
+you instantiate a BlBasicEffect and set it with the SetEffect delegate
+of BlSprite. An example is shown below, and working examples are
+provided that demonstrate how to use several of them.
 
 The custom shader source and the compiled shader files for DirectX and
-OpenGL are in the Blotch3D Content/Effects folder. See below for
-compiling for different platforms. To use a custom shader, first copy
-the compiled shader file (mgfxo file) to your program's output
-folder---you might add a link to it in your project and set its
-properties so it is copied to the output folder.
+OpenGL are in the src/Content/Effects folder. See below for compiling
+for different platforms. To use a custom shader, first copy the compiled
+shader file (mgfxo file) to your program's output folder---you might add
+a link to it in your project and set its build properties so it is
+copied to the output folder when your project builds.
 
 When your program runs, it specifies that file name in the BlBasicEffect
 constructor (or you can manage the bytes from the file, yourself, and
 pass the bytes to the constructor). Then when the sprite is drawn, the
 effect must be specified by the sprite's SetEffect delegate.
 
-Each effect also typically has certain parameters that must be specified
-that control the feature(s) provided by the effect. These are set with
-the BlBasicEffect.Parameters\[\].SetValue method. They can be set at any
+A BlBasicEffect supports several material and lighting parameters that
+are gotten from the BlSprite material and lighting fields, with a call
+to BlSprite.SetupBasicEffect. Each effect also typically has certain
+other parameters that must be specified that control the unique
+feature(s) provided by the custom shader. These are set with the
+BlBasicEffect.Parameters\[\].SetValue method. They can be set at any
 time.
 
 For example, the BlBasicEffectAlphaTest effect is used like this:
@@ -431,11 +440,11 @@ copy of the original MonoGame BasicEffect shader code, but with a few
 lines added. To compile the shaders (for example, because the target
 platform uses something other than DirectX or OpenGL), edit the
 "make\_effects.bat" file in the Blotch3D source folder to change the
-Profile arguments to each call of 2MGFX in that file. Then be sure to
-add the path to 2MGFX.exe to the 'path' environment variable. Typically,
-the path is something like "\\Program Files
-(x86)\\MSBuild\\MonoGame\\v3.0\\Tools". Then run the make\_effects.bat
-file.
+Profile arguments to each call of 2MGFX in that file to that needed by
+the target platform. Then be sure to add the path to 2MGFX.exe to the
+'path' environment variable. Typically, the path is something like
+"\\Program Files (x86)\\MSBuild\\MonoGame\\v3.0\\Tools". Then run the
+make\_effects.bat file.
 
 You can create your own shader files that are based on BlBasicEffect and
 compile and load it as shown above. Just be sure it is based on the
@@ -572,7 +581,7 @@ instance methods of the Matrix class that let you easily set and change
 the scaling, position, rotation, etc. of a matrix.
 
 When you change anything about a sprite's matrix, you also change it for
-the child sprites, if any. That is, subsprites reside in the parent
+its child sprites, if any. That is, subsprites reside in the parent
 sprite's coordinate system. For example, if a child sprite's matrix
 scales it by 3, and its parent sprite's matrix scales by 4, then the
 child sprite will be scaled by 12 in world space. Likewise, rotation,
@@ -584,8 +593,8 @@ effects of multiple matrices. For example, a rotate matrix and a scale
 matrix can be multiplied to form a single rotate-scale matrix. But mind
 the multiplication order because matrix multiplication is not
 commutative. See below for details, but novices can simply try the
-operation one way (like A times B) and if it doesn't work the way you
-wanted, do it the other way (B times A).
+operation one way (like A times B) and if it doesn't work as desired, it
+can be done the other way (B times A).
 
 For a good introduction without the math, see
 <http://rbwhitaker.wikidot.com/monogame-basic-matrices>.

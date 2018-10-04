@@ -58,7 +58,7 @@ Shift          - Fine control
 			Font = MyContent.Load<SpriteFont>("Arial14");
 
 			// The model of the toroid
-			var TorusModel = MyContent.Load<Model>("torus");
+			var particleContent = MyContent.Load<Model>("torus");
 
 			// Load the image into a Texture2D
 			MyTexture = Graphics.LoadFromImageFile("image.png");
@@ -67,20 +67,20 @@ Shift          - Fine control
 			var FirstMatrix = Matrix.CreateTranslation(.5f,0,0);
 
 			// How to alter FirstMatrix each time a new particle is created
-			var ConsecutiveMatrix = Matrix.CreateRotationY(.1f);
+			var ConsecutiveMatrix = Matrix.CreateRotationZ(1f);
 
 			// How to alter a particle with particle age
 			var ChangeMatrix = Matrix.CreateTranslation(.03f, 0, .03f);
-			ChangeMatrix *= Matrix.CreateScale(.98f);
+//			ChangeMatrix *= Matrix.CreateScale(.98f);
 
 			// Maximum number of particles
 			long MaxParticles = 30;
 
 			// How much to change the overall alpha with particle age
-			double AlphaChange = -.06;
+			double AlphaChange = -.004;
 
 			// how many frames to wait between particle creation
-			double ParticlesPerSecond = 60;
+			double ParticlesPerSecond = 6;
 
 			//
 			// The top sprite that holds the particle sprites
@@ -110,13 +110,25 @@ Shift          - Fine control
 
 					var part = new BlSprite(Graphics, particleName, (p) =>
 					{
-						p.Matrix *= ChangeMatrix;
+						p.Matrix = Matrix.Multiply(ChangeMatrix, p.Matrix);
 						p.Alpha += AlphaChange;
 						if (p.Alpha > 1) p.Alpha = 1;
 						if (p.Alpha < 0) p.Alpha = 0;
 					});
 
-					part.LODs.Add(TorusModel);
+					part.PreDraw = (p) =>
+					{
+						Graphics.GraphicsDevice.DepthStencilState = Graphics.DepthStencilStateDisabled;
+						return BlSprite.PreDrawCmd.Continue;
+					};
+
+					part.DrawCleanup = (p) =>
+					{
+						Graphics.GraphicsDevice.DepthStencilState = Graphics.DepthStencilStateEnabled;
+					};
+
+
+					part.LODs.Add(particleContent);
 					part.Matrix = FirstMatrix;
 
 					FirstMatrix *= ConsecutiveMatrix;
@@ -130,7 +142,6 @@ Shift          - Fine control
 
 				frameCntSinceLastParticle++;
 			});
-
 		}
 
 		/// <summary>
