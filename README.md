@@ -11,8 +11,7 @@ On your development machine ...
     with the default settings. (Do NOT get the current development
     version nor a NuGet package.)
 
-2.  Download the Blotch3D repository zip from the GitHub page and unzip
-    it.
+2.  Download the Blotch3D repository, or clone it.
 
 3.  Open the Visual Studio solution file (Blotch3D.sln) and build and
     run the example projects.
@@ -258,7 +257,7 @@ example, it is faster to draw multiple 2D textures and text using
 MonoGame's SpriteBatch class.
 
 The easiest way to set the camera position and orientation is to
-periodically call to Graphics.DoDefaultGui(). Typically, this is done in
+periodically call Graphics.DoDefaultGui(). Typically, this is done in
 the FrameProc method, but could be done in the FrameDraw method as well.
 If you want other ways to control the camera, then see the various
 Graphics.AdjustCamera... methods, the Graphics.SetCameraToSprite method,
@@ -290,8 +289,9 @@ BlWindow3D.WindowForm field will be useful for this (Microsoft Windows
 only).
 
 By default, lighting, background color, and sprite coloring are set so
-that it is most probable you will see them. These may need to be changed
-after you've verified sprites are properly created and positioned.
+that it is most probable you will see the sprite. These may need to be
+changed after you've verified sprites are properly created and
+positioned.
 
 All MonoGame features remain available and accessible when using
 Blotch3D. For examples:
@@ -311,9 +311,10 @@ Blotch3D. For examples:
 
 -   All other MonoGame features are available, like audio, etc.
 
-Remember that most Blotch3D and MonoGame objects must be Disposed when
-you are done with them and you are not otherwise terminating the
-program.
+Most Blotch3D and MonoGame objects must be Disposed when you are done
+with them and you are not otherwise terminating the program. And they
+must be disposed by the same thread that created them. You'll get an
+informative exception if this isn't done.
 
 See the examples, reference documentation (doc/Blotch3DManual.pdf), and
 IntelliSense for more information.
@@ -324,8 +325,8 @@ Making and using 3D models
 You can use the BlGeometry class to make a variety of objects
 programmatically. See the geometry examples and that class for more
 information. A few primitive models are also included with Blotch3D.
-They can be used as is done in the examples if the Blotch3D project is
-included in your solution.
+They can be used as is done in the examples that use them if the
+Blotch3D project is included in your solution.
 
 You can also convert standard 3D model files, fonts, etc. to "XNB" files
 for use by your MonoGame project. The MonoGame "pipeline manager" is
@@ -522,8 +523,8 @@ you are using only emission lighting). (If you do want to use
 AlphaTestEffect, see online for details.)
 
 For these reasons Blotch3D includes a custom shader file called
-BlBasicEffectAlphaTest (to be held in code as a BlBasicEffect object)
-that provides everything that MonoGame's BasicEffect provides, but also
+BlBasicEffectAlphaTest (to be managed with a BlBasicEffect object) that
+provides everything that MonoGame's BasicEffect provides, but also
 provides alpha testing. Set its "AlphaTestThreshold" to specify what
 alpha value merits drawing the pixel. See the [Custom
 effects](#custom-effects) section and the SpriteAlphaTexture example for
@@ -546,8 +547,10 @@ the square of the difference between pixel color and ClipColor).
 BlBasicEffectClipColor is especially useful for videos that neglected to
 include an alpha channel.
 
-See the [Custom effects](#custom-effects) section for details on using a
-custom effect.
+See the [Translucency with the BlBasicEffectAlphaTest
+shader](#translucency-with-the-blbasiceffectalphatest-shader) section
+for an introduction to alpha and alpha testing, and see the [Custom
+effects](#custom-effects) section for details on using a custom effect.
 
 Transforming textures with the BlBasicEffectAlphaTestXformTex shader
 ====================================================================
@@ -916,19 +919,20 @@ a 32-bit floating point value indicating the last drawn nearest (to the
 camera) depth of that point. In that way pixels that are farther away
 need not be drawn. NearClip defines the nearest distance kept track of,
 and FarClip defines the farthest (objects outside that range are not
-drawn). If the range is too great, then limited floating point
+drawn). If the range is too large, then limited floating point
 resolution in the 32-bit distance value will cause artifacts. See the
 troubleshooting question about depth. You can disable the depth testing
-for special cases. See BlGraphicsDeviceManager.NearClip,
+for special cases (see the troubleshooting question about disabling the
+depth buffer). See BlGraphicsDeviceManager.NearClip,
 BlGraphicsDeviceManager.FarClip. and search the web for MonoGame depth
 information.
 
-Near clipping plane (NearClip)
+Near clipping plane (BlGraphicsDeviceManager.NearClip)
 
 The distance from the camera at which a depth buffer element is equal to
 zero. Nearer surfaces are not drawn.
 
-Far clipping plane (FarClip)
+Far clipping plane (BlGraphicsDeviceManager.FarClip)
 
 The distance from the camera at which a depth buffer element is equal to
 the maximum possible floating-point value. Farther surfaces are not
@@ -943,9 +947,9 @@ model space.
 World space
 
 The three-dimensional space that you see through the two-dimensional
-view of the screen. A model is transformed from model space to world
-space by its final matrix (that is, the matrix we get *after* a sprite's
-matrix is multiplied by its parent sprite matrices, if any).
+screen window. A model is transformed from model space to world space by
+its final matrix (that is, the matrix we get *after* a sprite's matrix
+is multiplied by its parent sprite matrices, if any).
 
 View space
 
@@ -983,8 +987,8 @@ scale to zero, you may have caused some of the normals to be zeroed-out
 or made invalid. Try setting the scale to a very small number, rather
 than zero.
 
-Q: When I am zoomed-in a large amount, sprite and camera movement jumps
-as the sprite or camera move.
+Q: When I am zoomed-in a very large amount, sprite and camera movement
+jumps as the sprite or camera move.
 
 A: You are experiencing floating point precision errors in the
 positioning algorithms. About all you can do is "fake" being that zoomed
@@ -1028,12 +1032,11 @@ new rotation matrix from scratch every frame from a simple float scalar
 angle value you are regularly incrementing, or you can multiply the
 existing matrix by a persistent rotation matrix you created initially.
 The former method is more precise, but the latter is less CPU intensive
-because creating a rotation matrix from a floating-point angle value
-requires that transcendental functions be called, but multiplying
-matrices does not. A good compromise is to use a combination of both, if
-possible. Specifically, multiply by a rotation matrix most of the time,
-but on occasion recreate the sprite's matrix directly from the scalar
-angle value.
+because creating a rotation matrix requires that transcendental
+functions be called, but multiplying existing matrices does not. A good
+compromise is to use a combination of both, if possible. Specifically,
+multiply by a rotation matrix most of the time, but on occasion recreate
+the sprite's matrix directly from the scalar angle value.
 
 Rights
 ======

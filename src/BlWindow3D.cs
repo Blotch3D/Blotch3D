@@ -358,9 +358,7 @@ namespace Blotch
 
 		~BlWindow3D()
 		{
-			if(BlDebug.ShowThreadInfo)
-				Console.WriteLine("BlGame destructor");
-			Dispose();
+			throw new Exception(string.Format("BlWindow was garbage collected before its Dispose was called"));
 		}
 
 		int CreationThread = -1;
@@ -380,12 +378,12 @@ namespace Blotch
 		{
 			if (BlDebug.ShowThreadInfo)
 				Console.WriteLine("BlGame dispose");
+
 			if (IsDisposed)
 				return;
 
-			// We do NOT check for CreationThread, because it doesn't matter for this class
-			//if (CreationThread != Thread.CurrentThread.ManagedThreadId && BlDebug.EnableThreadExceptions)
-			//BlDebug.Message(String.Format("BlGame.Dispose() was called by thread {0} instead of thread {1}", Thread.CurrentThread.ManagedThreadId, CreationThread));
+			if (CreationThread != Thread.CurrentThread.ManagedThreadId)
+				throw new Exception(String.Format("BlWindow.Dispose() was called by thread {0} instead of thread {1}", Thread.CurrentThread.ManagedThreadId, CreationThread));
 
 			GC.SuppressFinalize(this);
 

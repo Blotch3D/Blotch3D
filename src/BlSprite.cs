@@ -1119,10 +1119,7 @@ namespace Blotch
 
 		~BlSprite()
 		{
-			if (BlDebug.ShowThreadInfo)
-				Console.WriteLine("BlSprite {0} destructor",Name);
-
-			Dispose();
+			throw new Exception(string.Format("BlSprite {0} was garbage collected before its Dispose was called",Name));
 		}
 
 		int CreationThread = -1;
@@ -1142,11 +1139,12 @@ namespace Blotch
 		{
 			if (BlDebug.ShowThreadInfo)
 				Console.WriteLine("BlSprite {0} dispose", Name);
+
 			if (IsDisposed)
 				return;
 
-			if (CreationThread != Thread.CurrentThread.ManagedThreadId && BlDebug.ShowThreadWarnings)
-				BlDebug.Message(String.Format("BlSprite {0} Dispose() was called by thread {1} instead of thread {2}", Name, Thread.CurrentThread.ManagedThreadId, CreationThread));
+			if (CreationThread != Thread.CurrentThread.ManagedThreadId)
+				throw new Exception(String.Format("BlSprite.Dispose() was called by thread {0} instead of thread {1}", Thread.CurrentThread.ManagedThreadId, CreationThread));
 
 			GC.SuppressFinalize(this);
 

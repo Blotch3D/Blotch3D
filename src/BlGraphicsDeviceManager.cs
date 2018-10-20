@@ -1099,9 +1099,7 @@ namespace Blotch
 
 		~BlGraphicsDeviceManager()
 		{
-			if (BlDebug.ShowThreadInfo)
-				Console.WriteLine("BlGraphicsDeviceManager destructor");
-			Dispose();
+			throw new Exception("BlGraphicsDeviceManager was garbage collected before its Dispose was called");
 		}
 
 		int CreationThread = -1;
@@ -1110,21 +1108,18 @@ namespace Blotch
 		/// </summary>
 		public bool IsDisposed = false;
 		/// <summary>
-		/// When finished with the object, you should call Dispose() from the same thread that created the object.
-		/// You can call this multiple times, but once is enough. If it isn't called before the object
-		/// becomes inaccessible, then the destructor will call it and, if BlDebug#EnableDisposeErrors is
-		/// true (it is true by default for Debug builds), then it will get an exception saying that it
-		/// wasn't called by the same thread that created it. This is because the platform's underlying
-		/// 3D library (OpenGL, etc.) often requires 3D resources to be managed only by one thread.
+		/// When finished with the object, you must call Dispose() from the same thread that created the object.
+		/// You can call this multiple times, but once is enough.
 		/// </summary>
 		public new void Dispose()
 		{
 			if (BlDebug.ShowThreadInfo)
 				Console.WriteLine("BlGraphicsDeviceManager dispose");
+
 			if (IsDisposed)
 				return;
 
-			if (BlDebug.ShowThreadWarnings && CreationThread != Thread.CurrentThread.ManagedThreadId)
+			if (CreationThread != Thread.CurrentThread.ManagedThreadId)
 				BlDebug.Message(String.Format("BlGraphicsDeviceManager.Dispose() was called by thread {0} instead of thread {1}", Thread.CurrentThread.ManagedThreadId, CreationThread));
 
 			GC.SuppressFinalize(this);
