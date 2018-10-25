@@ -160,6 +160,22 @@ In fact, you can do a diff between the basic Example.cs files and
 another example's source file to see what extra code must be added to
 implement the features it demonstrates.
 
+Deficiencies
+============
+
+Although any feature can certainly be implemented by the app developer,
+Blotch3D+MonoGame does not directly provide...
+
+-   Shadows (although they might be added in the future)
+
+-   Physics
+
+-   Per-face collision detection
+
+-   More than one 3D windows
+
+-   A NuGet package
+
 Creating a new project
 ======================
 
@@ -277,14 +293,14 @@ handle them correctly (input sometimes goes to the wrong window and in
 certain situations will crash). You can, of course, create any number of
 non-3D windows you like.
 
-Officially, MonoGame must create the 3D window, and does not allow you
-to specify an existing window to use as the 3D window. There are some
-platform-specific ways to do it described online, but note that they may
-not work in later MonoGame releases.
+Officially, Blotch3D+MonoGame must create the system window used for the
+3D window and does not allow you to specify an existing window to use as
+the 3D window. There are some platform-specific ways to do it described
+online, but note that they may not work in later MonoGame releases.
 
-To properly make the MonoGame window be a child window of an existing
-GUI, you need to explicitly size, position, and convey Z order to the 3D
-window so that it is overlaid over the child window. The
+To properly make the BlWindow3D window be a child window of an existing
+GUI, you need to explicitly size, position, and convey Z order to that
+3D window so that it is overlaid over the child window. The
 BlWindow3D.WindowForm field will be useful for this (Microsoft Windows
 only).
 
@@ -301,7 +317,8 @@ Blotch3D. For examples:
 
 -   The BlWindow3D class derives from the MonoGame "Game" class. The
     Setup, FrameProc, and FrameDraw methods are called by certain
-    overridden Game methods.
+    overridden Game methods. (Override MonoGame methods as you like, but
+    be sure to call the base method from within the overridden method.)
 
 -   The BlGraphicsDeviceManager class derives from MonoGame's
     "GraphicsDeviceManager" class.
@@ -358,9 +375,9 @@ XNB file to your project and set its project properties so it is copied
 to the output folder for loading at run time. See
 <http://www.monogame.net/documentation/?page=MGCB> for more information.
 
-To create a new model file, use the Blender 3D modeler. You can also
-instruct Blender to include texture (UV) mapping by using one of the
-countless tutorials online, like
+To create a new model file, it is recommended you use the Blender 3D
+modeler. You can also instruct Blender to include texture (UV) mapping
+by using one of the countless tutorials online, like
 <https://www.youtube.com/watch?v=2xTzJIaKQFY> or
 <https://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/UV_Map_Basics> .
 
@@ -381,9 +398,10 @@ with MonoGame which is managed by a MonoGame BasicEffect object.
 
 Blotch3D also provides several custom shaders that are the same as that
 managed by BasicEffect, but they provide added features. To use them,
-you instantiate a BlBasicEffect and set it with the SetEffect delegate
-of BlSprite. An example is shown below, and working examples are
-provided that demonstrate how to use several of them.
+you instantiate a BlBasicEffect, pass the shader file name to its
+constructor, and set it with the SetEffect delegate of BlSprite. An
+example is shown below, and working examples are provided that
+demonstrate how to use several such custom shaders.
 
 The custom shader source and the compiled shader files for DirectX and
 OpenGL are in the src/Content/Effects folder. See below for compiling
@@ -397,15 +415,15 @@ constructor (or you can manage the bytes from the file, yourself, and
 pass the bytes to the constructor). Then when the sprite is drawn, the
 effect must be specified by the sprite's SetEffect delegate.
 
-A BlBasicEffect supports several material and lighting parameters that
-are gotten from the BlSprite material and lighting fields, with a call
-to BlSprite.SetupBasicEffect. Each effect also typically has certain
-other parameters that must be specified that control the unique
-feature(s) provided by the custom shader. These are set with the
-BlBasicEffect.Parameters\[\].SetValue method. They can be set at any
-time.
+A BlBasicEffect supports the several material and lighting parameters
+that are gotten from the BlSprite material and lighting fields with a
+call to BlSprite.SetupBasicEffect. But besides those, each effect also
+typically has certain other parameters that must be specified that
+control the unique feature(s) provided by the custom shader. These are
+set with the BlBasicEffect.Parameters\[\].SetValue method. They can be
+set at any time.
 
-For example, the BlBasicEffectAlphaTest effect is used like this:
+For example, the BlBasicEffectAlphaTest shader is used like this:
 
 // Create a BlBasicEffect and specify the shader file (you can also
 specify 'BlBasicEffectAlphaTestOGL.mgfxo' if you are on an OpenGL
@@ -414,7 +432,7 @@ platform)
 MyBlBasicEffectAlphaTest = new BlBasicEffect(Graphics.GraphicsDevice,
 "BlBasicEffectAlphaTest.mgfxo");
 
-// Now specify the alpha threshold below which pixels are not drawn.
+// Now specify the alpha threshold above which pixels should be drawn.
 
 // This can be done at any time, including from within the below
 delegate
