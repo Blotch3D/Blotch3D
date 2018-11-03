@@ -143,11 +143,11 @@ XNA (versions 2 and 3) will often not be correct. For conversion of XNA
 [http://www.nelsonhurst.com/xna-3-1-to-xna-4-0-cheatsheet/.](http://www.nelsonhurst.com/xna-3-1-to-xna-4-0-cheatsheet/)
 
 Note that to support all the platforms there are certain limitations in
-MonoGame. Currently you can only have one 3D window. (Creating multiple
-3D windows is buggy---unless you do it from separate processes.) Also,
-there is no official cross-platform way to specify an existing window to
-use as the 3D window---MonoGame must create it. See below for details
-and work-arounds.
+MonoGame. Currently you can only have one 3D window per process.
+(Creating multiple 3D windows is buggy---unless you do it from separate
+processes.) Also, there is no official cross-platform way to specify an
+existing window to use as the 3D window---MonoGame must create it. See
+below for details and work-arounds.
 
 The provided Visual Studio solution file contains both the Blotch3D
 library project with source, and the example projects.
@@ -172,7 +172,7 @@ Blotch3D+MonoGame does not directly provide...
 
 -   Per-face collision detection
 
--   More than one 3D windows
+-   More than one 3D window per process
 
 -   A NuGet package
 
@@ -261,6 +261,11 @@ delegate to the 3D thread with BlWindow3D.EnqueueCommand or
 BlWindow3D.EnqueueCommandBlocking, which will be executed within one
 frame time.
 
+3D models must be added to the BlSprite.LODs container for them to
+appear when you draw that sprite. When a sprite is disposed, it does not
+dispose the models in its LODs container. This is so you can add the
+same model to multiple sprites.
+
 You can use a variety of methods to draw things in FrameDraw. Sprites
 are drawn with the BlSprite.Draw method. When you draw a sprite, all its
 subsprites are also drawn. So oftentimes you may want to have a "Top"
@@ -288,10 +293,12 @@ BlWindow3D.WindowForm.
 
 Because multiple windows are not conducive to some of the supported
 platforms, MonoGame, and thus Blotch3D, do not support more than one 3D
-window. You can *create* multiple 3D windows, but MonoGame does not
-handle them correctly (input sometimes goes to the wrong window and in
-certain situations will crash). You can, of course, create any number of
-non-3D windows you like.
+window in the same process. If you need multiple 3D windows, you'll have
+to do it from multiple processes. You can *create* multiple 3D windows
+in the same process, but MonoGame does not handle them correctly (input
+sometimes goes to the wrong window and in certain situations will
+crash). You can, of course, create any number of non-3D windows you like
+in the same process.
 
 Officially, Blotch3D+MonoGame must create the system window used for the
 3D window and does not allow you to specify an existing window to use as
