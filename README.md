@@ -121,10 +121,10 @@ code you can...
     Switch.
 
 Blotch3D sits on top of MonoGame, and all MonoGame's features are still
-available. MonoGame is a widely used 3D library for C\#. It is free,
-fast, cross platform, actively developed by a large community, and used
-in many professional games. There is a plethora of MonoGame
-documentation, tutorials, examples, and discussions on line.
+available. MonoGame is a widely used 3D library for C\#. It is open
+source, free, fast, cross platform, actively developed by a large
+community, and used in many professional games. There is a plethora of
+MonoGame documentation, tutorials, examples, and discussions on line.
 
 Reference documentation of Blotch3D (classes, methods, fields,
 properties, etc.) is available through Visual Studio IntelliSense, and
@@ -164,7 +164,7 @@ Deficiencies
 ============
 
 Although any feature can certainly be implemented by the app developer,
-Blotch3D+MonoGame does not directly provide...
+Blotch3D does not directly provide...
 
 -   Shadows (although they might be added in the future)
 
@@ -463,14 +463,10 @@ return MyBlBasicEffectAlphaTest;
 
 The shader source code (HLSL) for each BlBasicEffect shader is just a
 copy of the original MonoGame BasicEffect shader code, but with a few
-lines added. To compile the shaders (for example, because the target
-platform uses something other than DirectX or OpenGL), edit the
-"make\_effects.bat" file in the Blotch3D source folder to change the
-Profile arguments to each call of 2MGFX in that file to that needed by
-the target platform. Then be sure to add the path to 2MGFX.exe to the
-'path' environment variable. Typically, the path is something like
-"\\Program Files (x86)\\MSBuild\\MonoGame\\v3.0\\Tools". Then run the
-make\_effects.bat file.
+lines added. To compile the shaders, be sure to add the path to
+2MGFX.exe to the 'path' environment variable. Typically, the path is
+something like "\\Program Files (x86)\\MSBuild\\MonoGame\\v3.0\\Tools".
+Then run the make\_effects.bat file.
 
 You can create your own shader files that are based on BlBasicEffect and
 compile and load it as shown above. Just be sure it is based on the
