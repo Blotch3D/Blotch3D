@@ -26,6 +26,8 @@ On your development machine ...
 6.  To deliver an app, just deliver the contents of your project's
     output folder.
 
+7.  Also see the [Deficiencies](#deficiencies) section.
+
 Features
 ========
 
@@ -175,6 +177,11 @@ Blotch3D does not directly provide...
 -   More than one 3D window per process
 
 -   A NuGet package
+
+-   Check out UrhoSharp. I wrote Blotch3D before I knew about UrhoSharp.
+    It looks like it does most of what Blotch3D does, and it has a NuGet
+    package, physics, and I think with a little work you can get
+    shadows.
 
 Creating a new project
 ======================
