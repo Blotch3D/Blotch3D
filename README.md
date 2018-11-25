@@ -178,10 +178,11 @@ Blotch3D does not directly provide...
 
 -   A NuGet package
 
--   Check out UrhoSharp. I wrote Blotch3D before I knew about UrhoSharp.
-    It looks like it does most of what Blotch3D does, and it has a NuGet
-    package, physics, and I think with a little work you can get
-    shadows.
+Note: Check out UrhoSharp. I wrote Blotch3D before I knew about
+UrhoSharp. UrhoSharp looks like it does much of what Blotch3D does, and
+it has a NuGet package, physics, and I think with a little work you can
+get shadows. However, sprites may not be as configurable, and I didn't
+see much in the way of programmatic creation of objects.
 
 Creating a new project
 ======================
