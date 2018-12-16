@@ -181,13 +181,13 @@ Blotch3D does not directly provide...
 -   A NuGet package
 
 Note: Also check out UrhoSharp before getting heavy into developing with
-Blotch3D. I haven't looked at it much, but notable features above
+Blotch3D. I haven't looked at it in detail, but notable features above
 Blotch3D's are a NuGet package, physics, per vertex or better collision
 detection, octree collision detection, and shadows. Getting started in
-it seems to be a little but more painful, and overriding functionality
-seems to be more convoluted (possibly because it's a wrapper to Urho3D
-\[C++\]). So I suppose one might prefer Blotch3D for apps that don't
-need those extra features.
+it seems to be a bit more painful, and overriding functionality seems to
+be more convoluted (possibly because it's a wrapper to Urho3D \[C++\]).
+So I suppose one might prefer Blotch3D for apps that don't need those
+extra features.
 
 Creating a new project
 ======================
