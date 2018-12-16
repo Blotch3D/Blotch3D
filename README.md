@@ -174,16 +174,20 @@ Blotch3D does not directly provide...
 
 -   Per-face collision detection
 
+-   Tree collision detection
+
 -   More than one 3D window per process
 
 -   A NuGet package
 
 Note: Also check out UrhoSharp before getting heavy into developing with
-Blotch3D. I haven't looked at it much, but I do know it does most of
-what Blotch3D does plus it has a NuGet package, physics, per vertex or
-better collision detection, and shadows. However, getting started in it
-seems to be a bit more painful, and overriding functionality seems to be
-more convoluted (possibly because it's a wrapper to Urho3D \[C++\]).
+Blotch3D. I haven't looked at it much, but notable features above
+Blotch3D's are a NuGet package, physics, per vertex or better collision
+detection, octree collision detection, and shadows. Getting started in
+it seems to be a little but more painful, and overriding functionality
+seems to be more convoluted (possibly because it's a wrapper to Urho3D
+\[C++\]). So I suppose one might prefer Blotch3D for apps that don't
+need those extra features.
 
 Creating a new project
 ======================
@@ -229,15 +233,15 @@ instantiating that class and calling its "Run" method *from the same
 thread*. The Run method then calls the methods you've overridden, when
 appropriate, and does not return until the window has closed.
 
-All code that accesses the 3D hardware must be in overridden methods.
-This is because 3D subsystems (OpenGL, DirectX, etc.) generally require
-that a single thread access all 3D hardware resources for a given 3D
-window. There are certain platform-specific exceptions to this rule, but
-we don't use them. This rule also applies to any code structure (like
-Parallel, etc.) that may internally use other threads, as well. Also,
-since sometimes it's hard to know exactly what 3D operations really do
-hit the 3D hardware, its best to assume all of them do, like creation
-and use of all Blotch3D and MonoGame objects.
+All code that accesses the 3D hardware must be in BlWindow3D overridden
+methods. This is because 3D subsystems (OpenGL, DirectX, etc.) generally
+require that a single thread access all 3D hardware resources for a
+given 3D window. There are certain platform-specific exceptions to this
+rule, but we don't use them. This rule also applies to any code
+structure (like Parallel, etc.) that may internally use other threads,
+as well. Also, since sometimes it's hard to know exactly what 3D
+operations really do hit the 3D hardware, its best to assume all of them
+do, like creation and use of all Blotch3D and MonoGame objects.
 
 You can put all your 3D code in the one overridden method called
 "FrameDraw", if you like, but there are a couple of other overridable
