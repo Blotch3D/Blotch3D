@@ -37,7 +37,7 @@ developing real-time 3D applications and games.
 Bare-bones examples are provided that show how with just a few lines of
 code you can...
 
--   Load standard 3D model file types as "sprites", and display and move
+-   Load standard 3D model file types as "sprites" and display and move
     thousands of them in 3D at high frame rates.
 
 -   Programmatically create a wide variety of sprite shapes.
@@ -54,7 +54,7 @@ code you can...
 
 -   Attach sprites to other sprites to create 'sprite trees' as large as
     you want. Child sprite orientation, position, scale, etc. are
-    relative to the parent sprite, and can be changed dynamically (i.e.
+    relative to the parent sprite and can be changed dynamically (i.e.
     the sprite trees are real-time dynamic scene graphs.)
 
 -   Override all steps in the drawing of each sprite.
@@ -78,11 +78,11 @@ code you can...
 
 -   Implement a skybox sprite.
 
--   Get a list of sprites touching a ray (within a sprite radius), to
+-   Get a list of sprites touching a ray (within a sprite radius) to
     implement weapons fire, etc.
 
 -   Get a list of sprites under the mouse position (within a sprite
-    radius), to implement mouse selection, tooltips, pop-up menus, etc.
+    radius) to implement mouse selection, tooltips, pop-up menus, etc.
 
 -   Implement levels-of-detail.
 
@@ -96,7 +96,7 @@ code you can...
 
 -   Dynamically transform a texture on a surface.
 
--   Use with WPF and WinForms, on Microsoft Windows.
+-   Use with WPF and WinForms on Microsoft Windows.
 
 -   Access and override many window features and functions using the
     provided WinForms Form object of the window (Microsoft Windows only,
@@ -122,16 +122,16 @@ code you can...
     platforms, iOS, Android, MacOS, Linux, PS4, PSVita, Xbox One, and
     Switch.
 
-Blotch3D sits on top of MonoGame, and all MonoGame's features are still
+Blotch3D sits on top of MonoGame and all MonoGame's features are still
 available. MonoGame is a widely used 3D library for C\#. It is open
 source, free, fast, cross platform, actively developed by a large
 community, and used in many professional games. There is a plethora of
 MonoGame documentation, tutorials, examples, and discussions on line.
 
 Reference documentation of Blotch3D (classes, methods, fields,
-properties, etc.) is available through Visual Studio IntelliSense, and
-in "Blotch3DManual.pdf". Note: To support Doxygen documentation
-generator, links in the IntelliSense comments are preceded with '\#'.
+properties, etc.) is available through Visual Studio IntelliSense and in
+"Blotch3DManual.pdf". Note: To support Doxygen documentation generator,
+links in the IntelliSense comments are preceded with '\#'.
 
 See MonoGame.net for the official MonoGame documentation. When searching
 on-line for other MonoGame documentation and discussions, be sure to
@@ -178,10 +178,12 @@ Blotch3D does not directly provide...
 
 -   A NuGet package
 
-Note: Check out UrhoSharp. I wrote Blotch3D before I knew about
-UrhoSharp. I haven't looked at it much, but it looks like it does pretty
-much everything Blotch3D does plus it has a NuGet package, physics, per
-vertex or better collision detection, and shadows.
+Note: Also check out UrhoSharp before getting heavy into developing with
+Blotch3D. I haven't looked at it much, but I do know it does most of
+what Blotch3D does plus it has a NuGet package, physics, per vertex or
+better collision detection, and shadows. However, getting started in it
+seems to be a bit more painful, and overriding functionality seems to be
+more convoluted (possibly because it's a wrapper to Urho3D \[C++\]).
 
 Creating a new project
 ======================
@@ -208,7 +210,7 @@ library. Delete any default source files created by the wizard and add
 the source files of the Blotch3D library. Go to project properties and
 change the project type from an executable to a class library. Then use
 the same wizard to create a project for that same platform that will be
-your app, and add to it a reference to that Blotch3D project you created
+your app and add to it a reference to that Blotch3D project you created
 first. For some platforms you may need to do some online research to
 properly create projects.
 
@@ -276,7 +278,7 @@ same model to multiple sprites.
 You can use a variety of methods to draw things in FrameDraw. Sprites
 are drawn with the BlSprite.Draw method. When you draw a sprite, all its
 subsprites are also drawn. So oftentimes you may want to have a "Top"
-sprite that holds other sprites as its subsprites, and call the Draw
+sprite that holds other sprites as its subsprites and call the Draw
 method of the Top sprite to cause the other sprites to be drawn. There
 are also methods to draw text and textures in 2D (just draw them after
 all 3D objects have been drawn so they aren't overwritten by them). You
@@ -310,7 +312,7 @@ in the same process.
 Officially, Blotch3D+MonoGame must create the system window used for the
 3D window and does not allow you to specify an existing window to use as
 the 3D window. There are some platform-specific ways to do it described
-online, but note that they may not work in later MonoGame releases.
+online but note that they may not work in later MonoGame releases.
 
 To properly make the BlWindow3D window be a child window of an existing
 GUI, you need to explicitly size, position, and convey Z order to that
@@ -331,7 +333,7 @@ Blotch3D. For examples:
 
 -   The BlWindow3D class derives from the MonoGame "Game" class. The
     Setup, FrameProc, and FrameDraw methods are called by certain
-    overridden Game methods. (Override MonoGame methods as you like, but
+    overridden Game methods. (Override MonoGame methods as you like but
     be sure to call the base method from within the overridden method.)
 
 -   The BlGraphicsDeviceManager class derives from MonoGame's
@@ -399,9 +401,9 @@ Particles
 =========
 
 Particle systems in Blotch3D are implemented by specifying
-BlSprite.FrameProc delegates. So particles systems are completely
+BlSprite.FrameProc delegates. So, particles systems are completely
 configurable. For example, you can implement nonlinear or abrupt changes
-in the particle's life, or make particle tree structures. See the
+in the particle's life or make particle tree structures. See the
 Particle example.
 
 Custom effects
@@ -586,7 +588,7 @@ Transforming textures with the BlBasicEffectAlphaTestXformTex shader
 The BlBasicEffectAlphaTestXformTex shader
 ("BlBasicEffectAlphaTestXformTex.mgfxo" and
 "BlBasicEffectAlphaTestXformTexOGL.mgfxo" for OpenGL) does the same
-thing as BlBasicEffectAlphaTest, but adds a feature that lets you
+thing as BlBasicEffectAlphaTest but adds a feature that lets you
 transform the texture on the surface of the sprite.
 
 Parameters are AlphaTestThreshold (same as used by the
