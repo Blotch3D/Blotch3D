@@ -274,11 +274,6 @@ delegate to the 3D thread with BlWindow3D.EnqueueCommand or
 BlWindow3D.EnqueueCommandBlocking, which will be executed within one
 frame time.
 
-3D models must be added to the BlSprite.LODs container for them to
-appear when you draw that sprite. When a sprite is disposed, it does not
-dispose the models in its LODs container. This is so you can add the
-same model to multiple sprites.
-
 You can use a variety of methods to draw things in FrameDraw. Sprites
 are drawn with the BlSprite.Draw method. When you draw a sprite, all its
 subsprites are also drawn. So oftentimes you may want to have a "Top"
@@ -289,6 +284,11 @@ all 3D objects have been drawn so they aren't overwritten by them). You
 can also draw things using the lower-level MonoGame methods. For
 example, it is faster to draw multiple 2D textures and text using
 MonoGame's SpriteBatch class.
+
+3D models must be added to the BlSprite.LODs container for them to
+appear when you draw that sprite. When a sprite is disposed, it does not
+dispose the models in its LODs container. This is so you can add the
+same model to multiple sprites.
 
 The easiest way to set the camera position and orientation is to
 periodically call Graphics.DoDefaultGui(). Typically, this is done in
@@ -379,11 +379,9 @@ folder, where the program can load it.
 When you create a new MonoGame project with the wizard, it sets up a
 "Content.mgcb" file in the new project that manages your content and
 runs the MonoGame pipeline manager as needed or when you double-click
-"Content.mgcb" to add more content.
-
-That's fine for projects created with the project wizard. But it is a
-pain to add this feature to existing non-MonoGame projects, and
-certainly not necessary.
+"Content.mgcb" to add more content. That's fine for projects created
+with the project wizard. But it is a pain to add this feature to
+existing non-MonoGame projects, and certainly not necessary.
 
 Since typically such standard file types need to be converted to XNB
 files only once, one can consider it a separate manual step that should
@@ -419,16 +417,16 @@ with MonoGame which is managed by a MonoGame BasicEffect object.
 Blotch3D also provides several custom shaders that are the same as that
 managed by BasicEffect, but they provide added features. To use them,
 you instantiate a BlBasicEffect, pass the shader file name to its
-constructor, and set it with the SetEffect delegate of BlSprite. An
-example is shown below, and working examples are provided that
+constructor, and set it with the SetEffect delegate of BlSprite. Example
+source code is shown below, and working examples are provided that
 demonstrate how to use several such custom shaders.
 
-The custom shader source and the compiled shader files for DirectX and
-OpenGL are in the src/Content/Effects folder. See below for compiling
-for different platforms. To use a custom shader, first copy the compiled
-shader file (mgfxo file) to your program's output folder---you might add
-a link to it in your project and set its build properties so it is
-copied to the output folder when your project builds.
+The custom compiled shader files for DirectX and OpenGL are in the
+src/Content/Effects folder. See below for compiling for different
+platforms. To use a custom shader, first copy the compiled shader file
+(mgfxo file) to your program's output folder---you might add a link to
+it in your project and set its build properties so it is copied to the
+output folder when your project builds.
 
 When your program runs, it specifies that file name in the BlBasicEffect
 constructor (or you can manage the bytes from the file, yourself, and
@@ -474,12 +472,13 @@ return MyBlBasicEffectAlphaTest;
 
 };
 
-The shader source code (HLSL) for each BlBasicEffect shader is just a
-copy of the original MonoGame BasicEffect shader code, but with a few
-lines added. To compile the shaders, be sure to add the path to
-2MGFX.exe to the 'path' environment variable. Typically, the path is
-something like "\\Program Files (x86)\\MSBuild\\MonoGame\\v3.0\\Tools".
-Then run the make\_effects.bat file.
+The shader source code (HLSL) for each BlBasicEffect shader is in the
+same folder as the compiled shader files. It's just a copy of the
+original MonoGame BasicEffect shader code, but with a few lines added.
+To compile the shaders, be sure to add the path to 2MGFX.exe to the
+'path' environment variable. Typically, the path is something like
+"\\Program Files (x86)\\MSBuild\\MonoGame\\v3.0\\Tools". Then run the
+make\_effects.bat file.
 
 You can create your own shader files that are based on BlBasicEffect and
 compile and load it as shown above. Just be sure it is based on the
