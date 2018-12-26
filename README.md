@@ -26,7 +26,7 @@ On your development machine ...
 6.  To deliver an app, just deliver the contents of your project's
     output folder.
 
-7.  Also see the [Notable Deficiencies](#notable-deficiencies) section.
+7.  Also see the [Deficiencies](#deficiencies) section.
 
 Features
 ========
@@ -162,8 +162,8 @@ In fact, you can do a diff between the basic Example.cs files and
 another example's source file to see what extra code must be added to
 implement the features it demonstrates.
 
-Notable Deficiencies
-====================
+Deficiencies
+============
 
 Although any feature can certainly be implemented by the app developer,
 Blotch3D does not directly provide...
