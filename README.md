@@ -26,7 +26,7 @@ On your development machine ...
 6.  To deliver an app, just deliver the contents of your project's
     output folder.
 
-7.  Also see the [Deficiencies](#deficiencies) section.
+7.  Also see the [Notable Deficiencies](#notable-deficiencies) section.
 
 Features
 ========
@@ -162,8 +162,8 @@ In fact, you can do a diff between the basic Example.cs files and
 another example's source file to see what extra code must be added to
 implement the features it demonstrates.
 
-Deficiencies
-============
+Notable Deficiencies
+====================
 
 Although any feature can certainly be implemented by the app developer,
 Blotch3D does not directly provide...
@@ -174,20 +174,48 @@ Blotch3D does not directly provide...
 
 -   Per-face collision detection
 
--   Tree collision detection
+-   Optimized (tree) collision detection
 
 -   More than one 3D window per process
 
 -   A NuGet package
 
-Note: Also check out UrhoSharp before getting heavy into developing with
-Blotch3D. I haven't looked at it in detail, but notable features above
-Blotch3D's are a NuGet package, physics, per vertex or better collision
-detection, octree collision detection, and shadows. Getting started in
-it seems to be a bit more painful, and overriding functionality seems to
-be more convoluted (possibly because it's a wrapper to Urho3D \[C++\]).
-So I suppose one might prefer Blotch3D for apps that don't need those
-extra features.
+Also check out UrhoSharp before getting too heavily into developing with
+Blotch3D. I haven't looked at it in detail, but below are listed some
+differences between Blotch3D and UrhoSharp.
+
+UrhoSharp advantages over Blotch3D that I've noticed:
+
+-   UrhoSharp has a NuGet package
+
+-   UrhoSharp supports physics
+
+-   UrhoSharp supports octree collision detection
+
+-   UrhoSharp supports shadows
+
+-   UrhoSharp supports Xamarin Forms (maybe Blotch3D does, also? ---I
+    just haven't tried it)
+
+A few UrhoSharp disadvantages (compared to Blotch3D) I happened to
+notice:
+
+-   UrhoSharp bare bones code is a bit more complicated than Blotch3D's
+
+-   The official UrhoSharp reference documentation is sparse or
+    non-existent
+
+-   Although there are third party help and discussions for UrhoSharp,
+    there is notably more for MonoGame (Blotch3D's underlying 3D engine)
+
+-   UrhoSharp is notably younger than MonoGame. There seemed to be more
+    recent bug reports.
+
+-   UrhoSharp supports less or no programmatic object creation
+
+-   There doesn't appear to be an intrinsic texture transform shader
+
+-   Particle systems are not as versatile
 
 Creating a new project
 ======================
