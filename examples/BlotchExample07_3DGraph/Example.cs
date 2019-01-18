@@ -13,7 +13,7 @@ namespace BlotchExample
 	public class Example : BlWindow3D
 	{
 		/// <summary>
-		/// This will be the torus model we draw in the window
+		/// This will be the model we draw in the window
 		/// </summary>
 		BlSprite Surface;
 

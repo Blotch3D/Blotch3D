@@ -1099,6 +1099,19 @@ compromise is to use a combination of both, if possible. Specifically,
 multiply by a rotation matrix most of the time, but on occasion recreate
 the sprite's matrix directly from the scalar angle value.
 
+Q: I'm using SetCameraToSprite to implement cockpit view, but when the
+sprite moves, the camera lags from the sprite's position.
+
+A: It's a chicken and egg problem. The sprite must be moved *before*
+moving the camera to its position, but the camera must be moved *before*
+showing the sprite's latest position. The only way to fix this is to set
+the sprite's position without showing (drawing) it, then call
+SetCameraToSprite, then draw everything. If you want to attach the
+camera to a child sprite, you might want to disable any time-consuming
+tasks in drawing things when you only want to calculate the sprite's
+position without drawing it, then when it comes time to draw things,
+enable them those things.
+
 Rights
 ======
 
