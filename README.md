@@ -1110,7 +1110,7 @@ SetCameraToSprite, then draw everything. If you want to attach the
 camera to a child sprite, you might want to disable any time-consuming
 tasks in drawing things when you only want to calculate the sprite's
 position without drawing it, then when it comes time to draw things,
-enable them those things.
+enable them.
 
 Rights
 ======
