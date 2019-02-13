@@ -678,15 +678,19 @@ Let's imagine a model that has one vertex at (4,1) and another vertex at
 You can move the model by moving each of those vertices by the same
 amount, and without regard to where each is relative to the origin. To
 do that, just add an offset vector to each vertex. For example, we could
-add the vector (2,1) to each of those original vertices, which would
-result in final model vertices of (6,2) and (5,4). In that case we have
-*translated* (moved) the model.
+add the vector (0.2, 0.1) to each of those original vertices, which
+would result in final model vertices of (4.2, 1.1) and (3.2, 3.1). In
+that case we have *translated* (moved) the model.
 
 Matrices certainly support translation. But first let's talk about
 moving a vertex *relative to its current position from the origin,*
 because that's what gives matrices the power to also shear, rotate, and
 scale a model about the origin. This is because those operations affect
 each vertex differently depending on its relationship to the origin.
+(And since matrixes can be combined by multiplying them, we can, for
+example, rotate a matrix in the model coordinate system, and then
+translate it to a world coordinate system so that it rotates around its
+own model origin.)
 
 If we want to scale (stretch) the X relative to the origin, we can
 multiply the X of each vertex by 2.
@@ -1115,7 +1119,7 @@ enable them.
 Rights
 ======
 
-Blotch3D (formerly GWin3D) Copyright (c) 1999-2018 Kelly Loum, all
+Blotch3D (formerly GWin3D) Copyright (c) 1999-2019 Kelly Loum, all
 rights reserved except those granted in the following license:
 
 Microsoft Public License (MS-PL)
