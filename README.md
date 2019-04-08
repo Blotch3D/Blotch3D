@@ -26,8 +26,8 @@ On your development machine ...
 6.  To deliver an app, just deliver the contents of your project's
     output folder.
 
-7.  Also see the [Deficiencies](#deficiencies-and-alternatives) and
-    Alternatives section.
+7.  Also see the [Deficiencies and
+    Alternatives](#deficiencies-and-alternatives) section.
 
 Features
 ========
