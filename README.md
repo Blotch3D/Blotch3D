@@ -26,7 +26,8 @@ On your development machine ...
 6.  To deliver an app, just deliver the contents of your project's
     output folder.
 
-7.  Also see the [Deficiencies](#deficiencies) section.
+7.  Also see the [Deficiencies](#deficiencies-and-alternatives) and
+    Alternatives section.
 
 Features
 ========
@@ -162,8 +163,8 @@ In fact, you can do a diff between the basic Example.cs files and
 another example's source file to see what extra code must be added to
 implement the features it demonstrates.
 
-Deficiencies
-============
+Deficiencies and Alternatives
+=============================
 
 Although any feature can certainly be implemented by the app developer,
 Blotch3D does not directly provide...
@@ -216,6 +217,11 @@ notice:
 -   There doesn't appear to be an intrinsic texture transform shader
 
 -   Particle systems are not as versatile
+
+Finally, a mention of three.js is in order, even though it is JavaScript
+rather than C\#, because it's so full featured yet easy to learn. See
+<https://docs.microsoft.com/en-us/windows/uwp/get-started/get-started-tutorial-game-js3d>
+for Visual Studio-based development of three.js.
 
 Creating a new project
 ======================
