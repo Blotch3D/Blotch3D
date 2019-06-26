@@ -437,7 +437,16 @@ namespace Blotch
 		/// <param name="s"></param>
 		public void Add(BlSprite s)
 		{
-			s.Parent = this;
+            if (s.Name==null)
+            {
+                throw new Exception($"BlSprite.Add: adding sprite '{s.Name}' requires it have a valid Name field");
+            }
+            if (ContainsKey(s.Name))
+            {
+                throw new Exception($"BlSprite.Add: sprite '{s.Name}' has alread been added");
+            }
+
+            s.Parent = this;
 			this[s.Name] = s;
 		}
 		/// <summary>
