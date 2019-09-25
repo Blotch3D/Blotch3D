@@ -6,27 +6,32 @@ Quick start for Windows
 
 On your development machine ...
 
-1.  Get the installer for the latest release of the MonoGame SDK for
+1.  Get the installer for "Visual C++ Redistributable for Visual Studio
+    2012" for your platform from
+    <https://www.microsoft.com/en-us/download/details.aspx?id=30679> and
+    run it with the default settings.
+
+2.  Get the installer for the latest release of the MonoGame SDK for
     Visual Studio from <http://www.monogame.net/downloads/> and run it
     with the default settings. (Do NOT get the current development
     version nor a NuGet package.)
 
-2.  Download the Blotch3D repository, or clone it.
+3.  Download the Blotch3D repository, or clone it.
 
-3.  Open the Visual Studio solution file (Blotch3D.sln) and build and
+4.  Open the Visual Studio solution file (Blotch3D.sln) and build and
     run the example projects.
 
-4.  Use IntelliSense and see "Blotch3DManual.pdf" for the reference
+5.  Use IntelliSense and see "Blotch3DManual.pdf" for the reference
     documentation.
 
-5.  See [Creating a new project](#creating-a-new-project) for details on
+6.  See [Creating a new project](#creating-a-new-project) for details on
     creating projects, adding Blotch3D to an existing project, or
     building for another platform.
 
-6.  To deliver an app, just deliver the contents of your project's
+7.  To deliver an app, just deliver the contents of your project's
     output folder.
 
-7.  Also see the [Deficiencies and
+8.  Also see the [Deficiencies and
     Alternatives](#deficiencies-and-alternatives) section.
 
 Features

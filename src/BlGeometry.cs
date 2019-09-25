@@ -493,7 +493,7 @@ namespace Blotch
 		/// If it's an array of triangles, you will probably want to call #CullEmptyTriangles if the transform might
 		/// cause some triangles to have zero area, and maybe #CalcSmoothNormals (for regular grids) or #CalcFacetNormals
 		/// (for triangles) afterward if the transform might cause normals to be invalid or point the wrong
-		/// way, causing the surface to be black or the wrong brightness (typically when a dimenson is scaled to zero
+		/// way, causing the surface to be black or the wrong brightness (typically when a dimension is scaled to zero
 		/// or inverted).
 		/// </summary>
 		/// <param name="vertices">Input array (this is altered by the method)</param>
