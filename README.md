@@ -235,6 +235,11 @@ To develop with Blotch3D, you must first install the MonoGame SDK as
 described in the [Quick start for Windows](#quick-start-for-windows)
 section.
 
+To distribute a program for Microsoft Windows, deliver everything in
+your project's output folder. The MonoGame SDK does not need to be
+installed on the target system. Projects for other platforms may require
+different delivery methods.
+
 The easiest way to create a new project for Windows is to copy an
 existing example project (like the basic example) and then rename it
 using Visual Studio.
@@ -243,6 +248,18 @@ To add MonoGame + Blotch3D to an existing Windows project, add a
 reference to the appropriate MonoGame binary (typically in "\\Program
 Files (x86)\\MSBuild\\MonoGame\\v3.0\\\..."). Also add a reference to,
 or the source of, Blotch3D.
+
+In Visual Studio, when one assembly references another lower-level
+assembly, by default Visual Studio only copies the DLLs of the
+lower-level project to the output folder of the higher-level project.
+When a lower-level library has other files, like content files, then not
+only will you want to set each file's 'Copy always' or 'Copy if newer'
+flag so it gets copied to that assembly's output folder, you will also
+need to make sure all higher-level libraries or at least the highest
+level app project references that low-level assembly (even if it doesn't
+directly use it), and each reference's 'Copy local' flag is set to
+'true' or 'yes'. This makes sure those extra files in the lower-level
+project are included in the output folder of that highest-level project.
 
 To create a project for another platform besides Microsoft Windows:
 First you will need to install any Visual Studio add-ons, etc. for the
@@ -256,10 +273,6 @@ the same wizard to create a project for that same platform that will be
 your app and add to it a reference to that Blotch3D project you created
 first. For some platforms you may need to do some online research to
 properly create projects.
-
-To distribute a program for Microsoft Windows, deliver everything in
-your project's output folder. Other platforms may require different
-delivery methods.
 
 Development overview
 ====================
@@ -285,12 +298,12 @@ do, like creation and use of all Blotch3D and MonoGame objects.
 You can put all your 3D code in the one overridden method called
 "FrameDraw", if you like, but there are a couple of other overridable
 methods provided for your convenience. There is a Setup method that is
-called once at the beginning and a FrameProc method that is called every
-frame. The FrameDraw method is also called each frame, but only when
-there is enough CPU available. You are welcome to put whatever you like
-in any of those three methods, except that actual drawing code (code
-that causes things to appear in the window) must be in the FrameDraw
-method.
+called once when the 3D window is first opened and a FrameProc method
+that is called every frame. The FrameDraw method is also called each
+frame, but only when there is enough CPU available. You are welcome to
+put whatever you like in any of those three methods, except that actual
+drawing code (code that causes things to appear in the window) must be
+in the FrameDraw method.
 
 For apps that may suffer from severe CPU exhaustion (at least for the 3D
 thread), it might be best to put all your periodic 3D code in FrameDraw
@@ -311,7 +324,7 @@ need to create, change, or destroy 3D hardware resources or otherwise do
 something in a thread-safe way with the 3D thread, they can pass a
 delegate to the 3D thread with BlWindow3D.EnqueueCommand or
 BlWindow3D.EnqueueCommandBlocking, which will be executed within one
-frame time.
+frame time by the 3D thread.
 
 You can use a variety of methods to draw things in FrameDraw. Sprites
 are drawn with the BlSprite.Draw method. When you draw a sprite, all its
@@ -339,8 +352,8 @@ and the View, Eye, and LookAt fields.
 BlWindow3D derives from MonoGame's "Game" class, so you can also
 override other Game class overridable methods. Just be sure to call the
 base method from within a Game class overridden method. On Microsoft
-Windows, you can also better control the window and add window event
-handlers with the associated Windows 'Forms' object,
+Windows, you can also control certain window features and add window
+event handlers with the associated Windows 'Forms' object,
 BlWindow3D.WindowForm.
 
 Because multiple windows are not conducive to some of the supported
@@ -390,7 +403,7 @@ Blotch3D. For examples:
 Most Blotch3D and MonoGame objects must be Disposed when you are done
 with them and you are not otherwise terminating the program. And they
 must be disposed by the same thread that created them. You'll get an
-informative exception if this isn't done.
+informative exception by the finalizer if this isn't done.
 
 See the examples, reference documentation (doc/Blotch3DManual.pdf), and
 IntelliSense for more information.
@@ -402,11 +415,14 @@ You can use the BlGeometry class to make a variety of objects
 programmatically. See the geometry examples and that class for more
 information. A few primitive models are also included with Blotch3D.
 They can be used as is done in the examples that use them if the
-Blotch3D project is included in your solution.
+Blotch3D project is included in your solution and the reference's 'Copy
+local' flag is set.
 
 You can also convert standard 3D model files, fonts, etc. to "XNB" files
 for use by your MonoGame project. The MonoGame "pipeline manager" is
-used to make this conversion.
+used to make this conversion. This is the reason the Monogame SDK must
+be installed rather than the NuGet package, which does not include the
+pipeline manager.
 
 The Blotch3D project is already set up with the pipeline manager to
 convert the several primitive models to XNB files when Blotch3D is
@@ -444,8 +460,8 @@ Particles
 Particle systems in Blotch3D are implemented by specifying
 BlSprite.FrameProc delegates. So, particles systems are completely
 configurable. For example, you can implement nonlinear or abrupt changes
-in the particle's life or make particle tree structures. See the
-Particle example.
+in the particle's life or make particle trees (particles with
+particles). See the Particle example.
 
 Custom effects
 ==============
