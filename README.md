@@ -1,47 +1,13 @@
 Blotch3D
 ========
 
-Quick start for Windows
-=======================
-
-On your development machine ...
-
-1.  Get the installer for "Visual C++ Redistributable for Visual Studio
-    2012" for your platform from
-    <https://www.microsoft.com/en-us/download/details.aspx?id=30679> and
-    run it with the default settings.
-
-2.  Get the installer for the latest release of the MonoGame SDK for
-    Visual Studio from <http://www.monogame.net/downloads/> and run it
-    with the default settings. (Do NOT get the current development
-    version nor a NuGet package.)
-
-3.  Download the Blotch3D repository, or clone it.
-
-4.  Open the Visual Studio solution file (Blotch3D.sln) and build and
-    run the example projects.
-
-5.  Use IntelliSense and see "Blotch3DManual.pdf" for the reference
-    documentation.
-
-6.  See [Creating a new project](#creating-a-new-project) for details on
-    creating projects, adding Blotch3D to an existing project, or
-    building for another platform.
-
-7.  To deliver an app, just deliver the contents of your project's
-    output folder.
-
-8.  Also see the [Deficiencies and
-    Alternatives](#deficiencies-and-alternatives) section.
-
 Features
 ========
 
-Blotch3D is a C\# library that vastly simplifies many of the tasks in
-developing real-time 3D applications and games.
+Blotch3D is a high-level C\# library that vastly simplifies many of the
+tasks in developing real-time 3D applications and games.
 
-Bare-bones examples are provided that show how with just a few lines of
-code you can...
+You can\...
 
 -   Load standard 3D model file types as "sprites" and display and move
     thousands of them in 3D at high frame rates.
@@ -160,19 +126,51 @@ below for details and work-arounds.
 The provided Visual Studio solution file contains both the Blotch3D
 library project with source, and the example projects.
 
-"BlotchExample01\_Basic" is a bare-bones Blotch3D application, where
-Example.cs contains the example code. Other example projects also
-contain an Example.cs, which is similar to the one from the basic
-example but with a few additions to it to demonstrate a certain feature.
-In fact, you can do a diff between the basic Example.cs files and
-another example's source file to see what extra code must be added to
-implement the features it demonstrates.
+Several bare-bones examples demonstrate some of the more common tasks
+with just a few lines of code. The source file name for each example
+project is Example.cs. You can do a diff between the basic example's
+Example.cs another example's Example.cs to see what extra code must be
+added to implement the features it demonstrates.
+
+Quick start for Windows
+=======================
+
+To deliver a Blotch3D app for Windows, just deliver the contents of your
+project's output folder. No other software need be installed on the
+target system.
+
+To develop with Blotch3D...
+
+1.  Get the installer for "Visual C++ Redistributable for Visual Studio
+    2012" for your platform from
+    <https://www.microsoft.com/en-us/download/details.aspx?id=30679> and
+    run it with the default settings.
+
+2.  Get the installer for the latest release of the MonoGame SDK for
+    Visual Studio from <http://www.monogame.net/downloads/> and run it
+    with the default settings. (Do NOT get the current development
+    version nor a NuGet package.)
+
+3.  Download the Blotch3D repository, or clone it.
+
+4.  Open the Visual Studio solution file (Blotch3D.sln) and build and
+    run the example projects.
+
+5.  Use IntelliSense and see "Blotch3DManual.pdf" for the reference
+    documentation.
+
+6.  See [Creating a new project](#creating-a-new-project) for details on
+    creating projects, adding Blotch3D to an existing project, or
+    building for another platform.
+
+7.  Also see the [Deficiencies and
+    Alternatives](#quick-start-for-windows) section.
 
 Deficiencies and Alternatives
 =============================
 
 Although any feature can certainly be implemented by the app developer,
-Blotch3D does not directly provide...
+notable features directly lacking in Blotch3D are...
 
 -   Shadows (although they might be added in the future)
 
@@ -186,11 +184,8 @@ Blotch3D does not directly provide...
 
 -   A NuGet package
 
-Also check out UrhoSharp before getting too heavily into developing with
-Blotch3D. I haven't looked at it in detail, but below are listed some
-differences between Blotch3D and UrhoSharp.
-
-UrhoSharp advantages over Blotch3D that I've noticed:
+One alternative is UrhoSharp. I haven't looked at it in detail, but
+below are listed some of its advantages.
 
 -   UrhoSharp has a NuGet package
 
@@ -204,7 +199,7 @@ UrhoSharp advantages over Blotch3D that I've noticed:
     just haven't tried it)
 
 A few UrhoSharp disadvantages (compared to Blotch3D) I happened to
-notice:
+notice are:
 
 -   UrhoSharp bare bones code is a bit more complicated than Blotch3D's
 
@@ -231,14 +226,8 @@ for Visual Studio-based development of three.js.
 Creating a new project
 ======================
 
-To develop with Blotch3D, you must first install the MonoGame SDK as
-described in the [Quick start for Windows](#quick-start-for-windows)
-section.
-
-To distribute a program for Microsoft Windows, deliver everything in
-your project's output folder. The MonoGame SDK does not need to be
-installed on the target system. Projects for other platforms may require
-different delivery methods.
+(See the [Quick start for Windows](#features) section to set everything
+up for development)
 
 The easiest way to create a new project for Windows is to copy an
 existing example project (like the basic example) and then rename it
@@ -249,17 +238,18 @@ reference to the appropriate MonoGame binary (typically in "\\Program
 Files (x86)\\MSBuild\\MonoGame\\v3.0\\\..."). Also add a reference to,
 or the source of, Blotch3D.
 
-In Visual Studio, when one assembly references another lower-level
+NOTE: In Visual Studio, when one assembly references another lower-level
 assembly, by default Visual Studio only copies the DLLs of the
 lower-level project to the output folder of the higher-level project.
 When a lower-level library has other files, like content files, then not
-only will you want to set each file's 'Copy always' or 'Copy if newer'
+only will you need to set each file's 'Copy always' or 'Copy if newer'
 flag so it gets copied to that assembly's output folder, you will also
 need to make sure all higher-level libraries or at least the highest
 level app project references that low-level assembly (even if it doesn't
-directly use it), and each reference's 'Copy local' flag is set to
-'true' or 'yes'. This makes sure those extra files in the lower-level
-project are included in the output folder of that highest-level project.
+directly use it), and set the 'Copy local' flag of the reference to
+'true' or 'yes'. This makes sure any extra file (besides the DLLs) in
+the lower-level project are included in the output folder of that
+highest-level project.
 
 To create a project for another platform besides Microsoft Windows:
 First you will need to install any Visual Studio add-ons, etc. for the
