@@ -129,8 +129,8 @@ library project with source, and the example projects.
 Several bare-bones examples demonstrate some of the more common tasks
 with just a few lines of code. The source file name for each example
 project is Example.cs. You can do a diff between the basic example's
-Example.cs another example's Example.cs to see what extra code must be
-added to implement the features it demonstrates.
+Example.cs and another example's Example.cs to see what extra code must
+be added to implement the features it demonstrates.
 
 Quick start for Windows
 =======================
@@ -195,9 +195,6 @@ below are listed some of its advantages.
 
 -   UrhoSharp supports shadows
 
--   UrhoSharp supports Xamarin Forms (maybe Blotch3D does, also? ---I
-    just haven't tried it)
-
 A few UrhoSharp disadvantages (compared to Blotch3D) I happened to
 notice are:
 
@@ -238,18 +235,17 @@ reference to the appropriate MonoGame binary (typically in "\\Program
 Files (x86)\\MSBuild\\MonoGame\\v3.0\\\..."). Also add a reference to,
 or the source of, Blotch3D.
 
-NOTE: In Visual Studio, when one assembly references another lower-level
-assembly, by default Visual Studio only copies the DLLs of the
-lower-level project to the output folder of the higher-level project.
-When a lower-level library has other files, like content files, then not
-only will you need to set each file's 'Copy always' or 'Copy if newer'
-flag so it gets copied to that assembly's output folder, you will also
-need to make sure all higher-level libraries or at least the highest
-level app project references that low-level assembly (even if it doesn't
-directly use it), and set the 'Copy local' flag of the reference to
-'true' or 'yes'. This makes sure any extra file (besides the DLLs) in
-the lower-level project are included in the output folder of that
-highest-level project.
+NOTE: In Visual Studio, when one assembly references another assembly,
+by default Visual Studio only copies the DLLs of the referenced project
+to the output folder of the referring project. When a referenced library
+has other files, like content files, then not only will you need to set
+each file's 'Copy always' or 'Copy if newer' flag so it gets copied to
+that assembly's output folder, you will also need to make sure all
+referring libraries or at least the highest level app project still
+references it even if it doesn't directly use it, and set the 'Copy
+local' flag of the reference to 'true' or 'yes'. This makes sure any
+extra file (besides the DLLs) in the referenced project are included in
+the output folder of that referring project.
 
 To create a project for another platform besides Microsoft Windows:
 First you will need to install any Visual Studio add-ons, etc. for the
@@ -308,13 +304,20 @@ sprite-specific code.
 
 A single-threaded application would have all its code in the overridden
 methods or delegates. If you are developing a multithreaded program,
-then you would probably want to reserve the 3D thread (the overrides)
-only for tasks that access 3D hardware resources. When other threads do
-need to create, change, or destroy 3D hardware resources or otherwise do
-something in a thread-safe way with the 3D thread, they can pass a
-delegate to the 3D thread with BlWindow3D.EnqueueCommand or
-BlWindow3D.EnqueueCommandBlocking, which will be executed within one
-frame time by the 3D thread.
+then you would probably want to reserve the 3D thread (the call to the
+BlWindow3D's 'Run' method and its overrides) only for tasks that access
+3D hardware resources. When other threads do need to create, change, or
+destroy 3D hardware resources or otherwise do something in a thread-safe
+way with the 3D thread, they can pass a delegate to the 3D thread with
+BlWindow3D.EnqueueCommand or BlWindow3D.EnqueueCommandBlocking, which
+will be executed within one frame time by the 3D thread.
+
+Models or VertexBuffers must be added to the BlSprite.LODs container for
+them to appear when you draw that sprite. Otherwise nothing is drawn.
+See how the examples create a model or vertex buffer and add it to that
+collection. When a sprite is disposed, it does not dispose the models in
+its LODs container. This is so you can add the same model to multiple
+sprites.
 
 You can use a variety of methods to draw things in FrameDraw. Sprites
 are drawn with the BlSprite.Draw method. When you draw a sprite, all its
@@ -327,11 +330,6 @@ can also draw things using the lower-level MonoGame methods. For
 example, it is faster to draw multiple 2D textures and text using
 MonoGame's SpriteBatch class.
 
-3D models must be added to the BlSprite.LODs container for them to
-appear when you draw that sprite. When a sprite is disposed, it does not
-dispose the models in its LODs container. This is so you can add the
-same model to multiple sprites.
-
 The easiest way to set the camera position and orientation is to
 periodically call Graphics.DoDefaultGui(). Typically, this is done in
 the FrameProc method, but could be done in the FrameDraw method as well.
@@ -341,10 +339,7 @@ and the View, Eye, and LookAt fields.
 
 BlWindow3D derives from MonoGame's "Game" class, so you can also
 override other Game class overridable methods. Just be sure to call the
-base method from within a Game class overridden method. On Microsoft
-Windows, you can also control certain window features and add window
-event handlers with the associated Windows 'Forms' object,
-BlWindow3D.WindowForm.
+base method from within a Game class overridden method.
 
 Because multiple windows are not conducive to some of the supported
 platforms, MonoGame, and thus Blotch3D, do not support more than one 3D
@@ -354,6 +349,10 @@ in the same process, but MonoGame does not handle them correctly (input
 sometimes goes to the wrong window and in certain situations will
 crash). You can, of course, create any number of non-3D windows you like
 in the same process.
+
+On Microsoft Windows, you can also control certain window features and
+add window event handlers with the associated Windows 'Forms' object,
+BlWindow3D.WindowForm.
 
 Officially, Blotch3D+MonoGame must create the system window used for the
 3D window and does not allow you to specify an existing window to use as
@@ -388,7 +387,8 @@ Blotch3D. For examples:
 -   You are welcome to draw MonoGame objects along with Blotch3D
     objects.
 
--   All other MonoGame features are available, like audio, etc.
+-   All other MonoGame features are available, like audio, joysticks,
+    etc.
 
 Most Blotch3D and MonoGame objects must be Disposed when you are done
 with them and you are not otherwise terminating the program. And they
@@ -401,7 +401,7 @@ IntelliSense for more information.
 Making and using 3D models
 ==========================
 
-You can use the BlGeometry class to make a variety of objects
+You can use the BlGeometry static class to make a variety of objects
 programmatically. See the geometry examples and that class for more
 information. A few primitive models are also included with Blotch3D.
 They can be used as is done in the examples that use them if the
@@ -417,9 +417,9 @@ pipeline manager.
 The Blotch3D project is already set up with the pipeline manager to
 convert the several primitive models to XNB files when Blotch3D is
 built. You can double-click "Content.mgcb" in the Blotch3D project to
-add more standard files and resources and to convert to XNB outside of
-the build process. You can also copy an XNB file to a project's output
-folder, where the program can load it.
+run the pipeline manager and add more standard files and resources and
+to convert to XNB outside of the build process. You can also copy an XNB
+file to a project's output folder, where the program can load it.
 
 When you create a new MonoGame project with the wizard, it sets up a
 "Content.mgcb" file in the new project that manages your content and
