@@ -20,7 +20,7 @@ namespace Blotch
 	/// array. You can set texture (UV) coordinates. You can convert a regular grid to a triangle array.
 	/// Finally, you can convert a triangle array to a VertexBuffer suitable for adding to a BlSprite.LODs field.
 	/// </summary>
-	public class BlGeometry
+	public static class BlGeometry
 	{
 		// used to generate noise
 		static Random Rand = new Random();
