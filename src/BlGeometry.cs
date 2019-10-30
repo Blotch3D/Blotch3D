@@ -72,13 +72,30 @@ namespace Blotch
 			);
 		}
 
-		/// <summary>
-		/// The delegate passed to certain geometry methods. Given an X and Y value, return a Z value.
-		/// </summary>
-		/// <param name="x">The x of the surface position</param>
-		/// <param name="y">The y of the surface position</param>
-		/// <returns>The height or diameter multiplier of the surface at the corresponding XY position</returns>
-		public delegate double XYToZDelegate(int x, int y);
+        /// <summary>
+        /// If the ray intersects the plane, return the intersection point. Otherwise return null.
+        /// </summary>
+        /// <param name="ray">The ray that might intersect the plane</param>
+        /// <param name="plane">The plane that might be intersected by the ray</param>
+        /// <returns></returns>
+        static public Vector3? GetRayPlaneIntersectionPoint(Ray ray, Plane plane)
+        {
+            float? distance = ray.Intersects(plane);
+            Vector3? ret = null;
+            if (distance.HasValue)
+            {
+                ret = ray.Position + ray.Direction * distance.Value;
+            }
+            return ret;
+        }
+
+        /// <summary>
+        /// The delegate passed to certain geometry methods. Given an X and Y value, return a Z value.
+        /// </summary>
+        /// <param name="x">The x of the surface position</param>
+        /// <param name="y">The y of the surface position</param>
+        /// <returns>The height or diameter multiplier of the surface at the corresponding XY position</returns>
+        public delegate double XYToZDelegate(int x, int y);
 
 		/// <summary>
 		/// The delegate passed to certain geometry methods. Given an X and Y value, return a Vector3.

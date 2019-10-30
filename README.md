@@ -68,11 +68,8 @@ You can\...
 
 -   Dynamically transform a texture on a surface.
 
--   Use with WPF and WinForms on Microsoft Windows.
-
--   Access and override many window features and functions using the
-    provided WinForms Form object of the window (Microsoft Windows only,
-    and see the description before using).
+-   Use with WPF and WinForms on Microsoft Windows. (Also see
+    <https://github.com/sqrMin1/MonoGame.Forms>)
 
 -   Detect sprite radius collisions.
 
@@ -118,10 +115,10 @@ XNA (versions 2 and 3) will often not be correct. For conversion of XNA
 
 Note that to support all the platforms there are certain limitations in
 MonoGame. Currently you can only have one 3D window per process.
-(Creating multiple 3D windows is buggy---unless you do it from separate
-processes.) Also, there is no official cross-platform way to specify an
-existing window to use as the 3D window---MonoGame must create it. See
-below for details and work-arounds.
+(Creating multiple 3D windows can be buggy---unless you do it from
+separate processes.) Also, there is no official cross-platform way to
+specify an existing window to use as the 3D window---MonoGame must
+create it. See below for details and work-arounds.
 
 The provided Visual Studio solution file contains both the Blotch3D
 library project with source, and the example projects.
@@ -144,12 +141,14 @@ To develop with Blotch3D...
 1.  Get the installer for "Visual C++ Redistributable for Visual Studio
     2012" for your platform from
     <https://www.microsoft.com/en-us/download/details.aspx?id=30679> and
-    run it with the default settings.
+    run it with the default settings. (The Monogame content manager
+    needs this).
 
 2.  Get the installer for the latest release of the MonoGame SDK for
     Visual Studio from <http://www.monogame.net/downloads/> and run it
     with the default settings. (Do NOT get the current development
-    version nor a NuGet package.)
+    version nor a NuGet package. This is so you have a copy of the
+    MonoGame content manager.)
 
 3.  Download the Blotch3D repository, or clone it.
 
@@ -345,14 +344,11 @@ Because multiple windows are not conducive to some of the supported
 platforms, MonoGame, and thus Blotch3D, do not support more than one 3D
 window in the same process. If you need multiple 3D windows, you'll have
 to do it from multiple processes. You can *create* multiple 3D windows
-in the same process, but MonoGame does not handle them correctly (input
-sometimes goes to the wrong window and in certain situations will
-crash). You can, of course, create any number of non-3D windows you like
-in the same process.
-
-On Microsoft Windows, you can also control certain window features and
-add window event handlers with the associated Windows 'Forms' object,
-BlWindow3D.WindowForm.
+in the same process, but MonoGame does not handle them correctly
+(certain window input is sometimes ignored or goes to the wrong window,
+and in certain situations will cause an exception). This can be tested
+with the WPF example. You can, of course, create any number of non-3D
+windows you like in the same process.
 
 Officially, Blotch3D+MonoGame must create the system window used for the
 3D window and does not allow you to specify an existing window to use as
@@ -360,9 +356,10 @@ the 3D window. There are some platform-specific ways to do it described
 online but note that they may not work in later MonoGame releases.
 
 To properly make the BlWindow3D window be a child window of an existing
-GUI, you need to explicitly size, position, and convey Z order to that
-3D window so that it is overlaid over the child window. The
-BlWindow3D.WindowForm field will be useful for this (Microsoft Windows
+GUI, you need to either explicitly size, position, and convey Z order to
+that 3D window so that it is overlaid over the child window, or use
+<https://github.com/sqrMin1/MonoGame.Forms>. The BlWindow3D.WindowForm
+field can also provide some WinForms functionality (Microsoft Windows
 only).
 
 By default, lighting, background color, and sprite coloring are set so
@@ -655,11 +652,14 @@ of bump mapping\] has been removed from this shader.)
 Setting and dynamically changing a sprite's scale, orientation, and position
 ============================================================================
 
-Each sprite has a "Matrix" member that defines its orientation, scale,
-position, etc. relative to its parent sprite, or to an unmodified
-coordinate system if there is no parent. There are many static and
-instance methods of the Matrix class that let you easily set and change
-the scaling, position, rotation, etc. of a matrix.
+Each sprite has a "Matrix" member. The Matrix member defines the
+sprite's orientation, scale, position, etc. relative to its parent
+sprite, or to an unmodified coordinate system if there is no parent.
+There are many static and instance methods of the Matrix class that let
+you easily set and change the scaling, position, rotation, etc. of a
+matrix. For example, to set the scale, assign the sprite's Matrix to
+Matrix.CreateScale(). You can also create matrices by multiplying
+existing matrices or create them piecemeal.
 
 When you change anything about a sprite's matrix, you also change it for
 its child sprites, if any. That is, subsprites reside in the parent
@@ -705,7 +705,7 @@ because that's what gives matrices the power to also shear, rotate, and
 scale a model about the origin. This is because those operations affect
 each vertex differently depending on its relationship to the origin.
 (And since matrixes can be combined by multiplying them, we can, for
-example, rotate a matrix in the model coordinate system, and then
+example, rotate a model in the model coordinate system, and then
 translate it to a world coordinate system so that it rotates around its
 own model origin.)
 

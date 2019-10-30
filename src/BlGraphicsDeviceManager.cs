@@ -591,21 +591,74 @@ namespace Blotch
 
 		}
 
-		/// <summary>
-		/// Updates #Eye, #LookAt, etc. according to mouse and certain key input. Specifically:
-		/// Wheel=Dolly, CTRL-wheel=Zoom, Left-drag=Truck, Right-drag=Rotate, CTRL-left-drag=Pan, Esc=Reset.
-		/// Also, SHIFT causes all the previous controls to be fine rather than coarse. If CTRL is pressed
-		/// and mouse left or right button is clicked, then returns a ray into window
-		/// at mouse position. To control each camera attribute individually and programatically or override the
-		/// GUI controls, use AdjustCameraZoom, AdjustCameraDolly, AdjustCameraRotation, AdjustCameraPan,
+        /// <summary>
+		/// Updates the camera according to mouse and certain keyboard states. If no parameters are passed, then
+        /// this uses the current keyboard and mouse states as follows: Wheel=Dolly, CTRL-wheel=Zoom, Left-drag=Truck,
+        /// Right-drag=Rotate, CTRL-left-drag=Pan, Esc=Reset, If CTRL is pressed and mouse left or right button is
+        /// clicked then do a 'pick' (returns a ray into window at mouse position); finally, SHIFT causes all the previous controls to be fine
+        /// rather than coarse. To override this default behavior, specify arguments. You can specify a keyboard state and a
+        /// mouse state to use. You can also specify up to two keys to control each operation. To disable a key, specify that
+        /// argument as 'Key.None'. For example, to specify that only the left CTRL controls zoom, then zoom1=Key.LeftControl and zoom2=Key.None.
+        /// To disable zoom, both zoom1 and zoom2 would be Key.None. To indicate a given operation works when NO key is pressed, specify Key.F23.
+        /// You can also control each camera attribute individually and programatically by using AdjustCameraZoom, AdjustCameraDolly, AdjustCameraRotation, AdjustCameraPan,
 		/// AdjustCameraTruck, ResetCamera, and/or SetCameraToSprite. Or see the more basic fields of Zoom, Aspect,
 		/// TargetEye, and TargetLookAt.
-		/// </summary>
+        /// </summary>
+        /// <param name="keyState">The KeyboardState to use, or if null then the current keyboard state.</param>
+        /// <param name="mouseState">The mouse state to use, or if null then the current mouse state</param>
+        /// <param name="fine1">Key to indicate fine movement</param>
+        /// <param name="fine2">Key to indicate fine movement</param>
+        /// <param name="zoom1">Key to indicate zoom mode</param>
+        /// <param name="zoom2">Key to indicate zoom mode</param>
+        /// <param name="dolly1">Key to indicate dolly mode</param>
+        /// <param name="dolly2">Key to indicate dolly mode</param>
+        /// <param name="truck1">Key to indicate truck mode</param>
+        /// <param name="truck2">Key to indicate truck mode</param>
+        /// <param name="pan1">Key to indicate pan mode</param>
+        /// <param name="pan2">Key to indicate pan mode</param>
+        /// <param name="pick1">Key to indicate pick mode</param>
+        /// <param name="pick2">Key to indicate pick mode</param>
 		/// <returns>If a mouse left or right click occurred, returns the Ray into the screen at that position. Otherwise
 		/// returns null</returns>
-		public Ray? DoDefaultGui()
+		public Ray? DoDefaultGui(
+            KeyboardState? keyState = null,
+            MouseState? mouseState = null,
+            Keys fine1 = Keys.LeftShift,
+            Keys fine2 = Keys.RightShift,
+            Keys zoom1 = Keys.LeftControl,
+            Keys zoom2 = Keys.RightControl,
+            Keys dolly1 = Keys.F23,
+            Keys dolly2 = Keys.F23,
+            Keys truck1 = Keys.F23,
+            Keys truck2 = Keys.F23,
+            Keys pan1 = Keys.LeftControl,
+            Keys pan2 = Keys.RightControl,
+            Keys pick1 = Keys.LeftControl,
+            Keys pick2 = Keys.RightControl,
+            Keys reset = Keys.Escape
+        )
 		{
-			if (BlDebug.ShowThreadWarnings && CreationThread != Thread.CurrentThread.ManagedThreadId)
+            KeyboardState myKeyState;
+            if (keyState == null)
+            {
+                myKeyState = Keyboard.GetState();
+            }
+            else
+            {
+                myKeyState = (KeyboardState)keyState;
+            }
+
+            MouseState myMouseState;
+            if (mouseState == null)
+            {
+                myMouseState = Mouse.GetState();
+            }
+            else
+            {
+                myMouseState = (MouseState)mouseState;
+            }
+
+            if (BlDebug.ShowThreadWarnings && CreationThread != Thread.CurrentThread.ManagedThreadId)
 				throw new Exception(String.Format("BlGraphicsDeviceManager.DoDefaultGui() was called by thread {0} instead of thread {1}", Thread.CurrentThread.ManagedThreadId, CreationThread));
 
 			Ray? ray = null;
@@ -627,67 +680,68 @@ namespace Blotch
 
 				if (Window.IsActive)
 				{
-					var keyState = Keyboard.GetState();
-					var mouseState = Mouse.GetState();
-					var mousePos = new Vector2(mouseState.X, mouseState.Y);
+					var mousePos = new Vector2(myMouseState.X, myMouseState.Y);
 					var mousePosDif = mousePos - PrevMousePos;
-					var scrollDif = (PrevMouseState.ScrollWheelValue - mouseState.ScrollWheelValue);
-					var mouseDifY = (mouseState.Y - PrevMouseState.Y);
-					var mouseDifX = (mouseState.X - PrevMouseState.X);
+					var scrollDif = (PrevMouseState.ScrollWheelValue - myMouseState.ScrollWheelValue);
+					var mouseDifY = (myMouseState.Y - PrevMouseState.Y);
+					var mouseDifX = (myMouseState.X - PrevMouseState.X);
 
 					if(!LastActive && Window.IsActive)
 					{
 						scrollDif = 0;
 					}
 
+                    // Fine
 					float rate = 1;
-					if (keyState.IsKeyDown(Keys.LeftShift) || keyState.IsKeyDown(Keys.RightShift))
+					if (fine1==Keys.F23 || fine2==Keys.F23 || myKeyState.IsKeyDown(fine1) || myKeyState.IsKeyDown(fine2))
 						rate = .01f;
 
 					if (scrollDif != 0)
 					{
 						// Zoom
-						if (keyState.IsKeyDown(Keys.LeftControl) || keyState.IsKeyDown(Keys.RightControl))
+						if (zoom1 == Keys.F23 || zoom2 == Keys.F23 || myKeyState.IsKeyDown(zoom1) || myKeyState.IsKeyDown(zoom2))
 							AdjustCameraZoom(scrollDif * rate);
 						else
-							// Dolly
-							AdjustCameraDolly(scrollDif * rate);
+                        // Dolly
+                        if (dolly1 == Keys.F23 || dolly2 == Keys.F23 || myKeyState.IsKeyDown(dolly1) || myKeyState.IsKeyDown(dolly2))
+                            AdjustCameraDolly(scrollDif * rate);
 					}
 
 
 					// Rotate
-					if (mouseState.RightButton == ButtonState.Pressed && PrevMouseState.RightButton == ButtonState.Pressed)
+					if (myMouseState.RightButton == ButtonState.Pressed && PrevMouseState.RightButton == ButtonState.Pressed)
 						AdjustCameraRotation(mouseDifX * rate, mouseDifY * rate);
 
 					// Pan
-					if (mouseState.LeftButton == ButtonState.Pressed && PrevMouseState.LeftButton == ButtonState.Pressed)
-						if (keyState.IsKeyDown(Keys.LeftControl) || keyState.IsKeyDown(Keys.RightControl))
+					if (myMouseState.LeftButton == ButtonState.Pressed && PrevMouseState.LeftButton == ButtonState.Pressed)
+						if (pan1 == Keys.F23 || pan2 == Keys.F23 || myKeyState.IsKeyDown(pan1) || myKeyState.IsKeyDown(pan2))
 							AdjustCameraPan(mouseDifX * rate, mouseDifY * rate);
 						else
-							// Truck
-							AdjustCameraTruck(mouseDifX * rate, mouseDifY * rate);
+                        if (truck1 == Keys.F23 || truck2 == Keys.F23 || myKeyState.IsKeyDown(truck1) || myKeyState.IsKeyDown(truck2))
+                            // Truck
+                            AdjustCameraTruck(mouseDifX * rate, mouseDifY * rate);
 
 
 					// Reset
-					if (keyState.IsKeyDown(Keys.Escape))
+					if (myKeyState.IsKeyDown(reset))
 					{
 						ResetCamera();
 					}
 
 					// Pick
-					if (keyState.IsKeyDown(Keys.LeftControl) || keyState.IsKeyDown(Keys.RightControl))
+					if (pick1 == Keys.F23 || pick2 == Keys.F23 || myKeyState.IsKeyDown(pick1) || myKeyState.IsKeyDown(pick2))
 					{
 						if (
-							(mouseState.LeftButton == ButtonState.Pressed && PrevMouseState.LeftButton != ButtonState.Pressed)
+							(myMouseState.LeftButton == ButtonState.Pressed && PrevMouseState.LeftButton != ButtonState.Pressed)
 							||
-							(mouseState.RightButton == ButtonState.Pressed && PrevMouseState.RightButton != ButtonState.Pressed)
+							(myMouseState.RightButton == ButtonState.Pressed && PrevMouseState.RightButton != ButtonState.Pressed)
 						)
 						{
 							ray = CalculateRay(mousePos);
 						}
 					}
 
-					PrevMouseState = mouseState;
+					PrevMouseState = myMouseState;
 					PrevMousePos = mousePos;
 				}
 			}
@@ -772,13 +826,13 @@ namespace Blotch
 			public Vector3 LightSpecularColor = new Vector3(0, 1, 0);
 		}
 
-		/// <summary>
-		/// Returns a ray that that goes from the near clipping plane to the far clipping plane, at the specified
-		/// window position.
-		/// </summary>
-		/// <param name="windowPosition">The window's pixel coordinates</param>
-		/// <returns>The Ray into the window at the specified pixel coordinates</returns>
-		public Ray CalculateRay(Vector2 windowPosition)
+        /// <summary>
+        /// Returns a ray that that goes from the near clipping plane to the far clipping plane, at the specified
+        /// window position.
+        /// </summary>
+        /// <param name="windowPosition">The window's pixel coordinates</param>
+        /// <returns>The Ray into the window at the specified pixel coordinates</returns>
+        public Ray CalculateRay(Vector2 windowPosition)
 		{
 			Vector3 nearPoint = GraphicsDevice.Viewport.Unproject(new Vector3(windowPosition.X,windowPosition.Y, 0.0f),
 					Projection,

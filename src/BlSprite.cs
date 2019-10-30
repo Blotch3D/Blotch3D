@@ -435,20 +435,33 @@ namespace Blotch
 		/// method simply adds the sprite where the key is the sprite's #Name.)
 		/// </summary>
 		/// <param name="s"></param>
-		public void Add(BlSprite s)
+		public void Add(BlSprite s, bool reAdd = false)
 		{
             if (s.Name==null)
             {
                 throw new Exception($"BlSprite.Add: adding sprite '{s.Name}' requires it have a valid Name field");
             }
-            if (ContainsKey(s.Name))
+
+            if (reAdd)
             {
-                throw new Exception($"BlSprite.Add: sprite '{s.Name}' has alread been added");
+                s.Parent = this;
+                if (TryGetValue(s.Name, out _))
+                {
+                    Remove(s.Name);
+                }
+                this[s.Name] = s;
+            }
+            else
+            {
+                if (ContainsKey(s.Name))
+                {
+                    throw new Exception($"BlSprite.Add: sprite '{s.Name}' has alread been added");
+                }
+                s.Parent = this;
+                this[s.Name] = s;
             }
 
-            s.Parent = this;
-			this[s.Name] = s;
-		}
+        }
 		/// <summary>
 		/// Returns the current 2D view coordinates of the sprite (for passing to DrawText, for example),
 		/// or null if it's behind the camera.
@@ -505,7 +518,7 @@ namespace Blotch
 		/// (BoundSphere), or null if it doesn't enter the sphere.
 		/// </summary>
 		/// <param name="ray"></param>
-		/// <returns>How far along the ray till the first intersection, or null oif it didn't intersect</returns>
+		/// <returns>How far along the ray till the first intersection, or null if it didn't intersect</returns>
 		public double? DoesRayIntersect(Ray ray)
 		{
 			if (BoundSphere == null)
