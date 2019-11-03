@@ -26,13 +26,13 @@ namespace BlotchExample
 		/// </summary>
 		string Help = @"
 Camera controls:
-Wheel          - Dolly
-CTRL-wheel     - Zoom
-Left-drag      - Truck 
-Right-drag     - Rotate
-CTRL-left-drag - Pan
-Esc            - Reset
-Shift          - Fine control
+Dolly  -  Wheel
+Zoom   -  Left-CTRL-wheel
+Truck  -  Left-drag 
+Rotate -  Right-drag
+Pan    -  Left-CTRL-left-drag
+Reset  -  Esc
+Fine control  -  Left-Shift
 ";
 
 
@@ -141,7 +141,7 @@ Shift          - Fine control
 
 			GeoObj.Draw();
 
-			var MyMenuText = String.Format("{0}\nEye: {1}\nLookAt: {2}\nMaxDistance: {3}\nMinistance: {4}\nViewAngle: {5}\nModelLod: {6}\nModelApparentSize: {7}",
+			var MyMenuText = String.Format("{0}\nEye: {1}\nLookAt: {2}\nMaxDistance: {3}\nMinDistance: {4}\nViewAngle: {5}\nModelLod: {6}\nModelApparentSize: {7}",
 				Help,
 				Graphics.Eye,
 				Graphics.LookAt,

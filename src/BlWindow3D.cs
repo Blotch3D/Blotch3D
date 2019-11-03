@@ -30,9 +30,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading;
-#if WINDOWS
-using System.Windows.Forms;
-#endif
 
 namespace Blotch
 {
@@ -78,14 +75,6 @@ namespace Blotch
 		}
 		Mutex QueueMutex = new Mutex();
 		Queue<QueueCommand> Queue = new Queue<QueueCommand>();
-
-#if WINDOWS
-		/// <summary>
-		/// A WinForms wrapper to the window. (This is only present in Windows.)
-		/// This gives you much more control of the window. Use this only from the 3D thread!
-		/// </summary>
-		public Form WindowForm = null;
-#endif
 
 		/// <summary>
 		/// See BlWindow3D for details.
@@ -151,27 +140,7 @@ namespace Blotch
 			}
 			myEvent.WaitOne();
 		}
-#if WINDOWS
-		void OnClose(object sender, FormClosingEventArgs e)
-		{
-			e.Cancel = !OnClosing();
-		}
-		/// <summary>
-		/// This is only present in Windows. You can override this if you want to control what happens when an attempt is made to close the window.
-		/// Return true to close the window, false to leave the window open. For example, you could hide the window with
-		/// WindowForm.Hide(). 
-		/// By default, this prompts the user for
-		/// confirmation and if confirmed, kills the process.
-		/// </summary>
-		protected virtual bool OnClosing()
-		{
-			var result = MessageBox.Show("Really quit?", "", MessageBoxButtons.YesNo);
-			if (result == DialogResult.Yes)
-				Process.GetCurrentProcess().Kill();
 
-			return false;
-		}
-#endif
 		/// <summary>
 		/// Used internally, Do NOT override. Use Setup instead.
 		/// </summary>
@@ -179,14 +148,6 @@ namespace Blotch
 		{
 			Graphics.Initialize();
 			base.Initialize();
-
-#if WINDOWS
-			WindowForm = Form.FromHandle(Window.Handle) as Form;
-			if (WindowForm != null)
-			{
-				WindowForm.FormClosing += OnClose;
-			}
-#endif
 
 			Graphics.GraphicsDevice.DepthStencilState = Graphics.DepthStencilStateEnabled;
 		}
@@ -391,9 +352,6 @@ namespace Blotch
 
 			QueueMutex.Dispose();
 			Graphics.Dispose();
-#if WINDOWS
-			WindowForm.Dispose();
-#endif
 			IsDisposed = true;
 
 			if (BlDebug.ShowThreadInfo)

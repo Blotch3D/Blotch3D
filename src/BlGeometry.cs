@@ -20,7 +20,7 @@ namespace Blotch
 	/// array. You can set texture (UV) coordinates. You can convert a regular grid to a triangle array.
 	/// Finally, you can convert a triangle array to a VertexBuffer suitable for adding to a BlSprite.LODs field.
 	/// </summary>
-	public static class BlGeometry
+	public class BlGeometry
 	{
 		// used to generate noise
 		static Random Rand = new Random();
@@ -176,7 +176,7 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// Like the CreateCylindroidSurface overload that takes a heightMap (see that method for details),
+		/// Like the CreateCylindroid overload that takes a heightMap (see that method for details),
 		/// but rather than a heightMap, this takes a delegate that defines the diameter multiplier.
 		/// </summary>
 		/// <param name="pixelFunc">A delegate that takes an x and y and returns the diameter multiplier</param>

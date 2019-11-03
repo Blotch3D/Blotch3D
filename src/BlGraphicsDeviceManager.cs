@@ -252,7 +252,6 @@ namespace Blotch
 
 		MouseState PrevMouseState = new MouseState();
 		Vector2 PrevMousePos = new Vector2();
-		bool LastActive = false;
 
 		/// <summary>
 		/// How fast #DoDefaultGui should auto-rotate the scene.
@@ -592,71 +591,333 @@ namespace Blotch
 		}
 
         /// <summary>
+        /// Describes states of certain keys and mouse buttons for a given DoDefaultGui operation. You can optionally
+        /// pass one of these to DoDefaultGui for
+        /// each operation. To decide whether to perform an operation DoDefaultGui calls the corresponding operation's
+        /// InputDefinition object's 'Compare' method to compare the current keyboard and mouse states to the various
+        /// members of the object. If the states match the members, then the Compare method returns a Vector3, where
+        /// X is the mouse X, Y is the mouse Y, and Z is the wheel value. If the comparison fails, then it
+        /// returns null and DoDefaultGui does not do that operation. You can also transform the output vector with the
+        /// Matrix member. See DoDefaultGui.
+        /// </summary>
+        public class InputDefinition
+        {
+            public enum ButtonCode
+            {
+                LeftButton,
+                MiddleButton,
+                RightButton,
+                XButton1,
+                XButton2
+            }
+
+            Dictionary<Keys, bool> KeyStates;
+            Dictionary<ButtonCode, ButtonState> ButtonStates;
+            Dictionary<Keys, bool> PrevKeyStates;
+            Dictionary<ButtonCode, ButtonState> PrevButtonStates;
+
+            public Matrix? Matrix = null; 
+
+            KeyboardState? PrevKeyboardState = null;
+            MouseState? PrevMouseState = null;
+            bool LastMatched = false;
+
+            /// <summary>
+            /// Simplified constructor which let's you specify up to three current and previous
+            /// mouse buttons and keyboard key states.
+            /// </summary>
+            /// <param name="key1"></param>
+            /// <param name="keyState1"></param>
+            /// <param name="key2"></param>
+            /// <param name="keyState2"></param>
+            /// <param name="key3"></param>
+            /// <param name="keyState3"></param>
+            /// <param name="button1"></param>
+            /// <param name="buttonState1"></param>
+            /// <param name="button2"></param>
+            /// <param name="buttonState2"></param>
+            /// <param name="button3"></param>
+            /// <param name="buttonState3"></param>
+            /// <param name="prevKey1"></param>
+            /// <param name="prevKeyState1"></param>
+            /// <param name="prevKey2"></param>
+            /// <param name="prevKeyState2"></param>
+            /// <param name="prevKey3"></param>
+            /// <param name="prevKeyState3"></param>
+            /// <param name="prevButton1"></param>
+            /// <param name="prevButtonState1"></param>
+            /// <param name="prevButton2"></param>
+            /// <param name="prevButtonState2"></param>
+            /// <param name="prevButton3"></param>
+            /// <param name="prevButtonState3"></param>
+            public InputDefinition(
+                Keys? key1 = null,
+                bool? keyState1 = null,
+                Keys? key2 = null,
+                bool? keyState2 = null,
+                Keys? key3 = null,
+                bool? keyState3 = null,
+                ButtonCode? button1 = null,
+                bool? buttonState1 = null,
+                ButtonCode? button2 = null,
+                bool? buttonState2 = null,
+                ButtonCode? button3 = null,
+                bool? buttonState3 = null,
+                Keys? prevKey1 = null,
+                bool? prevKeyState1 = null,
+                Keys? prevKey2 = null,
+                bool? prevKeyState2 = null,
+                Keys? prevKey3 = null,
+                bool? prevKeyState3 = null,
+                ButtonCode? prevButton1 = null,
+                bool? prevButtonState1 = null,
+                ButtonCode? prevButton2 = null,
+                bool? prevButtonState2 = null,
+                ButtonCode? prevButton3 = null,
+                bool? prevButtonState3 = null
+            )
+            {
+                KeyStates = new Dictionary<Keys, bool>();
+
+                if (key1 != null)
+                    KeyStates.Add(key1.Value, keyState1.Value);
+                if (key2 != null)
+                    KeyStates.Add(key2.Value, keyState2.Value);
+                if (key3 != null)
+                    KeyStates.Add(key3.Value, keyState3.Value);
+
+                ButtonStates = new Dictionary<ButtonCode, ButtonState>();
+
+                if (button1 != null)
+                    ButtonStates.Add(button1.Value, buttonState1.Value ? ButtonState.Pressed : ButtonState.Released);
+                if (button2 != null)
+                    ButtonStates.Add(button2.Value, buttonState2.Value ? ButtonState.Pressed : ButtonState.Released);
+                if (button3 != null)
+                    ButtonStates.Add(button3.Value, buttonState3.Value ? ButtonState.Pressed : ButtonState.Released);
+
+                PrevKeyStates = new Dictionary<Keys, bool>();
+
+                if (prevKey1 != null)
+                    KeyStates.Add(prevKey1.Value, prevKeyState1.Value);
+                if (prevKey2 != null)
+                    KeyStates.Add(prevKey2.Value, prevKeyState2.Value);
+                if (prevKey3 != null)
+                    KeyStates.Add(prevKey3.Value, prevKeyState3.Value);
+
+                PrevButtonStates = new Dictionary<ButtonCode, ButtonState>();
+
+                if (prevButton1 != null)
+                    ButtonStates.Add(prevButton1.Value, prevButtonState1.Value ? ButtonState.Pressed : ButtonState.Released);
+                if (prevButton2 != null)
+                    ButtonStates.Add(prevButton2.Value, prevButtonState2.Value ? ButtonState.Pressed : ButtonState.Released);
+                if (prevButton3 != null)
+                    ButtonStates.Add(prevButton3.Value, prevButtonState3.Value ? ButtonState.Pressed : ButtonState.Released);
+            }
+
+            /// <summary>
+            /// Pass any number of current and previous mouse button and key states.
+            /// </summary>
+            /// <param name="keyStates"></param>
+            /// <param name="buttonStates"></param>
+            /// <param name="prevKeyStates"></param>
+            /// <param name="prevButtonStates"></param>
+            public InputDefinition(
+                Dictionary<Keys, bool> keyStates,
+                Dictionary<ButtonCode, ButtonState> buttonStates,
+                Dictionary<Keys, bool> prevKeyStates = null,
+                Dictionary<ButtonCode, ButtonState> prevButtonStates = null
+            )
+            {
+                KeyStates = keyStates;
+                ButtonStates = buttonStates;
+                PrevKeyStates = prevKeyStates;
+                PrevButtonStates = prevButtonStates;
+            }
+
+            /// <summary>
+            /// Called by DoDefaultGui for each operation (pan, zoom, etc.) to check if the current input state matches
+            /// the state of this object. Application code would not normally call this unless it implements its own
+            /// configurable GUI code like DoDefaultGui.
+            /// </summary>
+            /// <param name="k"></param>
+            /// <param name="m"></param>
+            /// <param name="winIsActive"></param>
+            /// <returns></returns>
+            public Vector3? Compare(KeyboardState? keyState = null, MouseState? mouseState = null)
+            {
+                KeyboardState k;
+                if (keyState == null)
+                    k = Keyboard.GetState();
+                else
+                    k = keyState.Value;
+
+                MouseState m;
+                if (mouseState == null)
+                    m = Mouse.GetState();
+                else
+                    m = mouseState.Value;
+
+                var lastMatched = LastMatched;
+                LastMatched = false;
+
+                Vector3? ret = null;
+
+                if(PrevKeyboardState == null || PrevMouseState == null)
+                {
+                    PrevKeyboardState = k;
+                    PrevMouseState = m;
+                }
+
+                if (PrevKeyStates != null)
+                {
+                    foreach(var ks in PrevKeyStates)
+                    {
+                        if (PrevKeyboardState.Value.IsKeyDown(ks.Key) != ks.Value)
+                            return null;
+                    }
+                }
+                if (PrevButtonStates != null)
+                {
+                    foreach (var ms in PrevButtonStates)
+                    {
+                        if (ms.Key == ButtonCode.LeftButton && PrevMouseState.Value.LeftButton != ms.Value)
+                            return null;
+                        else if (ms.Key == ButtonCode.MiddleButton && PrevMouseState.Value.MiddleButton != ms.Value)
+                            return null;
+                        else if (ms.Key == ButtonCode.RightButton && PrevMouseState.Value.RightButton != ms.Value)
+                            return null;
+                        else if (ms.Key == ButtonCode.XButton1 && PrevMouseState.Value.XButton1 != ms.Value)
+                            return null;
+                        else if (ms.Key == ButtonCode.XButton2 && PrevMouseState.Value.XButton2 != ms.Value)
+                            return null;
+                    }
+                }
+                foreach (var ks in KeyStates)
+                {
+                    if (k.IsKeyDown(ks.Key) != ks.Value)
+                        return null;
+                }
+                foreach (var ms in ButtonStates)
+                {
+                    if (ms.Key == ButtonCode.LeftButton && m.LeftButton != ms.Value)
+                        return null;
+                    else if (ms.Key == ButtonCode.MiddleButton && m.MiddleButton != ms.Value)
+                        return null;
+                    else if (ms.Key == ButtonCode.RightButton && m.RightButton != ms.Value)
+                        return null;
+                    else if (ms.Key == ButtonCode.XButton1 && m.XButton1 != ms.Value)
+                        return null;
+                    else if (ms.Key == ButtonCode.XButton2 && m.XButton2 != ms.Value)
+                        return null;
+                }
+
+                LastMatched = lastMatched;
+
+                if (!LastMatched)
+                {
+                    PrevKeyboardState = k;
+                    PrevMouseState = m;
+                }
+
+                LastMatched = true;
+
+                var v = new Vector3();
+
+                v.X = (float)(m.X - PrevMouseState.Value.X);
+                v.Y = (float)(m.Y - PrevMouseState.Value.Y);
+                v.Z = (float)(m.ScrollWheelValue - PrevMouseState.Value.ScrollWheelValue);
+
+                if (Matrix != null)
+                    v = Vector3.Transform(v, Matrix.Value);
+
+                ret = v;
+
+                PrevKeyboardState = k;
+                PrevMouseState = m;
+
+                return ret;
+            }
+        }
+
+        static InputDefinition DefFine = new InputDefinition(Keys.LeftShift, true);
+        static InputDefinition DefZoom = new InputDefinition(Keys.LeftControl, true);
+        static InputDefinition DefDolly = new InputDefinition(Keys.LeftControl, false);
+        static InputDefinition DefRotate = new InputDefinition(button1: InputDefinition.ButtonCode.RightButton, buttonState1: true);
+        static InputDefinition DefTruck = new InputDefinition(button1: InputDefinition.ButtonCode.LeftButton, buttonState1: true);
+        static InputDefinition DefPan = new InputDefinition(Keys.LeftAlt, true, button1: InputDefinition.ButtonCode.LeftButton, buttonState1: true);
+        static InputDefinition DefPick = new InputDefinition(Keys.RightControl, true, button1: InputDefinition.ButtonCode.LeftButton, buttonState1: true);
+        static InputDefinition DefReset = new InputDefinition(Keys.Escape, true);
+
+        /// <summary>
 		/// Updates the camera according to mouse and certain keyboard states. If no parameters are passed, then
-        /// this uses the current keyboard and mouse states as follows: Wheel=Dolly, CTRL-wheel=Zoom, Left-drag=Truck,
-        /// Right-drag=Rotate, CTRL-left-drag=Pan, Esc=Reset, If CTRL is pressed and mouse left or right button is
+        /// this uses the current keyboard and mouse states as follows: Wheel = Dolly, left-CTRL-wheel = Zoom, Left-drag = Truck,
+        /// Right-drag = Rotate, CTRL-left-drag = Pan, Esc = Reset; if CTRL is pressed and mouse left or right button is
         /// clicked then do a 'pick' (returns a ray into window at mouse position); finally, SHIFT causes all the previous controls to be fine
         /// rather than coarse. To override this default behavior, specify arguments. You can specify a keyboard state and a
-        /// mouse state to use. You can also specify up to two keys to control each operation. To disable a key, specify that
-        /// argument as 'Key.None'. For example, to specify that only the left CTRL controls zoom, then zoom1=Key.LeftControl and zoom2=Key.None.
-        /// To disable zoom, both zoom1 and zoom2 would be Key.None. To indicate a given operation works when NO key is pressed, specify Key.F23.
-        /// You can also control each camera attribute individually and programatically by using AdjustCameraZoom, AdjustCameraDolly, AdjustCameraRotation, AdjustCameraPan,
+        /// mouse state to use. You can specify the input state for each function. See InputDefinition.
+        /// Rather than calling this, you can also control each camera attribute individually and programatically by using AdjustCameraZoom, AdjustCameraDolly, AdjustCameraRotation, AdjustCameraPan,
 		/// AdjustCameraTruck, ResetCamera, and/or SetCameraToSprite. Or see the more basic fields of Zoom, Aspect,
 		/// TargetEye, and TargetLookAt.
         /// </summary>
         /// <param name="keyState">The KeyboardState to use, or if null then the current keyboard state.</param>
         /// <param name="mouseState">The mouse state to use, or if null then the current mouse state</param>
-        /// <param name="fine1">Key to indicate fine movement</param>
-        /// <param name="fine2">Key to indicate fine movement</param>
-        /// <param name="zoom1">Key to indicate zoom mode</param>
-        /// <param name="zoom2">Key to indicate zoom mode</param>
-        /// <param name="dolly1">Key to indicate dolly mode</param>
-        /// <param name="dolly2">Key to indicate dolly mode</param>
-        /// <param name="truck1">Key to indicate truck mode</param>
-        /// <param name="truck2">Key to indicate truck mode</param>
-        /// <param name="pan1">Key to indicate pan mode</param>
-        /// <param name="pan2">Key to indicate pan mode</param>
-        /// <param name="pick1">Key to indicate pick mode</param>
-        /// <param name="pick2">Key to indicate pick mode</param>
-		/// <returns>If a mouse left or right click occurred, returns the Ray into the screen at that position. Otherwise
-		/// returns null</returns>
+        /// <param name="fine">The InputDefinition that indicates fine control</param>
+        /// <param name="zoom">The InputDefinition that indicates zoom should be done</param>
+        /// <param name="dolly">The InputDefinition that indicates dolly should be done</param>
+        /// <param name="rotate">The InputDefinition that indicates rotate should be done</param>
+        /// <param name="truck">The InputDefinition that indicates truck should be done</param>
+        /// <param name="pan">The InputDefinition that indicates pan should be done</param>
+        /// <param name="pick">The InputDefinition that indicates pick should be performed</param>
+        /// <param name="reset">The InputDefinition that indicates a reset should be done</param>
+		/// <returns>If 'pick' occurred, the Ray into the screen at that position, if any. Otherwise returns null</returns>
 		public Ray? DoDefaultGui(
             KeyboardState? keyState = null,
             MouseState? mouseState = null,
-            Keys fine1 = Keys.LeftShift,
-            Keys fine2 = Keys.RightShift,
-            Keys zoom1 = Keys.LeftControl,
-            Keys zoom2 = Keys.RightControl,
-            Keys dolly1 = Keys.F23,
-            Keys dolly2 = Keys.F23,
-            Keys truck1 = Keys.F23,
-            Keys truck2 = Keys.F23,
-            Keys pan1 = Keys.LeftControl,
-            Keys pan2 = Keys.RightControl,
-            Keys pick1 = Keys.LeftControl,
-            Keys pick2 = Keys.RightControl,
-            Keys reset = Keys.Escape
+            InputDefinition fine=null,
+            InputDefinition zoom = null,
+            InputDefinition dolly = null,
+            InputDefinition rotate = null,
+            InputDefinition truck = null,
+            InputDefinition pan = null,
+            InputDefinition pick = null,
+            InputDefinition reset = null
         )
 		{
             KeyboardState myKeyState;
             if (keyState == null)
-            {
                 myKeyState = Keyboard.GetState();
-            }
             else
-            {
                 myKeyState = (KeyboardState)keyState;
-            }
 
             MouseState myMouseState;
             if (mouseState == null)
-            {
                 myMouseState = Mouse.GetState();
-            }
             else
-            {
                 myMouseState = (MouseState)mouseState;
-            }
+
+            if (fine == null)
+                fine = DefFine;
+
+            if (zoom == null)
+                zoom = DefZoom;
+
+            if (dolly == null)
+                dolly = DefDolly;
+
+            if (rotate == null)
+                rotate = DefRotate;
+
+            if (truck == null)
+                truck = DefTruck;
+
+            if (pan == null)
+                pan = DefPan;
+
+            if (pick == null)
+                pick = DefPick;
+
+            if (reset == null)
+                reset = DefReset;
 
             if (BlDebug.ShowThreadWarnings && CreationThread != Thread.CurrentThread.ManagedThreadId)
 				throw new Exception(String.Format("BlGraphicsDeviceManager.DoDefaultGui() was called by thread {0} instead of thread {1}", Thread.CurrentThread.ManagedThreadId, CreationThread));
@@ -680,77 +941,53 @@ namespace Blotch
 
 				if (Window.IsActive)
 				{
-					var mousePos = new Vector2(myMouseState.X, myMouseState.Y);
-					var mousePosDif = mousePos - PrevMousePos;
-					var scrollDif = (PrevMouseState.ScrollWheelValue - myMouseState.ScrollWheelValue);
-					var mouseDifY = (myMouseState.Y - PrevMouseState.Y);
-					var mouseDifX = (myMouseState.X - PrevMouseState.X);
-
-					if(!LastActive && Window.IsActive)
-					{
-						scrollDif = 0;
-					}
-
                     // Fine
 					float rate = 1;
-					if (fine1==Keys.F23 || fine2==Keys.F23 || myKeyState.IsKeyDown(fine1) || myKeyState.IsKeyDown(fine2))
+					if (fine.Compare(myKeyState, myMouseState) != null)
 						rate = .01f;
 
-					if (scrollDif != 0)
-					{
-						// Zoom
-						if (zoom1 == Keys.F23 || zoom2 == Keys.F23 || myKeyState.IsKeyDown(zoom1) || myKeyState.IsKeyDown(zoom2))
-							AdjustCameraZoom(scrollDif * rate);
-						else
-                        // Dolly
-                        if (dolly1 == Keys.F23 || dolly2 == Keys.F23 || myKeyState.IsKeyDown(dolly1) || myKeyState.IsKeyDown(dolly2))
-                            AdjustCameraDolly(scrollDif * rate);
-					}
+                    // Zoom
+                    var v = zoom.Compare(myKeyState, myMouseState);
+                    if (v != null)
+						AdjustCameraZoom(-v.Value.Z * rate);
 
+                    // Dolly
+                    v = dolly.Compare(myKeyState, myMouseState);
+                    if (v != null)
+                        AdjustCameraDolly(-v.Value.Z * rate);
 
-					// Rotate
-					if (myMouseState.RightButton == ButtonState.Pressed && PrevMouseState.RightButton == ButtonState.Pressed)
-						AdjustCameraRotation(mouseDifX * rate, mouseDifY * rate);
+                    // Rotate
+                    v = rotate.Compare(myKeyState, myMouseState);
+                    if (v != null)
+						AdjustCameraRotation(v.Value.X * rate, v.Value.Y * rate);
 
-					// Pan
-					if (myMouseState.LeftButton == ButtonState.Pressed && PrevMouseState.LeftButton == ButtonState.Pressed)
-						if (pan1 == Keys.F23 || pan2 == Keys.F23 || myKeyState.IsKeyDown(pan1) || myKeyState.IsKeyDown(pan2))
-							AdjustCameraPan(mouseDifX * rate, mouseDifY * rate);
-						else
-                        if (truck1 == Keys.F23 || truck2 == Keys.F23 || myKeyState.IsKeyDown(truck1) || myKeyState.IsKeyDown(truck2))
-                            // Truck
-                            AdjustCameraTruck(mouseDifX * rate, mouseDifY * rate);
+                    // Pan
+                    v = pan.Compare(myKeyState, myMouseState);
+                    if (v != null)
+                        AdjustCameraPan(v.Value.X * rate, v.Value.Y * rate);
 
+                    // truck
+                    v = truck.Compare(myKeyState, myMouseState);
+                    if (v != null)
+                        // Truck
+                        AdjustCameraTruck(v.Value.X * rate, v.Value.Y * rate);
 
-					// Reset
-					if (myKeyState.IsKeyDown(reset))
-					{
-						ResetCamera();
-					}
+                    // Reset
+                    v = reset.Compare(myKeyState, myMouseState);
+                    if (v != null)
+                        ResetCamera();
 
-					// Pick
-					if (pick1 == Keys.F23 || pick2 == Keys.F23 || myKeyState.IsKeyDown(pick1) || myKeyState.IsKeyDown(pick2))
-					{
-						if (
-							(myMouseState.LeftButton == ButtonState.Pressed && PrevMouseState.LeftButton != ButtonState.Pressed)
-							||
-							(myMouseState.RightButton == ButtonState.Pressed && PrevMouseState.RightButton != ButtonState.Pressed)
-						)
-						{
-							ray = CalculateRay(mousePos);
-						}
-					}
-
-					PrevMouseState = myMouseState;
-					PrevMousePos = mousePos;
+                    // Pick
+                    v = pick.Compare(myKeyState, myMouseState);
+                    if (v != null)
+                        ray = CalculateRay(new Vector2(v.Value.X, v.Value.Y));
 				}
 			}
 			catch
 			{
-					ResetCamera();
+    			ResetCamera();
 			}
 
-			LastActive = Window.IsActive;
 			return ray;
 		}
 		/// <summary>
@@ -827,7 +1064,7 @@ namespace Blotch
 		}
 
         /// <summary>
-        /// Returns a ray that that goes from the near clipping plane to the far clipping plane, at the specified
+        /// Returns a ray that goes from the near clipping plane to the far clipping plane, at the specified
         /// window position.
         /// </summary>
         /// <param name="windowPosition">The window's pixel coordinates</param>
