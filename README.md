@@ -358,9 +358,7 @@ online but note that they may not work in later MonoGame releases.
 To properly make the BlWindow3D window be a child window of an existing
 GUI, you need to either explicitly size, position, and convey Z order to
 that 3D window so that it is overlaid over the child window, or use
-<https://github.com/sqrMin1/MonoGame.Forms>. The BlWindow3D.WindowForm
-field can also provide some WinForms functionality (Microsoft Windows
-only).
+<https://github.com/sqrMin1/MonoGame.Forms>.
 
 By default, lighting, background color, and sprite coloring are set so
 that it is most probable you will see the sprite. These may need to be
