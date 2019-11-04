@@ -591,7 +591,7 @@ namespace Blotch
 		}
 
         /// <summary>
-        /// Describes states of certain keys and mouse buttons for a given DoDefaultGui operation. You can optionally
+        /// Describes states of certain keys and mouse buttons for a given DoDefaultGui operation (zoom, pan, etc.). You can optionally
         /// pass one of these to DoDefaultGui for
         /// each operation. To decide whether to perform an operation DoDefaultGui calls the corresponding operation's
         /// InputDefinition object's 'Compare' method to compare the current keyboard and mouse states to the various
@@ -725,13 +725,15 @@ namespace Blotch
                 Dictionary<Keys, bool> keyStates,
                 Dictionary<ButtonCode, ButtonState> buttonStates,
                 Dictionary<Keys, bool> prevKeyStates = null,
-                Dictionary<ButtonCode, ButtonState> prevButtonStates = null
+                Dictionary<ButtonCode, ButtonState> prevButtonStates = null,
+                Matrix? matrix = null
             )
             {
                 KeyStates = keyStates;
                 ButtonStates = buttonStates;
                 PrevKeyStates = prevKeyStates;
                 PrevButtonStates = prevButtonStates;
+                Matrix = matrix;
             }
 
             /// <summary>
@@ -839,14 +841,45 @@ namespace Blotch
             }
         }
 
-        static InputDefinition DefFine = new InputDefinition(Keys.LeftShift, true);
-        static InputDefinition DefZoom = new InputDefinition(Keys.LeftControl, true);
-        static InputDefinition DefDolly = new InputDefinition(Keys.LeftControl, false);
-        static InputDefinition DefRotate = new InputDefinition(button1: InputDefinition.ButtonCode.RightButton, buttonState1: true);
-        static InputDefinition DefTruck = new InputDefinition(button1: InputDefinition.ButtonCode.LeftButton, buttonState1: true);
-        static InputDefinition DefPan = new InputDefinition(Keys.LeftAlt, true, button1: InputDefinition.ButtonCode.LeftButton, buttonState1: true);
-        static InputDefinition DefPick = new InputDefinition(Keys.RightControl, true, button1: InputDefinition.ButtonCode.LeftButton, buttonState1: true);
-        static InputDefinition DefReset = new InputDefinition(Keys.Escape, true);
+        /// <summary>
+        /// If DoDefaultGui isn't passed a parameter for this purpose, it uses this mouse and keyboard state to cause fine control to be active.
+        /// </summary>
+        public InputDefinition DefFine = new InputDefinition(Keys.LeftShift, true);
+
+        /// <summary>
+        /// If DoDefaultGui isn't passed a parameter for this purpose, it uses this mouse and keyboard state to zoom.
+        /// </summary>
+        public InputDefinition DefZoom = new InputDefinition(Keys.LeftControl, true);
+
+        /// <summary>
+        /// If DoDefaultGui isn't passed a parameter for this purpose, it uses this mouse and keyboard state to dolly.
+        /// </summary>
+        public InputDefinition DefDolly = new InputDefinition(Keys.LeftControl, false);
+
+        /// <summary>
+        /// If DoDefaultGui isn't passed a parameter for this purpose, it uses this mouse and keyboard state to rotate.
+        /// </summary>
+        public InputDefinition DefRotate = new InputDefinition(button1: InputDefinition.ButtonCode.RightButton, buttonState1: true);
+
+        /// <summary>
+        /// If DoDefaultGui isn't passed a parameter for this purpose, it uses this mouse and keyboard state to truck.
+        /// </summary>
+        public InputDefinition DefTruck = new InputDefinition(button1: InputDefinition.ButtonCode.LeftButton, buttonState1: true);
+
+        /// <summary>
+        /// If DoDefaultGui isn't passed a parameter for this purpose, it uses this mouse and keyboard state to pan.
+        /// </summary>
+        public InputDefinition DefPan = new InputDefinition(Keys.LeftAlt, true, button1: InputDefinition.ButtonCode.LeftButton, buttonState1: true);
+
+        /// <summary>
+        /// If DoDefaultGui isn't passed a parameter for this purpose, it uses this mouse and keyboard state to pick.
+        /// </summary>
+        public InputDefinition DefPick = new InputDefinition(Keys.RightControl, true, button1: InputDefinition.ButtonCode.LeftButton, buttonState1: true);
+
+        /// <summary>
+        /// If DoDefaultGui isn't passed a parameter for this purpose, it uses this mouse and keyboard state to reset.
+        /// </summary>
+        public InputDefinition DefReset = new InputDefinition(Keys.Escape, true);
 
         /// <summary>
 		/// Updates the camera according to mouse and certain keyboard states. If no parameters are passed, then
@@ -969,7 +1002,6 @@ namespace Blotch
                     // truck
                     v = truck.Compare(myKeyState, myMouseState);
                     if (v != null)
-                        // Truck
                         AdjustCameraTruck(v.Value.X * rate, v.Value.Y * rate);
 
                     // Reset

@@ -128,7 +128,14 @@ namespace Blotch
 		/// </summary>
 		public BoundingSphere? BoundSphere = null;
 
-		Effect VerticesEffect = null;
+        /// <summary>
+        /// This increases the model's radius that is used by DoesRayIntersect. For example, make this larger than '1' so that DoesRayIntersect
+        /// thinks it is lareger.
+        /// </summary>
+        public double RadiusTweak = 1;
+
+
+        Effect VerticesEffect = null;
 
 		/// <summary>
 		/// Spherically billboard the model. Specifically, keep the model's 'forward' direction pointing at the camera and keep
@@ -515,7 +522,7 @@ namespace Blotch
 		
 		/// <summary>
 		/// Returns the distance along the ray to the first point the ray enters the bounding sphere
-		/// (BoundSphere), or null if it doesn't enter the sphere.
+		/// (BoundSphere) + RadiusTweak, or null if it doesn't intersect.
 		/// </summary>
 		/// <param name="ray"></param>
 		/// <returns>How far along the ray till the first intersection, or null if it didn't intersect</returns>
@@ -524,7 +531,11 @@ namespace Blotch
 			if (BoundSphere == null)
 				return null;
 
-			return ray.Intersects((BoundingSphere)BoundSphere);
+            var bsphere = (BoundingSphere)BoundSphere;
+
+            bsphere.Radius *= (float)RadiusTweak;
+
+            return ray.Intersects(bsphere);
 		}
 
 		/// <summary>
