@@ -980,7 +980,7 @@ namespace Blotch
                     // Pick
                     v = pick.Compare(myKeyState, myMouseState);
                     if (v != null)
-                        ray = CalculateRay(new Vector2(v.Value.X, v.Value.Y));
+                        ray = CalculateRay(new Vector2(myMouseState.X, myMouseState.Y));
 				}
 			}
 			catch
