@@ -217,7 +217,7 @@ namespace Blotch
 		/// Creates a cylindroid (including texture coords and normals) and/or the end caps of the cylindroid, with
 		/// the given parameters and returns a triangle array, which includes smooth normals and texture coordinates.
 		/// Assuming a possible subsequent call to #TransformVertices, even without a heightMap many
-		/// fundamental rotationally symmetric shapes can be generated, like a cylinder, cone, washer, disk, prism
+		/// fundamental rotationally symmetric shapes can be generated, like a cylinder, ray, washer, disk, prism
 		/// of any number of facets, tetrahedron, pyramid of any number of facets, etc. Before passing the result
 		/// to #TransformVertices, the center of the cylindroid is the
 		/// origin, its height is 1, the diameter of the base is 1, and the diameter of the top is topDiameter. If

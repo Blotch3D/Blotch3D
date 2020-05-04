@@ -198,7 +198,7 @@ namespace Blotch
 		/// <summary>
 		/// The aspect ratio.
 		/// </summary>
-		public double Aspect=2;
+		public double Aspect=0;
 
 		/// <summary>
 		/// Current aspect ratio. Same as #Aspect unless #Aspect==0.
@@ -249,9 +249,6 @@ namespace Blotch
 		/// #PrepareDraw, and then as BlWindow3D#FrameDraw is called it is set more reasonably.
 		/// </summary>
 		public double MaxCamDistance { get; private set; }
-
-		MouseState PrevMouseState = new MouseState();
-		Vector2 PrevMousePos = new Vector2();
 
 		/// <summary>
 		/// How fast #DoDefaultGui should auto-rotate the scene.
@@ -874,7 +871,7 @@ namespace Blotch
         /// <summary>
         /// If DoDefaultGui isn't passed a parameter for this purpose, it uses this mouse and keyboard state to pick.
         /// </summary>
-        public InputDefinition DefPick = new InputDefinition(Keys.RightControl, true, button1: InputDefinition.ButtonCode.LeftButton, buttonState1: true);
+        public InputDefinition DefPick = new InputDefinition();
 
         /// <summary>
         /// If DoDefaultGui isn't passed a parameter for this purpose, it uses this mouse and keyboard state to reset.
@@ -902,6 +899,14 @@ namespace Blotch
         /// <param name="pan">The InputDefinition that indicates pan should be done</param>
         /// <param name="pick">The InputDefinition that indicates pick should be performed</param>
         /// <param name="reset">The InputDefinition that indicates a reset should be done</param>
+        /// <param name="fine_alt">An alternate for fine</param>
+        /// <param name="zoom_alt">An alternate for zoom</param>
+        /// <param name="dolly_alt">An alternate for dolly</param>
+        /// <param name="rotate_alt">An alternate for rotate</param>
+        /// <param name="truck_alt">An alternate for truck</param>
+        /// <param name="pan_alt">An alternate for pan</param>
+        /// <param name="pick_alt">An alternate for pick</param>
+        /// <param name="reset_alt">An alternate for reset</param>
 		/// <returns>If 'pick' occurred, the Ray into the screen at that position, if any. Otherwise returns null</returns>
 		public Ray? DoDefaultGui(
             KeyboardState? keyState = null,
@@ -913,9 +918,18 @@ namespace Blotch
             InputDefinition truck = null,
             InputDefinition pan = null,
             InputDefinition pick = null,
-            InputDefinition reset = null
+            InputDefinition reset = null,
+            InputDefinition fine_alt = null,
+            InputDefinition zoom_alt = null,
+            InputDefinition dolly_alt = null,
+            InputDefinition rotate_alt = null,
+            InputDefinition truck_alt = null,
+            InputDefinition pan_alt = null,
+            InputDefinition pick_alt = null,
+            InputDefinition reset_alt = null
+
         )
-		{
+        {
             KeyboardState myKeyState;
             if (keyState == null)
                 myKeyState = Keyboard.GetState();
@@ -952,6 +966,30 @@ namespace Blotch
             if (reset == null)
                 reset = DefReset;
 
+            if (fine_alt == null)
+                fine_alt = DefFine;
+
+            if (zoom_alt == null)
+                zoom_alt = DefZoom;
+
+            if (dolly_alt == null)
+                dolly_alt = DefDolly;
+
+            if (rotate_alt == null)
+                rotate_alt = DefRotate;
+
+            if (truck_alt == null)
+                truck_alt = DefTruck;
+
+            if (pan_alt == null)
+                pan_alt = DefPan;
+
+            if (pick_alt == null)
+                pick_alt = DefPick;
+
+            if (reset_alt == null)
+                reset_alt = DefReset;
+
             if (BlDebug.ShowThreadWarnings && CreationThread != Thread.CurrentThread.ManagedThreadId)
 				throw new Exception(String.Format("BlGraphicsDeviceManager.DoDefaultGui() was called by thread {0} instead of thread {1}", Thread.CurrentThread.ManagedThreadId, CreationThread));
 
@@ -976,41 +1014,55 @@ namespace Blotch
 				{
                     // Fine
 					float rate = 1;
-					if (fine.Compare(myKeyState, myMouseState) != null)
+					if (fine.Compare(myKeyState, myMouseState) != null || fine_alt.Compare(myKeyState, myMouseState) != null)
 						rate = .01f;
 
                     // Zoom
                     var v = zoom.Compare(myKeyState, myMouseState);
+                    if(v == null)
+                        v = zoom_alt.Compare(myKeyState, myMouseState);
                     if (v != null)
 						AdjustCameraZoom(-v.Value.Z * rate);
 
                     // Dolly
                     v = dolly.Compare(myKeyState, myMouseState);
+                    if (v == null)
+                        v = dolly_alt.Compare(myKeyState, myMouseState);
                     if (v != null)
                         AdjustCameraDolly(-v.Value.Z * rate);
 
                     // Rotate
                     v = rotate.Compare(myKeyState, myMouseState);
+                    if (v == null)
+                        v = rotate_alt.Compare(myKeyState, myMouseState);
                     if (v != null)
 						AdjustCameraRotation(v.Value.X * rate, v.Value.Y * rate);
 
                     // Pan
                     v = pan.Compare(myKeyState, myMouseState);
+                    if (v == null)
+                        v = pan_alt.Compare(myKeyState, myMouseState);
                     if (v != null)
                         AdjustCameraPan(v.Value.X * rate, v.Value.Y * rate);
 
                     // truck
                     v = truck.Compare(myKeyState, myMouseState);
+                    if (v == null)
+                        v = truck_alt.Compare(myKeyState, myMouseState);
                     if (v != null)
                         AdjustCameraTruck(v.Value.X * rate, v.Value.Y * rate);
 
                     // Reset
                     v = reset.Compare(myKeyState, myMouseState);
+                    if (v == null)
+                        v = reset_alt.Compare(myKeyState, myMouseState);
                     if (v != null)
                         ResetCamera();
 
                     // Pick
                     v = pick.Compare(myKeyState, myMouseState);
+                    if (v == null)
+                        v = pick_alt.Compare(myKeyState, myMouseState);
                     if (v != null)
                         ray = CalculateRay(new Vector2(myMouseState.X, myMouseState.Y));
 				}
@@ -1384,7 +1436,7 @@ namespace Blotch
 
 			CurrentAspect = Aspect;
 			if (CurrentAspect == 0)
-				CurrentAspect = (float)PreferredBackBufferWidth / PreferredBackBufferHeight;
+				CurrentAspect = (float)width / height;
 			Projection = Microsoft.Xna.Framework.Matrix.CreatePerspectiveFieldOfView(MathHelper.ToRadians((float)Zoom), (float)CurrentAspect, (float)CurrentNearClip, (float)CurrentFarClip);
 
 			ApplyChanges();
@@ -1425,7 +1477,7 @@ namespace Blotch
 			throw new Exception("BlGraphicsDeviceManager was garbage collected before its Dispose was called");
 		}
 
-		int CreationThread = -1;
+		public int CreationThread = -1;
 		/// <summary>
 		/// Set when the object is Disposed.
 		/// </summary>

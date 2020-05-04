@@ -101,45 +101,62 @@ namespace Blotch
 			{
 				command = cmd
 			};
-			try
-			{
-				QueueMutex.WaitOne();
-				Queue.Enqueue(Qcmd);
-			}
-			finally
-			{
-				QueueMutex.ReleaseMutex();
-			}
-		}
-		/// <summary>
-		/// Since all operations accessing 3D resources must be done by the 3D thread,
-		/// this allows other threads to
-		/// send commands to execute in the 3D thread. For example, you might need another thread to be able to 
-		/// create, move, and delete BlSprites. You can also use this for general thread safety of various operations.
-		/// This method blocks until the command has executed.
-		/// Also see BlWindow3D and the (non-blocking) #EnqueueCommand for more details.
-		/// </summary>
-		/// <param name="cmd"></param>
-		public void EnqueueCommandBlocking(Command cmd)
-		{
-			var myEvent = new AutoResetEvent(false);
-			var Qcmd = new QueueCommand()
-			{
-				command = cmd,
-				evnt = myEvent
-			};
 
-			try
-			{
-				QueueMutex.WaitOne();
-				Queue.Enqueue(Qcmd);
-			}
-			finally
-			{
-				QueueMutex.ReleaseMutex();
-			}
-			myEvent.WaitOne();
-		}
+            // don't bother queuing it if we are already in the window thread
+            if (Graphics.CreationThread == Thread.CurrentThread.ManagedThreadId)
+            {
+                cmd(this);
+            }
+            else // we have to queue it because we aren't in the window thread
+            {
+                try
+                {
+                    QueueMutex.WaitOne();
+                    Queue.Enqueue(Qcmd);
+                }
+                finally
+                {
+                    QueueMutex.ReleaseMutex();
+                }
+            }
+        }
+        /// <summary>
+        /// Since all operations accessing 3D resources must be done by the 3D thread,
+        /// this allows other threads to
+        /// send commands to execute in the 3D thread. For example, you might need another thread to be able to 
+        /// create, move, and delete BlSprites. You can also use this for general thread safety of various operations.
+        /// This method blocks until the command has executed.
+        /// Also see BlWindow3D and the (non-blocking) #EnqueueCommand for more details.
+        /// </summary>
+        /// <param name="cmd"></param>
+        public void EnqueueCommandBlocking(Command cmd)
+		{
+            // don't bother queuing it if we are already in the window thread
+            if (Graphics.CreationThread == Thread.CurrentThread.ManagedThreadId)
+            {
+                cmd(this);
+            }
+            else // we have to queue it because we aren't in the window thread
+            {
+                var myEvent = new AutoResetEvent(false);
+                var Qcmd = new QueueCommand()
+                {
+                    command = cmd,
+                    evnt = myEvent
+                };
+
+                try
+                {
+                    QueueMutex.WaitOne();
+                    Queue.Enqueue(Qcmd);
+                }
+                finally
+                {
+                    QueueMutex.ReleaseMutex();
+                }
+                myEvent.WaitOne();
+            }
+        }
 
 		/// <summary>
 		/// Used internally, Do NOT override. Use Setup instead.
@@ -176,6 +193,11 @@ namespace Blotch
 		/// <param name="timeInfo"></param>
 		protected override void Update(GameTime timeInfo)
 		{
+			if (Window.ClientBounds.Width < 2 || Window.ClientBounds.Height < 2)
+			{
+				return;
+			}
+
 			// Call derived class' FrameProc
 			FrameProc(timeInfo);
 
@@ -279,6 +301,11 @@ namespace Blotch
 		/// <param name="timeInfo"></param>
 		protected override void Draw(GameTime timeInfo)
 		{
+			if (Window.ClientBounds.Width < 2 || Window.ClientBounds.Height < 2)
+			{
+				return;
+			}
+
 			Graphics.PrepareDraw();
 
 			base.Draw(timeInfo);
