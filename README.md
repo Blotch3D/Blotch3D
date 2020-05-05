@@ -138,17 +138,22 @@ target system.
 
 To develop with Blotch3D...
 
+0.  You can use Visual Studio 2017 Community without issue. If you want
+    to use Visual Studio 2019, then see:
+    https://github.com/MonoGame/MonoGame/issues/6695 and
+    https://community.monogame.net/t/monogame-3-7-1-and-visual-studio-2019-release/11496.
+
 1.  Get the installer for "Visual C++ Redistributable for Visual Studio
     2012" for your platform from
     <https://www.microsoft.com/en-us/download/details.aspx?id=30679> and
-    run it with the default settings. (The Monogame content manager
-    needs this).
+    run it with the default settings. Do NOT get a later version. (The
+    Monogame content manager needs a DLL file in that release).
 
-2.  Get the installer for the latest release of the MonoGame SDK for
-    Visual Studio from <http://www.monogame.net/downloads/> and run it
-    with the default settings. (Do NOT get the current development
-    version nor a NuGet package. This is so you have a copy of the
-    MonoGame content manager.)
+2.  Get the installer for MonoGame SDK release 3.7 for Visual Studio
+    from <http://www.monogame.net/downloads/> and run it with the
+    default settings. (Do NOT get a later release than 3.7, nor a NuGet
+    package. This is so you have a copy of the MonoGame content
+    manager.)
 
 3.  Download the Blotch3D repository, or clone it.
 
