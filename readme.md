@@ -153,7 +153,8 @@ To develop with Blotch3D...
 3.  Get the installer for MonoGame SDK release 3.7 for Visual Studio
     from <http://www.monogame.net/downloads> and run it with the default
     settings. (Do NOT get a later release than 3.7, nor a NuGet package.
-    This is so you have a copy of the MonoGame content manager.)
+    This is so the MonoGame project wizards and the MonoGame content
+    manager are available.)
 
 4.  Download the Blotch3D repository, or clone it.
 
