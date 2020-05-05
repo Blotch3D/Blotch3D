@@ -1,8 +1,7 @@
 pandoc -o readme.md Blotch3D.docx
 copy readme.md ..
 doxygen Blotch3D.doxy
-cd latex
-pdflatex refman.tex
-pdflatex refman.tex
-copy refman.pdf ..\Blotch3DManual.pdf
+cd html
+hhc index.hhp
+copy index.chm ..\Blotch3D.chm
 pause
