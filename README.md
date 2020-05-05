@@ -138,36 +138,36 @@ target system.
 
 To develop with Blotch3D...
 
-0.  You can use Visual Studio 2017 Community without issue. If you want
+1.  You can use Visual Studio 2017 Community without issue. If you want
     to use Visual Studio 2019, then see:
     https://github.com/MonoGame/MonoGame/issues/6695 and
     https://community.monogame.net/t/monogame-3-7-1-and-visual-studio-2019-release/11496.
 
-1.  Get the installer for "Visual C++ Redistributable for Visual Studio
+2.  Get the installer for "Visual C++ Redistributable for Visual Studio
     2012" for your platform from
     <https://www.microsoft.com/en-us/download/details.aspx?id=30679> and
     run it with the default settings. Do NOT get a later version. (The
     Monogame content manager needs a DLL file in that release).
 
-2.  Get the installer for MonoGame SDK release 3.7 for Visual Studio
+3.  Get the installer for MonoGame SDK release 3.7 for Visual Studio
     from <http://www.monogame.net/downloads/> and run it with the
     default settings. (Do NOT get a later release than 3.7, nor a NuGet
     package. This is so you have a copy of the MonoGame content
     manager.)
 
-3.  Download the Blotch3D repository, or clone it.
+4.  Download the Blotch3D repository, or clone it.
 
-4.  Open the Visual Studio solution file (Blotch3D.sln) and build and
+5.  Open the Visual Studio solution file (Blotch3D.sln) and build and
     run the example projects.
 
-5.  Use IntelliSense and see "Blotch3DManual.pdf" for the reference
+6.  Use IntelliSense and see "Blotch3DManual.pdf" for the reference
     documentation.
 
-6.  See [Creating a new project](#creating-a-new-project) for details on
+7.  See [Creating a new project](#creating-a-new-project) for details on
     creating projects, adding Blotch3D to an existing project, or
     building for another platform.
 
-7.  Also see the [Deficiencies and
+8.  Also see the [Deficiencies and
     Alternatives](#quick-start-for-windows) section.
 
 Deficiencies and Alternatives
@@ -332,7 +332,8 @@ are also methods to draw text and textures in 2D (just draw them after
 all 3D objects have been drawn so they aren't overwritten by them). You
 can also draw things using the lower-level MonoGame methods. For
 example, it is faster to draw multiple 2D textures and text using
-MonoGame's SpriteBatch class.
+MonoGame's SpriteBatch class. See the 'Making and Using 3D Models'
+section for more information.
 
 The easiest way to set the camera position and orientation is to
 periodically call Graphics.DoDefaultGui(). Typically, this is done in
@@ -418,7 +419,8 @@ The Blotch3D project is already set up with the pipeline manager to
 convert the several primitive models to XNB files when Blotch3D is
 built. You can double-click "Content.mgcb" in the Blotch3D project to
 run the pipeline manager and add more standard files and resources and
-to convert to XNB outside of the build process. You can also copy an XNB
+to convert to XNB outside of the build process. (see 'Quick Start for
+Windows' if you are using Visual Studio 2019). You can also copy an XNB
 file to a project's output folder, where the program can load it.
 
 When you create a new MonoGame project with the wizard, it sets up a
