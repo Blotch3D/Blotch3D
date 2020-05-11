@@ -280,8 +280,8 @@ given 3D window. There are certain platform-specific exceptions to this
 rule, but we don't use them. This rule also applies to any code
 structure (like Parallel, etc.) that may internally use other threads,
 as well. Also, since sometimes it's hard to know exactly what 3D
-operations really do hit the 3D hardware, its best to assume all of them
-do, like creation and use of all Blotch3D and MonoGame objects.
+operations really do hit the 3D hardware, it's best to assume all of
+them do, like creation and use of all Blotch3D and MonoGame objects.
 
 You can put all your 3D code in the one overridden method called
 "FrameDraw", if you like, but there are a couple of other overridable
@@ -1090,8 +1090,8 @@ and FarClip, and otherwise try increasing your near clip and/or
 decreasing your far clip so the depth buffer doesn't have to cover so
 much dynamic range.
 
-Q: I have a sprite that I want always to be visible, but I think its
-invisible because its outside the depth buffer, but I don't want to
+Q: I have a sprite that I want always to be visible, but I think it's
+invisible because it's outside the depth buffer, but I don't want to
 change the clipping planes just for that sprite (NearClip and FarClip).
 
 A: Try disabling the depth buffer just for that sprite with a
@@ -1139,7 +1139,7 @@ enable them.
 Rights
 ======
 
-Blotch3D (formerly GWin3D) Copyright (c) 1999-2019 Kelly Loum, all
+Blotch3D (formerly GWin3D) Copyright (c) 1999-2020 Kelly Loum, all
 rights reserved except those granted in the following license:
 
 Microsoft Public License (MS-PL)
