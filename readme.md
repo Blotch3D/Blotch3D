@@ -699,6 +699,10 @@ studied only when you need a deeper knowledge.
 Matrix internals
 ================
 
+Read this section only if you want a deeper understanding of altering a
+sprite's orientation, position, etc. by creating and editing the matrix
+piecemeal.
+
 Here we'll introduce the internals of 2D matrices. 3D matrices simply
 have one more dimension.
 
