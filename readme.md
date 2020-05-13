@@ -409,7 +409,8 @@ local' flag is set.
 
 You can also convert standard 3D model files, fonts, etc. to "XNB" files
 for use by your MonoGame project. The MonoGame "pipeline manager" is
-used to make this conversion. This is the reason the Monogame SDK must
+used to make this conversion. The executable is MGCB.exe (\...or
+similar, for other platforms). This is the reason the Monogame SDK must
 be installed rather than the NuGet package, which does not include the
 pipeline manager.
 
@@ -437,6 +438,15 @@ file, such as the one available from the Blotch3D project. Then add that
 XNB file to your project and set its project properties so it is copied
 to the output folder for loading at run time. See
 <http://www.monogame.net/documentation/?page=MGCB> for more information.
+
+You can even programmatically call MGCB.exe, or even call methods
+directly in the MonoGame.Framework.Content.Pipeline.dll to do the
+conversion at run-time, but only on target platforms that would also
+support development. See
+https://community.monogame.net/t/building-and-loading-content-at-runtime/10849
+for more information. (And speaking of importing files programmatically,
+you can use the BlGraphicsDeviceManager.LoadFromImageFile method to load
+image files directly, probably from most any platform.)
 
 To create a new model file, it is recommended you use the Blender 3D
 modeler. You can also instruct Blender to include texture (UV) mapping
