@@ -138,35 +138,43 @@ target system.
 
 To develop with Blotch3D...
 
-1.  You can use Visual Studio 2017 Community without issue. If you are
-    using Visual Studio 2019 and want the MonoGame project wizard or
-    MonoGame content manager to work, check out:
-    https://github.com/MonoGame/MonoGame/issues/6695 and
-    https://community.monogame.net/t/monogame-3-7-1-and-visual-studio-2019-release/11496.
+1.  Get the installer for MonoGame SDK for Visual Studio from
+    <http://www.monogame.net/downloads> and run it with the default
+    settings. (Last tested release was 3.7.1.)
 
-2.  If you run content manager and it complains of not having a DLL, get
-    the installer for "Visual C++ Redistributable for Visual Studio
-    2012" for your platform from
-    <https://www.microsoft.com/en-us/download/details.aspx?id=30679> and
-    run it with the default settings. Do not get a later version.
+2.  Download the Blotch3D repository, or clone it.
 
-3.  Get the installer for MonoGame SDK release 3.7 for Visual Studio
-    from <http://www.monogame.net/downloads> and run it with the default
-    settings. (Do not get a later release than 3.7, nor a NuGet package.
-    This is so the MonoGame project wizards and the MonoGame content
-    manager are available.)
-
-4.  Download the Blotch3D repository, or clone it.
-
-5.  Open the Visual Studio solution file (Blotch3D.sln) and build and
+3.  Open the Visual Studio solution file (Blotch3D.sln) and build and
     run the example projects.
 
-6.  Use IntelliSense and see "Blotch3D.chm" for the reference
+4.  Use IntelliSense or see "Blotch3D.chm" for the reference
     documentation.
 
-7.  See [Creating a new project](#creating-a-new-project) for details on
+5.  See [Creating a new project](#creating-a-new-project) for details on
     creating projects, adding Blotch3D to an existing project, or
     building for another platform.
+
+If you are using Visual Studio 2019 and you want to import models,
+fonts, etc., you may not be able to run the MonoGame content manager
+(pipeline tool) by double-clicking the 'Content.mgcb' file in a project.
+If that's the case, you can just run it directly. Typically the path is
+something like "\\Program Files
+(x86)\\MSBuild\\MonoGame\\v3.0\\Tools\\Pipeline.exe").
+
+If the content manager (pipeline tool) complains of not having a DLL,
+get the installer for "Visual C++ Redistributable for Visual Studio
+2012" for your platform from
+<https://www.microsoft.com/en-us/download/details.aspx?id=30679> and run
+it with the default settings. Do not get a later version.
+
+Also for VS2019, if you want to use the MonoGame project wizard, you may
+need to run it via a command line. See:
+
+<https://community.monogame.net/t/monogame-3-7-1-and-visual-studio-2019-release/11496>.
+
+-and-
+
+<https://github.com/MonoGame/MonoGame/issues/6695>
 
 Deficiencies and Alternatives
 =============================
