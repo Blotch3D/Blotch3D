@@ -416,18 +416,17 @@ Blotch3D project is included in your solution and the reference's 'Copy
 local' flag is set.
 
 You can also convert standard 3D model files, fonts, etc. to "XNB" files
-for use by your MonoGame project. The MonoGame "pipeline manager" is
-used to make this conversion. The executable is MGCB.exe (\...or
-similar, for other platforms). This is the reason the Monogame SDK must
-be installed rather than the NuGet package, which does not include the
-pipeline manager.
+for use by your MonoGame project. The MonoGame content manager (pipeline
+tool) is used to make this conversion. This is the reason the Monogame
+SDK must be installed rather than the NuGet package, which does not
+include the pipeline manager.
 
 The Blotch3D project is already set up with the pipeline manager to
 convert the several primitive models to XNB files when Blotch3D is
-built. You can double-click "Content.mgcb" in the Blotch3D project to
+built. You can double-click "Content.mgcb" in the Blotch3D project (but
+see 'Quick Start for Windows' if you are using Visual Studio 2019) to
 run the pipeline manager and add more standard files and resources and
-to convert to XNB outside of the build process. (see 'Quick Start for
-Windows' if you are using Visual Studio 2019). You can also copy an XNB
+to convert to XNB outside of the build process. You can also copy an XNB
 file to a project's output folder, where the program can load it.
 
 When you create a new MonoGame project with the wizard, it sets up a
@@ -442,14 +441,14 @@ files only once, one can consider it a separate manual step that should
 be done immediately after creating, choosing, or changing the standard
 resource during development. For example, after creating a 3D model with
 a 3D modeler, run it through the pipeline manager to create your XNB
-file, such as the one available from the Blotch3D project. Then add that
-XNB file to your project and set its project properties so it is copied
-to the output folder for loading at run time. See
-<http://www.monogame.net/documentation/?page=MGCB> for more information.
+file. Then add that XNB file to your project and set its project
+properties so it is copied to the output folder for loading at run time.
+See <http://www.monogame.net/documentation/?page=MGCB> for more
+information.
 
-You can even programmatically call MGCB.exe, or even call methods
-directly in the MonoGame.Framework.Content.Pipeline.dll to do the
-conversion at run-time, but only on target platforms that would also
+You can even programmatically call the pipeline tool, or even call
+methods directly in the MonoGame.Framework.Content.Pipeline.dll to do
+the conversion at run-time, but only on target platforms that would also
 support development. See
 https://community.monogame.net/t/building-and-loading-content-at-runtime/10849
 for more information. (And speaking of importing files programmatically,
