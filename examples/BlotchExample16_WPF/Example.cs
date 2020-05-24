@@ -64,13 +64,11 @@ Fine control  -  Left-Shift
 		}
 
 		/// <summary>
-		/// 'FrameProc' is automatically called once per frame if at all possible. Here you put the things you definitely
-		/// need to do periodically, like sprite movement that needs to be smooth, critical timing operations,
-		/// etc. If you put that stuff in the FrameDraw() method, then behavior might be choppy because the FrameDraw()
-		/// method is not called periodically if there isn't enough CPU.
+		/// 'FrameDraw' is automatically called once per frame if there is enough CPU. Otherwise its called more slowly.
+		/// This is where you would typically draw the scene.
 		/// </summary>
-		/// <param name="timeInfo"></param>
-		protected override void FrameProc(GameTime timeInfo)
+		/// <param name="gameTime">Provides a snapshot of timing values.</param>
+		protected override void FrameDraw(GameTime timeInfo)
 		{
 			//
 			// Put your periodic code here
@@ -79,14 +77,7 @@ Fine control  -  Left-Shift
 			// Handle the standard mouse and keystroke functions. (Don't call this if you want some other behavior
 			// of mouse and keys.)
 			Graphics.DoDefaultGui();
-		}
-		/// <summary>
-		/// 'FrameDraw' is automatically called once per frame if there is enough CPU. Otherwise its called more slowly.
-		/// This is where you would typically draw the scene.
-		/// </summary>
-		/// <param name="gameTime">Provides a snapshot of timing values.</param>
-		protected override void FrameDraw(GameTime timeInfo)
-		{
+
 			//
 			// Draw things here using BlSprite.Draw(), graphics.DrawText(), etc.
 			//

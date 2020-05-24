@@ -58,29 +58,18 @@ Fine control  -  Left-Shift
 			// The sprite we draw in this window
 			Torus = new BlSprite(Graphics,"Torus");
 			Torus.LODs.Add(TorusModel);
-
 		}
 
-		/// <summary>
-		/// See BlWindow3D for details.
-		/// </summary>
-		/// <param name="timeInfo"></param>
-		protected override void FrameProc(GameTime timeInfo)
-		{
-			//
-			// Put your periodic code here
-			//
-
-			// Handle the standard mouse and keystroke functions. (Don't call this if you want some other behavior
-			// of mouse and keys.)
-			Graphics.DoDefaultGui();
-		}
 		/// <summary>
 		/// See BlWindow3D for details.
 		/// </summary>
 		/// <param name="timeInfo">Provides a snapshot of timing values.</param>
 		protected override void FrameDraw(GameTime timeInfo)
 		{
+			// Handle the standard mouse and keystroke functions. (Don't call this if you want some other behavior
+			// of mouse and keys.)
+			Graphics.DoDefaultGui();
+
 			//
 			// Draw things here using BlSprite.Draw(), graphics.DrawText(), etc.
 			//

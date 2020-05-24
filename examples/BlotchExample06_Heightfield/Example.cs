@@ -79,8 +79,8 @@ Fine control  -  Left-Shift
 		/// <summary>
 		/// See BlWindow3D for details.
 		/// </summary>
-		/// <param name="timeInfo"></param>
-		protected override void FrameProc(GameTime timeInfo)
+		/// <param name="timeInfo">Provides a snapshot of timing values.</param>
+		protected override void FrameDraw(GameTime timeInfo)
 		{
 			//
 			// Put your periodic code here
@@ -89,13 +89,7 @@ Fine control  -  Left-Shift
 			// Handle the standard mouse and keystroke functions. (Don't call this if you want some other behavior
 			// of mouse and keys.)
 			Graphics.DoDefaultGui();
-		}
-		/// <summary>
-		/// See BlWindow3D for details.
-		/// </summary>
-		/// <param name="timeInfo">Provides a snapshot of timing values.</param>
-		protected override void FrameDraw(GameTime timeInfo)
-		{
+
 			//
 			// Draw things here using BlSprite.Draw(), graphics.DrawText(), etc.
 			//

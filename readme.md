@@ -159,7 +159,7 @@ fonts, etc., you may not be able to run the MonoGame content manager
 (pipeline tool) by double-clicking the 'Content.mgcb' file in a project.
 If that's the case, you can just run it directly. Typically the path is
 something like "\\Program Files
-(x86)\\MSBuild\\MonoGame\\v3.0\\Tools\\Pipeline.exe").
+(x86)\\MSBuild\\MonoGame\\v3.0\\Tools\\Pipeline.exe".
 
 If the content manager (pipeline tool) complains of not having a DLL,
 get the installer for "Visual C++ Redistributable for Visual Studio
