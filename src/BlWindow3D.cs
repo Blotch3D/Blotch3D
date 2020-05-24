@@ -34,14 +34,14 @@ using System.Threading;
 namespace Blotch
 {
 	/// <summary>
-	/// To make a 3D window, you must derive a class from BlWindow3D and override the #Setup, #FrameProc, and #FrameDraw methods.
-	/// When it comes time to open the 3D window, you instantiate that class and call its “Run” method from the same thread
-	/// that instantiated it. The Run method will call the #Setup, #FrameProc, and #FrameDraw methods when appropriate, and not
-	/// return until the window closes. All code that accesses 3D resources must be done in that thread, including code that
-	/// creates and uses all Blotch3D and MonoGame objects. Note that this rule also applies to any code structure that may
-	/// internally use other threads, as well. Do not use Parallel, async, etc. code structures that access 3D resources.
-	/// Other threads that need to access 3D resources can do so by passing a delegate to #EnqueueCommand and
-	/// #EnqueueCommandBlocking.
+	/// To make a 3D window, you must derive a class from BlWindow3D, override the #FrameDraw method, and open
+	/// it with a call to its “Run” method from the same thread that instantiated it. The Run method will call
+	/// the #Setup, #FrameProc, and #FrameDraw methods when appropriate, and not return until the window
+	/// closes. All code that accesses 3D resources must be done in that thread (i.e. on eof the overrides),
+	/// including code that creates and uses all Blotch3D and MonoGame objects. Note that this rule also
+	/// applies to any code structure that may internally use other threads, as well. Do not use Parallel,
+	/// async, etc. code structures from within the overrides. Other threads that need to access 3D resources
+	/// can do so by passing a delegate to #EnqueueCommand and #EnqueueCommandBlocking.
 	/// </summary>
 	public class BlWindow3D : Game
 	{
