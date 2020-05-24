@@ -23,21 +23,6 @@ namespace BlotchExample
 		SpriteFont Font;
 
 		/// <summary>
-		/// The help menu text that we draw in this window
-		/// </summary>
-		string Help = @"
-Camera controls:
-Dolly  -  Wheel
-Zoom   -  Left-CTRL-wheel
-Truck  -  Left-drag 
-Rotate -  Right-drag
-Pan    -  Left-CTRL-left-drag
-Reset  -  Esc
-Fine control  -  Left-Shift
-";
-
-
-		/// <summary>
 		/// 'Setup' is automatically called one time near the beginning of the program.
 		/// You can load fonts, load models, and do other time consuming one-time things here.
 		/// You can also load content later if necessary (like in the Update or Draw methods), but try
@@ -74,8 +59,7 @@ Fine control  -  Left-Shift
 			// Put your periodic code here
 			//
 
-			// Handle the standard mouse and keystroke functions. (Don't call this if you want some other behavior
-			// of mouse and keys.)
+			// Handle the standard mouse and keystroke functions. (This is very configurable)
 			Graphics.DoDefaultGui();
 
 			//
@@ -84,21 +68,28 @@ Fine control  -  Left-Shift
 
 			Torus.Draw();
 
-			var MyMenuText = String.Format("{0}\nEye: {1}\nLookAt: {2}\nMaxDistance: {3}\nMinDistance: {4}\nViewAngle: {5}\nModelLod: {6}\nModelApparentSize: {7}",
-				Help,
-				Graphics.Eye,
-				Graphics.LookAt,
-				Graphics.MaxCamDistance,
-				Graphics.MinCamDistance,
-				Graphics.Zoom,
-				Torus.LodTarget,
-				Torus.ApparentSize
-			);
-
-			// handle undrawable characters for the specified font(like the infinity symbol)
+			// handle undrawable characters for the specified font (like the infinity symbol)
 			try
 			{
-				Graphics.DrawText(MyMenuText, Font, new Vector2(50, 50));
+				var MyHud = $@"
+Camera controls:
+Dolly  -  Wheel
+Zoom   -  Left-CTRL-wheel
+Truck  -  Left-drag 
+Rotate -  Right-drag
+Pan    -  Left-CTRL-left-drag
+Reset  -  Esc
+Fine control  -  Left-Shift
+
+Eye: {Graphics.Eye}
+LookAt: {Graphics.LookAt}
+MaxDistance: {Graphics.MaxCamDistance}
+MinDistance: {Graphics.MinCamDistance}
+ViewAngle: {Graphics.Zoom}
+ModelLod: {Torus.LodTarget}
+ModelApparentSize: {Torus.ApparentSize}";
+
+				Graphics.DrawText(MyHud, Font, new Vector2(50, 50));
 			}
 			catch { }
 		}

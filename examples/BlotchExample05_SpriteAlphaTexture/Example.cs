@@ -28,20 +28,6 @@ namespace BlotchExample
 		Texture2D MyTexture;
 
 		/// <summary>
-		/// The help menu text that we draw in the window
-		/// </summary>
-		string Help = @"
-Camera controls:
-Dolly  -  Wheel
-Zoom   -  Left-CTRL-wheel
-Truck  -  Left-drag 
-Rotate -  Right-drag
-Pan    -  Left-CTRL-left-drag
-Reset  -  Esc
-Fine control  -  Left-Shift
-";
-
-		/// <summary>
 		/// Same as BasicEffect, but also does alpha test (and has a AlphaTestThreshold variable)
 		/// Note that this does NOT inherit from BasicEffect and cannot be used in its place
 		/// </summary>
@@ -102,8 +88,7 @@ Fine control  -  Left-Shift
 			// Put your periodic code here
 			//
 
-			// Handle the standard mouse and keystroke functions. (Don't call this if you want some other behavior
-			// of mouse and keys.)
+			// Handle the standard mouse and keystroke functions. (This is very configurable)
 			Graphics.DoDefaultGui();
 
 			//
@@ -112,21 +97,28 @@ Fine control  -  Left-Shift
 
 			Torus.Draw();
 
-			var MyMenuText = String.Format("{0}\nEye: {1}\nLookAt: {2}\nMaxDistance: {3}\nMinDistance: {4}\nViewAngle: {5}\nModelLod: {6}\nModelApparentSize: {7}",
-				Help,
-				Graphics.Eye,
-				Graphics.LookAt,
-				Graphics.MaxCamDistance,
-				Graphics.MinCamDistance,
-				Graphics.Zoom,
-				Torus.LodTarget,
-				Torus.ApparentSize
-			);
-
-			// handle undrawable characters for the specified font(like the infinity symbol)
+			// handle undrawable characters for the specified font (like the infinity symbol)
 			try
 			{
-				Graphics.DrawText(MyMenuText, Font, new Vector2(50, 50));
+				var MyHud = $@"
+Camera controls:
+Dolly  -  Wheel
+Zoom   -  Left-CTRL-wheel
+Truck  -  Left-drag 
+Rotate -  Right-drag
+Pan    -  Left-CTRL-left-drag
+Reset  -  Esc
+Fine control  -  Left-Shift
+
+Eye: {Graphics.Eye}
+LookAt: {Graphics.LookAt}
+MaxDistance: {Graphics.MaxCamDistance}
+MinDistance: {Graphics.MinCamDistance}
+ViewAngle: {Graphics.Zoom}
+ModelLod: {Torus.LodTarget}
+ModelApparentSize: {Torus.ApparentSize}";
+
+				Graphics.DrawText(MyHud, Font, new Vector2(50, 50));
 			}
 			catch { }
 		}
