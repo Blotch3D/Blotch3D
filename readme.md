@@ -728,9 +728,8 @@ because that's what gives matrices the power to also shear, rotate, and
 scale a model about the origin. This is because those operations affect
 each vertex differently depending on its relationship to the origin.
 (And since matrixes can be combined by multiplying them, we can, for
-example, rotate a model in the model coordinate system, and then
-translate it to a world coordinate system so that it rotates around its
-own model origin.)
+example, rotate a model before it has been translated, and then
+translate it so that it rotates locally around its own model origin.)
 
 If we want to scale (stretch) the X relative to the origin, we can
 multiply the X of each vertex by 2.
@@ -904,7 +903,7 @@ polygon meet. That is, a corner of a polygon. A corner of a model. Most
 visible models are described as a set of vertices. Each vertex can have
 a color, texture coordinate, and normal. Pixels across the face of a
 polygon are (typically) interpolated from the vertex color, texture, and
-normal values.
+normal values of the vertices.
 
 Ambient lighting
 
@@ -916,18 +915,20 @@ Diffuse lighting
 
 Directional or point source lighting. You can have multiple directional
 or point light sources. Its intensity depends on the orientation of the
-polygon relative to the light.
+polygon relative to the light. Specifically, it depends on the normals
+of the vertices of that polygon, and the light.
 
 Texture
 
 A 2D image applied to the surface of a model. For this to work, each
 vertex of the model must have a texture coordinate associated with it,
-which is an X,Y coordinate of the 2D bitmap image that should be aligned
-with that vertex. Pixels across the surface of a polygon are
-interpolated from the texture coordinates specified for each vertex. To
-discriminate a texture's (X,Y) coordinate from a vertex's 3D (X, Y, Z)
-coordinate, texture (X,Y) is more often called the texture's (U,V)
-coordinate.
+which is an X,Y value that varies between (0, 0) and (1, 1) which
+indicates a position within the 2D bitmap image associated with that
+sprite, that should be aligned with that vertex. Pixels across the
+surface of a polygon are interpolated from the texture coordinates
+specified for each vertex. A texture's (X,Y) coordinate is referred to
+as its (U,V) coordinate to discriminate it from 3D coordinates of
+vertices.
 
 Normal
 
@@ -936,12 +937,13 @@ to a surface. In 3D graphics, \"normal\" means a vector that indicates
 from what direction light will cause a surface to be brightest. Normally
 they would mean the same thing. However, by defining a normal at some
 angle other than perpendicular, you can somewhat cause the illusion that
-a surface lies at a different angle. Each vertex of a polygon has a
-normal vector associated with it and the brightness across the surface
-of a polygon is interpolated from the normals of its vertices. So, a
-single flat polygon can have a gradient of brightness across it giving
-the illusion of curvature. In this way a model composed of fewer
-polygons can still be made to look quite smooth.
+a surface lies at a different angle, because of the way the brain
+interprets an image. Each vertex of a polygon has a normal vector
+associated with it and the brightness across the surface of a polygon is
+interpolated from the normals of its vertices. So, a single flat polygon
+can have a gradient of brightness across it giving the illusion of
+curvature. In this way a model composed of fewer polygons can still be
+made to look quite smooth.
 
 X-axis
 
@@ -1006,8 +1008,7 @@ An array of numbers that can describe a difference, or transform, in one
 coordinate system from another. Each sprite has a matrix that defines
 its location, rotation, scale, shear etc. within the coordinate system
 of its parent sprite, or within an untransformed coordinate system if
-there is no parent. See [Dynamically changing a sprite's orientation and
-position](#setting-and-dynamically-changing-a-sprites-scale-orientation-and-position).
+there is no parent.
 
 Frame
 
@@ -1022,26 +1023,27 @@ over the farther pixel in the 2D display. The depth buffer is an array
 with one element per 2D window pixel, where each element is (typically)
 a 32-bit floating point value indicating the last drawn nearest (to the
 camera) depth of that point. In that way pixels that are farther away
-need not be drawn. NearClip defines the nearest distance kept track of,
-and FarClip defines the farthest (objects outside that range are not
-drawn). If the range is too large, then limited floating point
-resolution in the 32-bit distance value will cause artifacts. See the
-troubleshooting question about depth. You can disable the depth testing
-for special cases (see the troubleshooting question about disabling the
-depth buffer). See BlGraphicsDeviceManager.NearClip,
-BlGraphicsDeviceManager.FarClip. and search the web for MonoGame depth
-information.
+need not and should not be drawn. NearClip defines what a depth value of
+zero means (the nearest distance kept track of), and FarClip defines
+what a depth value of the maximum floating point value means (the
+farthest). Objects outside that range are not drawn. If the range is too
+large, then limited floating point resolution in the 32-bit distance
+value will cause artifacts. See the troubleshooting question about
+depth. You can disable the depth testing for special cases (see the
+troubleshooting question about disabling the depth buffer). See
+BlGraphicsDeviceManager.NearClip, BlGraphicsDeviceManager.FarClip. and
+search the web for MonoGame depth information.
 
 Near clipping plane (BlGraphicsDeviceManager.NearClip)
 
 The distance from the camera at which a depth buffer element is equal to
-zero. Nearer surfaces are not drawn.
+zero. Nearer surfaces are not drawn. See 'Depth buffer'.
 
 Far clipping plane (BlGraphicsDeviceManager.FarClip)
 
 The distance from the camera at which a depth buffer element is equal to
 the maximum possible floating-point value. Farther surfaces are not
-drawn.
+drawn. See 'Depth buffer'.
 
 Model space
 
@@ -1108,11 +1110,13 @@ A: The floating-point precision limitation of the depth buffer can cause
 this. Disable or set limits on auto-clipping in one or both of NearClip
 and FarClip, and otherwise try increasing your near clip and/or
 decreasing your far clip so the depth buffer doesn't have to cover so
-much dynamic range.
+much dynamic range. In some cases you might disable the depth buffer.
+See the answer to the question on a sprite being outside the depth
+buffer.
 
 Q: I have a sprite that I want always to be visible, but I think it's
 invisible because it's outside the depth buffer, but I don't want to
-change the clipping planes just for that sprite (NearClip and FarClip).
+change the clipping planes (NearClip and FarClip) just for that sprite.
 
 A: Try disabling the depth buffer just for that sprite with a
 \"Graphics.GraphicsDevice.DepthStencilState =
@@ -1131,17 +1135,16 @@ values have a limited number of bits. Normally the inaccuracy is too
 small to matter. But if you repeatedly do it to the same matrix, it will
 eventually become noticeable. Try changing your math so that a new
 matrix is created from scratch each frame, or at least created every
-several hundred frames. For example, let's say you want to slightly
-rotate a sprite every frame by the same amount. You can either create a
-new rotation matrix from scratch every frame from a simple float scalar
-angle value you are regularly incrementing, or you can multiply the
-existing matrix by a persistent rotation matrix you created initially.
-The former method is more precise, but the latter is less CPU intensive
-because creating a rotation matrix requires that transcendental
-functions be called, but multiplying existing matrices does not. A good
-compromise is to use a combination of both, if possible. Specifically,
-multiply by a rotation matrix most of the time, but on occasion recreate
-the sprite's matrix directly from the scalar angle value.
+several hundred frames (to reduce CPU usage). For example, let's say you
+want to slightly rotate a sprite every frame by the same amount. You can
+either create a new rotation matrix from scratch every frame, or you can
+multiply the existing matrix by a persistent rotation matrix you created
+initially. The former method is more precise but takes a lot more CPU,
+and latter is less CPU intensive but suffers from the eventual visible
+floating point innaccuracy. A good compromise is to use a combination of
+both, if possible. Specifically, multiply by the same rotation matrix
+most of the time, but on occasion recreate the sprite's matrix directly
+from the scalar angle value that you've been incrementing.
 
 Q: I'm using SetCameraToSprite to implement cockpit view, but when the
 sprite moves, the camera lags from the sprite's position.
