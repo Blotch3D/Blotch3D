@@ -154,6 +154,11 @@ To develop with Blotch3D...
     creating projects, adding Blotch3D to an existing project, or
     building for another platform.
 
+If for some reason the projects can't find the MonoGame DLLs, you will
+need to change the reference to them in the projects. The MonoGame SDK
+installer normally puts them in "\\Program Files
+(x86)\\MonoGame\\v3.0\\Assemblies\\Windows".
+
 If you are using Visual Studio 2019 and you want to import models,
 fonts, etc., you may not be able to run the MonoGame content manager
 (pipeline tool) by double-clicking the 'Content.mgcb' file in a project.
@@ -575,7 +580,7 @@ like any other texture, you will not see through the translucent pixels
 when they happen to be chronologically drawn *before* anything farther
 away, because drawing a surface also updates the depth buffer (see Depth
 Buffer in the glossary). Since the depth buffer records the nearer
-pixel, it prevents further pixels from being drawn afterward. For some
+pixel, it prevents farther pixels from being drawn afterward. For some
 translucent textures the artifacts can be negligible, or your particular
 application may avoid the artifacts entirely because of camera
 constraints, sprite position constraints, and drawing order. In those
