@@ -87,9 +87,12 @@ You can\...
 
 -   All other MonoGame features remain available.
 
--   Build for many platforms. Currently supports all Microsoft Windows
-    platforms, iOS, Android, MacOS, Linux, PS4, PSVita, Xbox One, and
-    Switch.
+-   You can develop Blotch3D apps on Windows, MacOS, and Linux. Blotch3D
+    apps can be built for any Microsoft Windows platforms, iOS, Android,
+    MacOS, Linux, PS4, PSVita, Xbox One, and Switch.
+
+Overview
+========
 
 Blotch3D sits on top of MonoGame and all MonoGame's features are still
 available. MonoGame is a widely used 3D library for C\#. It is open
@@ -155,15 +158,16 @@ To develop with Blotch3D...
     building for another platform.
 
 If for some reason the projects can't find the MonoGame DLLs, you will
-need to change the reference to them in the projects. The MonoGame SDK
-installer normally puts them in "\\Program Files
+need to change the reference to them in the projects. For Windows the
+MonoGame SDK installer normally puts them in "\\Program Files
 (x86)\\MonoGame\\v3.0\\Assemblies\\Windows".
 
 If you are using Visual Studio 2019 and you want to import models,
 fonts, etc., you may not be able to run the MonoGame content manager
 (pipeline tool) by double-clicking the 'Content.mgcb' file in a project.
-If that's the case, you can just run it directly. Typically the path is
-"\\Program Files (x86)\\MSBuild\\MonoGame\\v3.0\\Tools\\Pipeline.exe".
+If that's the case, you can just run it directly. Typically, the Windows
+path is "\\Program Files
+(x86)\\MSBuild\\MonoGame\\v3.0\\Tools\\Pipeline.exe".
 
 If the content manager (pipeline tool) complains of not having a DLL,
 get the installer for "Visual C++ Redistributable for Visual Studio

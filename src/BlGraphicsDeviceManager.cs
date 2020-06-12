@@ -196,12 +196,12 @@ namespace Blotch
 		/// </summary>
 		public double Zoom=45;
 		/// <summary>
-		/// The aspect ratio.
+		/// The aspect ratio. if zero, then aspect ratio follows window aspect ratio.
 		/// </summary>
 		public double Aspect=0;
 
 		/// <summary>
-		/// Current aspect ratio. Same as #Aspect unless #Aspect==0.
+		/// Current readonly aspect ratio. Same as #Aspect unless #Aspect==0.
 		/// </summary>
 		public double CurrentAspect { get; private set; }
 
@@ -220,11 +220,11 @@ namespace Blotch
 		/// </summary>
 		public double FarClip = 0;
 		/// <summary>
-		/// Current value of near clipping plane. See #NearClip.
+		/// Current readonly value of near clipping plane. See #NearClip.
 		/// </summary>
 		public double CurrentNearClip {get; private set;}
 		/// <summary>
-		/// Current value of far clipping plane. See #FarClip.
+		/// Current readonly value of far clipping plane. See #FarClip.
 		/// </summary>
 		public double CurrentFarClip { get; private set; }
 
