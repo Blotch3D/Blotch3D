@@ -173,7 +173,8 @@ If the content manager (pipeline tool) complains of not having a DLL,
 get the installer for "Visual C++ Redistributable for Visual Studio
 2012" for your platform from
 <https://www.microsoft.com/en-us/download/details.aspx?id=30679> and run
-it with the default settings. Do not get a later version.
+it with the default settings. Later versions (than 2012) do not have the
+necessary DLL.
 
 Also for VS2019, if you want to use the MonoGame project wizard, you may
 need to run it via a command line. See:
@@ -421,13 +422,25 @@ programmatically. See the geometry examples and that class for more
 information. A few primitive models are also included with Blotch3D.
 They can be used as is done in the examples that use them if the
 Blotch3D project is included in your solution and the reference's 'Copy
-local' flag is set.
+local' flag is set, or just add the XNB file to your project and set its
+'copy if newer' or 'copy always' option.
 
 You can also convert standard 3D model files, fonts, etc. to "XNB" files
 for use by your MonoGame project. The MonoGame content manager (pipeline
 tool) is used to make this conversion. This is the reason the Monogame
 SDK must be installed rather than the NuGet package, which does not
 include the pipeline manager.
+
+There are countless standard 3D models that can be downloaded, or you
+can create one from scratch. To create one from scratch, if you don't
+need a texture image on the model you may be able to get by with the
+ultra-simple Tinkercad on-line modeler. It takes only a few minutes to
+learn to use it. If you do need an image texture on the model or other
+more advanced features, you can use Blender. Blender is a full featured
+and free professional modeler, but with a fairly steep learning curve.
+To create the texture map with Blender, see one of the countless
+tutorials online like <https://www.youtube.com/watch?v=2xTzJIaKQFY> or
+<https://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/UV_Map_Basics> .
 
 The Blotch3D project is already set up with the pipeline manager to
 convert the several primitive models to XNB files when Blotch3D is
@@ -447,12 +460,11 @@ existing non-MonoGame projects, and certainly not necessary.
 Since typically such standard file types need to be converted to XNB
 files only once, one can consider it a separate manual step that should
 be done immediately after creating, choosing, or changing the standard
-resource during development. For example, after creating a 3D model with
-a 3D modeler, run it through the pipeline manager to create your XNB
-file. Then add that XNB file to your project and set its project
-properties so it is copied to the output folder for loading at run time.
-See <http://www.monogame.net/documentation/?page=MGCB> for more
-information.
+resource during development. For example, after downloading or creating
+a 3D model, run it through the pipeline manager to create your XNB file.
+Then add that XNB file to your project and set its project properties so
+it is copied to the output folder for loading at run time. See
+<http://www.monogame.net/documentation/?page=MGCB> for more information.
 
 You can even programmatically call the pipeline tool, or even call
 methods directly in the MonoGame.Framework.Content.Pipeline.dll to do
@@ -461,13 +473,7 @@ support development. See
 https://community.monogame.net/t/building-and-loading-content-at-runtime/10849
 for more information. (And speaking of importing files programmatically,
 you can use the BlGraphicsDeviceManager.LoadFromImageFile method to load
-image files directly, probably from most any platform.)
-
-To create a new model file, it is recommended you use the Blender 3D
-modeler. You can also instruct Blender to include texture (UV) mapping
-by using one of the countless tutorials online, like
-<https://www.youtube.com/watch?v=2xTzJIaKQFY> or
-<https://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/UV_Map_Basics> .
+image files directly, probably on most any platform.)
 
 Particles
 =========
