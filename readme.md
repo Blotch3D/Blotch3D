@@ -179,7 +179,7 @@ necessary DLL.
 Also for VS2019, if you want to use the MonoGame project wizard, you may
 need to run it via a command line. See:
 
-<https://community.monogame.net/t/monogame-3-7-1-and-visual-studio-2019-release/11496>.
+<https://community.monogame.net/t/monogame-3-7-1-and-visual-studio-2019-release/11496>
 
 -and-
 
@@ -453,9 +453,11 @@ file to a project's output folder, where the program can load it.
 When you create a new MonoGame project with the wizard, it sets up a
 "Content.mgcb" file in the new project that manages your content and
 runs the MonoGame pipeline manager as needed or when you double-click
-"Content.mgcb" to add more content. That's fine for projects created
-with the project wizard. But it is a pain to add this feature to
-existing non-MonoGame projects, and certainly not necessary.
+"Content.mgcb" to add more content (but see the [Quick start for
+Windows](#quick-start-for-windows) section if you are using Visual
+Studio 2019). That's fine for projects created with the project wizard.
+But it is a pain to add this feature to existing non-MonoGame projects,
+and certainly not necessary.
 
 Since typically such standard file types need to be converted to XNB
 files only once, one can consider it a separate manual step that should
@@ -470,7 +472,7 @@ You can even programmatically call the pipeline tool, or even call
 methods directly in the MonoGame.Framework.Content.Pipeline.dll to do
 the conversion at run-time, but only on target platforms that would also
 support development. See
-https://community.monogame.net/t/building-and-loading-content-at-runtime/10849
+<https://community.monogame.net/t/building-and-loading-content-at-runtime/10849>
 for more information. (And speaking of importing files programmatically,
 you can use the BlGraphicsDeviceManager.LoadFromImageFile method to load
 image files directly, probably on most any platform.)
@@ -689,18 +691,22 @@ Setting and dynamically changing a sprite's scale, orientation, and position
 Each sprite has a "Matrix" member. The Matrix member defines the
 sprite's orientation, scale, position, etc. relative to its parent
 sprite, or to an unmodified coordinate system if there is no parent.
+
+When you change anything about a sprite's matrix, all its descendants
+(its subsprites, and their subsprites, etc.) automatically follow that
+change. That is, subsprites reside in the parent sprite's coordinate
+system. For example, if a child sprite's matrix scales it by 3, and its
+parent sprite's matrix scales by 4, then the child sprite will be scaled
+by 12 in world space. Likewise, rotation, shear, and position are
+inherited, as well. In this way you can construct complex objects
+(sprite trees) and not worry about each individual part as you alter the
+orientation and position of that object (i.e. the topmost sprite).
+
 There are many static and instance methods of the Matrix class that let
 you easily set and change the scaling, position, rotation, etc. of a
 matrix. For example, to set the scale, assign the sprite's Matrix to
 Matrix.CreateScale(). You can also create matrices by multiplying
 existing matrices or create them piecemeal.
-
-When you change anything about a sprite's matrix, you also change it for
-its child sprites, if any. That is, subsprites reside in the parent
-sprite's coordinate system. For example, if a child sprite's matrix
-scales it by 3, and its parent sprite's matrix scales by 4, then the
-child sprite will be scaled by 12 in world space. Likewise, rotation,
-shear, and position are inherited, as well.
 
 There are also static and instance Matrix methods and operator overloads
 to "multiply" matrices to form a single matrix which combines the
@@ -721,8 +727,8 @@ Matrix internals
 ================
 
 Read this section only if you want a deeper understanding of altering a
-sprite's orientation, position, etc. by creating and editing the matrix
-piecemeal.
+sprite's orientation, position, etc. than is explained in the previous
+section.
 
 Here we'll introduce the internals of 2D matrices. 3D matrices simply
 have one more dimension.
