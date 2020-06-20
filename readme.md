@@ -189,7 +189,7 @@ Deficiencies and Alternatives
 =============================
 
 Although any feature can certainly be implemented by the app developer,
-notable features directly lacking in Blotch3D are...
+notable features directly lacking in Blotch3D/MonoGame are...
 
 -   Shadows (although they might be added in the future)
 
@@ -203,7 +203,11 @@ notable features directly lacking in Blotch3D are...
 
 -   A NuGet package
 
-One alternative is UrhoSharp. I haven't looked at it in detail, but
+I haven't investigated it, but MonoGame.Extended seems to provide much
+of what Blotch3D provides and more. See
+[https://www.monogameextended.net](https://www.monogameextended.net/).
+
+Another alternative is UrhoSharp. I haven't looked at it in detail, but
 below are listed some of its advantages.
 
 -   UrhoSharp has a NuGet package
