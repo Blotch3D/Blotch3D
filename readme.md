@@ -203,8 +203,12 @@ notable features directly lacking in Blotch3D/MonoGame are...
 
 -   A NuGet package
 
-I haven't investigated it, but MonoGame.Extended seems to provide much
-of what Blotch3D provides and more. See
+-   A .NET Standard library (because of limitations in the current
+    release of MonoGame)
+
+I haven't investigated it, but MonoGame.Extended seems to provide some
+but not all of the same features as Blotch3D. I'd recommend using both
+together. See
 [https://www.monogameextended.net](https://www.monogameextended.net/).
 
 Another alternative is UrhoSharp. I haven't looked at it in detail, but
