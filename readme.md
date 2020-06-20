@@ -207,8 +207,10 @@ notable features directly lacking in Blotch3D/MonoGame are...
     release of MonoGame)
 
 I haven't investigated it, but MonoGame.Extended seems to provide some
-but not all of the same features as Blotch3D. I'd recommend using both
-together. See
+but not all of the same features as Blotch3D. You could even try using
+both together, but I don't know any details on how you would share
+things like the MonoGame 'Game' object and the GraphicsDeviceManager
+object. See
 [https://www.monogameextended.net](https://www.monogameextended.net/).
 
 Another alternative is UrhoSharp. I haven't looked at it in detail, but
