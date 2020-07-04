@@ -363,9 +363,10 @@ section for more information.
 The easiest way to set the camera position and orientation is to
 periodically call Graphics.DoDefaultGui(). Typically, this is done in
 the FrameProc method, but could be done in the FrameDraw method as well.
-If you want other ways to control the camera, then see the various
-Graphics.AdjustCamera... methods, the Graphics.SetCameraToSprite method,
-and the View, Eye, and LookAt fields.
+In any case call it before anything is drawn so that the camera is
+correct for subsequent drawing. If you want other ways to control the
+camera, then see the various Graphics.AdjustCamera... methods, the
+Graphics.SetCameraToSprite method, and the View, Eye, and LookAt fields.
 
 BlWindow3D derives from MonoGame's "Game" class, so you can also
 override other Game class overridable methods. Just be sure to call the
@@ -573,13 +574,13 @@ compile and load it as shown above. Just be sure it is based on the
 original HLSL code for BasicEffect or one of the provided custom
 shaders.
 
-Documentation for individual custom shaders follow.
+Documentation for individual custom shaders follows.
 
 Translucency with the BlBasicEffectAlphaTest shader
 ===================================================
 
-Each pixel of a texture has a red, a green, a blue intensity value. Some
-textures also have an "alpha" value for each pixel, to indicate how
+Each pixel of a texture has a red, a green, and a blue intensity value.
+Some textures also have an "alpha" value for each pixel, to indicate how
 translucent the pixel should be. Specifically, the alpha value indicates
 how much of any coloration behind that pixel (farther from the viewer)
 should show through the pixel. Alpha values of 1 indicate the texture
