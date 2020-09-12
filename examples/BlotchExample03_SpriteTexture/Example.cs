@@ -50,7 +50,7 @@ namespace BlotchExample
 			Torus.LODs.Add(TorusModel);
 
 			// Load the image into a Texture2D
-			MyTexture = Graphics.LoadFromImageFile("image.png");
+			MyTexture = Graphics.LoadFromImageFile("Content/image.png");
 
 			// Set the sprite's mipmap
 			// NOTE: The texture mapping is up to the model designer, because

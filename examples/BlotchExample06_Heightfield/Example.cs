@@ -44,7 +44,7 @@ namespace BlotchExample
 			Font = MyContent.Load<SpriteFont>("Arial14");
 
 			// load the terrain image
-			var terrain = Graphics.LoadFromImageFile("terrain.png", true);
+			var terrain = Graphics.LoadFromImageFile("Content/terrain.png", true);
 
 			// The vertices of the surface
 			var SurfaceArray = BlGeometry.CreatePlanarSurface(terrain);

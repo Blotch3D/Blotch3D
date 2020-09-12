@@ -9,8 +9,8 @@ tasks in developing real-time 3D applications and games.
 
 You can\...
 
--   Load standard 3D model file types as "sprites" and display and move
-    thousands of them in 3D at high frame rates.
+-   Convert and then load standard 3D model file types as "sprites" and
+    display and move thousands of them in 3D at high frame rates.
 
 -   Programmatically create a wide variety of sprite shapes.
 
@@ -68,7 +68,7 @@ You can\...
 
 -   Dynamically transform a texture on a surface.
 
--   Use with WPF and WinForms on Microsoft Windows. (Also see
+-   Use with WPF Core and WinForms Core. (Also see
     <https://github.com/sqrMin1/MonoGame.Forms>)
 
 -   Detect sprite radius collisions.
@@ -86,6 +86,8 @@ You can\...
     as a template.
 
 -   All other MonoGame features remain available.
+
+-   Library is .NET Standard
 
 -   You can develop Blotch3D apps on Windows, MacOS, and Linux. Blotch3D
     apps can be built for any Microsoft Windows platforms, iOS, Android,
@@ -141,33 +143,37 @@ target system.
 
 To develop with Blotch3D...
 
-1.  Get the installer for MonoGame SDK for Visual Studio from
-    <http://www.monogame.net/downloads> and run it with the default
-    settings. (Last tested release was 3.7.1.)
+1.  Download the Blotch3D repository, or clone it.
 
-2.  Download the Blotch3D repository, or clone it.
-
-3.  Open the Visual Studio solution file (Blotch3D.sln) and build and
+2.  Open the Visual Studio solution file (Blotch3D.sln) and build and
     run the example projects.
 
-4.  Use IntelliSense or see "Blotch3D.chm" for the reference
+3.  Use IntelliSense or see "Blotch3D.chm" for the reference
     documentation.
 
-5.  See [Creating a new project](#creating-a-new-project) for details on
+4.  See [Creating a new project](#creating-a-new-project) for details on
     creating projects, adding Blotch3D to an existing project, or
     building for another platform.
 
-If for some reason the projects can't find the MonoGame DLLs, you will
-need to change the reference to them in the projects. For Windows the
-MonoGame SDK installer normally puts them in "\\Program Files
-(x86)\\MonoGame\\v3.0\\Assemblies\\Windows".
+To convert existing models, create font descriptions, etc., you'll need
+to use the Monogame Pipeline tool. See
+<https://docs.monogame.net/articles/tools/mgcb.html>. The docs well
+describe how to use it, but in essence you do this:
 
-If you are using Visual Studio 2019 and you want to import models,
-fonts, etc., you may not be able to run the MonoGame content manager
-(pipeline tool) by double-clicking the 'Content.mgcb' file in a project.
-If that's the case, you can just run it directly. Typically, the Windows
-path is "\\Program Files
-(x86)\\MSBuild\\MonoGame\\v3.0\\Tools\\Pipeline.exe".
+1.  Run it from the command line with: mgcb\_editor
+
+2.  Use the 'New' menu item to create a new project (mgcb) file
+
+3.  Open a model by right-clicking the project in the 'Project' pane and
+    selecting the 'Add' item
+
+4.  Build the items by right-clicking the project in the 'Project' pane
+    and selecting rebuild. Note the output folders in the 'Properties'
+    pane.
+
+To create new shaders you'll need the Monogame effects compiler. See
+<https://docs.monogame.net/articles/tools/mgfxc.html>. See the
+make\_effects.bat file for examples of building the existing shaders.
 
 If the content manager (pipeline tool) complains of not having a DLL,
 get the installer for "Visual C++ Redistributable for Visual Studio
@@ -175,15 +181,6 @@ get the installer for "Visual C++ Redistributable for Visual Studio
 <https://www.microsoft.com/en-us/download/details.aspx?id=30679> and run
 it with the default settings. Later versions (than 2012) do not have the
 necessary DLL.
-
-Also for VS2019, if you want to use the MonoGame project wizard, you may
-need to run it via a command line. See:
-
-<https://community.monogame.net/t/monogame-3-7-1-and-visual-studio-2019-release/11496>
-
--and-
-
-<https://github.com/MonoGame/MonoGame/issues/6695>
 
 Deficiencies and Alternatives
 =============================
@@ -203,14 +200,12 @@ notable features directly lacking in Blotch3D/MonoGame are...
 
 -   A NuGet package
 
--   A .NET Standard library (because of limitations in the current
-    release of MonoGame)
-
 I haven't investigated it, but MonoGame.Extended seems to provide some
 but not all of the same features as Blotch3D. You could even try using
-both together, but I don't know any details on how you would share
-things like the MonoGame 'Game' object and the GraphicsDeviceManager
-object. See
+both together, but if you do that then make sure they were built with
+the same version of Monogame, and I don't know any details on how you
+would share things like the MonoGame 'Game' object and the
+GraphicsDeviceManager object. See
 [https://www.monogameextended.net](https://www.monogameextended.net/).
 
 Another alternative is UrhoSharp. I haven't looked at it in detail, but
@@ -255,26 +250,14 @@ Creating a new project
 (See the [Quick start for Windows](#features) section to set everything
 up for development)
 
-The easiest way to create a new project for Windows is to copy an
-existing example project (like the basic example) and then rename it
-using Visual Studio.
+You can create a new .NET Core/WPF Core/Windows Forms Core project and
+add a reference to Blotch3D.
 
-To add MonoGame + Blotch3D to an existing Windows project, add a
-reference to the appropriate MonoGame binary (typically in "\\Program
-Files (x86)\\MSBuild\\MonoGame\\v3.0\\\..."). Also add a reference to,
-or the source of, Blotch3D.
+To add MonoGame + Blotch3D to an existing Windows Core project, add a
+reference to Blotch3D.
 
-NOTE: In Visual Studio, when one assembly references another assembly,
-by default Visual Studio only copies the DLLs of the referenced project
-to the output folder of the referring project. When a referenced library
-has other files, like content files, then not only will you need to set
-each file's 'Copy always' or 'Copy if newer' flag so it gets copied to
-that assembly's output folder, you will also need to make sure all
-referring libraries or at least the highest level app project still
-references it even if it doesn't directly use it, and set the 'Copy
-local' flag of the reference to 'true' or 'yes'. This makes sure any
-extra file (besides the DLLs) in the referenced project are included in
-the output folder of that referring project.
+For .NET Framework projects, add a reference to Blotch3D and also add
+the NuGet package 'MonoGame.Framework.DesktopGL'
 
 To create a project for another platform besides Microsoft Windows:
 First you will need to install any Visual Studio add-ons, etc. for the
@@ -438,9 +421,8 @@ local' flag is set, or just add the XNB file to your project and set its
 
 You can also convert standard 3D model files, fonts, etc. to "XNB" files
 for use by your MonoGame project. The MonoGame content manager (pipeline
-tool) is used to make this conversion. This is the reason the Monogame
-SDK must be installed rather than the NuGet package, which does not
-include the pipeline manager.
+tool) is used to make this conversion. See the [Quick start for
+Windows](#quick-start-for-windows) section for details.
 
 There are countless standard 3D models that can be downloaded, or you
 can create one from scratch. To create one from scratch, if you don't
@@ -453,31 +435,13 @@ To create the texture map with Blender, see one of the countless
 tutorials online like <https://www.youtube.com/watch?v=2xTzJIaKQFY> or
 <https://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/UV_Map_Basics> .
 
-The Blotch3D project is already set up with the pipeline manager to
-convert the several primitive models to XNB files when Blotch3D is
-built. You can double-click "Content.mgcb" in the Blotch3D project (but
-see 'Quick Start for Windows' if you are using Visual Studio 2019) to
-run the pipeline manager and add more standard files and resources and
-to convert to XNB outside of the build process. You can also copy an XNB
-file to a project's output folder, where the program can load it.
-
-When you create a new MonoGame project with the wizard, it sets up a
-"Content.mgcb" file in the new project that manages your content and
-runs the MonoGame pipeline manager as needed or when you double-click
-"Content.mgcb" to add more content (but see the [Quick start for
-Windows](#quick-start-for-windows) section if you are using Visual
-Studio 2019). That's fine for projects created with the project wizard.
-But it is a pain to add this feature to existing non-MonoGame projects,
-and certainly not necessary.
-
-Since typically such standard file types need to be converted to XNB
-files only once, one can consider it a separate manual step that should
-be done immediately after creating, choosing, or changing the standard
+Since typically standard file types need to be converted to XNB files
+only once, one can consider it a separate manual step that should be
+done immediately after creating, choosing, or changing the standard
 resource during development. For example, after downloading or creating
 a 3D model, run it through the pipeline manager to create your XNB file.
 Then add that XNB file to your project and set its project properties so
-it is copied to the output folder for loading at run time. See
-<http://www.monogame.net/documentation/?page=MGCB> for more information.
+it is copied to the output folder for loading at run time.
 
 You can even programmatically call the pipeline tool, or even call
 methods directly in the MonoGame.Framework.Content.Pipeline.dll to do

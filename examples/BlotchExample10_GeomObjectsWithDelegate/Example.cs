@@ -84,7 +84,7 @@ namespace BlotchExample
 			GeoObj = new BlSprite(Graphics, "geomodel");
 			GeoObj.LODs.Add(geoVertexBuffer);
 			GeoObj.BoundSphere = BlGeometry.GetBoundingSphere(triangles);
-			GeoObj.Mipmap = new BlMipmap(Graphics, Graphics.LoadFromImageFile("image.png"));
+			GeoObj.Mipmap = new BlMipmap(Graphics, Graphics.LoadFromImageFile("Content/image.png"));
 
 			/*
 			// Uncomment this to make insides visible, also.

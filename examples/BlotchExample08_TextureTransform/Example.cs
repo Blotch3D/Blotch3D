@@ -66,7 +66,7 @@ namespace BlotchExample
 			Plane = new BlSprite(Graphics,"Plane");
 
 			// We use a custom effect rather than the default effect
-			BlBasicEffectXformTexture = new BlBasicEffect(Graphics.GraphicsDevice, "Content/BlBasicEffectAlphaTestXformTex.mgfxo");
+			BlBasicEffectXformTexture = new BlBasicEffect(Graphics.GraphicsDevice, "BlBasicEffectAlphaTestXformTexOGL.mgfxo");
 			BlBasicEffectXformTexture.Parameters["AlphaTestThreshold"].SetValue(.5f);
 
 			// Set the delegate
@@ -107,7 +107,7 @@ namespace BlotchExample
 			Plane.LODs.Add(PlaneModel);
 
 			// Load the image into a Texture2D
-			MyTexture = Graphics.LoadFromImageFile("image_with_alpha.png");
+			MyTexture = Graphics.LoadFromImageFile("Content/image_with_alpha.png");
 
 			// Set the sprite's mipmap
 			// NOTE: The texture mapping is up to the model designer, because

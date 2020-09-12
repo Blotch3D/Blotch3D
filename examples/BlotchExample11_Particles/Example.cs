@@ -46,7 +46,7 @@ namespace BlotchExample
 			var particleContent = MyContent.Load<Model>("torus");
 
 			// Load the image into a Texture2D
-			MyTexture = Graphics.LoadFromImageFile("image.png");
+			MyTexture = Graphics.LoadFromImageFile("Content/image.png");
 
 			// The starting matrix for the first particle 
 			var FirstMatrix = Matrix.CreateTranslation(.5f,0,0);

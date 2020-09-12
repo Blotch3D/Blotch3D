@@ -55,7 +55,7 @@ namespace BlotchExample
 			// convert to vertex buffer
 			var geoVertexBuffer = BlGeometry.TrianglesToVertexBuffer(Graphics.GraphicsDevice, geoModel);
 
-			var tex = Graphics.LoadFromImageFile("image.png");
+			var tex = Graphics.LoadFromImageFile("Content/image.png");
 
 			// The sprite we draw in this window
 			GeoObj = new BlSprite(Graphics, "geomodel");

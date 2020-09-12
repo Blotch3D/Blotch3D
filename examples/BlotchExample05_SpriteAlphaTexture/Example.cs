@@ -56,7 +56,7 @@ namespace BlotchExample
 			Torus = new BlSprite(Graphics,"Torus");
 
 			// We use a custom effect rather than the default effect
-			BlBasicEffectAlphaTest = new BlBasicEffect(Graphics.GraphicsDevice, "Content/BlBasicEffectAlphaTest.mgfxo");
+			BlBasicEffectAlphaTest = new BlBasicEffect(Graphics.GraphicsDevice, "BlBasicEffectAlphaTestOGL.mgfxo");
 			BlBasicEffectAlphaTest.Parameters["AlphaTestThreshold"].SetValue(.5f);
 
 			// See Blotch3D documentation for details on translucency
@@ -70,7 +70,7 @@ namespace BlotchExample
 			Torus.LODs.Add(TorusModel);
 
 			// Load the image into a Texture2D
-			MyTexture = Graphics.LoadFromImageFile("image_with_alpha.png");
+			MyTexture = Graphics.LoadFromImageFile("Content/image_with_alpha.png");
 
 			// Set the sprite's mipmap
 			// NOTE: The texture mapping is up to the model designer, because

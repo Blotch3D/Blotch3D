@@ -1,7 +1,7 @@
 
 #----------------------------- Global Properties ----------------------------#
 
-/outputDir:bin/$(Platform)
+/outputDir:./
 /intermediateDir:obj/$(Platform)
 /platform:Windows
 /config:
@@ -12,6 +12,20 @@
 
 
 #---------------------------------- Content ---------------------------------#
+
+#begin arial14.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:arial14.spritefont
+
+#begin CourierNew14.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:CourierNew14.spritefont
 
 #begin icosphere.fbx
 /importer:FbxImporter
@@ -50,6 +64,11 @@
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
 /build:plane.fbx
+
+#begin sample_video.mp4
+/importer:H264Importer
+/processor:VideoProcessor
+/build:sample_video.mp4
 
 #begin tetrahedron.fbx
 /importer:FbxImporter
@@ -202,23 +221,4 @@
 /processorParam:SwapWindingOrder=False
 /processorParam:TextureFormat=Compressed
 /build:uv_sphere_96x48.fbx
-
-#begin arial14.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:arial14.spritefont
-
-#begin CourierNew14.spritefont
-/importer:FontDescriptionImporter
-/processor:FontDescriptionProcessor
-/processorParam:PremultiplyAlpha=True
-/processorParam:TextureFormat=Compressed
-/build:CourierNew14.spritefont
-
-#begin sample_video.mp4
-/importer:H264Importer
-/processor:VideoProcessor
-/build:sample_video.mp4
 
