@@ -38,11 +38,11 @@ namespace BlotchExample
 		/// </summary>
 		protected override void Setup()
 		{
-			// We need to create one ContentManager object for each top-level content folder we'll be
-			// loading things from. Here "Content" is the most senior folder name of the content tree.
-			// (Content [models, fonts, etc.] are added to the project with the Content utility. Double-click
-			// 'Content.mgcb' in solution explorer.). You can create multiple content managers if content
-			// is spread of diverse folders.
+			// Convert models, fonts, images, etc. using the mgcb_editor (see Blotch3D.chm for more info). Converted models,
+			// fonts, images, etc. are kept in a 'content' folder. We need to create one ContentManager object for each top-level
+			// content folder we'll be loading things from. Here "Content" is the most senior folder name of the content tree.
+			// (Content [models, fonts, etc.] are added to the project with the Content utility. You can create multiple content
+			// managers if content is spread over diverse folders.
 			var MyContent = new ContentManager(Services, "Content");
 
 			// The font we will use to draw the menu on the screen.

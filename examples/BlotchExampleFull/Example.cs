@@ -54,6 +54,11 @@ Fine control  -  Left-Shift
 			Graphics.ClearColor = new Microsoft.Xna.Framework.Color();
 			//graphics.AutoRotate = .002;
 
+			// Convert models, fonts, images, etc. using the mgcb_editor (see Blotch3D.chm for more info). Converted models,
+			// fonts, images, etc. are kept in a 'content' folder. We need to create one ContentManager object for each top-level
+			// content folder we'll be loading things from. Here "Content" is the most senior folder name of the content tree.
+			// (Content [models, fonts, etc.] are added to the project with the Content utility. You can create multiple content
+			// managers if content is spread over diverse folders.
 			Content = new ContentManager(Services, "Content");
 
 			Font = Content.Load<SpriteFont>("Arial14");
@@ -139,7 +144,7 @@ Fine control  -  Left-Shift
 			var title = new BlSprite(Graphics, "title");
 			title.LODs.Add(Content.Load<Model>("Plane"));
 			title.Matrix = Matrix.CreateScale(.15f, .05f, .15f);
-			title.Mipmap = new BlMipmap(Graphics,Graphics.TextToTexture("These words are\nin world space", Font, Microsoft.Xna.Framework.Color.Red, Microsoft.Xna.Framework.Color.Transparent));
+			title.Mipmap = new BlMipmap(Graphics,Graphics.TextToTexture("These words are\nin world space.\nThis object has LODs", Font, Microsoft.Xna.Framework.Color.Red, Microsoft.Xna.Framework.Color.Transparent));
 			title.MipmapScale = -1000;
 			title.SetAllMaterialBlack();
 			title.EmissiveColor = new Vector3(1, 1, 1);
