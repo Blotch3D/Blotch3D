@@ -145,12 +145,6 @@ make\_effects.bat file for examples of building the existing shaders.
 Overview
 --------
 
-Reference documentation of Blotch3D (classes, methods, fields,
-properties, etc.) is available through Visual Studio IntelliSense and in
-"doc/Blotch3D.chm" (which includes this readme as its first section).
-Note: To support Doxygen documentation generator, links in the
-IntelliSense comments are preceded with '\#'.
-
 Blotch3D sits on top of MonoGame and all MonoGame's features are still
 available. MonoGame is a widely used 3D library for C\#. It is open
 source, free, fast, cross platform, actively developed by a large
@@ -168,6 +162,12 @@ on-line for other MonoGame documentation and discussions, be sure to
 note the MonoGame version being discussed. Documentation of earlier
 versions may not be compatible with the latest.
 
+Reference documentation of Blotch3D (classes, methods, fields,
+properties, etc.) is available through Visual Studio IntelliSense and in
+"doc/Blotch3D.chm" (which includes this readme as its first section).
+Note: To support Doxygen documentation generator, links in the
+IntelliSense comments are preceded with '\#'.
+
 Note that to support all the platforms there are certain limitations in
 MonoGame. Currently, creating multiple 3D windows can be buggy---unless
 you do it from separate processes. Also, there is no official
@@ -182,68 +182,6 @@ with just a few lines of code. The source file name for each example
 project is Example.cs. You can do a diff between the basic example's
 Example.cs and another example's Example.cs to see what extra code must
 be added to implement the features it demonstrates.
-
-Deficiencies and Alternatives
------------------------------
-
-Although any feature can certainly be implemented by the app developer,
-notable features directly lacking in Blotch3D/MonoGame are...
-
--   Shadows (although they might be added in the future)
-
--   Physics
-
--   Per-face collision detection
-
--   Optimized (tree) collision detection
-
--   More than one 3D window per process
-
--   A NuGet package
-
-I haven't investigated it, but MonoGame.Extended seems to provide some
-but not all of the same features as Blotch3D. You could even try using
-both together, but if you do that then make sure they were built with
-the same version of Monogame, and I don't know any details on how you
-would share things like the MonoGame 'Game' object and the
-GraphicsDeviceManager object. See
-[https://www.monogameextended.net](https://www.monogameextended.net/).
-
-Another alternative is UrhoSharp. I haven't looked at it in detail, but
-below are listed some of its advantages.
-
--   UrhoSharp has a NuGet package
-
--   UrhoSharp supports physics
-
--   UrhoSharp supports octree collision detection
-
--   UrhoSharp supports shadows
-
-A few UrhoSharp disadvantages (compared to Blotch3D) I happened to
-notice are:
-
--   UrhoSharp bare bones code is a bit more complicated than Blotch3D's
-
--   The official UrhoSharp reference documentation is sparse or
-    non-existent
-
--   Although there are third party help and discussions for UrhoSharp,
-    there is notably more for MonoGame (Blotch3D's underlying 3D engine)
-
--   UrhoSharp is notably younger than MonoGame. There seemed to be more
-    recent bug reports.
-
--   UrhoSharp supports less or no programmatic object creation
-
--   There doesn't appear to be an intrinsic texture transform shader
-
--   Particle systems are not as versatile
-
-Finally, a mention of three.js is in order, even though it is JavaScript
-rather than C\#, because it's so full featured yet easy to learn. See
-<https://docs.microsoft.com/en-us/windows/uwp/get-started/get-started-tutorial-game-js3d>
-for Visual Studio-based development of three.js.
 
 Creating a new project
 ----------------------
@@ -497,32 +435,43 @@ set at any time.
 
 For example, the BlBasicEffectAlphaTest shader is used like this:
 
-// Create a BlBasicEffect and specify the shader file (you can also
-specify 'BlBasicEffectAlphaTestOGL.mgfxo' if you are on an OpenGL
-platform)
+// Create a BlBasicEffect and specify the shader file
 
-MyBlBasicEffectAlphaTest = new BlBasicEffect(Graphics.GraphicsDevice,
-"BlBasicEffectAlphaTest.mgfxo");
+// (you can also specify 'BlBasicEffectAlphaTestOGL.mgfxo'
+
+// if you are on an OpenGL platform)
+
+MyEffect = new BlBasicEffect
+
+(
+
+> Graphics.GraphicsDevice,
+>
+> "BlBasicEffectAlphaTest.mgfxo"
+
+);
 
 // Now specify the alpha threshold above which pixels should be drawn.
 
 // This can be done at any time, including from within the below
-delegate
 
-MyBlBasicEffectAlphaTest.Parameters\[\"AlphaTestThreshold\"\].SetValue(.3f);
+// delegate
+
+MyEffect.Parameters\["AlphaTestThreshold"\].SetValue(.3f);
 
 // Specify a SetEffect delegate that sets the custom effect for the
-sprite
+
+// sprite
 
 MyTranslucentSprite.SetEffect = (s,effect) =\>
 
 {
 
-// Setup the standard BasicEffect texture and lighting parameters
-
-s.SetupBasicEffect(MyBlBasicEffectAlphaTest);
-
-return MyBlBasicEffectAlphaTest;
+> // Setup the standard BasicEffect texture and lighting parameters
+>
+> s.SetupBasicEffect(MyEffect);
+>
+> return MyEffect;
 
 };
 
@@ -1060,6 +1009,68 @@ produce the contents of the window. You don't have to understand the
 view and projection matrices, though, because there are higher-level
 functions that control them---like Zoom, aspect ratio, and camera
 position and orientation functions.
+
+Deficiencies and Alternatives
+-----------------------------
+
+Although any feature can certainly be implemented by the app developer,
+notable features directly lacking in Blotch3D/MonoGame are...
+
+-   Shadows (although they might be added in the future)
+
+-   Physics
+
+-   Per-face collision detection
+
+-   Optimized (tree) collision detection
+
+-   More than one 3D window per process
+
+-   A NuGet package
+
+I haven't investigated it, but MonoGame.Extended seems to provide some
+but not all of the same features as Blotch3D. You could even try using
+both together, but if you do that then make sure they were built with
+the same version of Monogame, and I don't know any details on how you
+would share things like the MonoGame 'Game' object and the
+GraphicsDeviceManager object. See
+[https://www.monogameextended.net](https://www.monogameextended.net/).
+
+Another alternative is UrhoSharp. I haven't looked at it in detail, but
+below are listed some of its advantages.
+
+-   UrhoSharp has a NuGet package
+
+-   UrhoSharp supports physics
+
+-   UrhoSharp supports octree collision detection
+
+-   UrhoSharp supports shadows
+
+A few UrhoSharp disadvantages (compared to Blotch3D) I happened to
+notice are:
+
+-   UrhoSharp bare bones code is a bit more complicated than Blotch3D's
+
+-   The official UrhoSharp reference documentation is sparse or
+    non-existent
+
+-   Although there are third party help and discussions for UrhoSharp,
+    there is notably more for MonoGame (Blotch3D's underlying 3D engine)
+
+-   UrhoSharp is notably younger than MonoGame. There seemed to be more
+    recent bug reports.
+
+-   UrhoSharp supports less or no programmatic object creation
+
+-   There doesn't appear to be an intrinsic texture transform shader
+
+-   Particle systems are not as versatile
+
+Finally, a mention of three.js is in order, even though it is JavaScript
+rather than C\#, because it's so full featured yet easy to learn. See
+<https://docs.microsoft.com/en-us/windows/uwp/get-started/get-started-tutorial-game-js3d>
+for Visual Studio-based development of three.js.
 
 Troubleshooting
 ---------------
