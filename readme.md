@@ -435,45 +435,45 @@ set at any time.
 
 For example, the BlBasicEffectAlphaTest shader is used like this:
 
-// Create a BlBasicEffect and specify the shader file
-
-// (you can also specify 'BlBasicEffectAlphaTestOGL.mgfxo'
-
-// if you are on an OpenGL platform)
-
-MyEffect = new BlBasicEffect
-
-(
-
+> // Create a BlBasicEffect and specify the shader file
+>
+> // (you can also specify 'BlBasicEffectAlphaTestOGL.mgfxo'
+>
+> // if you are on an OpenGL platform)
+>
+> MyEffect = new BlBasicEffect
+>
+> (
+>
 > Graphics.GraphicsDevice,
 >
 > "BlBasicEffectAlphaTest.mgfxo"
-
-);
-
-// Now specify the alpha threshold above which pixels should be drawn.
-
-// This can be done at any time, including from within the below
-
-// delegate
-
-MyEffect.Parameters\["AlphaTestThreshold"\].SetValue(.3f);
-
-// Specify a SetEffect delegate that sets the custom effect for the
-
-// sprite
-
-MyTranslucentSprite.SetEffect = (s,effect) =\>
-
-{
-
+>
+> );
+>
+> // Now specify the alpha threshold above which pixels should be drawn.
+>
+> // This can be done at any time, including from within the below
+>
+> // delegate
+>
+> MyEffect.Parameters\["AlphaTestThreshold"\].SetValue(.3f);
+>
+> // Specify a SetEffect delegate that sets the custom effect for the
+>
+> // sprite
+>
+> MyTranslucentSprite.SetEffect = (s,effect) =\>
+>
+> {
+>
 > // Setup the standard BasicEffect texture and lighting parameters
 >
 > s.SetupBasicEffect(MyEffect);
 >
 > return MyEffect;
-
-};
+>
+> };
 
 The shader source code (HLSL) for each BlBasicEffect shader is in the
 same folder as the compiled shader files. It's just a copy of the
