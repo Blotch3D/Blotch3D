@@ -2,7 +2,7 @@ Blotch3D
 ========
 
 Features
-========
+--------
 
 Blotch3D is a high-level C\# library that vastly simplifies many of the
 tasks in developing real-time 3D applications and games.
@@ -87,55 +87,14 @@ You can\...
 
 -   All other MonoGame features remain available.
 
--   Library is .NET Standard
+-   Blotch3D is a .NET Standard Library
 
 -   You can develop Blotch3D apps on Windows, MacOS, and Linux. Blotch3D
     apps can be built for any Microsoft Windows platforms, iOS, Android,
     MacOS, Linux, PS4, PSVita, Xbox One, and Switch.
 
-Overview
-========
-
-Blotch3D sits on top of MonoGame and all MonoGame's features are still
-available. MonoGame is a widely used 3D library for C\#. It is open
-source, free, fast, cross platform, actively developed by a large
-community, and used in many professional games. There is a plethora of
-MonoGame documentation, tutorials, examples, and discussions on line.
-
-Reference documentation of Blotch3D (classes, methods, fields,
-properties, etc.) is available through Visual Studio IntelliSense and in
-"Blotch3D.chm". Note: To support Doxygen documentation generator, links
-in the IntelliSense comments are preceded with '\#'.
-
-See MonoGame.net for the official MonoGame documentation. When searching
-on-line for other MonoGame documentation and discussions, be sure to
-note the MonoGame version being discussed. Documentation of earlier
-versions may not be compatible with the latest.
-
-MonoGame fully implements Microsoft's (no longer supported) XNA 4
-engine, but for multiple platforms. Documentation of earlier versions of
-XNA (versions 2 and 3) will often not be correct. For conversion of XNA
-3 to XNA 4 see
-[http://www.nelsonhurst.com/xna-3-1-to-xna-4-0-cheatsheet/.](http://www.nelsonhurst.com/xna-3-1-to-xna-4-0-cheatsheet/)
-
-Note that to support all the platforms there are certain limitations in
-MonoGame. Currently you can only have one 3D window per process.
-(Creating multiple 3D windows can be buggy---unless you do it from
-separate processes.) Also, there is no official cross-platform way to
-specify an existing window to use as the 3D window---MonoGame must
-create it. See below for details and work-arounds.
-
-The provided Visual Studio solution file contains both the Blotch3D
-library project with source, and the example projects.
-
-Several bare-bones examples demonstrate some of the more common tasks
-with just a few lines of code. The source file name for each example
-project is Example.cs. You can do a diff between the basic example's
-Example.cs and another example's Example.cs to see what extra code must
-be added to implement the features it demonstrates.
-
 Quick start for Windows
-=======================
+-----------------------
 
 To deliver a Blotch3D app for Windows, just deliver the contents of your
 project's output folder. No other software need be installed on the
@@ -156,7 +115,7 @@ To develop with Blotch3D...
     building for another platform.
 
 To convert existing models, create font descriptions, etc., you'll need
-to use the Monogame Pipeline tool. See
+to use the Monogame content manager (pipeline tool). See
 <https://docs.monogame.net/articles/tools/mgcb.html>. The docs well
 describe how to use it, but in essence you do this:
 
@@ -171,19 +130,61 @@ describe how to use it, but in essence you do this:
     and selecting rebuild. Note the output folders in the 'Properties'
     pane.
 
+Previous versions of the content manager (pipeline tool) required some
+VC Redistributable files. The current version (3.8) has changed notably,
+so it might not. In any case, if it complains of not having a DLL, get
+the installer for "Visual C++ Redistributable for Visual Studio 2012"
+(NOT a later version) for your platform from
+<https://www.microsoft.com/en-us/download/details.aspx?id=30679> and run
+it with the default settings.
+
 To create new shaders you'll need the Monogame effects compiler. See
 <https://docs.monogame.net/articles/tools/mgfxc.html>. See the
 make\_effects.bat file for examples of building the existing shaders.
 
-If the content manager (pipeline tool) complains of not having a DLL,
-get the installer for "Visual C++ Redistributable for Visual Studio
-2012" for your platform from
-<https://www.microsoft.com/en-us/download/details.aspx?id=30679> and run
-it with the default settings. Later versions (than 2012) do not have the
-necessary DLL.
+Overview
+--------
+
+Reference documentation of Blotch3D (classes, methods, fields,
+properties, etc.) is available through Visual Studio IntelliSense and in
+"doc/Blotch3D.chm" (which includes this readme as its first section).
+Note: To support Doxygen documentation generator, links in the
+IntelliSense comments are preceded with '\#'.
+
+Blotch3D sits on top of MonoGame and all MonoGame's features are still
+available. MonoGame is a widely used 3D library for C\#. It is open
+source, free, fast, cross platform, actively developed by a large
+community, and used in many professional games. There is a plethora of
+MonoGame documentation, tutorials, examples, and discussions on line.
+
+MonoGame fully implements Microsoft's (no longer supported) XNA 4
+engine, but for multiple platforms. Documentation of earlier versions of
+XNA (versions 2 and 3) will often not be correct. For conversion of XNA
+3 to XNA 4 see
+[http://www.nelsonhurst.com/xna-3-1-to-xna-4-0-cheatsheet/.](http://www.nelsonhurst.com/xna-3-1-to-xna-4-0-cheatsheet/)
+
+See MonoGame.net for the official MonoGame documentation. When searching
+on-line for other MonoGame documentation and discussions, be sure to
+note the MonoGame version being discussed. Documentation of earlier
+versions may not be compatible with the latest.
+
+Note that to support all the platforms there are certain limitations in
+MonoGame. Currently, creating multiple 3D windows can be buggy---unless
+you do it from separate processes. Also, there is no official
+cross-platform way to specify an existing window to use as the 3D
+window---MonoGame must create it.
+
+The provided Visual Studio solution file contains both the Blotch3D
+library project with source, and the example projects.
+
+Several bare-bones examples demonstrate some of the more common tasks
+with just a few lines of code. The source file name for each example
+project is Example.cs. You can do a diff between the basic example's
+Example.cs and another example's Example.cs to see what extra code must
+be added to implement the features it demonstrates.
 
 Deficiencies and Alternatives
-=============================
+-----------------------------
 
 Although any feature can certainly be implemented by the app developer,
 notable features directly lacking in Blotch3D/MonoGame are...
@@ -245,7 +246,7 @@ rather than C\#, because it's so full featured yet easy to learn. See
 for Visual Studio-based development of three.js.
 
 Creating a new project
-======================
+----------------------
 
 (See the [Quick start for Windows](#features) section to set everything
 up for development)
@@ -273,7 +274,7 @@ first. For some platforms you may need to do some online research to
 properly create projects.
 
 Development overview
-====================
+--------------------
 
 See the examples, starting with the basic example.
 
@@ -409,7 +410,7 @@ See the examples, reference documentation (doc/Blotch3D.chm), and
 IntelliSense for more information.
 
 Making and using 3D models
-==========================
+--------------------------
 
 You can use the BlGeometry static class to make a variety of objects
 programmatically. See the geometry examples and that class for more
@@ -453,7 +454,7 @@ you can use the BlGraphicsDeviceManager.LoadFromImageFile method to load
 image files directly, probably on most any platform.)
 
 Particles
-=========
+---------
 
 Particle systems in Blotch3D are implemented by specifying
 BlSprite.FrameProc delegates. So, particles systems are completely
@@ -462,7 +463,7 @@ in the particle's life or make particle trees (particles with
 particles). See the Particle example.
 
 Custom effects
-==============
+--------------
 
 By default, Blotch3D draws sprites using a standard shader that comes
 with MonoGame which is managed by a MonoGame BasicEffect object.
@@ -540,8 +541,7 @@ shaders.
 
 Documentation for individual custom shaders follows.
 
-Translucency with the BlBasicEffectAlphaTest shader
-===================================================
+### Translucency with the BlBasicEffectAlphaTest shader
 
 Each pixel of a texture has a red, a green, and a blue intensity value.
 Some textures also have an "alpha" value for each pixel, to indicate how
@@ -616,8 +616,7 @@ alpha value merits drawing the pixel. See the [Custom
 effects](#custom-effects) section and the SpriteAlphaTexture example for
 details.
 
-Dynamically creating an alpha channel with the BlBasicEffectClipColor shader
-============================================================================
+### Dynamically creating an alpha channel with the BlBasicEffectClipColor shader
 
 Blotch3D includes a BlBasicEffectClipColor shader
 ("BlBasicEffectClipColor.mgfxo" and "BlBasicEffectClipColorOGL.mgfxo"
@@ -638,8 +637,7 @@ shader](#translucency-with-the-blbasiceffectalphatest-shader) section
 for an introduction to alpha and alpha testing, and see the [Custom
 effects](#custom-effects) section for details on using a custom effect.
 
-Transforming textures with the BlBasicEffectAlphaTestXformTex shader
-====================================================================
+### Transforming textures with the BlBasicEffectAlphaTestXformTex shader
 
 The BlBasicEffectAlphaTestXformTex shader
 ("BlBasicEffectAlphaTestXformTex.mgfxo" and
@@ -661,7 +659,7 @@ code from the original BasicEffect for pixel lighting \[an advanced form
 of bump mapping\] has been removed from this shader.)
 
 Setting and dynamically changing a sprite's scale, orientation, and position
-============================================================================
+----------------------------------------------------------------------------
 
 Each sprite has a "Matrix" member. The Matrix member defines the
 sprite's orientation, scale, position, etc. relative to its parent
@@ -699,7 +697,7 @@ The following [Matrix internals](#matrix-internals) section should be
 studied only when you need a deeper knowledge.
 
 Matrix internals
-================
+----------------
 
 Read this section only if you want a deeper understanding of altering a
 sprite's orientation, position, etc. than is explained in the previous
@@ -884,7 +882,7 @@ matrix used to draw that child, and that matrix is also used as the
 parent matrix for the subsprites of that child.
 
 A Short Glossary of 3D Graphics Terms
-=====================================
+-------------------------------------
 
 Polygon
 
@@ -892,7 +890,7 @@ A visible surface described by a set of vertices that define its
 corners. A triangle is a polygon with three vertices, a quad is a
 polygon with four. One side of a polygon is a \"face\".
 
-Vertex
+### Vertex
 
 A point in space. Typically, a point at which the line segments of a
 polygon meet. That is, a corner of a polygon. A corner of a model. Most
@@ -901,20 +899,20 @@ a color, texture coordinate, and normal. Pixels across the face of a
 polygon are (typically) interpolated from the vertex color, texture, and
 normal values of the vertices.
 
-Ambient lighting
+### Ambient lighting
 
 A 3D scene has one ambient light setting. The intensity of ambient
 lighting on the surface of a polygon is unrelated to the orientation of
 the polygon or the camera.
 
-Diffuse lighting
+### Diffuse lighting
 
 Directional or point source lighting. You can have multiple directional
 or point light sources. Its intensity depends on the orientation of the
 polygon relative to the light. Specifically, it depends on the normals
 of the vertices of that polygon, and the light.
 
-Texture
+### Texture
 
 A 2D image applied to the surface of a model. For this to work, each
 vertex of the model must have a texture coordinate associated with it,
@@ -926,7 +924,7 @@ specified for each vertex. A texture's (X,Y) coordinate is referred to
 as its (U,V) coordinate to discriminate it from 3D coordinates of
 vertices.
 
-Normal
+### Normal
 
 In mathematics, the word \"normal\" means a vector that is perpendicular
 to a surface. In 3D graphics, \"normal\" means a vector that indicates
@@ -941,40 +939,40 @@ can have a gradient of brightness across it giving the illusion of
 curvature. In this way a model composed of fewer polygons can still be
 made to look quite smooth.
 
-X-axis
+### X-axis
 
 The axis that extends right from the origin in an untransformed
 coordinate system.
 
-Y-axis
+### Y-axis
 
 The axis that extends forward from the origin in an untransformed
 coordinate system.
 
-Z-axis
+### Z-axis
 
 The axis that extends up from the origin in an untransformed coordinate
 system.
 
-Origin
+### Origin
 
 The center of a coordinate system. The point in the coordinate system
 that is, by definition, at (0,0,0).
 
-Translation
+### Translation
 
 Movement. The placing of something at a different location from its
 original location.
 
-Rotation
+### Rotation
 
 The circular movement of each vertex of a model about the same axis.
 
-Scale
+### Scale
 
 A change in the width, height, and/or depth of a model.
 
-Shear (skew)
+### Shear (skew)
 
 A pulling of one side of a model in one direction, and the opposite side
 in the opposite direction, without rotation, such that the model is
@@ -982,23 +980,23 @@ distorted rather than rotated. A parallelogram is a rectangle that has
 experienced shear. If you apply another shear along an orthogonal axis
 of the first shear, you rotate the model.
 
-Yaw
+### Yaw
 
 Rotation about the Y-axis
 
-Pitch
+### Pitch
 
 Rotation about the X-axis, after any Yaw has been applied.
 
-Roll
+### Roll
 
 Rotation about the Z-axis, after any Pitch has been applied.
 
-Euler angles
+### Euler angles
 
 The yaw, pitch, and roll of a model, applied in that order.
 
-Matrix
+### Matrix
 
 An array of numbers that can describe a difference, or transform, in one
 coordinate system from another. Each sprite has a matrix that defines
@@ -1006,12 +1004,12 @@ its location, rotation, scale, shear etc. within the coordinate system
 of its parent sprite, or within an untransformed coordinate system if
 there is no parent.
 
-Frame
+### Frame
 
 In this document, \'frame\' is analogous to a movie frame. A moving 3D
 scene is created by drawing successive frames.
 
-Depth buffer
+### Depth buffer
 
 3D systems typically keep track of the depth of the polygon surface (if
 any) at each 2D window pixel so that they know to draw the nearer pixel
@@ -1030,31 +1028,31 @@ troubleshooting question about disabling the depth buffer). See
 BlGraphicsDeviceManager.NearClip, BlGraphicsDeviceManager.FarClip. and
 search the web for MonoGame depth information.
 
-Near clipping plane (BlGraphicsDeviceManager.NearClip)
+### Near clipping plane (BlGraphicsDeviceManager.NearClip)
 
 The distance from the camera at which a depth buffer element is equal to
 zero. Nearer surfaces are not drawn. See 'Depth buffer'.
 
-Far clipping plane (BlGraphicsDeviceManager.FarClip)
+### Far clipping plane (BlGraphicsDeviceManager.FarClip)
 
 The distance from the camera at which a depth buffer element is equal to
 the maximum possible floating-point value. Farther surfaces are not
 drawn. See 'Depth buffer'.
 
-Model space
+### Model space
 
 The untransformed three-dimensional space that models are initially
 created/defined in. Typically, a model is centered on the origin of its
 model space.
 
-World space
+### World space
 
 The three-dimensional space that you see through the two-dimensional
 screen window. A model is transformed from model space to world space by
 its final matrix (that is, the matrix we get *after* a sprite's matrix
 is multiplied by its parent sprite matrices, if any).
 
-View space
+### View space
 
 The two-dimensional space of the window on the screen. Objects in world
 space are transformed by the view matrix and projection matrix to
@@ -1064,7 +1062,7 @@ functions that control them---like Zoom, aspect ratio, and camera
 position and orientation functions.
 
 Troubleshooting
-===============
+---------------
 
 Q: When I set a billboard attribute of a flat sprite (like a plane), I
 can no longer see it.
@@ -1156,7 +1154,7 @@ position without drawing it, then when it comes time to draw things,
 enable them.
 
 Rights
-======
+------
 
 Blotch3D (formerly GWin3D) Copyright (c) 1999-2020 Kelly Loum, all
 rights reserved except those granted in the following license:
