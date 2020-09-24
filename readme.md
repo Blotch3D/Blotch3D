@@ -119,7 +119,7 @@ to use the Monogame content manager (pipeline tool). See
 <https://docs.monogame.net/articles/tools/mgcb.html>. The docs well
 describe how to use it, but in essence you do this:
 
-1.  Run it from the command line with: mgcb\_editor
+1.  Run it from the command line with: mgcb_editor
 
 2.  Use the 'New' menu item to create a new project (mgcb) file
 
@@ -140,7 +140,7 @@ it with the default settings.
 
 To create new shaders you'll need the Monogame effects compiler. See
 <https://docs.monogame.net/articles/tools/mgfxc.html>. See the
-make\_effects.bat file for examples of building the existing shaders.
+make_effects.bat file for examples of building the existing shaders.
 
 Overview
 --------
@@ -435,6 +435,8 @@ set at any time.
 
 For example, the BlBasicEffectAlphaTest shader is used like this:
 
+~~~
+
 // Create a BlBasicEffect and specify the shader file
 
 // (you can also specify 'BlBasicEffectAlphaTestOGL.mgfxo'
@@ -475,12 +477,14 @@ return MyEffect;
 
 };
 
+~~~
+
 The shader source code (HLSL) for each BlBasicEffect shader is in the
 same folder as the compiled shader files. It's just a copy of the
 original MonoGame BasicEffect shader code, but with a few lines added.
 To compile the shaders, be sure to add the path to 2MGFX.exe to the
 'path' environment variable. Typically, the path is "\\Program Files
-(x86)\\MSBuild\\MonoGame\\v3.0\\Tools". Then run the make\_effects.bat
+(x86)\\MSBuild\\MonoGame\\v3.0\\Tools". Then run the make_effects.bat
 file.
 
 You can create your own shader files that are based on BlBasicEffect and
