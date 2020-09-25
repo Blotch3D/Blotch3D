@@ -119,16 +119,21 @@ to use the Monogame content manager (pipeline tool). See
 <https://docs.monogame.net/articles/tools/mgcb.html>. The docs well
 describe how to use it, but in essence you do this:
 
-1.  Run it from the command line with: mgcb_editor
+1.  Download and install it
 
-2.  Use the 'New' menu item to create a new project (mgcb) file
+2.  Run it from the command line with: mgcb_editor
 
-3.  Open a model by right-clicking the project in the 'Project' pane and
+3.  Use the 'New' menu item to create a new project (mgcb) file
+
+4.  Open a model by right-clicking the project in the 'Project' pane and
     selecting the 'Add' item
 
-4.  Build the items by right-clicking the project in the 'Project' pane
-    and selecting rebuild. Note the output folders in the 'Properties'
-    pane.
+5.  Build the item(s) into 'XNB' files by right-clicking the project in
+    the 'Project' pane and selecting rebuild. Note the output folders in
+    the 'Properties' pane.
+
+6.  Add the XNB to your project and set its 'copy if newer' flag so it
+    gets put in the output folder.
 
 Previous versions of the content manager (pipeline tool) required some
 VC Redistributable files. The current version (3.8) has changed notably,
@@ -435,51 +440,29 @@ set at any time.
 
 For example, the BlBasicEffectAlphaTest shader is used like this:
 
->// Create a BlBasicEffect and specify the shader file
-
->// (you can also specify 'BlBasicEffectAlphaTestOGL.mgfxo'
-
->// if you are on an OpenGL platform)
-
->
-
->MyEffect = new BlBasicEffect
-
->(
-
-> Graphics.GraphicsDevice,
-
-> "BlBasicEffectAlphaTest.mgfxo"
-
->);
-
->
-
->// Now specify the alpha threshold above which pixels should be drawn.
-
->// This can be done at any time, including from within the below
-
->// delegate
-
->MyEffect.Parameters\["AlphaTestThreshold"\].SetValue(.3f);
-
->
-
->// Specify a SetEffect delegate that sets the custom effect for the
-
->// sprite
-
->MyTranslucentSprite.SetEffect = (s,effect) =>
-
->{
-
-> // Setup the standard BasicEffect texture and lighting parameters
-
-> s.SetupBasicEffect(MyEffect);
-
-> return MyEffect;
-
->};
+> // Create a BlBasicEffect and specify the shader file\
+> // (you can also specify 'BlBasicEffectAlphaTestOGL.mgfxo'\
+> // if you are on an OpenGL platform)\
+> MyEffect = new BlBasicEffect\
+> (\
+> >Graphics.GraphicsDevice,\
+> >"BlBasicEffectAlphaTest.mgfxo"\
+> );\
+> \
+> // Now specify the alpha threshold above which pixels should be
+> drawn.\
+> // This can be done at any time, including from within the below\
+> // delegate\
+> MyEffect.Parameters\["AlphaTestThreshold"\].SetValue(.3f);\
+> \
+> // Specify a SetEffect delegate that sets the custom effect for the\
+> // sprite\
+> MyTranslucentSprite.SetEffect = (s,effect) =>\
+> {\
+> >// Setup the standard BasicEffect texture and lighting parameters\
+> >s.SetupBasicEffect(MyEffect);\
+> >return MyEffect;\
+> };
 
 The shader source code (HLSL) for each BlBasicEffect shader is in the
 same folder as the compiled shader files. It's just a copy of the
