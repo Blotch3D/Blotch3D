@@ -68,9 +68,6 @@ You can\...
 
 -   Dynamically transform a texture on a surface.
 
--   Use with WPF Core and WinForms Core. (Also see
-    <https://github.com/sqrMin1/MonoGame.Forms>)
-
 -   Detect sprite radius collisions.
 
 -   Implement fog.
@@ -87,7 +84,11 @@ You can\...
 
 -   All other MonoGame features remain available.
 
--   Blotch3D is a .NET Standard Library
+-   Blotch3D is a .NET Standard Library. So, it works with .NET
+    Framework, .NET Core, etc.
+
+-   See <https://github.com/sqrMin1/MonoGame.Forms> to integrate the 3D
+    window with a .NET Forms GUI
 
 -   You can develop Blotch3D apps on Windows, MacOS, and Linux. Blotch3D
     apps can be built for any Microsoft Windows platforms, iOS, Android,
@@ -340,7 +341,7 @@ describe how to use it, but in essence you do this:
 
 1.  Download and install it
 
-2.  Run it from the command line with: mgcb\_editor
+2.  Run it from the command line with: mgcb_editor
 
 3.  Use the 'New' menu item to create a new project (mgcb) file
 
@@ -481,9 +482,9 @@ These shaders are already compiled, so you don't have to worry about
 that. But if you do want to compile them, or you have another shader you
 want to compile, you'll need the Monogame effects compiler. See
 <https://docs.monogame.net/articles/tools/mgfxc.html>. See the
-make\_effects.bat file for examples of building the existing shaders.
-The make\_effects.bat file assumes the compiler is in a certain folder.
-You might have to change the folder to get it to work.
+make_effects.bat file for examples of building the existing shaders. The
+make_effects.bat file assumes the compiler is in a certain folder. You
+might have to change the folder to get it to work.
 
 You can create your own shader files that are based on BlBasicEffect and
 compile and load it as shown above. Just be sure it is based on the
@@ -525,7 +526,8 @@ constraints, sprite position constraints, and drawing order. In those
 cases, you don't need any other special code. We do this in the "full"
 example because the draw order of the translucent sprites and their
 positions are such that the artifacts aren't visible. (Note: subsprites
-are drawn in the order of their names.)
+are drawn in the order of their names. You can override this by simply
+drawing them, yourself)
 
 One way to mitigate most of these artifacts is by using alpha testing.
 Alpha testing is the process of completely neglecting to draw
@@ -552,12 +554,11 @@ advanced solutions.
 The default MonoGame "Effect" used to draw models (the "BasicEffect"
 effect) uses a pixel shader that does not do alpha testing. MonoGame
 does provide a separate "AlphaTestEffect" effect that supports alpha
-test. But AlphaTestEffect is *not* based on BasicEffect (and therefore
-must be handled differently in code), and does not support directional
+test, but that is *not* based on BasicEffect (and therefore must be
+handled differently in code), and it does not support directional
 lights, as are supported in BasicEffect. So, don't bother with
-AlphaTestEffect unless you don't care about the directional lights (i.e.
-you are using only emission lighting). (If you do want to use
-AlphaTestEffect, see online for details.)
+AlphaTestEffect. (For more info on AlphaTestEffect, see online for
+details.)
 
 For these reasons Blotch3D includes a custom shader file called
 BlBasicEffectAlphaTest (to be managed with a BlBasicEffect object) that
