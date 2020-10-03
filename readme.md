@@ -112,7 +112,9 @@ To develop with Blotch3D...
 
 4.  See [Creating a new project](#creating-a-new-project) for details on
     creating projects, adding Blotch3D to an existing project, or
-    building for another platform.
+    building for another platform. See [Making and using 3D
+    models](#making-and-using-3d-models) for info on adding existing 3D
+    models to your project.
 
 Overview
 --------
