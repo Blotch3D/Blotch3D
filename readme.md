@@ -444,9 +444,9 @@ For example, the BlBasicEffectAlphaTest shader is used like this:
 >
 > (
 >
-> >Graphics.GraphicsDevice,
+> Graphics.GraphicsDevice,
 >
-> >"BlBasicEffectAlphaTest.mgfxo"
+> "BlBasicEffectAlphaTest.mgfxo"
 >
 > );
 >
@@ -466,11 +466,11 @@ For example, the BlBasicEffectAlphaTest shader is used like this:
 >
 > {
 >
-> >// Setup the standard BasicEffect texture and lighting parameters
+> // Setup the standard BasicEffect texture and lighting parameters
 >
-> >s.SetupBasicEffect(MyEffect);
+> s.SetupBasicEffect(MyEffect);
 >
-> >return MyEffect;
+> return MyEffect;
 >
 > };
 
