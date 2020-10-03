@@ -114,39 +114,6 @@ To develop with Blotch3D...
     creating projects, adding Blotch3D to an existing project, or
     building for another platform.
 
-To convert existing models, create font descriptions, etc., you'll need
-to use the Monogame content manager (pipeline tool). See
-<https://docs.monogame.net/articles/tools/mgcb.html>. The docs well
-describe how to use it, but in essence you do this:
-
-1.  Download and install it
-
-2.  Run it from the command line with: mgcb_editor
-
-3.  Use the 'New' menu item to create a new project (mgcb) file
-
-4.  Open a model by right-clicking the project in the 'Project' pane and
-    selecting the 'Add' item
-
-5.  Build the item(s) into 'XNB' files by right-clicking the project in
-    the 'Project' pane and selecting rebuild. Note the output folders in
-    the 'Properties' pane.
-
-6.  Add the XNB to your project and set its 'copy if newer' flag so it
-    gets put in the output folder.
-
-Previous versions of the content manager (pipeline tool) required some
-VC Redistributable files. The current version (3.8) has changed notably,
-so it might not. In any case, if it complains of not having a DLL, get
-the installer for "Visual C++ Redistributable for Visual Studio 2012"
-(NOT a later version) for your platform from
-<https://www.microsoft.com/en-us/download/details.aspx?id=30679> and run
-it with the default settings.
-
-To create new shaders you'll need the Monogame effects compiler. See
-<https://docs.monogame.net/articles/tools/mgfxc.html>. See the
-make_effects.bat file for examples of building the existing shaders.
-
 Overview
 --------
 
@@ -364,9 +331,34 @@ local' flag is set, or just add the XNB file to your project and set its
 'copy if newer' or 'copy always' option.
 
 You can also convert standard 3D model files, fonts, etc. to "XNB" files
-for use by your MonoGame project. The MonoGame content manager (pipeline
-tool) is used to make this conversion. See the [Quick start for
-Windows](#quick-start-for-windows) section for details.
+for use by your MonoGame project. To convert them, you'll need to use
+the Monogame content manager (pipeline tool). See
+<https://docs.monogame.net/articles/tools/mgcb.html>. The docs well
+describe how to use it, but in essence you do this:
+
+1.  Download and install it
+
+2.  Run it from the command line with: mgcb\_editor
+
+3.  Use the 'New' menu item to create a new project (mgcb) file
+
+4.  Add a model by right-clicking the project in the 'Project' pane and
+    selecting the 'Add' item
+
+5.  Build the item(s) into 'XNB' files by right-clicking the project in
+    the 'Project' pane and selecting rebuild. Note the output folders in
+    the 'Properties' pane.
+
+6.  Add the XNB to your project and set its 'copy if newer' flag so it
+    gets put in the output folder.
+
+Previous versions of the content manager (pipeline tool) required some
+VC Redistributable files. The current version (3.8) has changed notably,
+so it might not. In any case, if it complains of not having a DLL, get
+the installer for "Visual C++ Redistributable for Visual Studio 2012"
+(NOT a later version) for your platform from
+<https://www.microsoft.com/en-us/download/details.aspx?id=30679> and run
+it with the default settings.
 
 There are countless standard 3D models that can be downloaded, or you
 can create one from scratch. To create one from scratch, if you don't
@@ -483,10 +475,13 @@ For example, the BlBasicEffectAlphaTest shader is used like this:
 The shader source code (HLSL) for each BlBasicEffect shader is in the
 same folder as the compiled shader files. It's just a copy of the
 original MonoGame BasicEffect shader code, but with a few lines added.
-To compile the shaders, be sure to add the path to 2MGFX.exe to the
-'path' environment variable. Typically, the path is "\\Program Files
-(x86)\\MSBuild\\MonoGame\\v3.0\\Tools". Then run the make_effects.bat
-file.
+These shaders are already compiled, so you don't have to worry about
+that. But if you do want to compile them, or you have another shader you
+want to compile, you'll need the Monogame effects compiler. See
+<https://docs.monogame.net/articles/tools/mgfxc.html>. See the
+make\_effects.bat file for examples of building the existing shaders.
+The make\_effects.bat file assumes the compiler is in a certain folder.
+You might have to change the folder to get it to work.
 
 You can create your own shader files that are based on BlBasicEffect and
 compile and load it as shown above. Just be sure it is based on the
