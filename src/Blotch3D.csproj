@@ -2,6 +2,15 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Kelly Loum</Authors>
+    <Description>A high-level 3D .NET Standard class library that gives you real-time 3D graphics with just a few lines of C# code. Supports multiple platforms and devices. See https://github.com/Blotch3D/Blotch3D for docs, source, examples, and details on building for other platforms.</Description>
+    <Copyright>Copyright</Copyright>
+    <PackageLicenseExpression></PackageLicenseExpression>
+    <PackageLicenseFile>License.txt</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/Blotch3D/Blotch3D</PackageProjectUrl>
+    <RepositoryUrl></RepositoryUrl>
+    <PackageTags>3D graphics monogame sprite .net standard .net core .net framework</PackageTags>
+    <Company />
   </PropertyGroup>
 
   <ItemGroup>
@@ -137,6 +146,10 @@
     </None>
     <None Update="Content\uv_sphere_96x48.xnb">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\doc\License.txt">
+      <Pack>True</Pack>
+      <PackagePath></PackagePath>
     </None>
   </ItemGroup>
 
