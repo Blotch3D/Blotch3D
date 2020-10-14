@@ -171,12 +171,11 @@ To add MonoGame + Blotch3D to an existing Windows Core project, add a
 reference to Blotch3D.
 
 To add MonoGame + Blotch3D to an existing .NET Framework project, add a
-reference to Blotch3D and (to avoid a weird build bug where it won't
-load SDL2.dll)) also add the NuGet package
-'MonoGame.Framework.DesktopGL' via the solution's NuGet screen rather
-than the project's NuGet screen (maybe this is because that package is
-configured to appear incompatible with Framework, when really it is
-compatible?).
+reference to Blotch3D and (to avoid a weird startup bug where it won't
+load SDL2.dll) also add the NuGet package 'MonoGame.Framework.DesktopGL'
+via the solution's NuGet screen. (You have to add it from the solution's
+NuGet screen because that package isn't available in a .NET Framework
+project's NuGet screen).
 
 To create a project for another platform besides Microsoft Windows:
 First you will need to install any Visual Studio add-ons, etc. for the
