@@ -87,7 +87,7 @@ Dolly  -  Wheel
 Zoom   -  Left-CTRL-wheel
 Truck  -  Left-drag 
 Rotate -  Right-drag
-Pan    -  Left-CTRL-left-drag
+Pan    -  Left-ALT-left-drag
 Reset  -  Esc
 Fine control  -  Left-Shift
 
