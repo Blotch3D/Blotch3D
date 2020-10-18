@@ -1,5 +1,5 @@
 ﻿/*
-Blotch3D (formerly GWin3D) Copyright (c) 1999-2018 Kelly Loum, all rights reserved except those granted in the following license.
+Blotch3D (formerly GWin3D) Copyright (c) 1999-2020 Kelly Loum, all rights reserved except those granted in the following license.
 
 Microsoft Public License (MS-PL)
 This license governs use of the accompanying software. If you use the software, you

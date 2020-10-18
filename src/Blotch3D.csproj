@@ -4,13 +4,20 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <Authors>Kelly Loum</Authors>
     <Description>A high-level 3D .NET Standard class library that gives you real-time 3D graphics with just a few lines of C# code. Supports multiple platforms and devices. See https://github.com/Blotch3D/Blotch3D for docs, source, examples, and details on building for other platforms.</Description>
-    <Copyright>Copyright</Copyright>
+    <Copyright></Copyright>
     <PackageLicenseExpression></PackageLicenseExpression>
     <PackageLicenseFile>License.txt</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/Blotch3D/Blotch3D</PackageProjectUrl>
     <RepositoryUrl></RepositoryUrl>
-    <PackageTags>3D graphics monogame sprite .net standard .net core .net framework</PackageTags>
+    <PackageTags>3D graphics monogame Direct3D DirectX openGL sprite .net standard core framework</PackageTags>
     <Company />
+    <PackageId>Blotch3D</PackageId>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+    <DocumentationFile>C:\Users\Kelly\Desktop\Source\Blotch3D\src\Blotch3D.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
