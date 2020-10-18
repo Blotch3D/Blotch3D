@@ -150,7 +150,9 @@ cross-platform way to specify an existing window to use as the 3D
 window---MonoGame must create it.
 
 The provided Visual Studio solution file contains both the Blotch3D
-library project with source, and the example projects.
+library project with source, and the example projects. However, the
+"BlotchExample13_UseBlotch3DThruNuGet" example uses a separate solution
+file to demonstrate its independence from the library project source.
 
 Several bare-bones examples demonstrate some of the more common tasks
 with just a few lines of code. The source file name for each example
@@ -165,7 +167,7 @@ Creating a new project
 up for development)
 
 You can create a new .NET Core/WPF Core/Windows Forms Core project and
-add a reference to Blotch3D.
+add a reference to the Blotch3D project or the Blotch3D NuGet package.
 
 To add MonoGame + Blotch3D to an existing Windows Core project, add a
 reference to Blotch3D.
@@ -1033,8 +1035,6 @@ notable features directly lacking in Blotch3D/MonoGame are...
 
 -   More than one 3D window per process
 
--   A NuGet package
-
 I haven't investigated it, but MonoGame.Extended seems to provide some
 but not all of the same features as Blotch3D. You could even try using
 both together, but if you do that then make sure they were built with
@@ -1045,8 +1045,6 @@ GraphicsDeviceManager object. See
 
 Another alternative is UrhoSharp. I haven't looked at it in detail, but
 below are listed some of its advantages.
-
--   UrhoSharp has a NuGet package
 
 -   UrhoSharp supports physics
 
