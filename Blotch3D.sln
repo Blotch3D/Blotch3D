@@ -29,7 +29,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlotchExample11_Particles",
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlotchExampleFull", "examples\BlotchExampleFull\BlotchExampleFull.csproj", "{9B03E307-05EE-4D90-940B-1D5E3CB8249D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlotchExample12_WPF", "examples\BlotchExample12_WPF\BlotchExample12_WPF.csproj", "{123E17BE-D272-4437-82FE-641EABA407E5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlotchExample12_WPF", "examples\BlotchExample12_WPF\BlotchExample12_WPF.csproj", "{123E17BE-D272-4437-82FE-641EABA407E5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

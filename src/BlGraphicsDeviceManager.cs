@@ -42,6 +42,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Blotch3D.Properties;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -305,6 +306,8 @@ namespace Blotch
 		/// <param name="window">The BlWindow3D object for which this is to be the #BlGraphicsDeviceManager</param>
 		public BlGraphicsDeviceManager(BlWindow3D window):base(window)
 		{
+			InitContent();
+
 			CreationThread = Thread.CurrentThread.ManagedThreadId;
 			this.Window = window;
 			window.Window.AllowUserResizing = true;
@@ -325,6 +328,70 @@ namespace Blotch
 
 			ResetCamera();
 		}
+
+		static bool ContentInitialized = false;
+		void InitContent()
+        {
+            if (!ContentInitialized)
+            {
+				Directory.CreateDirectory("Content/Effects");
+
+				var bytes = Resources.arial14;
+				File.WriteAllBytes("Content/arial14.xnb", bytes);
+
+				bytes = Resources.CourierNew14;
+				File.WriteAllBytes("Content/CourierNew14.xnb", bytes);
+
+				bytes = Resources.icosphere;
+				File.WriteAllBytes("Content/icosphere.xnb", bytes);
+
+				bytes = Resources.plane;
+				File.WriteAllBytes("Content/plane.xnb", bytes);
+
+				bytes = Resources.tetrahedron;
+				File.WriteAllBytes("Content/tetrahedron.xnb", bytes);
+
+				bytes = Resources.torus;
+				File.WriteAllBytes("Content/torus.xnb", bytes);
+
+				bytes = Resources.uv_sphere_12x6;
+				File.WriteAllBytes("Content/uv_sphere_12x6.xnb", bytes);
+
+				bytes = Resources.uv_sphere_192x96;
+				File.WriteAllBytes("Content/uv_sphere_192x96.xnb", bytes);
+
+				bytes = Resources.uv_sphere_24x12;
+				File.WriteAllBytes("Content/uv_sphere_24x12.xnb", bytes);
+
+				bytes = Resources.uv_sphere_48x24;
+				File.WriteAllBytes("Content/uv_sphere_48x24.xnb", bytes);
+
+				bytes = Resources.uv_sphere_6x3;
+				File.WriteAllBytes("Content/uv_sphere_6x3.xnb", bytes);
+
+				bytes = Resources.uv_sphere_96x48;
+				File.WriteAllBytes("Content/uv_sphere_96x48.xnb", bytes);
+
+				bytes = Resources.BlBasicEffectAlphaTest;
+				File.WriteAllBytes("Content/Effects/BlBasicEffectAlphaTest.xnb", bytes);
+
+				bytes = Resources.BlBasicEffectAlphaTestOGL;
+				File.WriteAllBytes("Content/Effects/BlBasicEffectAlphaTestOGL.xnb", bytes);
+
+				bytes = Resources.BlBasicEffectAlphaTestXformTex;
+				File.WriteAllBytes("Content/Effects/BlBasicEffectAlphaTestXformTex.xnb", bytes);
+
+				bytes = Resources.BlBasicEffectAlphaTestXformTexOGL;
+				File.WriteAllBytes("Content/Effects/BlBasicEffectAlphaTestXformTexOGL.xnb", bytes);
+
+				bytes = Resources.BlBasicEffectClipColor;
+				File.WriteAllBytes("Content/Effects/BlBasicEffectClipColor.xnb", bytes);
+
+				bytes = Resources.BlBasicEffectClipColorOGL;
+				File.WriteAllBytes("Content/Effects/BlBasicEffectClipColorOGL.xnb", bytes);
+			}
+		}
+
 		/// <summary>
 		/// For internal use only. Apps should not normally call this.
 		/// This initializes some values AFTER the BlWindow3D has been created.
