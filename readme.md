@@ -101,7 +101,9 @@ To deliver a Blotch3D app for Windows, just deliver the contents of your
 project's output folder. No other software need be installed on the
 target system.
 
-To develop with Blotch3D...
+To develop with Blotch3D you can simply add the NuGet package to your
+project. However, if you also want the full docs, examples, and source,
+do this:
 
 1.  Download the Blotch3D repository, or clone it.
 
@@ -151,7 +153,7 @@ window---MonoGame must create it.
 
 The provided Visual Studio solution file contains both the Blotch3D
 library project with source, and the example projects. However, the
-"BlotchExample13_UseBlotch3DThruNuGet" example uses a separate solution
+"BlotchExample13\_UseBlotch3DThruNuGet" example uses a separate solution
 file to demonstrate its independence from the library project source.
 
 Several bare-bones examples demonstrate some of the more common tasks
@@ -347,7 +349,7 @@ describe how to use it, but in essence you do this:
 
 1.  Download and install it
 
-2.  Run it from the command line with: mgcb_editor
+2.  Run it from the command line with: mgcb\_editor
 
 3.  Use the 'New' menu item to create a new project (mgcb) file
 
@@ -488,9 +490,9 @@ These shaders are already compiled, so you don't have to worry about
 that. But if you do want to compile them, or you have another shader you
 want to compile, you'll need the Monogame effects compiler. See
 <https://docs.monogame.net/articles/tools/mgfxc.html>. See the
-make_effects.bat file for examples of building the existing shaders. The
-make_effects.bat file assumes the compiler is in a certain folder. You
-might have to change the folder to get it to work.
+make\_effects.bat file for examples of building the existing shaders.
+The make\_effects.bat file assumes the compiler is in a certain folder.
+You might have to change the folder to get it to work.
 
 You can create your own shader files that are based on BlBasicEffect and
 compile and load it as shown above. Just be sure it is based on the
