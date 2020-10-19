@@ -1,6 +1,31 @@
 Blotch3D
 ========
 
+Quick start for Windows
+-----------------------
+
+To deliver a Blotch3D app for Windows, just deliver the contents of your
+project's output folder. No other software need be installed on the
+target system.
+
+To develop with Blotch3D you can simply add the NuGet package to your
+project and see the IntelliSense simplified documentation. However, if
+you also want the full docs, examples, and source, do this:
+
+1.  Download the Blotch3D repository, or clone it.
+
+2.  Open the Visual Studio solution file (Blotch3D.sln) and build and
+    run the example projects.
+
+3.  Use IntelliSense or see "Blotch3D.chm" for the reference
+    documentation.
+
+4.  See [Creating a new project](#creating-a-new-project) for details on
+    creating projects, adding Blotch3D to an existing project, or
+    building for another platform. See [Making and using 3D
+    models](#making-and-using-3d-models) for info on adding existing 3D
+    models to your project.
+
 Features
 --------
 
@@ -94,31 +119,6 @@ You can\...
     apps can be built for any Microsoft Windows platforms, iOS, Android,
     MacOS, Linux, PS4, PSVita, Xbox One, and Switch.
 
-Quick start for Windows
------------------------
-
-To deliver a Blotch3D app for Windows, just deliver the contents of your
-project's output folder. No other software need be installed on the
-target system.
-
-To develop with Blotch3D you can simply add the NuGet package to your
-project. However, if you also want the full docs, examples, and source,
-do this:
-
-1.  Download the Blotch3D repository, or clone it.
-
-2.  Open the Visual Studio solution file (Blotch3D.sln) and build and
-    run the example projects.
-
-3.  Use IntelliSense or see "Blotch3D.chm" for the reference
-    documentation.
-
-4.  See [Creating a new project](#creating-a-new-project) for details on
-    creating projects, adding Blotch3D to an existing project, or
-    building for another platform. See [Making and using 3D
-    models](#making-and-using-3d-models) for info on adding existing 3D
-    models to your project.
-
 Overview
 --------
 
@@ -151,10 +151,12 @@ you do it from separate processes. Also, there is no official
 cross-platform way to specify an existing window to use as the 3D
 window---MonoGame must create it.
 
-The provided Visual Studio solution file contains both the Blotch3D
-library project with source, and the example projects. However, the
-"BlotchExample13\_UseBlotch3DThruNuGet" example uses a separate solution
-file to demonstrate its independence from the library project source.
+The provided Visual Studio solution file (Blotch3D.sln) contains both
+the Blotch3D library project with source, and all example projects
+except one. The "BlotchExample13\_UseBlotch3DThruNuGet" example uses a
+separate solution file to demonstrate its independence from the library
+project source and allow you to debug it without it trying to debug the
+release NuGet library.
 
 Several bare-bones examples demonstrate some of the more common tasks
 with just a few lines of code. The source file name for each example
@@ -179,7 +181,7 @@ reference to Blotch3D and (to avoid a weird startup bug where it won't
 load SDL2.dll) also add the NuGet package 'MonoGame.Framework.DesktopGL'
 via the solution's NuGet screen. (You have to add it from the solution's
 NuGet screen because that package isn't available in a .NET Framework
-project's NuGet screen).
+project's NuGet screen, even though it is compatible with it).
 
 To create a project for another platform besides Microsoft Windows:
 First you will need to install any Visual Studio add-ons, etc. for the
@@ -335,13 +337,15 @@ Making and using 3D models
 
 You can use the BlGeometry static class to make a variety of objects
 programmatically. See the geometry examples and that class for more
-information. A few primitive models are also included with Blotch3D.
-They can be used as is done in the examples that use them if the
-Blotch3D project is included in your solution and the reference's 'Copy
-local' flag is set, or just add the XNB file to your project and set its
-'copy if newer' or 'copy always' option.
+information. A few primitive model (XNB) files like the torus, various
+resolutions of geosphere, etc are available in a 'Content' folder under
+the project. If you are using the Blotch3D NuGet package, the Content
+folder will not appear until the first time the project runs. The XNB
+files can be used as is done in the examples that use them by adding the
+XNB file to your project and setting its 'copy if newer' or 'copy
+always' option so that it is available to the process at run time.
 
-You can also convert standard 3D model files, fonts, etc. to "XNB" files
+You can also convert standard 3D model files, fonts, etc. to XNB files
 for use by your MonoGame project. To convert them, you'll need to use
 the Monogame content manager (pipeline tool). See
 <https://docs.monogame.net/articles/tools/mgcb.html>. The docs well
