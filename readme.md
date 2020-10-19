@@ -346,8 +346,8 @@ XNB file to your project and setting its 'copy if newer' or 'copy
 always' option so that it is available to the process at run time.
 
 You can also convert standard 3D model files, fonts, etc. to XNB files
-for use by your MonoGame project. To convert them, you'll need to use
-the Monogame content manager (pipeline tool). See
+for use by your project. To convert them, you'll need to use the
+Monogame content manager (pipeline tool). See
 <https://docs.monogame.net/articles/tools/mgcb.html>. The docs well
 describe how to use it, but in essence you do this:
 
