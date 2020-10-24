@@ -153,7 +153,7 @@ window---MonoGame must create it.
 
 The provided Visual Studio solution file (Blotch3D.sln) contains both
 the Blotch3D library project with source, and all example projects
-except one. The "BlotchExample13\_UseBlotch3DThruNuGet" example uses a
+except one. The "BlotchExample13_UseBlotch3DThruNuGet" example uses a
 separate solution file to demonstrate its independence from the library
 project source and allow you to debug it without it trying to debug the
 release NuGet library.
@@ -170,11 +170,12 @@ Creating a new project
 (See the [Quick start for Windows](#features) section to set everything
 up for development)
 
-You can create a new .NET Core/WPF Core/Windows Forms Core project and
-add a reference to the Blotch3D project or the Blotch3D NuGet package.
+You can create a new .NET Core 3.x/WPF Core 3.x/Windows Forms Core 3.x
+project and add a reference to the Blotch3D project or the Blotch3D
+NuGet package.
 
-To add MonoGame + Blotch3D to an existing Windows Core project, add a
-reference to Blotch3D.
+To add MonoGame + Blotch3D to an existing Windows Core 3.x project, add
+a reference to Blotch3D.
 
 To add MonoGame + Blotch3D to an existing .NET Framework project, add a
 reference to Blotch3D and (to avoid a weird startup bug where it won't
@@ -353,7 +354,7 @@ describe how to use it, but in essence you do this:
 
 1.  Download and install it
 
-2.  Run it from the command line with: mgcb\_editor
+2.  Run it from the command line with: mgcb_editor
 
 3.  Use the 'New' menu item to create a new project (mgcb) file
 
@@ -494,9 +495,9 @@ These shaders are already compiled, so you don't have to worry about
 that. But if you do want to compile them, or you have another shader you
 want to compile, you'll need the Monogame effects compiler. See
 <https://docs.monogame.net/articles/tools/mgfxc.html>. See the
-make\_effects.bat file for examples of building the existing shaders.
-The make\_effects.bat file assumes the compiler is in a certain folder.
-You might have to change the folder to get it to work.
+make_effects.bat file for examples of building the existing shaders. The
+make_effects.bat file assumes the compiler is in a certain folder. You
+might have to change the folder to get it to work.
 
 You can create your own shader files that are based on BlBasicEffect and
 compile and load it as shown above. Just be sure it is based on the
