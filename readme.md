@@ -348,24 +348,25 @@ always' option so that it is available to the process at run time.
 
 You can also convert standard 3D model files, fonts, etc. to XNB files
 for use by your project. To convert them, you'll need to use the
-Monogame content manager (pipeline tool). See
-<https://docs.monogame.net/articles/tools/mgcb.html>. The docs well
-describe how to use it, but in essence you do this:
+Monogame content manager (pipeline tool). Use it as follows:
 
-1.  Download and install it
+1.  Make sure you have .NET Core SDK installed.
 
-2.  Run it from the command line with: mgcb_editor
+2.  Install the pipeline manager by entering in a command prompt: dotnet
+    tool install -g dotnet-mgcb-editor
 
-3.  Use the 'New' menu item to create a new project (mgcb) file
+3.  Run it from the command line with: mgcb-editor
 
-4.  Add a model by right-clicking the project in the 'Project' pane and
+4.  Use the 'New' menu item to create a new project (mgcb) file
+
+5.  Add a model by right-clicking the project in the 'Project' pane and
     selecting the 'Add' item
 
-5.  Build the item(s) into 'XNB' files by right-clicking the project in
+6.  Build the item(s) into 'XNB' files by right-clicking the project in
     the 'Project' pane and selecting rebuild. Note the output folders in
     the 'Properties' pane.
 
-6.  Add the XNB to your project and set its 'copy if newer' flag so it
+7.  Add the XNB to your project and set its 'copy if newer' flag so it
     gets put in the output folder.
 
 Previous versions of the content manager (pipeline tool) required some
