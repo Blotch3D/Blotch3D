@@ -21,8 +21,8 @@ To get started with development:
 4.  See [Creating a new project](#creating-a-new-project) for details on
     creating projects, adding Blotch3D to an existing project, using the
     NuGet package, and building for another platform. See [Making and
-    using 3D models](#making-and-using-3d-models) for info on adding
-    existing 3D models to your project.
+    using 3D content](#making-and-using-3d-content) for info on adding
+    existing 3D models, audio, fonts, etc. to your project.
 
 Features
 --------
@@ -151,7 +151,7 @@ window---MonoGame must create it.
 
 The provided Visual Studio solution file (Blotch3D.sln) contains both
 the Blotch3D library project with source, and all example projects
-except one. The "BlotchExample13\_UseBlotch3DThruNuGet" example uses a
+except one. The "BlotchExample13_UseBlotch3DThruNuGet" example uses a
 separate solution file to demonstrate its independence from the library
 project source and allow you to debug it without it trying to debug the
 release NuGet library.
@@ -263,7 +263,7 @@ are also methods to draw text and textures in 2D (just draw them after
 all 3D objects have been drawn so they aren't overwritten by them). You
 can also draw things using the lower-level MonoGame methods. For
 example, it is faster to draw multiple 2D textures and text using
-MonoGame's SpriteBatch class. See the 'Making and Using 3D Models'
+MonoGame's SpriteBatch class. See the 'Making and using 3D content'
 section for more information.
 
 The easiest way to set the camera position and orientation is to
@@ -331,8 +331,12 @@ informative exception by the finalizer if this isn't done.
 See the examples, reference documentation (doc/Blotch3D.chm), and
 IntelliSense for more information.
 
-Making and using 3D models
---------------------------
+Making and using 3D content
+---------------------------
+
+You can convert standard 3D models, audio files, fontes, etc. to 'XNB'
+files for use by your project. (Although some standard content types can
+be loaded directly, like with
 
 You can use the BlGeometry static class to make a variety of objects
 programmatically. See the geometry examples and that class for more
@@ -344,9 +348,15 @@ files can be used as is done in the examples that use them by adding the
 XNB file to your project and setting its 'copy if newer' or 'copy
 always' option so that it is available to the process at run time.
 
-You can also convert standard 3D model files, fonts, etc. to XNB files
-for use by your project. To convert them, you'll need to use the
-Monogame content manager (pipeline tool). Use it as follows:
+You can also convert standard 3D model files, fonts, images, audio, etc.
+to XNB files for use by your project (and some files can also be loaded,
+directly). To convert them to XNB, you'll need to use the Monogame
+content manager (pipeline tool) and possibly a tool to convert the
+standard file to a file format that the content manager understands.
+Some formats that the content manager understands are FBX (3D model),
+MP3, font, jpg, png.
+
+Use the content manager as follows:
 
 1.  Make sure you have .NET Core SDK installed.
 
@@ -379,16 +389,14 @@ There are countless standard 3D models that can be downloaded, or you
 can create one from scratch. To create one from scratch, if you don't
 need a texture image on the model you may be able to get by with the
 ultra-simple Tinkercad on-line modeler. It takes only a few minutes to
-learn to use it. If you do need an image texture on the model or other
-more advanced features, you can use Blender. Blender is a full featured
-and free professional modeler, but with a fairly steep learning curve.
-To create the texture map with Blender, see one of the countless
-tutorials online like <https://www.youtube.com/watch?v=2xTzJIaKQFY> or
+learn to use it. It doesn't save FBX, so you'll need another modeler or
+convertor to convert it. If you do need an image texture on the model or
+other more advanced features, you can use Blender. Blender is a full
+featured and free professional modeler, but with a fairly steep learning
+curve. Blender can also convert several 3D model types to FBX. To create
+the texture map with Blender, see one of the countless tutorials online
+like <https://www.youtube.com/watch?v=2xTzJIaKQFY> or
 <https://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/UV_Map_Basics> .
-
-It's recommended that you export the model as an FBX file for use by the
-pipeline tool. You can also use Blender to convert an existing model to
-FBX.
 
 Since typically standard file types need to be converted to XNB files
 only once, one can consider it a separate manual step that should be
@@ -498,9 +506,9 @@ These shaders are already compiled, so you don't have to worry about
 that. But if you do want to compile them, or you have another shader you
 want to compile, you'll need the Monogame effects compiler. See
 <https://docs.monogame.net/articles/tools/mgfxc.html>. See the
-make\_effects.bat file for examples of building the existing shaders.
-The make\_effects.bat file assumes the compiler is in a certain folder.
-You might have to change the folder to get it to work.
+make_effects.bat file for examples of building the existing shaders. The
+make_effects.bat file assumes the compiler is in a certain folder. You
+might have to change the folder to get it to work.
 
 You can create your own shader files that are based on BlBasicEffect and
 compile and load it as shown above. Just be sure it is based on the
