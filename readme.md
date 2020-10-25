@@ -153,7 +153,7 @@ window---MonoGame must create it.
 
 The provided Visual Studio solution file (Blotch3D.sln) contains both
 the Blotch3D library project with source, and all example projects
-except one. The "BlotchExample13_UseBlotch3DThruNuGet" example uses a
+except one. The "BlotchExample13\_UseBlotch3DThruNuGet" example uses a
 separate solution file to demonstrate its independence from the library
 project source and allow you to debug it without it trying to debug the
 release NuGet library.
@@ -352,8 +352,8 @@ Monogame content manager (pipeline tool). Use it as follows:
 
 1.  Make sure you have .NET Core SDK installed.
 
-2.  Install the pipeline manager by entering in a command prompt: dotnet
-    tool install -g dotnet-mgcb-editor
+2.  Download and install the pipeline tool by entering in a command
+    prompt: dotnet tool install -g dotnet-mgcb-editor
 
 3.  Run it from the command line with: mgcb-editor
 
@@ -369,11 +369,11 @@ Monogame content manager (pipeline tool). Use it as follows:
 7.  Add the XNB to your project and set its 'copy if newer' flag so it
     gets put in the output folder.
 
-Previous versions of the content manager (pipeline tool) required some
-VC Redistributable files. The current version (3.8) has changed notably,
-so it might not. In any case, if it complains of not having a DLL, get
-the installer for "Visual C++ Redistributable for Visual Studio 2012"
-(NOT a later version) for your platform from
+Previous versions of the pipeline tool required some VC Redistributable
+files. The current version (3.8) has changed notably, so it might not.
+In any case, if it complains of not having a DLL, get the installer for
+"Visual C++ Redistributable for Visual Studio 2012" (NOT a later
+version) for your platform from
 <https://www.microsoft.com/en-us/download/details.aspx?id=30679> and run
 it with the default settings.
 
@@ -387,6 +387,10 @@ and free professional modeler, but with a fairly steep learning curve.
 To create the texture map with Blender, see one of the countless
 tutorials online like <https://www.youtube.com/watch?v=2xTzJIaKQFY> or
 <https://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/UV_Map_Basics> .
+
+It's recommended that you export the model as an FBX file for use by the
+pipeline tool. You can also use Blender to convert an existing model to
+FBX.
 
 Since typically standard file types need to be converted to XNB files
 only once, one can consider it a separate manual step that should be
@@ -496,9 +500,9 @@ These shaders are already compiled, so you don't have to worry about
 that. But if you do want to compile them, or you have another shader you
 want to compile, you'll need the Monogame effects compiler. See
 <https://docs.monogame.net/articles/tools/mgfxc.html>. See the
-make_effects.bat file for examples of building the existing shaders. The
-make_effects.bat file assumes the compiler is in a certain folder. You
-might have to change the folder to get it to work.
+make\_effects.bat file for examples of building the existing shaders.
+The make\_effects.bat file assumes the compiler is in a certain folder.
+You might have to change the folder to get it to work.
 
 You can create your own shader files that are based on BlBasicEffect and
 compile and load it as shown above. Just be sure it is based on the
