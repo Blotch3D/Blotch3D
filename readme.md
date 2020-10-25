@@ -76,14 +76,8 @@ You can\...
 -   Get a list of sprites under the mouse position (within a sprite
     radius) to implement mouse selection, tooltips, pop-up menus, etc.
 
-```{=html}
-<!-- -->
-```
 -   Detect sprite radius collisions.
 
-```{=html}
-<!-- -->
-```
 -   Implement levels-of-detail.
 
 -   Implement mipmaps.
