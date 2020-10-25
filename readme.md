@@ -8,9 +8,7 @@ To deliver a Blotch3D app for Windows, just deliver the contents of your
 project's output folder. No other software need be installed on the
 target system.
 
-To develop with Blotch3D you can simply add the NuGet package to your
-project and see the IntelliSense simplified documentation. However, if
-you also want the full docs, examples, and source, do this:
+To get started with development:
 
 1.  Download the Blotch3D repository, or clone it.
 
@@ -21,10 +19,10 @@ you also want the full docs, examples, and source, do this:
     documentation.
 
 4.  See [Creating a new project](#creating-a-new-project) for details on
-    creating projects, adding Blotch3D to an existing project, or
-    building for another platform. See [Making and using 3D
-    models](#making-and-using-3d-models) for info on adding existing 3D
-    models to your project.
+    creating projects, adding Blotch3D to an existing project, using the
+    NuGet package, and building for another platform. See [Making and
+    using 3D models](#making-and-using-3d-models) for info on adding
+    existing 3D models to your project.
 
 Features
 --------
@@ -174,14 +172,14 @@ You can create a new .NET Core 3.x/WPF Core 3.x/Windows Forms Core 3.x
 project and add a reference to the Blotch3D project or the Blotch3D
 NuGet package.
 
-To add MonoGame + Blotch3D to an existing Windows Core 3.x project, add
-a reference to Blotch3D.
+To add Blotch3D to an existing Windows Core 3.x project, add a reference
+to Blotch3D.
 
-To add MonoGame + Blotch3D to an existing .NET Framework project, add a
-reference to Blotch3D and (to avoid a weird startup bug where it won't
-load SDL2.dll) also add the NuGet package 'MonoGame.Framework.DesktopGL'
-via the solution's NuGet screen. (You have to add it from the solution's
-NuGet screen because that package isn't available in a .NET Framework
+To add Blotch3D to an existing .NET Framework project, add a reference
+to Blotch3D and (to avoid a weird startup bug where it won't load
+SDL2.dll) also add the NuGet package 'MonoGame.Framework.DesktopGL' via
+the solution's NuGet screen. (You have to add it from the solution's
+NuGet screen because that package isn't visible in a .NET Framework
 project's NuGet screen, even though it is compatible with it).
 
 To create a project for another platform besides Microsoft Windows:
