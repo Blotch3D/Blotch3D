@@ -334,52 +334,58 @@ IntelliSense for more information.
 Making and using 3D content
 ---------------------------
 
+Some standard content types can be loaded directly in your project code,
+like with certain platform-specific code or with
+BlGraphicsDeviceManager.LoadFromImageFile.
+
 You can use the BlGeometry static class to make a variety of objects
 programmatically. See the geometry examples and that class for more
-information. A few primitive model (XNB) files like the torus, various
-resolutions of geosphere, etc are available in a 'Content' folder under
-the project. If you are using the Blotch3D NuGet package, the Content
-folder will not appear until the first time the project runs. The XNB
-files can be used as is done in the examples that use them by adding the
-XNB file to your project and setting its 'copy if newer' or 'copy
-always' option so that it is available to the process at run time.
+information.
 
-You can also convert standard 3D models, audio files, fonts, etc. to
-'XNB' files for use by your project. (Although some standard content
-types can be loaded directly, like with
-BlGraphicsDeviceManager.LoadFromImageFile. To convert them to XNB,
-you'll need to use the Monogame content manager (pipeline tool) and
-possibly a tool to convert the standard file to a file format that the
-content manager understands (like Blender). Some formats that the
-content manager understands are FBX (3D model), MP3, JPG, PNG, and fonts
-can be easily described textually in a 'spritefont' file.
+Any type of content file (3D model, audio, images, font, etc.) can be
+converted to an XNB file. XNB files can be loaded directly by code as is
+done in the examples that load them as long as the XNB file is available
+at run time (that is, it has its 'copy if newer' or 'copy always' option
+set). A few XNB 3D model files like the torus, various resolutions of
+geosphere, etc are available in a 'Content' folder under the Blotch3D
+project. If you are using the Blotch3D NuGet package, the Content folder
+will not appear until the first time the project runs.
 
-Use the content manager as follows:
+To convert a file to XNB, you'll need to use the Monogame content
+manager (pipeline tool) and possibly a tool to convert the standard file
+to a file format that the content manager understands (like with
+Blender). Some formats that the content manager understands are FBX (3D
+model), MP3, JPG, PNG. Fonts can be easily described textually in a
+'spritefont' file.
 
-1.  Make sure you have .NET Core SDK installed.
+Install and use the content manager as follows:
 
-2.  Download and install the pipeline tool by entering in a command
+1.  Make sure you have .NET Core SDK installed because it's needed for
+    core tools like the content manager.
+
+2.  Download and install the content manager by entering in a command
     prompt: dotnet tool install -g dotnet-mgcb-editor
 
-3.  Run it from the command line with: mgcb-editor
+3.  Enter 'mgcb-editor' at a command prompt to run it.
 
-4.  Use the 'New' menu item to create a new project (mgcb) file
+4.  Use the 'New' menu item to create a new project (mgcb) file.
 
 5.  Add a model by right-clicking the project in the 'Project' pane and
-    selecting the 'Add' item
+    selecting the 'Add' item (see below to convert otherwise unsupported
+    file types to supported file types).
 
 6.  Build the item(s) into 'XNB' files by right-clicking the project in
-    the 'Project' pane and selecting rebuild. Note the output folders in
-    the 'Properties' pane.
+    the 'Project' pane and selecting 'rebuild'. Note the output folders
+    in the 'Properties' pane.
 
-7.  Add the XNB to your project and set its 'copy if newer' flag so it
-    gets put in the output folder.
+7.  Add the XNB to your Visual Studio project and set its 'copy if
+    newer' flag so it gets put in the output folder.
 
-Previous versions of the pipeline tool required some VC Redistributable
-files. The current version (3.8) has changed notably, so it might not.
-In any case, if it complains of not having a DLL, get the installer for
-"Visual C++ Redistributable for Visual Studio 2012" (NOT a later
-version) for your platform from
+Note that previous versions of the pipeline tool required some VC
+Redistributable files. The current version (3.8) has changed notably, so
+it might not. In any case, if it complains of not having a DLL, get the
+installer for "Visual C++ Redistributable for Visual Studio 2012" (NOT a
+later version) for your platform from
 <https://www.microsoft.com/en-us/download/details.aspx?id=30679> and run
 it with the default settings.
 
@@ -387,14 +393,15 @@ There are countless standard 3D models that can be downloaded, or you
 can create one from scratch. To create one from scratch, if you don't
 need a texture image on the model you may be able to get by with the
 ultra-simple Tinkercad on-line modeler. It takes only a few minutes to
-learn to use it. It doesn't save FBX, so you'll still need another
-modeler or convertor to convert it, like Blender (conversion of files
-with blender involves only its 'load', 'save', 'import' and/or 'export'
-menu items). If you do need an image texture on the model or other more
-advanced features, you can use Blender. Blender is a full featured and
-free professional modeler, but with a fairly steep learning curve. To
-create the texture map with Blender, see one of the countless tutorials
-online like <https://www.youtube.com/watch?v=2xTzJIaKQFY> or
+learn to use it. It doesn't save FBX format, so you'll still need
+another modeler or convertor to convert it, like Blender (conversion of
+files with blender involves only its 'load', 'save', 'import' and/or
+'export' menu items). If you do need an image texture on the model or
+other more advanced features, you can create them with Blender. Blender
+is a full featured and free professional modeler, but with a fairly
+steep learning curve. To create the texture map with Blender, see one of
+the countless tutorials online like
+<https://www.youtube.com/watch?v=2xTzJIaKQFY> or
 <https://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/UV_Map_Basics> .
 
 Since typically standard file types need to be converted to XNB files
