@@ -334,10 +334,6 @@ IntelliSense for more information.
 Making and using 3D content
 ---------------------------
 
-You can convert standard 3D models, audio files, fontes, etc. to 'XNB'
-files for use by your project. (Although some standard content types can
-be loaded directly, like with
-
 You can use the BlGeometry static class to make a variety of objects
 programmatically. See the geometry examples and that class for more
 information. A few primitive model (XNB) files like the torus, various
@@ -348,13 +344,15 @@ files can be used as is done in the examples that use them by adding the
 XNB file to your project and setting its 'copy if newer' or 'copy
 always' option so that it is available to the process at run time.
 
-You can also convert standard 3D model files, fonts, images, audio, etc.
-to XNB files for use by your project (and some files can also be loaded,
-directly). To convert them to XNB, you'll need to use the Monogame
-content manager (pipeline tool) and possibly a tool to convert the
-standard file to a file format that the content manager understands.
-Some formats that the content manager understands are FBX (3D model),
-MP3, font, jpg, png.
+You can also convert standard 3D models, audio files, fonts, etc. to
+'XNB' files for use by your project. (Although some standard content
+types can be loaded directly, like with
+BlGraphicsDeviceManager.LoadFromImageFile. To convert them to XNB,
+you'll need to use the Monogame content manager (pipeline tool) and
+possibly a tool to convert the standard file to a file format that the
+content manager understands (like Blender). Some formats that the
+content manager understands are FBX (3D model), MP3, JPG, PNG, and fonts
+can be easily described textually in a 'spritefont' file.
 
 Use the content manager as follows:
 
@@ -389,13 +387,14 @@ There are countless standard 3D models that can be downloaded, or you
 can create one from scratch. To create one from scratch, if you don't
 need a texture image on the model you may be able to get by with the
 ultra-simple Tinkercad on-line modeler. It takes only a few minutes to
-learn to use it. It doesn't save FBX, so you'll need another modeler or
-convertor to convert it. If you do need an image texture on the model or
-other more advanced features, you can use Blender. Blender is a full
-featured and free professional modeler, but with a fairly steep learning
-curve. Blender can also convert several 3D model types to FBX. To create
-the texture map with Blender, see one of the countless tutorials online
-like <https://www.youtube.com/watch?v=2xTzJIaKQFY> or
+learn to use it. It doesn't save FBX, so you'll still need another
+modeler or convertor to convert it, like Blender (conversion of files
+with blender involves only its 'load', 'save', 'import' and/or 'export'
+menu items). If you do need an image texture on the model or other more
+advanced features, you can use Blender. Blender is a full featured and
+free professional modeler, but with a fairly steep learning curve. To
+create the texture map with Blender, see one of the countless tutorials
+online like <https://www.youtube.com/watch?v=2xTzJIaKQFY> or
 <https://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/UV_Map_Basics> .
 
 Since typically standard file types need to be converted to XNB files
