@@ -21,7 +21,7 @@ To get started with development:
 4.  See [Creating a new project](#creating-a-new-project) for details on
     creating projects, adding Blotch3D to an existing project, using the
     NuGet package, and building for another platform. See [Making and
-    using 3D content](#making-and-using-3d-content) for info on adding
+    using content](#making-and-using-content) for info on adding
     existing 3D models, audio, fonts, etc. to your project.
 
 Features
@@ -36,8 +36,6 @@ You can\...
     display and move thousands of them in 3D at high frame rates.
 
 -   Programmatically create a wide variety of sprite shapes.
-
--   Create sprites by defining individual polygons.
 
 -   Load textures from standard image files, including textures with an
     alpha channel (i.e. with translucent pixels).
@@ -55,9 +53,8 @@ You can\...
 -   Override all steps in the drawing of each sprite.
 
 -   Easily give the user control over all aspects of the camera (zoom,
-    pan, truck, dolly, rotate, etc.).
-
--   Easily control all aspects of the camera programmatically.
+    pan, truck, dolly, rotate, etc.) and/or control all aspects of the
+    camera programmatically.
 
 -   Create billboard sprites.
 
@@ -79,6 +76,14 @@ You can\...
 -   Get a list of sprites under the mouse position (within a sprite
     radius) to implement mouse selection, tooltips, pop-up menus, etc.
 
+```{=html}
+<!-- -->
+```
+-   Detect sprite radius collisions.
+
+```{=html}
+<!-- -->
+```
 -   Implement levels-of-detail.
 
 -   Implement mipmaps.
@@ -91,11 +96,9 @@ You can\...
 
 -   Dynamically transform a texture on a surface.
 
--   Detect sprite radius collisions.
-
 -   Implement fog.
 
--   Create totally configurable particle systems.
+-   Create totally configurable, multilevel particle systems.
 
 -   Define ambient lighting and up to three point-light sources.
 
@@ -105,13 +108,15 @@ You can\...
 -   Easily write your own custom shaders using the provided shader code
     as a template.
 
--   All other MonoGame features remain available.
+-   All other MonoGame features remain available, like audio, joystick
+    support, etc.
 
 -   Blotch3D is a .NET Standard Library. So, it works with .NET
-    Framework, .NET Core, etc.
+    Framework, .NET Core, and other .NET Standard code.
 
 -   See <https://github.com/sqrMin1/MonoGame.Forms> to integrate the 3D
-    window with a .NET Forms GUI
+    window (BlWindow.Window) with a .NET Forms GUI (although this hasn't
+    been tried with the latest releases)
 
 -   You can develop Blotch3D apps on Windows, MacOS, and Linux. Blotch3D
     apps can be built for any Microsoft Windows platforms, iOS, Android,
@@ -170,7 +175,8 @@ up for development)
 
 You can create a new .NET Core 3.x/WPF Core 3.x/Windows Forms Core 3.x
 project and add a reference to the Blotch3D project or the Blotch3D
-NuGet package.
+NuGet package. (To connect an existing 3D Window to a form, use it's
+BlWindow.Window object.)
 
 To add Blotch3D to an existing Windows Core 3.x project, add a reference
 to Blotch3D.
@@ -263,8 +269,8 @@ are also methods to draw text and textures in 2D (just draw them after
 all 3D objects have been drawn so they aren't overwritten by them). You
 can also draw things using the lower-level MonoGame methods. For
 example, it is faster to draw multiple 2D textures and text using
-MonoGame's SpriteBatch class. See the 'Making and using 3D content'
-section for more information.
+MonoGame's SpriteBatch class. See the 'Making and using content' section
+for more information.
 
 The easiest way to set the camera position and orientation is to
 periodically call Graphics.DoDefaultGui(). Typically, this is done in
@@ -331,32 +337,34 @@ informative exception by the finalizer if this isn't done.
 See the examples, reference documentation (doc/Blotch3D.chm), and
 IntelliSense for more information.
 
-Making and using 3D content
----------------------------
+Making and using content
+------------------------
 
-Some standard content types can be loaded directly in your project code,
-like with certain platform-specific code or with
-BlGraphicsDeviceManager.LoadFromImageFile.
+Sometimes standard content types (3D models, audio, images, etc.) can be
+loaded directly by using third party code (but note that it might be
+platform-specific) and you can use
+BlGraphicsDeviceManager.LoadFromImageFile to load image files.
 
 You can use the BlGeometry static class to make a variety of objects
 programmatically. See the geometry examples and that class for more
 information.
 
 Any type of content file (3D model, audio, images, font, etc.) can be
-converted to an XNB file. XNB files can be loaded directly by code as is
+converted to an XNB file, which can be loaded directly by code as is
 done in the examples that load them as long as the XNB file is available
-at run time (that is, it has its 'copy if newer' or 'copy always' option
-set). A few XNB 3D model files like the torus, various resolutions of
-geosphere, etc are available in a 'Content' folder under the Blotch3D
-project. If you are using the Blotch3D NuGet package, the Content folder
-will not appear until the first time the project runs.
+at run time (that is, make sure its 'copy if newer' or 'copy always'
+option set in the project). A few XNB 3D model files like the torus,
+various resolutions of geosphere, etc are available in a 'Content'
+folder under the Blotch3D project. If you are using the Blotch3D NuGet
+package, the Content folder will not appear until the first time the
+project runs.
 
-To convert a file to XNB, you'll need to use the Monogame content
-manager (pipeline tool) and possibly a tool to convert the standard file
-to a file format that the content manager understands (like with
-Blender). Some formats that the content manager understands are FBX (3D
-model), MP3, JPG, PNG. Fonts can be easily described textually in a
-'spritefont' file.
+To convert a standard file to XNB, you'll need to use the Monogame
+content manager (pipeline tool) and possibly a tool to convert the
+standard file to a file format that the content manager understands
+(like Blender). Some of the file formats content manager understands are
+FBX (3D model), MP3, JPG, and PNG. It also understands 'spritefont'
+files, which are textual files that can be easily edited.
 
 Install and use the content manager as follows:
 
@@ -382,10 +390,10 @@ Install and use the content manager as follows:
     newer' flag so it gets put in the output folder.
 
 Note that previous versions of the pipeline tool required some VC
-Redistributable files. The current version (3.8) has changed notably, so
-it might not. In any case, if it complains of not having a DLL, get the
-installer for "Visual C++ Redistributable for Visual Studio 2012" (NOT a
-later version) for your platform from
+Redistributable files. The current version (Monogame 3.8) has changed
+notably, so it might not. In any case, if it complains of not having a
+DLL, get the installer for "Visual C++ Redistributable for Visual Studio
+2012" (NOT a later version) for your platform from
 <https://www.microsoft.com/en-us/download/details.aspx?id=30679> and run
 it with the default settings.
 
@@ -393,14 +401,14 @@ There are countless standard 3D models that can be downloaded, or you
 can create one from scratch. To create one from scratch, if you don't
 need a texture image on the model you may be able to get by with the
 ultra-simple Tinkercad on-line modeler. It takes only a few minutes to
-learn to use it. It doesn't save FBX format, so you'll still need
-another modeler or convertor to convert it, like Blender (conversion of
-files with blender involves only its 'load', 'save', 'import' and/or
-'export' menu items). If you do need an image texture on the model or
-other more advanced features, you can create them with Blender. Blender
-is a full featured and free professional modeler, but with a fairly
-steep learning curve. To create the texture map with Blender, see one of
-the countless tutorials online like
+learn to use it. It doesn't save FBX format, though, so you'll still
+need another modeler or convertor to convert it, like Blender
+(conversion of files with blender involves only its 'load', 'save',
+'import' and/or 'export' menu items). If you do need an image texture on
+the model or other more advanced features, you can create them with
+Blender. Blender is a full featured and free professional modeler, but
+with a fairly steep learning curve. To create a texture map with
+Blender, see one of the countless tutorials online like
 <https://www.youtube.com/watch?v=2xTzJIaKQFY> or
 <https://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/UV_Map_Basics> .
 
@@ -412,10 +420,13 @@ a 3D model, run it through the pipeline manager to create your XNB file.
 Then add that XNB file to your project and set its project properties so
 it is copied to the output folder for loading at run time.
 
-You can even programmatically call the pipeline tool, or even call
-methods directly in the MonoGame.Framework.Content.Pipeline.dll to do
-the conversion at run-time, but only on target platforms that would also
-support development. See
+On a side note, the Monogame project wizard creates a project that can
+convert standard file types to XNB during build time, but in my opinion
+that unnecessarily complicates the build process. Also, you can even
+programmatically call the pipeline tool, or even call methods directly
+in the MonoGame.Framework.Content.Pipeline.dll to do the conversion at
+run-time, but only on target platforms that would also support
+development. See
 <https://community.monogame.net/t/building-and-loading-content-at-runtime/10849>
 for more information. (And speaking of importing files programmatically,
 you can use the BlGraphicsDeviceManager.LoadFromImageFile method to load
@@ -1061,10 +1072,11 @@ notable features directly lacking in Blotch3D/MonoGame are...
 
 I haven't investigated it, but MonoGame.Extended seems to provide some
 but not all of the same features as Blotch3D. You could even try using
-both together, but if you do that then make sure they were built with
-the same version of Monogame, and I don't know any details on how you
-would share things like the MonoGame 'Game' object and the
-GraphicsDeviceManager object. See
+both together (making the BlWindow.Window common between the two), but
+if you do that then make sure they were built with the same version of
+Monogame, and I don't know any details on how you would share things
+like the MonoGame 'Game' object and the GraphicsDeviceManager object.
+See
 [https://www.monogameextended.net](https://www.monogameextended.net/).
 
 Another alternative is UrhoSharp. I haven't looked at it in detail, but
