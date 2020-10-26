@@ -353,19 +353,19 @@ folder under the Blotch3D project. If you are using the Blotch3D NuGet
 package, the Content folder will not appear until the first time the
 project runs.
 
-To convert a standard file to XNB, you'll need to use the Monogame
-content manager (pipeline tool) and possibly a tool to convert the
-standard file to a file format that the content manager understands
-(like Blender). Some of the file formats content manager understands are
-FBX (3D model), MP3, JPG, and PNG. It also understands 'spritefont'
-files, which are textual files that can be easily edited.
+To convert a standard file to XNB, you'll need to use the Monogame MGCB
+Editor and possibly a tool to convert the standard file to a file format
+that the MGCB Editor understands (like Blender). Some of the file
+formats MGCB Editor understands are FBX (3D model), MP3, JPG, and PNG.
+It also understands 'spritefont' files, which are textual files that can
+be easily edited.
 
-Install and use the content manager as follows:
+Install and use the MGCB Editor as follows:
 
 1.  Make sure you have .NET Core SDK installed because it's needed for
-    core tools like the content manager.
+    core tools like the MGCB Editor.
 
-2.  Download and install the content manager by entering in a command
+2.  Download and install the MGCB Editor by entering in a command
     prompt: dotnet tool install -g dotnet-mgcb-editor
 
 3.  Enter 'mgcb-editor' at a command prompt to run it.
@@ -383,7 +383,7 @@ Install and use the content manager as follows:
 7.  Add the XNB to your Visual Studio project and set its 'copy if
     newer' flag so it gets put in the output folder.
 
-Note that previous versions of the pipeline tool required some VC
+Note that previous versions of the MGCB Editor required some VC
 Redistributable files. The current version (Monogame 3.8) has changed
 notably, so it might not. In any case, if it complains of not having a
 DLL, get the installer for "Visual C++ Redistributable for Visual Studio
@@ -398,27 +398,28 @@ ultra-simple Tinkercad on-line modeler. It takes only a few minutes to
 learn to use it. It doesn't save FBX format, though, so you'll still
 need another modeler or convertor to convert it, like Blender
 (conversion of files with blender involves only its 'load', 'save',
-'import' and/or 'export' menu items). If you do need an image texture on
-the model or other more advanced features, you can create them with
-Blender. Blender is a full featured and free professional modeler, but
-with a fairly steep learning curve. To create a texture map with
-Blender, see one of the countless tutorials online like
-<https://www.youtube.com/watch?v=2xTzJIaKQFY> or
+'import' and/or 'export' menu items). If you do need to define texture
+coordinates on the model (which is necessary so you can later specify
+the texture image programmatically) or other more advanced features, you
+can create them with Blender. Blender is a full featured and free
+professional modeler, but with a fairly steep learning curve. To create
+a texture map for the model using Blender, see one of the countless
+tutorials online like <https://www.youtube.com/watch?v=2xTzJIaKQFY> or
 <https://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/UV_Map_Basics> .
 
 Since typically standard file types need to be converted to XNB files
 only once, one can consider it a separate manual step that should be
 done immediately after creating, choosing, or changing the standard
 resource during development. For example, after downloading or creating
-a 3D model, run it through the pipeline manager to create your XNB file.
-Then add that XNB file to your project and set its project properties so
-it is copied to the output folder for loading at run time.
+a 3D model, run it through the MGCB Editor to create your XNB file. Then
+add that XNB file to your project and set its project properties so it
+is copied to the output folder for loading at run time.
 
 On a side note, the Monogame project wizard creates a project that can
 convert standard file types to XNB during build time, but in my opinion
 that unnecessarily complicates the build process. Also, you can even
-programmatically call the pipeline tool, or even call methods directly
-in the MonoGame.Framework.Content.Pipeline.dll to do the conversion at
+programmatically call the MGCB Editor, or even call methods directly in
+the MonoGame.Framework.Content.Pipeline.dll to do the conversion at
 run-time, but only on target platforms that would also support
 development. See
 <https://community.monogame.net/t/building-and-loading-content-at-runtime/10849>
