@@ -925,8 +925,8 @@ namespace Blotch
 			// (depending on noiseLevel)
 			void pixelProcessor(int x, int y)
 			{
-				var xNormalized = (float)x / numX;
-				var yNormalized = (float)y / numY;
+				var xNormalized = (float)x / (numX - 1);
+				var yNormalized = (float)y / (numY - 1);
 				var ofst = x + numX * y;
 
 				double pixel;
