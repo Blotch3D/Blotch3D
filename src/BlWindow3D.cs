@@ -93,7 +93,7 @@ namespace Blotch
 		/// This method does not block.
 		/// Also see BlWindow3D and the (blocking) #EnqueueCommandBlocking for more details.
 		/// </summary>
-		/// <param name="cmd"></param>
+		/// <param name="cmd">A command to perform in the window thread</param>
 		public void EnqueueCommand(Command cmd)
 		{
 			var Qcmd = new QueueCommand()
@@ -104,8 +104,11 @@ namespace Blotch
             // don't bother queuing it if we are already in the window thread
             if (Graphics.CreationThread == Thread.CurrentThread.ManagedThreadId)
             {
-                cmd(this);
-            }
+				if(cmd != null)
+                {
+					cmd(this);
+				}
+			}
             else // we have to queue it because we aren't in the window thread
             {
                 try
@@ -127,8 +130,8 @@ namespace Blotch
         /// This method blocks until the command has executed.
         /// Also see BlWindow3D and the (non-blocking) #EnqueueCommand for more details.
         /// </summary>
-        /// <param name="cmd"></param>
-        public void EnqueueCommandBlocking(Command cmd)
+        /// <param name="cmd">A command to perform in the window thread, or null if you only want to wait a frame</param>
+        public void EnqueueCommandBlocking(Command cmd = null)
 		{
             // don't bother queuing it if we are already in the window thread
             if (Graphics.CreationThread == Thread.CurrentThread.ManagedThreadId)
@@ -274,8 +277,10 @@ namespace Blotch
 					if (bcmd.command != null)
 					{
 						bcmd.command(this);
-						if (bcmd.evnt != null)
-							bcmd.evnt.Set();
+					}
+					if (bcmd.evnt != null)
+                    {
+						bcmd.evnt.Set();
 					}
 				}
 			}
