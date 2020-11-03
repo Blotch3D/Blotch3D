@@ -72,7 +72,7 @@ namespace Blotch
 			public Command command=null;
 			public AutoResetEvent evnt = null;
 		}
-		Mutex QueueMutex = new Mutex();
+		object QueueMutex = new object();
 		Queue<QueueCommand> Queue = new Queue<QueueCommand>();
 
 		/// <summary>
@@ -111,15 +111,14 @@ namespace Blotch
 			}
             else // we have to queue it because we aren't in the window thread
             {
-                try
-                {
-                    QueueMutex.WaitOne();
-                    Queue.Enqueue(Qcmd);
-                }
-                finally
-                {
-                    QueueMutex.ReleaseMutex();
-                }
+				try
+				{
+					lock (QueueMutex)
+					{
+						Queue.Enqueue(Qcmd);
+					}
+				}
+				catch { }
             }
         }
         /// <summary>
@@ -127,16 +126,18 @@ namespace Blotch
         /// this allows other threads to
         /// send commands to execute in the 3D thread. For example, you might need another thread to be able to 
         /// create, move, and delete BlSprites. You can also use this for general thread safety of various operations.
-        /// This method blocks until the command has executed.
+        /// This method blocks until the command has executed or the timeout has expired.
         /// Also see BlWindow3D and the (non-blocking) #EnqueueCommand for more details.
         /// </summary>
         /// <param name="cmd">A command to perform in the window thread, or null if you only want to wait a frame</param>
-        public void EnqueueCommandBlocking(Command cmd = null)
+		/// <returns>True if BlWindow completed command within timeoutMs milliseconds</returns>
+        public bool EnqueueCommandBlocking(Command cmd = null, int timeoutMs = int.MaxValue)
 		{
             // don't bother queuing it if we are already in the window thread
             if (Graphics.CreationThread == Thread.CurrentThread.ManagedThreadId)
             {
                 cmd(this);
+				return true;
             }
             else // we have to queue it because we aren't in the window thread
             {
@@ -147,16 +148,16 @@ namespace Blotch
                     evnt = myEvent
                 };
 
-                try
-                {
-                    QueueMutex.WaitOne();
-                    Queue.Enqueue(Qcmd);
-                }
-                finally
-                {
-                    QueueMutex.ReleaseMutex();
-                }
-                myEvent.WaitOne();
+				try
+				{
+					lock (QueueMutex)
+					{
+						Queue.Enqueue(Qcmd);
+					}
+				}
+				catch { }
+
+				return myEvent.WaitOne(timeoutMs);
             }
         }
 
@@ -268,25 +269,20 @@ namespace Blotch
 		{
 			// execute any pending commands, in order.
 			QueueCommand bcmd;
-			try
+			while (Queue.Count > 0)
 			{
-				QueueMutex.WaitOne();
-				while (Queue.Count > 0)
-				{
+                lock (QueueMutex)
+                {
 					bcmd = Queue.Dequeue();
 					if (bcmd.command != null)
 					{
 						bcmd.command(this);
 					}
 					if (bcmd.evnt != null)
-                    {
+					{
 						bcmd.evnt.Set();
 					}
 				}
-			}
-			finally
-			{
-				QueueMutex.ReleaseMutex();
 			}
 		}
 
@@ -381,7 +377,6 @@ namespace Blotch
 
 			base.Dispose();
 
-			QueueMutex.Dispose();
 			Graphics.Dispose();
 			IsDisposed = true;
 
