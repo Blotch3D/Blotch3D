@@ -12,7 +12,7 @@ To get started with development:
 
 1.  Download the Blotch3D repository, or clone it.
 
-2.  Open the Visual Studio solution file (Blotch3D.sln) and build and
+2.  Open the Visual Studio solution file "Blotch3D.sln" and build and
     run the example projects.
 
 3.  Use IntelliSense or see "Blotch3D.chm" for the reference
@@ -58,7 +58,7 @@ You can\...
 
 -   Create billboard sprites.
 
--   Show a video as a 2D or 3D texture on a sprite (See
+-   Show a video as a texture on a sprite (See
     <http://rbwhitaker.wikidot.com/video-playback> for details).
 
 -   Connect sprites to the camera to implement HUD models and text.
@@ -142,18 +142,20 @@ properties, etc.) is available through Visual Studio IntelliSense and in
 Note: To support Doxygen documentation generator, links in the
 IntelliSense comments are preceded with '\#'.
 
-Note that to support all the platforms there are certain limitations in
-MonoGame. Currently, creating multiple 3D windows can be buggy---unless
-you do it from separate processes. Also, there is no official
-cross-platform way to specify an existing window to use as the 3D
-window---MonoGame must create it.
+To support all the platforms, there are certain limitations in MonoGame.
+There is no official cross-platform way to specify an existing window to
+use as the 3D window---MonoGame must create it. You can't create
+multiple 3D windows unless you do it from separate processes. (The WPF
+example does create multiple windows by incorrectly instantiating them
+in the same 3D thread, but input to those windows is combined to only
+one window, and sometimes it will even get an exception.)
 
 The provided Visual Studio solution file (Blotch3D.sln) contains both
 the Blotch3D library project with source, and all example projects
 except one. The "BlotchExample13_UseBlotch3DThruNuGet" example uses a
-separate solution file to demonstrate its independence from the library
-project source and allow you to debug it without it trying to debug the
-release NuGet library.
+separate solution file (BlotchExample13_UseBlotch3DThruNuGet.sln) to
+demonstrate its independence from the library project source and allow
+you to debug it without it trying to debug the NuGet library.
 
 Several bare-bones examples demonstrate some of the more common tasks
 with just a few lines of code. The source file name for each example
@@ -169,8 +171,9 @@ up for development)
 
 You can create a new .NET Core 3.x/WPF Core 3.x/Windows Forms Core 3.x
 project and add a reference to the Blotch3D project or the Blotch3D
-NuGet package. (To connect an existing 3D Window to a form, use it's
-BlWindow.Window object.)
+NuGet package. (Although using the Monogame window as a child window of
+a UI may be impossible or problematic. See the [Development
+overview](#development-overview) section for further discussion.)
 
 To add Blotch3D to an existing Windows Core 3.x project, add a reference
 to Blotch3D.
@@ -295,8 +298,8 @@ online but note that they may not work in later MonoGame releases.
 
 To properly make the BlWindow3D window be a child window of an existing
 GUI, you need to either explicitly size, position, and convey Z order to
-that 3D window so that it is overlaid over the child window, or use
-<https://github.com/sqrMin1/MonoGame.Forms>.
+that 3D window so that it is overlaid over the child window, or maybe
+<https://github.com/sqrMin1/MonoGame.Forms> will work.
 
 By default, lighting, background color, and sprite coloring are set so
 that it is most probable you will see the sprite. These may need to be
