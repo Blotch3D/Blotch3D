@@ -350,7 +350,7 @@ Any type of content file (3D model, audio, images, font, etc.) can be
 converted to an XNB file, which can be loaded directly by code as is
 done in the examples that load them as long as the XNB file is available
 at run time (that is, make sure its 'copy if newer' or 'copy always'
-option set in the project). A few XNB 3D model files like the torus,
+option is set in the project). A few XNB 3D model files like the torus,
 various resolutions of geosphere, etc are available in a 'Content'
 folder under the Blotch3D project. If you are using the Blotch3D NuGet
 package, the Content folder will not appear until the first time the
