@@ -105,8 +105,8 @@ You can\...
 -   All other MonoGame features remain available, like audio, joystick
     support, etc.
 
--   Blotch3D is a .NET Standard Library. So, it works with .NET
-    Framework, .NET Core, and other .NET Standard code.
+-   Blotch3D is a .NET Standard Library that works with .NET 5, .NET
+    Framework, .NET Core 3, and other .NET Standard code.
 
 -   See <https://github.com/sqrMin1/MonoGame.Forms> to integrate the 3D
     window (BlWindow.Window) with a .NET Forms GUI (although this hasn't
@@ -337,31 +337,37 @@ IntelliSense for more information.
 Making and using content
 ------------------------
 
-Sometimes standard content types (3D models, audio, images, etc.) can be
-loaded directly by using third party code (but note that it might be
-platform-specific) and you can use
-BlGraphicsDeviceManager.LoadFromImageFile to load image files.
+There are several ways to load 3D models, audio, images, etc., depending
+on its type.
+
+You may be able to employ 3rd-party code in your project to load content
+into a form understood by Blotch3D/Monogame., but note that it might be
+platform-specific.
+
+You can use BlGraphicsDeviceManager.LoadFromImageFile to load image
+files.
 
 You can use the BlGeometry static class to make a variety of objects
 programmatically. See the geometry examples and that class for more
 information.
 
-Any type of content file (3D model, audio, images, font, etc.) can be
+But no matter what, any fairly common type of content file can be
 converted to an XNB file, which can be loaded directly by code as is
 done in the examples that load them as long as the XNB file is available
 at run time (that is, make sure its 'copy if newer' or 'copy always'
-option is set in the project). A few XNB 3D model files like the torus,
-various resolutions of geosphere, etc are available in a 'Content'
-folder under the Blotch3D project. If you are using the Blotch3D NuGet
-package, the Content folder will not appear until the first time the
-project runs.
+option is set in the project).
+
+A few XNB 3D model files like the torus, various resolutions of
+geosphere, etc are available in a 'Content' folder under the Blotch3D
+project. If you are using the Blotch3D NuGet package, the Content folder
+will not appear until the first time the project runs.
 
 To convert a standard file to XNB, you'll need to use the Monogame MGCB
 Editor and possibly a tool to convert the standard file to a file format
-that the MGCB Editor understands (like Blender). Some of the file
-formats MGCB Editor understands are FBX (3D model), MP3, JPG, and PNG.
-It also understands 'spritefont' files, which are textual files that can
-be easily edited.
+that the MGCB Editor understands. Some of the file formats MGCB Editor
+understands are FBX (3D model), MP3, JPG, and PNG. It also understands
+'spritefont' files, which are textual files that can be easily edited
+(just open them in a text editor and set the font name, size, etc.).
 
 Install and use the MGCB Editor as follows:
 
@@ -409,10 +415,11 @@ professional modeler, but with a fairly steep learning curve. To create
 a texture map for the model using Blender, see one of the countless
 tutorials online like <https://www.youtube.com/watch?v=2xTzJIaKQFY> or
 <https://en.wikibooks.org/wiki/Blender_3D:_Noob_to_Pro/UV_Map_Basics> .
+Then export the file in FBX format.
 
-Since typically standard file types need to be converted to XNB files
-only once, one can consider it a separate manual step that should be
-done immediately after creating, choosing, or changing the standard
+Since typically standard content file types need to be converted to XNB
+files only once, one can consider it a separate manual step that should
+be done immediately after creating, choosing, or changing the standard
 resource during development. For example, after downloading or creating
 a 3D model, run it through the MGCB Editor to create your XNB file. Then
 add that XNB file to your project and set its project properties so it
@@ -426,9 +433,7 @@ the MonoGame.Framework.Content.Pipeline.dll to do the conversion at
 run-time, but only on target platforms that would also support
 development. See
 <https://community.monogame.net/t/building-and-loading-content-at-runtime/10849>
-for more information. (And speaking of importing files programmatically,
-you can use the BlGraphicsDeviceManager.LoadFromImageFile method to load
-image files directly, probably on most any platform.)
+for more information.
 
 Particles
 ---------
@@ -652,34 +657,31 @@ of bump mapping\] has been removed from this shader.)
 Setting and dynamically changing a sprite's scale, orientation, and position
 ----------------------------------------------------------------------------
 
-Each sprite has a "Matrix" member. The Matrix member defines the
-sprite's orientation, scale, position, etc. relative to its parent
-sprite, or to an unmodified coordinate system if there is no parent.
+You change a sprite's scaling, position, rotation, etc. relative to its
+parent sprite (or to an unmodified coordinate system if there is no
+parent) by assigning or altering the sprite's 'Matrix' member. There are
+many methods that let you easily set or change any of these attributes
+in a matrix. You can also easily combine the attributes of multiple
+matrices into a single matrix by 'multiplying' them (see below).
 
 When you change anything about a sprite's matrix, all its descendants
 (its subsprites, and their subsprites, etc.) automatically follow that
 change. That is, subsprites reside in the parent sprite's coordinate
-system. For example, if a child sprite's matrix scales it by 3, and its
-parent sprite's matrix scales by 4, then the child sprite will be scaled
-by 12 in world space. Likewise, rotation, shear, and position are
+system. For example, if a child sprite's matrix scales it by 2, and its
+parent sprite's matrix scales by 3, then the child sprite will be scaled
+by 6 in world space. Likewise, rotation, shear, and position are
 inherited, as well. In this way you can construct complex objects
 (sprite trees) and not worry about each individual part as you alter the
 orientation and position of that object (i.e. the topmost sprite).
 
-There are many static and instance methods of the Matrix class that let
-you easily set and change the scaling, position, rotation, etc. of a
-matrix. For example, to set the scale, assign the sprite's Matrix to
-Matrix.CreateScale(). You can also create matrices by multiplying
-existing matrices or create them piecemeal.
-
-There are also static and instance Matrix methods and operator overloads
-to "multiply" matrices to form a single matrix which combines the
-effects of multiple matrices. For example, a rotate matrix and a scale
-matrix can be multiplied to form a single rotate-scale matrix. But mind
-the multiplication order because matrix multiplication is not
-commutative. See below for details, but novices can simply try the
-operation one way (like A times B) and if it doesn't work as desired, it
-can be done the other way (B times A).
+To combine multiple matrices, use one of the static and instance Matrix
+methods and operator overloads to "multiply" the matrices. For example,
+a rotate matrix and a scale matrix can be multiplied to form a single
+rotate-scale matrix. But mind the multiplication order because matrix
+multiplication is not commutative. Do it one way and the rotate is
+applied before the scale, do it the other way and the scale is applied
+first. For novices, just try it one way and if it doesn't work the way
+you want, try it the other way.
 
 For a good introduction without the math, see
 <http://rbwhitaker.wikidot.com/monogame-basic-matrices>.
@@ -846,7 +848,8 @@ W = mX + nY + oZ + p
 Notice that the d, h, and l are the translation vector.
 
 Rather than using the above 16 letters ('a' through 'p') for the matrix
-elements, the Matrix class in MonoGame uses the following field names:
+elements, the Matrix class in Blotch3D/MonoGame uses the following field
+names:
 
 M11 M12 M13 M14
 
@@ -1184,11 +1187,12 @@ want to slightly rotate a sprite every frame by the same amount. You can
 either create a new rotation matrix from scratch every frame, or you can
 multiply the existing matrix by a persistent rotation matrix you created
 initially. The former method is more precise but takes a lot more CPU,
-and latter is less CPU intensive but suffers from the eventual visible
-floating point innaccuracy. A good compromise is to use a combination of
-both, if possible. Specifically, multiply by the same rotation matrix
-most of the time, but on occasion recreate the sprite's matrix directly
-from the scalar angle value that you've been incrementing.
+and the latter is less CPU intensive but suffers from the eventual
+visible floating point inaccuracy. A good compromise is to use a
+combination of both, if possible. Specifically, multiply by the same
+rotation matrix most of the time, but on occasion recreate the sprite's
+matrix directly from the scalar angle value that you've been
+incrementing.
 
 Q: I'm using SetCameraToSprite to implement cockpit view, but when the
 sprite moves, the camera lags from the sprite's position.
