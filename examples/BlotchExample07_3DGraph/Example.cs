@@ -58,10 +58,19 @@ namespace BlotchExample
 			Surface.LODs.Add(vertexBuf);
 			Surface.SetAllMaterialBlack();
 			Surface.Color = new Vector3(1, 1, 1);
-			Surface.PreDraw=(s)=>
+
+			// When drawing this sprite, don't cull any polygons so that we can see both sides of them
+			Surface.PreDraw = (s) =>
 			{
 				Graphics.GraphicsDevice.RasterizerState = RasterizerState.CullNone;
 				return BlSprite.PreDrawCmd.Continue;
+			};
+
+			// Undo the previous 'CullNone' after the sprite is drawn so that other sprites use the default mode
+			// (although there are no other sprites in this example, so this isn't technically necessary here)
+			Surface.DrawCleanup = (s) =>
+			{
+				Graphics.GraphicsDevice.RasterizerState = RasterizerState.CullCounterClockwise;
 			};
 		}
 

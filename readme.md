@@ -120,8 +120,8 @@ Overview
 --------
 
 Blotch3D sits on top of MonoGame and all MonoGame's features are still
-available. MonoGame is a widely used 3D library for C\#. It is open
-source, free, fast, cross platform, actively developed by a large
+available. MonoGame is a widely used mid-level 3D library for C\#. It is
+open source, free, fast, cross platform, actively developed by a large
 community, and used in many professional games. There is a plethora of
 MonoGame documentation, tutorials, examples, and discussions on line.
 
@@ -144,7 +144,7 @@ IntelliSense comments are preceded with '\#'.
 
 To support all the platforms, there are certain limitations in MonoGame.
 There is no official cross-platform way to specify an existing window to
-use as the 3D window---MonoGame must create it. You can't create
+use as the 3D window---MonoGame must create it. Also, you can't create
 multiple 3D windows unless you do it from separate processes. (The WPF
 example does create multiple windows by incorrectly instantiating them
 in the same 3D thread, but input to those windows is combined to only
@@ -152,10 +152,10 @@ one window, and sometimes it will even get an exception.)
 
 The provided Visual Studio solution file (Blotch3D.sln) contains both
 the Blotch3D library project with source, and all example projects
-except one. The "BlotchExample13\_UseBlotch3DThruNuGet" example uses a
-separate solution file (BlotchExample13\_UseBlotch3DThruNuGet.sln) to
-demonstrate its independence from the library project source and allow
-you to debug it without it trying to debug the NuGet library.
+except one. The "BlotchExample13_UseBlotch3DThruNuGet" example uses a
+separate solution file (BlotchExample13_UseBlotch3DThruNuGet.sln) to
+demonstrate its independence from the library project source and also to
+allow you to debug it without it trying to debug the NuGet library.
 
 Several bare-bones examples demonstrate some of the more common tasks
 with just a few lines of code. The source file name for each example
@@ -182,7 +182,7 @@ To add Blotch3D to an existing .NET Framework project, add a reference
 to Blotch3D and (to avoid a weird startup bug where it won't load
 SDL2.dll) also add the NuGet package 'MonoGame.Framework.DesktopGL' via
 the solution's NuGet screen. (You have to add it from the solution's
-NuGet screen because that package isn't visible in a .NET Framework
+NuGet screen because that package may not be visible in a .NET Framework
 project's NuGet screen, even though it is compatible with it).
 
 To create a project for another platform besides Microsoft Windows:
@@ -528,9 +528,9 @@ These shaders are already compiled, so you don't have to worry about
 that. But if you do want to compile them, or you have another shader you
 want to compile, you'll need the Monogame effects compiler. See
 <https://docs.monogame.net/articles/tools/mgfxc.html>. See the
-make\_effects.bat file for examples of building the existing shaders.
-The make\_effects.bat file assumes the compiler is in a certain folder.
-You might have to change the folder to get it to work.
+make_effects.bat file for examples of building the existing shaders. The
+make_effects.bat file assumes the compiler is in a certain folder. You
+might have to change the folder to get it to work.
 
 You can create your own shader files that are based on BlBasicEffect and
 compile and load it as shown above. Just be sure it is based on the
