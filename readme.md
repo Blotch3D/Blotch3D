@@ -1073,6 +1073,15 @@ notable features directly lacking in Blotch3D/MonoGame are...
 
 -   More than one 3D window per process
 
+Unity3D is Cadillac 3D library that does virtually anything. See the
+Unity3D site for details, but generally, if your profits or funding is
+less than \$100K per year on your Unity3D product, then Unity3D is free.
+If you make more per year, then you pay Unity3D less than 1% of profits
+that year. So, that's probably worth every penny when you think about
+it, especially since it is Unity3D that would probably be what sells
+your product. The binaries are larger, and learning curve is certainly
+steeper, though.
+
 I haven't investigated it, but MonoGame.Extended seems to provide some
 but not all of the same features as Blotch3D. You could even try using
 both together (making the BlWindow.Window common between the two), but
