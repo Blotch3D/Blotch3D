@@ -663,8 +663,9 @@ You change a sprite's scaling, position, rotation, etc. relative to its
 parent sprite (or to an unmodified coordinate system if there is no
 parent) by assigning or altering the sprite's 'Matrix' member. There are
 many methods that let you easily set or change any of these attributes
-in a matrix. You can also easily combine the attributes of multiple
-matrices into a single matrix by 'multiplying' them (see below).
+in a matrix. For example, you can generate a rotation matrix from an
+angle value. You can also easily combine the attributes of multiple
+matrices into a single matrix by multiplying them (see below).
 
 When you change anything about a sprite's matrix, all its descendants
 (its subsprites, and their subsprites, etc.) automatically follow that
@@ -677,8 +678,8 @@ inherited, as well. In this way you can construct complex objects
 orientation and position of that object (i.e. the topmost sprite).
 
 To combine multiple matrices, use one of the static and instance Matrix
-methods and operator overloads to "multiply" the matrices. For example,
-a rotate matrix and a scale matrix can be multiplied to form a single
+methods and operator overloads to multiply the matrices. For example, a
+rotate matrix and a scale matrix can be multiplied to form a single
 rotate-scale matrix. But mind the multiplication order because matrix
 multiplication is not commutative. Do it one way and the rotate is
 applied before the scale, do it the other way and the scale is applied
@@ -1073,7 +1074,7 @@ notable features directly lacking in Blotch3D/MonoGame are...
 
 -   More than one 3D window per process
 
-Unity3D is Cadillac 3D library that does virtually anything. See the
+Unity3D is a Cadillac 3D library that does virtually anything. See the
 Unity3D site for details, but generally, if your profits or funding is
 less than \$100K per year on your Unity3D product, then Unity3D is free.
 If you make more per year, then you pay Unity3D less than 1% of profits
