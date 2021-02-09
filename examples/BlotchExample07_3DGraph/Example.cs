@@ -27,11 +27,13 @@ namespace BlotchExample
 		/// </summary>
 		protected override void Setup()
 		{
-			// Convert models, fonts, images, etc. using the mgcb_editor (see Blotch3D.chm for more info). Converted models,
-			// fonts, images, etc. are kept in a 'content' folder. We need to create one ContentManager object for each top-level
-			// content folder we'll be loading things from. Here "Content" is the most senior folder name of the content tree.
-			// (Content [models, fonts, etc.] are added to the project with the Content utility. You can create multiple content
-			// managers if content is spread over diverse folders.
+			// Any type of content (3D models, fonts, images, etc.) can be converted to an XNB file by downloading and
+			// using the mgcb-editor (see Blotch3D.chm for details). XNB files are then normally added to the project
+			// and loaded as shown here. 'Content', here, is the folder that contains the XNB files or subfolders with
+			// XNB files. We need to create one ContentManager object for each top-level content folder we'll be loading
+			// XNB files from. You can create multiple content managers if content is spread over diverse folders. Some
+			// content can also be loaded in its native format using platform specific code (may not be portable) or
+			// certain Blotch3D/Monogame methods, like BlGraphicsDeviceManager.LoadFromImageFile.
 			var MyContent = new ContentManager(Services, "Content");
 
 			// The font we will use to draw the menu on the screen.
