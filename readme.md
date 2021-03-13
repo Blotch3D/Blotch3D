@@ -459,12 +459,13 @@ demonstrate how to use several such custom shaders.
 
 The custom compiled shader files for DirectX and OpenGL are in the
 src/Content/Effects folder. (If you are using the NuGet package, these
-files will appear under in the output folder after the first time you
-run your app.) See below for compiling for different platforms. To use a
-custom shader, first copy the compiled shader file (mgfxo file) to your
-program's output folder if it's not already there---you might add a link
-to it in your project and set its build properties so it is copied to
-the output folder when your project builds.
+files will appear under the output folder after the first time you run
+your app.) See below for compiling for different platforms. To use a
+custom shader, first copy the compiled shader file (mgfxo file for
+OpenGL or DirectX) to your program's output folder if it's not already
+there---you might add a link to it in your project and set its build
+properties so it is copied to the output folder when your project
+builds.
 
 When your program runs, it specifies that file name in the BlBasicEffect
 constructor (or you can manage the bytes from the file, yourself, and
