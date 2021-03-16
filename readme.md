@@ -4,10 +4,6 @@ Blotch3D
 Quick start for Windows
 -----------------------
 
-To deliver a Blotch3D app for Windows, just deliver the contents of your
-project's output folder. No other software need be installed on the
-target system.
-
 To get started with development:
 
 1.  Download the Blotch3D repository, or clone it.
@@ -23,6 +19,10 @@ To get started with development:
     NuGet package, and building for another platform. See [Making and
     using content](#making-and-using-content) for info on adding
     existing 3D models, audio, fonts, etc. to your project.
+
+To deliver a Blotch3D app for Windows, just deliver the contents of your
+project's output folder. No other software need be installed on the
+target system.
 
 Features
 --------
