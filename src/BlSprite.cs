@@ -61,6 +61,26 @@ namespace Blotch
 		public double Alpha = 1;
 
 		/// <summary>
+		/// If not null, then this is text to for the sprite. Also see BlSprite.TextOffset, BlSprite.TextColor, and BlSprite.TextFont. 
+		/// </summary>
+		public string Text = null;
+
+		/// <summary>
+		/// The screen offset of the sprite's Text. See BlSprite.Text
+		/// </summary>
+		public Vector2 TextOffset = new Vector2();
+		/// <summary>
+		/// The font for the sprite's Text. See BlSprite.Text
+		/// </summary>
+		public SpriteFont TextFont = null;
+
+		/// <summary>
+		/// The color of the sprite's Text. See BlSprite.Text.
+		/// </summary>
+		public Color TextColor = new Microsoft.Xna.Framework.Color(0x7FFF7F);
+
+
+		/// <summary>
 		/// When you use
 		/// the Add() method of a parent sprite to add a child sprite, the child sprite's Parent field is set to
 		/// the Parent. If you add a child sprite in any other way, and you want the child's Parent field to
@@ -300,8 +320,9 @@ namespace Blotch
 		public delegate PreDrawCmd PreDrawType(BlSprite sprite);
 
 		/// <summary>
-		/// If not null, #Draw method calls this at the beginning before doing anything else. From this function one might
-		/// examine and/or alter any public writable BlSprite field, and/or control the further execution of the Draw method.
+		/// If not null, #Draw method calls this at the beginning before doing anything else. From this function one
+		/// might examine and/or alter any public writable BlSprite field, and/or control the further execution of the
+		/// Draw method. You must undo in PostDraw whatever you do in PreDraw. Otherwise it will affect other sprites.
 		/// </summary>
 		public PreDrawType PreDraw = null;
 
@@ -587,12 +608,20 @@ namespace Blotch
 			try
 			{
 #endif
-				DrawInternal();
+			if(Text != null && Text != "")
+			{
+				var coords = GetViewCoords();
+				if(coords != null)
+                {
+					Graphics.DrawText(Text, TextFont, (Vector2)coords + TextOffset, TextColor);
+				}
+			}
+			DrawInternal();
 #if !DEBUG
 			}
 			catch (Exception e)
 			{
-				Console.WriteLine("Recovered from exception in EsSprite.Draw method:\n\n{0}", e);
+				Console.WriteLine("Recovered from exception in BlSprite.Draw method:\n\n{0}", e);
 			}
 #endif
 		}

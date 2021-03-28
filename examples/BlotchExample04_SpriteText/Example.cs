@@ -44,6 +44,9 @@ namespace BlotchExample
 
 			// The sprite we draw in this window
 			Torus = new BlSprite(Graphics,"Torus");
+			Torus.Text = "This is the model";
+			Torus.TextFont = Font;
+			Torus.TextOffset = new Vector2(10,100);
 			Torus.LODs.Add(TorusModel);
 		}
 
@@ -65,7 +68,9 @@ namespace BlotchExample
 			//
 
 			Torus.Draw();
-
+			
+			/*
+			// This is another way to draw the text instead of assigning the BlSprite.Text member.
 			// If torus is in view, draw its text
 			var coords = Torus.GetViewCoords();
 			if(coords!=null)
@@ -79,6 +84,7 @@ namespace BlotchExample
 				// with the window size. But that's  more complicated.)
 				Graphics.DrawText("This is the model", Font, (Vector2)coords);
 			}
+			*/
 
 			// handle undrawable characters for the specified font (like the infinity symbol)
 			try
