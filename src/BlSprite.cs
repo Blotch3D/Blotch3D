@@ -33,12 +33,13 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Blotch
 {
 	/// <summary>
-	/// A BlSprite is a single 3D object. Each sprite can also hold any number of subsprites, so you can make
-	/// a sprite tree (a scene graph). Subsprites are drawn in the order of their sorted names. Child sprites
-	/// 'follow' the orientation and position of the parent
-	/// sprite. That is, they exist in the coordinate system of the parent sprite. The location and orientation of a
-	/// sprite in its parent's coordinate system is defined by the sprite's #Matrix member. Subsprites, #LODs, and #Mipmap are NOT disposed
-	/// when the sprite is disposed, so you can assign the same one to multiple sprites.
+	/// A BlSprite is a single 3D object. Give a sprite something to display by assigning its LODs member with a model
+	/// or vertex buffer as is done in the examples. Each sprite can also hold any number of subsprites, so
+	/// you can make a sprite tree (a scene graph). Subsprites are drawn in the order of their sorted names. Child
+	/// sprites 'follow' the orientation and position of the parent sprite. That is, they exist in the coordinate system
+	/// of the parent sprite. The location and orientation of a sprite in its parent's coordinate system is defined by
+	/// the sprite's #Matrix member. Subsprites, #LODs, and #Mipmap are NOT disposed when the sprite is disposed, so you
+	/// can assign the same one to multiple sprites.
 	/// </summary>
 	public class BlSprite : SortedDictionary<string, BlSprite> , IComparable, IDisposable
 	{
@@ -61,12 +62,12 @@ namespace Blotch
 		public double Alpha = 1;
 
 		/// <summary>
-		/// If not null, then this is text to for the sprite. Also see BlSprite.TextOffset, BlSprite.TextColor, and BlSprite.TextFont. 
+		/// If not null, then this text will be displayed with the sprite. Also see BlSprite.TextOffset, BlSprite.TextColor, and BlSprite.TextFont. 
 		/// </summary>
 		public string Text = null;
 
 		/// <summary>
-		/// The screen offset of the sprite's Text. See BlSprite.Text
+		/// The screen offset of the sprite's Text relative to the sprite's center. See BlSprite.Text
 		/// </summary>
 		public Vector2 TextOffset = new Vector2();
 		/// <summary>
@@ -79,28 +80,25 @@ namespace Blotch
 		/// </summary>
 		public Color TextColor = new Microsoft.Xna.Framework.Color(0x7FFF7F);
 
-
 		/// <summary>
-		/// When you use
-		/// the Add() method of a parent sprite to add a child sprite, the child sprite's Parent field is set to
-		/// the Parent. If you add a child sprite in any other way, and you want the child's Parent field to
-		/// reflect the parent, you'll have to assign it, yourself. This field is solely for reading by
-		/// application code. It is not read by Blotch3D code.You might need this, for example, to implement
-		/// particles via the FrameProc delegate. See particles example.
+		/// When you use the Add() method of a parent sprite to add a child sprite, the child sprite's Parent field is
+		/// set to the Parent. If you add a child sprite in any other way, and you want the child's Parent field to
+		/// reflect the parent, you'll have to assign it, yourself. This field is solely for reading by application
+		/// code. It is not read by Blotch3D code.You might need this, for example, to implement particles via the
+		/// FrameProc delegate. See particles example.
 		/// </summary>
 		public BlSprite Parent = null;
 
 		/// <summary>
-		/// The objects (levels of detail) to draw for this sprite. Only one element is drawn
-		/// depending on the ApparentSize. Each element can be a Model, a VertexBuffer, or null (indicating nothing should be drawn for that LOD).
-		/// Elements with lower indices are
-		/// higher LODs. So index 0 has the highest detail, index 1 is second highest, etc. LOD decreases (the index increases) for
-		/// every halving of the object's apparent size. You can adjust how close the LODs must be to the camera with
-		/// #LodScale. When the calculated LOD index is higher than the last element,
-		/// then the last element is used. So the simplest way to use this is to add a single object to the list.
-		/// You can add multiple references of the same object so multiple consecutive LODs draw the same object.
-		/// You can set an element to null so it doesn't draw anything, which is typically the last element.
-		/// A model can be assigned to multiple sprites. These are NOT disposed when the sprite is disposed.
+		/// The objects (levels of detail) to draw for this sprite. Only one element is drawn depending on the
+		/// ApparentSize. Each element can be a Model, a VertexBuffer, or null (indicating nothing should be drawn for
+		/// that LOD). Elements with lower indices are higher LODs. So index 0 has the highest detail, index 1 is second
+		/// highest, etc. LOD decreases (the index increases) for every halving of the object's apparent size. You can
+		/// adjust how close the LODs must be to the camera with #LodScale. When the calculated LOD index is higher than
+		/// the last element, then the last element is used. So the simplest way to use this is to add a single object
+		/// to the list. You can add multiple references of the same object so multiple consecutive LODs draw the same
+		/// object. You can set an element to null so it doesn't draw anything, which is typically the last element. A
+		/// model can be assigned to multiple sprites. These are NOT disposed when the sprite is disposed.
 		/// </summary>
 		public List<object> LODs = new List<object>();
 
