@@ -6,9 +6,9 @@ Quick start for Windows
 
 To get started with development:
 
-1.  Clone the Blotch3D repository. (If you download it, instead, then
-    GitHub tries to zip it for download but there is a GitHub bug that
-    prevents the main help file from being properly zipped.)
+1.  Clone the Blotch3D repository. (Do not just download it because
+    there is a GitHub bug that fails to properly add the main help file
+    to the zip.)
 
 2.  Open the Visual Studio solution file "Blotch3D.sln" and build and
     run the example projects.
