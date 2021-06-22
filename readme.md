@@ -406,6 +406,9 @@ DLL, get the installer for "Visual C++ Redistributable for Visual Studio
 <https://www.microsoft.com/en-us/download/details.aspx?id=30679> and run
 it with the default settings.
 
+You can also automate the MGCB Editor with
+https://github.com/Martenfur/Nopipeline.
+
 There are countless standard 3D models that can be downloaded, or you
 can create one from scratch. To create one from scratch, if you don't
 need a texture image on the model you may be able to get by with the
