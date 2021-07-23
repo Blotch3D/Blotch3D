@@ -158,8 +158,8 @@ one window, and sometimes it will even get an exception.)
 
 The provided Visual Studio solution file (Blotch3D.sln) contains both
 the Blotch3D library project with source, and all example projects
-except one. The "BlotchExample13_UseBlotch3DThruNuGet" example uses a
-separate solution file (BlotchExample13_UseBlotch3DThruNuGet.sln) to
+except one. The "BlotchExample13\_UseBlotch3DThruNuGet" example uses a
+separate solution file (BlotchExample13\_UseBlotch3DThruNuGet.sln) to
 demonstrate its independence from the library project source and also to
 allow you to debug it without it trying to debug the NuGet library.
 
@@ -231,20 +231,13 @@ methods provided for your convenience. There is a Setup method that is
 called once when the 3D window is first opened and a FrameProc method
 that is called every frame. The FrameDraw method is also called each
 frame, but only when there is enough CPU available. You are welcome to
-put whatever you like in any of those three methods, except that actual
-drawing code (code that causes things to appear in the window) must be
-in the FrameDraw method.
+put whatever you like in any of those three methods.
 
 For apps that may suffer from severe CPU exhaustion (at least for the 3D
 thread), it might be best to put all your periodic 3D code in FrameDraw
 and not bother with FrameProc. In this way your code will be called less
 often under high-CPU loads. Of course, then your periodic code should
 handle being called at a variable rate.
-
-You can also specify a delegate to the BlSprite constructor. The
-delegate will also be executed every frame. The effect is the same as
-putting the code in FrameProc, but it better encapsulates
-sprite-specific code.
 
 A single-threaded application would have all its code in the overridden
 methods or delegates. If you are developing a multithreaded program,
@@ -538,9 +531,9 @@ These shaders are already compiled, so you don't have to worry about
 that. But if you do want to compile them, or you have another shader you
 want to compile, you'll need the Monogame effects compiler. See
 <https://docs.monogame.net/articles/tools/mgfxc.html>. See the
-make_effects.bat file for examples of building the existing shaders. The
-make_effects.bat file assumes the compiler is in a certain folder. You
-might have to change the folder to get it to work.
+make\_effects.bat file for examples of building the existing shaders.
+The make\_effects.bat file assumes the compiler is in a certain folder.
+You might have to change the folder to get it to work.
 
 You can create your own shader files that are based on BlBasicEffect and
 compile and load it as shown above. Just be sure it is based on the
