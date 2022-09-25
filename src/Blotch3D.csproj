@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <Authors>Kelly Loum</Authors>
     <Description>A high-level 3D .NET Standard class library that gives you real-time 3D graphics with just a few lines of C# code. Supports multiple platforms and devices. See https://github.com/Blotch3D/Blotch3D for docs, source, examples, and details on building for other platforms.</Description>
     <Copyright></Copyright>
