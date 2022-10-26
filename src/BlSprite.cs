@@ -481,7 +481,7 @@ namespace Blotch
             {
                 if (ContainsKey(s.Name))
                 {
-                    throw new Exception($"BlSprite.Add: sprite '{s.Name}' has alread been added");
+                    throw new Exception($"BlSprite.Add: sprite '{s.Name}' has already been added");
                 }
                 s.Parent = this;
                 this[s.Name] = s;
