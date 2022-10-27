@@ -29,7 +29,10 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.Threading;
+using static System.Net.Mime.MediaTypeNames;
+using Color = Microsoft.Xna.Framework.Color;
 
 namespace Blotch
 {
@@ -174,17 +177,27 @@ namespace Blotch
 
 		protected void DrawTextList()
 		{
-			foreach(var txtInfo in Graphics.TextList)
-			{
-                Graphics.DrawText(txtInfo.Text, txtInfo.TextFont, txtInfo.Coords, txtInfo.TextColor);
+            if (Graphics.SpriteBatch == null)
+                Graphics.SpriteBatch = new SpriteBatch(Graphics.GraphicsDevice);
+            Graphics.SpriteBatch.Begin();
+            foreach (var txtInfo in Graphics.TextList)
+            {
+				try
+				{
+                    Graphics.SpriteBatch.DrawString(txtInfo.TextFont, txtInfo.Text, txtInfo.Coords, txtInfo.TextColor);
+                } catch
+				{
+                    Graphics.SpriteBatch.DrawString(txtInfo.TextFont, "<txtErr>", txtInfo.Coords, txtInfo.TextColor);
+                }
             }
-			Graphics.TextList.Clear();
+            Graphics.TextList.Clear();
+            Graphics.SpriteBatch.End();
         }
 
-		/// <summary>
-		/// Used internally, Do NOT override. Use Setup instead.
-		/// </summary>
-		protected override void LoadContent()
+        /// <summary>
+        /// Used internally, Do NOT override. Use Setup instead.
+        /// </summary>
+        protected override void LoadContent()
 		{
 			base.LoadContent();
 			Setup();
