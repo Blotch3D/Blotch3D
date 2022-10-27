@@ -16,10 +16,11 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <AssemblyVersion>1.0.0.0</AssemblyVersion>
     <FileVersion>1.0.0.0</FileVersion>
-    <Version>1.0.4</Version>
+    <Version>1.0.5</Version>
     <PackageReleaseNotes></PackageReleaseNotes>
     <Title>Blotch3d</Title>
     <PackageReadmeFile>readme.md</PackageReadmeFile>
+    <IncludeSymbols>False</IncludeSymbols>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
