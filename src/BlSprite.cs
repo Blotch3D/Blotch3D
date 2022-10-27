@@ -611,7 +611,8 @@ namespace Blotch
 				var coords = GetViewCoords();
 				if(coords != null)
                 {
-					Graphics.DrawText(Text, TextFont, (Vector2)coords + TextOffset, TextColor);
+					Graphics.TextList.Add((Text, TextFont, (Vector2)coords + TextOffset, TextColor));
+					//Graphics.DrawText(Text, TextFont, (Vector2)coords + TextOffset, TextColor);
 				}
 			}
 			DrawInternal();

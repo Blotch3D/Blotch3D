@@ -172,6 +172,15 @@ namespace Blotch
 			Graphics.GraphicsDevice.DepthStencilState = Graphics.DepthStencilStateEnabled;
 		}
 
+		protected void DrawTextList()
+		{
+			foreach(var txtInfo in Graphics.TextList)
+			{
+                Graphics.DrawText(txtInfo.Text, txtInfo.TextFont, txtInfo.Coords, txtInfo.TextColor);
+            }
+			Graphics.TextList.Clear();
+        }
+
 		/// <summary>
 		/// Used internally, Do NOT override. Use Setup instead.
 		/// </summary>
@@ -311,7 +320,9 @@ namespace Blotch
 			base.Draw(timeInfo);
 			FrameDraw(timeInfo);
 
-			DrawGuiControls();
+            DrawTextList();
+
+            DrawGuiControls();
 		}
 		void DrawGuiControls()
 		{

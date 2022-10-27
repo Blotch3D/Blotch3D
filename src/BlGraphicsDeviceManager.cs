@@ -109,6 +109,9 @@ namespace Blotch
 		/// </summary>
 		public double DefGuiMaxLookZ = 1;
 
+
+		public List<(string Text, SpriteFont TextFont, Vector2 Coords, Color TextColor)> TextList = new List<(string Text, SpriteFont TextFont, Vector2 Coords, Color TextColor)>();
+
 		/// <summary>
 		/// Assign DepthStencilState to this to enable depth buffering
 		/// </summary>
