@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30114.105
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Blotch3D", "src\Blotch3D.csproj", "{EC0AE76E-F782-49DF-8CAC-5B305039B58E}"
 EndProject
@@ -30,6 +30,8 @@ EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlotchExampleFull", "examples\BlotchExampleFull\BlotchExampleFull.csproj", "{9B03E307-05EE-4D90-940B-1D5E3CB8249D}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlotchExample12_WPF", "examples\BlotchExample12_WPF\BlotchExample12_WPF.csproj", "{123E17BE-D272-4437-82FE-641EABA407E5}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlotchExample14_MultipleSprites", "examples\BlotchExample14_MultipleSprites\BlotchExample14_MultipleSprites.csproj", "{183A8D16-C502-49F6-9DCB-BF8278E6CD16}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -93,6 +95,10 @@ Global
 		{123E17BE-D272-4437-82FE-641EABA407E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{123E17BE-D272-4437-82FE-641EABA407E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{123E17BE-D272-4437-82FE-641EABA407E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{183A8D16-C502-49F6-9DCB-BF8278E6CD16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{183A8D16-C502-49F6-9DCB-BF8278E6CD16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{183A8D16-C502-49F6-9DCB-BF8278E6CD16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{183A8D16-C502-49F6-9DCB-BF8278E6CD16}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
