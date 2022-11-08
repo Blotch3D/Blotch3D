@@ -6,13 +6,13 @@ Quick start for Windows
 
 To get started with development:
 
-1.  Clone the Blotch3D repository. If you download it, note that there
-    is an issue where some unzip programs (like Windows 10 extractor at
-    the time of this writing) fail to properly extract some files, like
-    the main help file (Blotch3d.chm), making it appear blank. 7-zip
-    seems to correctly unzip it, though. Also note that downloading
-    individual files with Windows uses the extractor under the hood,
-    which will exhibit the problem.
+1.  Clone or download the Blotch3D repository. Note that if you download
+    anything, there is an issue where some unzip programs (like Windows
+    10 extractor at the time of this writing) fail to properly extract
+    some files, like the main help file (Blotch3d.chm), making it appear
+    blank. 7-zip seems to correctly unzip it, though. Also note that
+    downloading individual files with Windows uses the extractor under
+    the hood, which will exhibit the problem.
 
 2.  Open the Visual Studio solution file "Blotch3D.sln" and build and
     run the example projects.
@@ -25,6 +25,11 @@ To get started with development:
     NuGet package, and building for another platform. See [Making and
     using content](#making-and-using-content) for info on adding
     existing 3D models, audio, fonts, etc. to your project.
+
+The NuGet package is the latest release, and the git project (which also
+includes the examples and source) is the either identical to the NuGet
+package or the next beta, and thus may have bug fixes as well as new
+bugs.
 
 To deliver a Blotch3D app for Windows, just deliver the contents of your
 project's output folder. No other software need be installed on the
@@ -216,14 +221,16 @@ thread*. The Run method then calls the methods you've overridden, when
 appropriate, and does not return until the window has closed.
 
 All code that accesses the 3D hardware must be in BlWindow3D overridden
-methods. This is because 3D subsystems (OpenGL, DirectX, etc.) generally
-require that a single thread access all 3D hardware resources for a
-given 3D window. There are certain platform-specific exceptions to this
-rule, but we don't use them. This rule also applies to any code
-structure (like Parallel, etc.) that may internally use other threads,
-as well. Also, since sometimes it's hard to know exactly what 3D
-operations really do hit the 3D hardware, it's best to assume all of
-them do, like creation and use of all Blotch3D and MonoGame objects.
+methods or passed as a lambda to them (see BlWindow3D.EnqueueCommand or
+BlWindow3D.EnqueueCommandBlocking). This is because 3D subsystems
+(OpenGL, DirectX, etc.) generally require that a single thread access
+all 3D hardware resources for a given 3D window. There are certain
+platform-specific exceptions to this rule, but they are not used. This
+rule also applies to any code structure (like Parallel, etc.) that may
+internally use other threads, as well. Also, since sometimes it's hard
+to know exactly what 3D operations really do hit the 3D hardware, it's
+best to assume all of them do, like creation and use of all Blotch3D and
+MonoGame objects.
 
 You can put all your 3D code in the one overridden method called
 "FrameDraw", if you like, but there are a couple of other overridable
@@ -245,12 +252,12 @@ then you would probably want to reserve the 3D thread (the call to the
 BlWindow3D's 'Run' method and its overrides) only for tasks that access
 3D hardware resources. When other threads do need to create, change, or
 destroy 3D hardware resources or otherwise do something in a thread-safe
-way with the 3D thread, they can pass a delegate to the 3D thread with
+way with the 3D thread, they can pass a lambda to the 3D thread with
 BlWindow3D.EnqueueCommand or BlWindow3D.EnqueueCommandBlocking, which
 will be executed within one frame time by the 3D thread.
 
 Models or VertexBuffers must be added to the BlSprite.LODs container for
-them to appear when you draw that sprite. Otherwise nothing is drawn.
+them to appear when you draw that sprite. Otherwise, nothing is drawn.
 See how the examples create a model or vertex buffer and add it to that
 collection. When a sprite is disposed, it does not dispose the models in
 its LODs container. This is so you can add the same model to multiple
