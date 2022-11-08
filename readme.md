@@ -1,6 +1,6 @@
 Blotch3D
 ========
-
+.
 Quick start for Windows
 -----------------------
 
