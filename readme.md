@@ -27,7 +27,7 @@ To get started with development:
     existing 3D models, audio, fonts, etc. to your project.
 
 The NuGet package is the latest release, and the git project (which also
-includes the examples and source) is the either identical to the NuGet
+includes the examples and source) is either identical to the NuGet
 package or the next beta, and thus may have bug fixes as well as new
 bugs.
 
