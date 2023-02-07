@@ -708,7 +708,8 @@ studied only when you need a deeper knowledge.
 Matrix internals
 ----------------
 
-(Essentials are available in \'3D Linear Algebra Cheat Sheet.pdf\')
+(Essentials are available in \'[3D Linear Algebra Cheat
+Sheet.pdf](https://github.com/Blotch3D/Blotch3D/blob/master/doc/3D linear algebra cheat sheet.pdf)\')
 
 Read this section only if you want a deeper understanding of altering a
 sprite's orientation, position, etc. than is explained in the previous
