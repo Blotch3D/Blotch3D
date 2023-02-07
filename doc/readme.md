@@ -27,7 +27,7 @@ To get started with development:
     existing 3D models, audio, fonts, etc. to your project.
 
 The NuGet package is the latest release, and the git project (which also
-includes the examples and source) is the either identical to the NuGet
+includes the examples and source) is either identical to the NuGet
 package or the next beta, and thus may have bug fixes as well as new
 bugs.
 
@@ -346,22 +346,11 @@ Making and using content
 There are several ways to load 3D models, audio, images, etc., depending
 on its type.
 
-You may be able to employ 3rd-party code in your project to load content
-into a form understood by Blotch3D/Monogame., but note that it might be
-platform-specific.
-
-You can use BlGraphicsDeviceManager.LoadFromImageFile to load image
-files.
-
-You can use the BlGeometry static class to make a variety of objects
-programmatically. See the geometry examples and that class for more
-information.
-
-But no matter what, any fairly common type of content file can be
-converted to an XNB file, which can be loaded directly by code as is
-done in the examples that load them as long as the XNB file is available
-at run time (that is, make sure its 'copy if newer' or 'copy always'
-option is set in the project).
+The main way is by converting it to an XNB file. Any fairly common type
+of content file can be converted to an XNB file, which can be loaded
+directly by code as is done in the examples that load them as long as
+the XNB file is available at run time (that is, make sure its 'copy if
+newer' or 'copy always' option is set in the project).
 
 A few XNB 3D model files like the torus, various resolutions of
 geosphere, etc are available in a 'Content' folder under the Blotch3D
@@ -383,7 +372,8 @@ Install and use the MGCB Editor as follows:
 2.  Download and install the MGCB Editor by entering in a command
     prompt: dotnet tool install -g dotnet-mgcb-editor
 
-3.  Enter 'mgcb-editor' at a command prompt to run it.
+3.  Enter 'mgcb-editor' at a command prompt to run it. A GUI will
+    appear.
 
 4.  Use the 'New' menu item to create a new project (mgcb) file.
 
@@ -396,7 +386,7 @@ Install and use the MGCB Editor as follows:
     in the 'Properties' pane.
 
 7.  Add the XNB to your Visual Studio project and set its 'copy if
-    newer' flag so it gets put in the output folder.
+    newer' flag so that it gets put in the output folder.
 
 Note that previous versions of the MGCB Editor required some VC
 Redistributable files. The current version (Monogame 3.8) has changed
@@ -409,6 +399,19 @@ it with the default settings.
 You can also automate the MGCB Editor with
 https://github.com/Martenfur/Nopipeline.
 
+Other ways to get content are:
+
+1.  You may be able to employ C\# library or 3rd-party code in your
+    project to load content into a form understood by Blotch3D/Monogame,
+    but note that it might be platform-specific.
+
+2.  You can use BlGraphicsDeviceManager.LoadFromImageFile to load image
+    files.
+
+3.  You can use the BlGeometry static class to make a variety of objects
+    programmatically. See the geometry examples and that class for more
+    information.
+
 There are countless standard 3D models that can be downloaded, or you
 can create one from scratch. To create one from scratch, if you don't
 need a texture image on the model you may be able to get by with the
@@ -419,7 +422,7 @@ need another modeler or convertor to convert it, like Blender
 'import' and/or 'export' menu items). If you do need to define texture
 coordinates on the model (which is necessary so you can later specify
 the texture image programmatically) or other more advanced features, you
-can create them with Blender. Blender is a full featured and free
+can create them with Blender. Blender is a full-featured and free
 professional modeler, but with a fairly steep learning curve. To create
 a texture map for the model using Blender, see one of the countless
 tutorials online like <https://www.youtube.com/watch?v=2xTzJIaKQFY> or
@@ -704,6 +707,8 @@ studied only when you need a deeper knowledge.
 
 Matrix internals
 ----------------
+
+(Essentials are available in \'3D Linear Algebra Cheat Sheet.pdf\')
 
 Read this section only if you want a deeper understanding of altering a
 sprite's orientation, position, etc. than is explained in the previous
