@@ -36,39 +36,52 @@ using Color = Microsoft.Xna.Framework.Color;
 
 namespace Blotch
 {
-	/// <summary>
-	/// To make a 3D window, you must derive a class from BlWindow3D, override at least the #FrameDraw method, and open
-	/// it with a call to its “Run” method from the same thread that instantiated it. The Run method will call the
-	/// #Setup, #FrameProc, and #FrameDraw methods when appropriate, and not return until the window closes. All code
-	/// that accesses 3D resources must be done in that thread (i.e. one of the overrides), including code that creates
-	/// and uses all Blotch3D and MonoGame objects. Note that this rule also applies to any code structure that may
-	/// internally use other threads, as well. Other threads that need to access 3D resources or otheriwse do something
-	/// in a thread-safe way with the 3D thread can do so by passing a delegate to #EnqueueCommand and
-	/// #EnqueueCommandBlocking.
-	/// </summary>
-	public class BlWindow3D : Game
+    /// <summary>
+    /// To make a 3D window, you either instantiate a BlWindow3d or derive from it. If you instantiate it, at a minimum
+    /// you must perform setup with a call to #EnqueueCommandBlocking, and then you can assign a
+    /// BlWindow3d.#FrameDrawDelegate to perfom FrameDraw processing. Do not assign the BlWindow3d.#FrameDrawDelegate
+    /// before the setup! If you derive from BlWindow3d, you must override at least the #FrameDraw method, and open it
+    /// with a call to its “Run” method from the same thread that instantiated it. The Run method will call the #Setup,
+    /// #FrameProc, and #FrameDraw methods when appropriate, and not return until the window closes. All code that
+    /// accesses 3D resources must be done in that thread (i.e., one of the overrides), including code that creates and
+    /// uses all Blotch3D and MonoGame objects. Note that this rule also applies to any code structure that may
+    /// internally use other threads, as well. Other threads that need to access 3D resources or otheriwse do something
+    /// in a thread-safe way with the 3D thread can do so by passing a delegate to #EnqueueCommand and
+    /// #EnqueueCommandBlocking.
+    /// </summary>
+    public class BlWindow3D : Game
 	{
 		/// <summary>
-		/// The BlGraphicsDeviceManager associated with this window. This is automatically created when you create
-		/// the BlWindow3D.
-		/// </summary>
+        /// The BlGraphicsDeviceManager associated with this window. This is automatically created when you create the
+        /// BlWindow3D.
+        /// </summary>
 		public BlGraphicsDeviceManager Graphics;
 
+        /// <summary>
+        /// A FrameDrawDelegate runs every frame. If you've overloaded FrameDraw, it runs immediatley after FrameDraw.
+        /// You can use it instead of or in addition to FrameDraw to dynamically change the FrameDraw code. You can also
+        /// use this directly in a BlWindow3d instance so you don't even need to derive from BlWindow3d (in which case
+        /// you could use EnqueueCommandBlocking to perform your initialization code before assigning
+        /// FrameDrawDelegate).
+        /// </summary>
+        public Action<BlWindow3D, GameTime> FrameDrawDelegate = null; 
 
-
-		List<BlSprite> FrameProcSprites = new List<BlSprite>();
+        List<BlSprite> FrameProcSprites = new List<BlSprite>();
 		Mutex FrameProcSpritesMutex = new Mutex();
 
+        public Dictionary<string, Object> Objects = new Dictionary<string, object>();
+
+        public Thread WinThread = null;
 
 		/// <summary>
-		/// The GUI controls for this window. See BlGuiControl for details.
-		/// </summary>
+        /// The GUI controls for this window. See BlGuiControl for details.
+        /// </summary>
 		public ConcurrentDictionary<string, BlGuiControl> GuiControls = new ConcurrentDictionary<string, BlGuiControl>();
 
 		/// <summary>
-		/// See #EnqueueCommand, #EnqueueCommandBlocking, and BlWindow3D for more info
-		/// </summary>
-		/// <param name="win">The BlWindow3D object</param>
+        /// See #EnqueueCommand, #EnqueueCommandBlocking, and BlWindow3D for more info
+        /// </summary>
+        /// <param name="win">The BlWindow3D object</param>
 		public delegate void Command(BlWindow3D win);
 		class QueueCommand
 		{
@@ -79,8 +92,8 @@ namespace Blotch
 		Queue<QueueCommand> Queue = new Queue<QueueCommand>();
 
 		/// <summary>
-		/// See BlWindow3D for details.
-		/// </summary>
+        /// See BlWindow3D for details.
+        /// </summary>
 		public BlWindow3D()
 		{
 			CreationThread = Thread.CurrentThread.ManagedThreadId;
@@ -88,15 +101,36 @@ namespace Blotch
 			Graphics = new BlGraphicsDeviceManager(this);
 			Window.AllowUserResizing = true;
 		}
+
+        /// <summary>
+        /// If you don't feel like to deriving from BlWindow, you can create a window using this factory and then use
+        /// #EnqueueCommandBlocking and #FrameDrawDelegate to specify the Setup and FrameDraw code. Be sure to assign
+        /// FrameDrawDelegate AFTER the EnqueueCommandBlocking call! See BlotchExample13_NoDerivation for an example.
+        /// </summary>
+        /// <returns>The BlWindiw3d instance</returns>
+        public static BlWindow3D Factory()
+        {
+            BlWindow3D win = null;
+            var thread = new Thread((p) =>
+            {
+                win = new BlWindow3D();
+                win.Run();
+            });
+            thread.IsBackground = true;
+            thread.Start();
+
+            while(win==null) Thread.Sleep(100);
+
+            return win;
+        }
+
 		/// <summary>
-		/// Since all operations accessing 3D resources must be done by the 3D thread,
-		/// this allows other threads to
-		/// send commands to execute in the 3D thread. For example, you might need another thread to be able to 
-		/// create, move, and delete BlSprites. You can also use this for general thread safety of various operations.
-		/// This method does not block.
-		/// Also see BlWindow3D and the (blocking) #EnqueueCommandBlocking for more details.
-		/// </summary>
-		/// <param name="cmd">A command to perform in the window thread</param>
+        /// Since all operations accessing 3D resources must be done by the 3D thread, this allows other threads to send
+        /// commands to execute in the 3D thread. For example, you might need another thread to be able to create, move,
+        /// and delete BlSprites. You can also use this for general thread safety of various operations. This method
+        /// does not block. Also see BlWindow3D and the (blocking) #EnqueueCommandBlocking for more details.
+        /// </summary>
+        /// <param name="cmd">A command to perform in the window thread</param>
 		public void EnqueueCommand(Command cmd)
 		{
 			var Qcmd = new QueueCommand()
@@ -125,15 +159,15 @@ namespace Blotch
             }
         }
         /// <summary>
-        /// Since all operations accessing 3D resources must be done by the 3D thread,
-        /// this allows other threads to
-        /// send commands to execute in the 3D thread. For example, you might need another thread to be able to 
-        /// create, move, and delete BlSprites. You can also use this for general thread safety of various operations.
-        /// This method blocks until the command has executed or the timeout has expired.
-        /// Also see BlWindow3D and the (non-blocking) #EnqueueCommand for more details.
+        /// Since all operations accessing 3D resources must be done by the 3D thread, this allows other threads to send
+        /// commands to execute in the 3D thread. For example, you might need another thread to be able to create, move,
+        /// and delete BlSprites. You can also use this for general thread safety of various operations. This method
+        /// blocks until the command has executed or the timeout has expired. Also see BlWindow3D and the (non-blocking)
+        /// #EnqueueCommand for more details.
         /// </summary>
-        /// <param name="cmd">A command to perform in the window thread, or null if you only want to wait a frame</param>
-		/// <returns>True if BlWindow completed command within timeoutMs milliseconds</returns>
+        /// <param name="cmd">A command to perform in the window thread, or null if you only want to wait a frame
+        ///     </param>
+        /// <returns>True if BlWindow completed command within timeoutMs milliseconds</returns>
         public bool EnqueueCommandBlocking(Command cmd = null, int timeoutMs = int.MaxValue)
 		{
             // don't bother queuing it if we are already in the window thread
@@ -165,8 +199,8 @@ namespace Blotch
         }
 
 		/// <summary>
-		/// Used internally, Do NOT override. Use Setup instead.
-		/// </summary>
+        /// Used internally, Do NOT override. Use Setup instead.
+        /// </summary>
 		protected override void Initialize()
 		{
 			Graphics.Initialize();
@@ -204,18 +238,17 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// Override this and put all initialization and global content creation code in it.
-		/// See BlWindow3D for details.
-		/// </summary>
+        /// Override this and put all initialization and global content creation code in it. See BlWindow3D for details.
+        /// </summary>
 		protected virtual void Setup()
 		{
 
 		}
 
 		/// <summary>
-		/// Used internally, Do NOT override. Use FrameProc instead.
-		/// </summary>
-		/// <param name="timeInfo"></param>
+        /// Used internally, Do NOT override. Use FrameProc instead.
+        /// </summary>
+        /// <param name="timeInfo"></param>
 		protected override void Update(GameTime timeInfo)
 		{
 			if (Window.ClientBounds.Width < 2 || Window.ClientBounds.Height < 2)
@@ -233,9 +266,9 @@ namespace Blotch
 			ExecuteSpriteFrameProcs();
 		}
 		/// <summary>
-		/// Used internally
-		/// </summary>
-		/// <param name="s"></param>
+        /// Used internally
+        /// </summary>
+        /// <param name="s"></param>
 		public void FrameProcSpritesAdd(BlSprite s)
 		{
 			try
@@ -249,9 +282,9 @@ namespace Blotch
 			}
 		}
 		/// <summary>
-		/// Used internally
-		/// </summary>
-		/// <param name="s"></param>
+        /// Used internally
+        /// </summary>
+        /// <param name="s"></param>
 		public void FrameProcSpritesRemove(BlSprite s)
 		{
 			try
@@ -309,18 +342,18 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// See BlWindow3D for details.
-		/// </summary>
-		/// <param name="timeInfo"></param>
+        /// See BlWindow3D for details.
+        /// </summary>
+        /// <param name="timeInfo"></param>
 		protected virtual void FrameProc(GameTime timeInfo)
 		{
 
 		}
 
 		/// <summary>
-		/// Used internally, Do NOT override. Use FrameDraw instead.
-		/// </summary>
-		/// <param name="timeInfo"></param>
+        /// Used internally, Do NOT override. Use FrameDraw instead.
+        /// </summary>
+        /// <param name="timeInfo"></param>
 		protected override void Draw(GameTime timeInfo)
 		{
 			if (Window.ClientBounds.Width < 2 || Window.ClientBounds.Height < 2)
@@ -332,6 +365,11 @@ namespace Blotch
 
 			base.Draw(timeInfo);
 			FrameDraw(timeInfo);
+
+			if(FrameDrawDelegate!= null)
+			{
+                FrameDrawDelegate(this, timeInfo);
+            }
 
             DrawTextList();
 
@@ -360,9 +398,9 @@ namespace Blotch
 			return hit;
 		}
 		/// <summary>
-		/// See BlWindow3D for details.
-		/// </summary>
-		/// <param name="timeInfo"></param>
+        /// See BlWindow3D for details.
+        /// </summary>
+        /// <param name="timeInfo"></param>
 		protected virtual void FrameDraw(GameTime timeInfo)
 		{
 
@@ -375,17 +413,17 @@ namespace Blotch
 
 		int CreationThread = -1;
 		/// <summary>
-		/// Set when the object is Disposed.
-		/// </summary>
+        /// Set when the object is Disposed.
+        /// </summary>
 		public bool IsDisposed = false;
 		/// <summary>
-		/// When finished with the object, you should call Dispose() from the same thread that created the object.
-		/// You can call this multiple times, but once is enough. If it isn't called before the object
-		/// becomes inaccessible, then the destructor will call it and, if BlDebug.EnableDisposeErrors is
-		/// true (it is true by default for Debug builds), then it will get an exception saying that it
-		/// wasn't called by the same thread that created it. This is because the platform's underlying
-		/// 3D library (OpenGL, etc.) often requires 3D resources to be managed only by one thread.
-		/// </summary>
+        /// When finished with the object, you should call Dispose() from the same thread that created the object. You
+        /// can call this multiple times, but once is enough. If it isn't called before the object becomes inaccessible,
+        /// then the destructor will call it and, if BlDebug.EnableDisposeErrors is true (it is true by default for
+        /// Debug builds), then it will get an exception saying that it wasn't called by the same thread that created
+        /// it. This is because the platform's underlying 3D library (OpenGL, etc.) often requires 3D resources to be
+        /// managed only by one thread.
+        /// </summary>
 		public new void Dispose()
 		{
 			if (BlDebug.ShowThreadInfo)

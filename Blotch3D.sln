@@ -33,6 +33,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlotchExample12_WPF", "exam
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlotchExample14_MultipleSprites", "examples\BlotchExample14_MultipleSprites\BlotchExample14_MultipleSprites.csproj", "{183A8D16-C502-49F6-9DCB-BF8278E6CD16}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{B09DCB5D-4827-4E52-8105-F61AF51C27D4}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlotchExample13_NoDerivation", "examples\BlotchExample13_NoDerivation\BlotchExample13_NoDerivation.csproj", "{4C67B0F3-2BFF-43F7-B98C-DD0DA77D641D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -99,6 +106,10 @@ Global
 		{183A8D16-C502-49F6-9DCB-BF8278E6CD16}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{183A8D16-C502-49F6-9DCB-BF8278E6CD16}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{183A8D16-C502-49F6-9DCB-BF8278E6CD16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4C67B0F3-2BFF-43F7-B98C-DD0DA77D641D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4C67B0F3-2BFF-43F7-B98C-DD0DA77D641D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4C67B0F3-2BFF-43F7-B98C-DD0DA77D641D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4C67B0F3-2BFF-43F7-B98C-DD0DA77D641D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

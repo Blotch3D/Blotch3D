@@ -212,49 +212,49 @@ properly create projects.
 Development overview
 --------------------
 
-See the examples, starting with the basic example.
+To create a 3D window, do either of the following:
 
-You define a 3D window by deriving a class from BlWindow3D and
-overriding at least the FrameDraw method. Open the window by
-instantiating that class and calling its "Run" method *from the same
-thread*. The Run method then calls the methods you've overridden, when
-appropriate, and does not return until the window has closed.
+1.  Use BlWindow3d.Factory to create a BlWindow3d and then pass all
+    pertinent code to it via delegates/lambdas. See
+    BlotchExample13_NoDerivation for an example. (As you can see in the
+    example, instance objects can be held in the BlWindow3d.Objects
+    dictionary.)
 
-All code that accesses the 3D hardware must be in BlWindow3D overridden
-methods or passed as a lambda to them (see BlWindow3D.EnqueueCommand or
-BlWindow3D.EnqueueCommandBlocking). This is because 3D subsystems
-(OpenGL, DirectX, etc.) generally require that a single thread access
-all 3D hardware resources for a given 3D window. There are certain
-platform-specific exceptions to this rule, but they are not used. This
-rule also applies to any code structure (like Parallel, etc.) that may
-internally use other threads, as well. Also, since sometimes it's hard
-to know exactly what 3D operations really do hit the 3D hardware, it's
-best to assume all of them do, like creation and use of all Blotch3D and
-MonoGame objects.
+2.  Derive a class from BlWindow3d and put your pertinent code in
+    certain of its overloaded methods. Then instantiate an object of
+    that class and call its Run method from the same thread. See all
+    other examples *except* BlotchExample13_NoDerivation.
 
-You can put all your 3D code in the one overridden method called
-"FrameDraw", if you like, but there are a couple of other overridable
-methods provided for your convenience. There is a Setup method that is
-called once when the 3D window is first opened and a FrameProc method
-that is called every frame. The FrameDraw method is also called each
-frame, but only when there is enough CPU available. You are welcome to
-put whatever you like in any of those three methods.
+The first method above is recommended for several reasons. The majority
+of examples use the second method only because its slightly less busy
+and therefore good for instruction.
 
-For apps that may suffer from severe CPU exhaustion (at least for the 3D
-thread), it might be best to put all your periodic 3D code in FrameDraw
-and not bother with FrameProc. In this way your code will be called less
-often under high-CPU loads. Of course, then your periodic code should
-handle being called at a variable rate.
+These rather peculiar requirements arise because all 3D subsystems (like
+OpenGL and Direct3D) require that accesses of all 3D things concerning a
+window all be done from the same thread. So, this means do not try to
+make calls to 3D-related methods outside those overloaded BlWindow3d
+methods or the delegates/lambdas!
+
+You\'ll have 3D setup code for initializing a few things, and periodic
+code for drawing each frame. The setup code can go in the Setup
+overloaded method or it can be passed via a call to
+BlWindow3d.EnqueueCommandBlocking. The periodic code can go in the
+FrameDraw overloaded method or it can be specified in the
+BlWindow3d.FrameDrawDelegate. To make sure the frame code is not
+executed before the setup code, don\'t assign the FrameDrawDelegate
+until after the EnqueueCommandBlocking call to set things up!
 
 A single-threaded application would have all its code in the overridden
 methods or delegates. If you are developing a multithreaded program,
 then you would probably want to reserve the 3D thread (the call to the
 BlWindow3D's 'Run' method and its overrides) only for tasks that access
-3D hardware resources. When other threads do need to create, change, or
-destroy 3D hardware resources or otherwise do something in a thread-safe
-way with the 3D thread, they can pass a lambda to the 3D thread with
-BlWindow3D.EnqueueCommand or BlWindow3D.EnqueueCommandBlocking, which
-will be executed within one frame time by the 3D thread.
+3D hardware resources. (If you use BlWindow3d factory to create the
+window, a separate thread is already used.) When other threads do need
+to create, change, or destroy 3D hardware resources or otherwise do
+something in a thread-safe way with the 3D thread, they can pass a
+lambda to the 3D thread with BlWindow3D.EnqueueCommand or
+BlWindow3D.EnqueueCommandBlocking, which will be executed within one
+frame time by the 3D thread.
 
 Models or VertexBuffers must be added to the BlSprite.LODs container for
 them to appear when you draw that sprite. Otherwise, nothing is drawn.
