@@ -145,6 +145,9 @@
   <data name="icosphere" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Content\icosphere.xnb;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="image_0" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Content\image_0.xnb;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
   <data name="plane" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Content\plane.xnb;System.Byte[], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>

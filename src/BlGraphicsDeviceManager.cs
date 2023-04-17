@@ -375,7 +375,10 @@ namespace Blotch
 				bytes = Resources.uv_sphere_96x48;
 				File.WriteAllBytes("Content/uv_sphere_96x48.xnb", bytes);
 
-				bytes = Resources.BlBasicEffectAlphaTest;
+                bytes = Resources.image_0;
+                File.WriteAllBytes("Content/image_0.xnb", bytes);
+
+                bytes = Resources.BlBasicEffectAlphaTest;
 				File.WriteAllBytes("Content/Effects/BlBasicEffectAlphaTest.xnb", bytes);
 
 				bytes = Resources.BlBasicEffectAlphaTestOGL;
@@ -390,10 +393,10 @@ namespace Blotch
 				bytes = Resources.BlBasicEffectClipColor;
 				File.WriteAllBytes("Content/Effects/BlBasicEffectClipColor.xnb", bytes);
 
-				bytes = Resources.BlBasicEffectClipColorOGL;
-				File.WriteAllBytes("Content/Effects/BlBasicEffectClipColorOGL.xnb", bytes);
-			}
-		}
+                bytes = Resources.BlBasicEffectClipColorOGL;
+                File.WriteAllBytes("Content/Effects/BlBasicEffectClipColorOGL.xnb", bytes);
+            }
+        }
 
 		/// <summary>
 		/// For internal use only. Apps should not normally call this.

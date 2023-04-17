@@ -26,6 +26,7 @@ A "contributor" is any person that distributes its contribution under this licen
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -33,122 +34,121 @@ using Microsoft.Xna.Framework.Graphics;
 namespace Blotch
 {
 	/// <summary>
-	/// A BlSprite is a single 3D object. Give a sprite something to display by assigning its LODs member with a model
-	/// or vertex buffer as is done in the examples. Each sprite can also hold any number of subsprites, so
-	/// you can make a sprite tree (a scene graph). Subsprites are drawn in the order of their sorted names. Child
-	/// sprites 'follow' the orientation and position of the parent sprite. That is, they exist in the coordinate system
-	/// of the parent sprite. The location and orientation of a sprite in its parent's coordinate system is defined by
-	/// the sprite's #Matrix member. Subsprites, #LODs, and #Mipmap are NOT disposed when the sprite is disposed, so you
-	/// can assign the same one to multiple sprites.
-	/// </summary>
+    /// A BlSprite is a single 3D object. Give a sprite something to display by assigning its LODs member with a model
+    /// or vertex buffer as is done in the examples. Each sprite can also hold any number of subsprites, so you can make
+    /// a sprite tree (a scene graph). Subsprites are drawn in the order of their sorted names. Child sprite 'follow'
+    /// the orientation and position of the parent sprite. That is, they exist in the coordinate system of the parent
+    /// sprite. The location and orientation of a sprite in its parent's coordinate system is defined by the sprite's
+    /// #Matrix member. Subsprites, #LODs, and #Mipmap are NOT disposed when the sprite is disposed, so you can assign
+    /// the same one to multiple sprite.
+    /// </summary>
 	public class BlSprite : SortedDictionary<string, BlSprite> , IComparable, IDisposable
 	{
 		/// <summary>
-		/// This is proportional to the apparent 2D size of the sprite. (Calculated from the last
-		/// Draw operation that occurred, but before any effect of ConstSize)
-		/// </summary>
+        /// This is proportional to the apparent 2D size of the sprite. (Calculated from the last Draw operation that
+        /// occurred, but before any effect of ConstSize)
+        /// </summary>
 		public double ApparentSize { get; private set; }
 
 		/// <summary>
-		/// The Flags field can be used by callbacks of #Draw (#PreDraw, #PreSubsprites, #PreLocal, and #SetEffect) to
-		/// indicate various user attributes of the sprite. Also, #GetRayIntersections won't hit if the bitwise AND of this value
-		/// and the flags argument passed to it is zero.
-		/// </summary>
+        /// The Flags field can be used by callbacks of #Draw (#PreDraw, #PreSubsprites, #PreLocal, and #SetEffect) to
+        /// indicate various user attributes of the sprite. Also, #GetRayIntersections won't hit if the bitwise AND of
+        /// this value and the flags argument passed to it is zero.
+        /// </summary>
 		public ulong Flags = 0xFFFFFFFFFFFFFFFF;
 
 		/// <summary>
-		/// Overall alpha of the current texture. (Not to be confused with pixel alpha)
-		/// </summary>
+        /// Overall alpha of the current texture. (Not to be confused with pixel alpha)
+        /// </summary>
 		public double Alpha = 1;
 
 		/// <summary>
-		/// If not null, then this text will be displayed with the sprite. Also see BlSprite.TextOffset, BlSprite.TextColor, and BlSprite.TextFont. 
-		/// </summary>
+        /// If not null, then this text will be displayed with the sprite. Also see BlSprite.TextOffset,
+        /// BlSprite.TextColor, and BlSprite.TextFont. 
+        /// </summary>
 		public string Text = null;
 
 		/// <summary>
-		/// The screen offset of the sprite's Text relative to the sprite's center. See BlSprite.Text
-		/// </summary>
+        /// The screen offset of the sprite's Text relative to the sprite's center. See BlSprite.Text
+        /// </summary>
 		public Vector2 TextOffset = new Vector2();
 		/// <summary>
-		/// The font for the sprite's Text. See BlSprite.Text
-		/// </summary>
+        /// The font for the sprite's Text. See BlSprite.Text
+        /// </summary>
 		public SpriteFont TextFont = null;
 
 		/// <summary>
-		/// The color of the sprite's Text. See BlSprite.Text.
-		/// </summary>
+        /// The color of the sprite's Text. See BlSprite.Text.
+        /// </summary>
 		public Color TextColor = new Microsoft.Xna.Framework.Color(0x7FFF7F);
 
 		/// <summary>
-		/// When you use the Add() method of a parent sprite to add a child sprite, the child sprite's Parent field is
-		/// set to the Parent. If you add a child sprite in any other way, and you want the child's Parent field to
-		/// reflect the parent, you'll have to assign it, yourself. This field is solely for reading by application
-		/// code. It is not read by Blotch3D code.You might need this, for example, to implement particles via the
-		/// FrameProc delegate. See particles example.
-		/// </summary>
+        /// When you use the Add() method of a parent sprite to add a child sprite, the child sprite's Parent field is
+        /// set to the Parent. If you add a child sprite in any other way, and you want the child's Parent field to
+        /// reflect the parent, you'll have to assign it, yourself. This field is solely for reading by application
+        /// code. It is not read by Blotch3D code.You might need this, for example, to implement particles via the
+        /// FrameProc delegate. See particles example.
+        /// </summary>
 		public BlSprite Parent = null;
 
 		/// <summary>
-		/// The objects (levels of detail) to draw for this sprite. Only one element is drawn depending on the
-		/// ApparentSize. Each element can be a Model, a VertexBuffer, or null (indicating nothing should be drawn for
-		/// that LOD). Elements with lower indices are higher LODs. So index 0 has the highest detail, index 1 is second
-		/// highest, etc. LOD decreases (the index increases) for every halving of the object's apparent size. You can
-		/// adjust how close the LODs must be to the camera with #LodScale. When the calculated LOD index is higher than
-		/// the last element, then the last element is used. So the simplest way to use this is to add a single object
-		/// to the list. You can add multiple references of the same object so multiple consecutive LODs draw the same
-		/// object. You can set an element to null so it doesn't draw anything, which is typically the last element. A
-		/// model can be assigned to multiple sprites. These are NOT disposed when the sprite is disposed.
-		/// </summary>
+        /// The objects (levels of detail) to draw for this sprite. Only one element is drawn depending on the
+        /// ApparentSize. Each element can be a Model, a VertexBuffer, or null (indicating nothing should be drawn for
+        /// that LOD). Elements with lower indices are higher LODs. So index 0 has the highest detail, index 1 is second
+        /// highest, etc. LOD decreases (the index increases) for every halving of the object's apparent size. You can
+        /// adjust how close the LODs must be to the camera with #LodScale. When the calculated LOD index is higher than
+        /// the last element, then the last element is used. So the simplest way to use this is to add a single object
+        /// to the list. You can add multiple references of the same object so multiple consecutive LODs draw the same
+        /// object. You can set an element to null so it doesn't draw anything, which is typically the last element. A
+        /// model can be assigned to multiple sprite. These are NOT disposed when the sprite is disposed.
+        /// </summary>
 		public List<object> LODs = new List<object>();
 
 		/// <summary>
-		/// Defines the LOD scaling. The higher this value, the closer you
-		/// must be to see a given LOD. A value of 9 (default) indicates that the highest LOD (LODs[0]) occurs when an
-		/// object with a diameter of 1 roughly fills the window.
-		/// Set to a large negative value, like -1000, to disable LODs (i.e. always use the highest resolution LOD).
-		/// </summary>
+        /// Defines the LOD scaling. The higher this value, the closer you must be to see a given LOD. A value of 9
+        /// (default) indicates that the highest LOD (LODs[0]) occurs when an object with a diameter of 1 roughly fills
+        /// the window. Set to a large negative value, like -1000, to disable LODs (i.e. always use the highest
+        /// resolution LOD).
+        /// </summary>
 		public double LodScale = 9;
 
 		/// <summary>
-		/// A BlMipmap or a single Texture2D object. The model must include texture coordinates for this to be visible. It must
-		/// also include normals if lighting other than 'emissive' is desired. If it's a BlMipmap, it will work the same as
-		/// LODs (see LODs for more information). Specifically, the mipmap texture applied
-		/// depends on the apparent size of the model. The next higher mipmap is used for every doubling
-		/// of model size, where element zero is the highest resolution, used when the apparent size is largest.
-		/// If a mipmap is not available for the apparent
-		/// size, the next higher available on is used.
-		/// Most graphics subsystems do support mipmaps, but these are software mipmaps, so only one image is used
-		/// over a model for a given model apparent size rather than nearer portions of the
-		/// model showing higher-level mipmaps.
-		/// This is NOT disposed when the sprite is disposed, so a given BlMipmap or Texture2D may be assigned
-		/// to multiple sprites.
-		/// </summary>
+        /// A BlMipmap or a single Texture2D object. The model must include texture coordinates for this to be visible.
+        /// It must also include normals if lighting other than 'emissive' is desired. If it's a BlMipmap, it will work
+        /// the same as LODs (see LODs for more information). Specifically, the mipmap texture applied depends on the
+        /// apparent size of the model. The next higher mipmap is used for every doubling of model size, where element
+        /// zero is the highest resolution, used when the apparent size is largest. If a mipmap is not available for the
+        /// apparent size, the next higher available on is used. Most graphics subsystems do support mipmaps, but these
+        /// are software mipmaps, so only one image is used over a model for a given model apparent size rather than
+        /// nearer portions of the model showing higher-level mipmaps. This is NOT disposed when the sprite is disposed,
+        /// so a given BlMipmap or Texture2D may be assigned to multiple sprite.
+        /// </summary>
 		public object Mipmap = null;
 
 		/// <summary>
-		/// Defines the mipmap (Textures) scaling. The higher this value, the closer you must be to see a given mipmap.
-		/// Set to a large negative value, like -1000, to disable mipmaps (i.e. always use the highest resolution mipmap).
-		/// </summary>
+        /// Defines the mipmap (Textures) scaling. The higher this value, the closer you must be to see a given mipmap.
+        /// Set to a large negative value, like -1000, to disable mipmaps (i.e. always use the highest resolution
+        /// mipmap).
+        /// </summary>
 		public double MipmapScale = 5;
 
 		/// <summary>
-		/// This read-only value is the log of the reciprocal of #ApparentSize. It is used in the calculation of the LOD and the mipmap level.
-		/// See #LODs and #Mipmap for more information.
-		/// </summary>
+        /// This read-only value is the log of the reciprocal of #ApparentSize. It is used in the calculation of the LOD
+        /// and the mipmap level. See #LODs and #Mipmap for more information.
+        /// </summary>
 		public double LodTarget { get; private set; }
 
 		/// <summary>
-		/// The bounding sphere for this sprite. This is automatically updated when a model is drawn, but not if vertices
-		/// are drawn. In that case you should set/update it explicitly if any of the internal functions may need it to be
-		/// roughly correct,
-		/// like if auto-clipping is enabled or a mouse selection or ray may hit the sprite and the hit be properly detected.
-		/// </summary>
+        /// The bounding sphere for this sprite. This is automatically updated when a model is drawn, but not if
+        /// vertices are drawn. In that case you should set/update it explicitly if any of the internal functions may
+        /// need it to be roughly correct, like if auto-clipping is enabled or a mouse selection or ray may hit the
+        /// sprite and the hit be properly detected.
+        /// </summary>
 		public BoundingSphere? BoundSphere = null;
 
         /// <summary>
-        /// This increases the model's radius that is used by DoesRayIntersect. For example, make this larger than '1' so that DoesRayIntersect
-        /// thinks it is lareger.
+        /// This increases the model's radius that is used by DoesRayIntersect. For example, make this larger than '1'
+        /// so that DoesRayIntersect thinks it is lareger.
         /// </summary>
         public double RadiusTweak = 1;
 
@@ -156,132 +156,135 @@ namespace Blotch
         Effect VerticesEffect = null;
 
 		/// <summary>
-		/// Spherically billboard the model. Specifically, keep the model's 'forward' direction pointing at the camera and keep
-		/// its 'Up' direction pointing in the same direction as the camera's 'Up' direction. Also see #CylindricalBillboardX,
-		/// #CylindricalBillboardY, #CylindricalBillboardZ, and #ConstSize.
-		/// </summary>
+        /// Spherically billboard the model. Specifically, keep the model's 'forward' direction pointing at the camera
+        /// and keep its 'Up' direction pointing in the same direction as the camera's 'Up' direction. Also see
+        /// #CylindricalBillboardX, #CylindricalBillboardY, #CylindricalBillboardZ, and #ConstSize.
+        /// </summary>
 		public bool SphericalBillboard = false;
 
 		/// <summary>
-		/// If non-zero, this is the rotation vector and magnitude of cylindrical billboarding where the angle calculation assumes
-		/// this vector is the X axis, even though it may not be. The more this varies from that axis, the more eccentric the
-		/// billboarding behavior. The amount of billboarding is equal to: 2*mag^2 - 1/mag^2. So if this vector's magnitude is
-		/// unity (1), then full cylindrical billboarding occurs. A vector magnitude of 0.605 produces double reverse cylindrical
-		/// billboarding. Also see #SphericalBillboard, #CylindricalBillboardY, #CylindricalBillboardZ, and #ConstSize.
-		/// </summary>
+        /// If non-zero, this is the rotation vector and magnitude of cylindrical billboarding where the angle
+        /// calculation assumes this vector is the X axis, even though it may not be. The more this varies from that
+        /// axis, the more eccentric the billboarding behavior. The amount of billboarding is equal to: 2*mag^2 -
+        /// 1/mag^2. So if this vector's magnitude is unity (1), then full cylindrical billboarding occurs. A vector
+        /// magnitude of 0.605 produces double reverse cylindrical billboarding. Also see #SphericalBillboard,
+        /// #CylindricalBillboardY, #CylindricalBillboardZ, and #ConstSize.
+        /// </summary>
 		public Vector3 CylindricalBillboardX = Vector3.Zero;
 
 		/// <summary>
-		/// If non-zero, this is the rotation vector and magnitude of cylindrical billboarding where the angle calculation assumes
-		/// this vector is the Y axis, even though it may not be. The more this varies from that axis, the more eccentric the
-		/// billboarding behavior. The amount of billboarding is equal to: 2*mag^2 - 1/mag^2. So if this vector's magnitude is
-		/// unity (1), then full cylindrical billboarding occurs. A vector magnitude of 0.605 produces double reverse cylindrical
-		/// billboarding. Also see #SphericalBillboard, #CylindricalBillboardX, #CylindricalBillboardZ, and #ConstSize.
-		/// </summary>
+        /// If non-zero, this is the rotation vector and magnitude of cylindrical billboarding where the angle
+        /// calculation assumes this vector is the Y axis, even though it may not be. The more this varies from that
+        /// axis, the more eccentric the billboarding behavior. The amount of billboarding is equal to: 2*mag^2 -
+        /// 1/mag^2. So if this vector's magnitude is unity (1), then full cylindrical billboarding occurs. A vector
+        /// magnitude of 0.605 produces double reverse cylindrical billboarding. Also see #SphericalBillboard,
+        /// #CylindricalBillboardX, #CylindricalBillboardZ, and #ConstSize.
+        /// </summary>
 		public Vector3 CylindricalBillboardY = Vector3.Zero;
 
 		/// <summary>
-		/// If non-zero, this is the rotation vector and magnitude of cylindrical billboarding where the angle calculation assumes
-		/// this vector is the Z axis, even though it may not be. The more this varies from that axis, the more eccentric the
-		/// billboarding behavior. The amount of billboarding is equal to: 2*mag^2 - 1/mag^2. So if this vector's magnitude is
-		/// unity (1), then full cylindrical billboarding occurs. A vector magnitude of 0.605 produces double reverse cylindrical
-		/// billboarding. Also see #SphericalBillboard, #CylindricalBillboardX, #CylindricalBillboardY, and #ConstSize.
-		/// </summary>
+        /// If non-zero, this is the rotation vector and magnitude of cylindrical billboarding where the angle
+        /// calculation assumes this vector is the Z axis, even though it may not be. The more this varies from that
+        /// axis, the more eccentric the billboarding behavior. The amount of billboarding is equal to: 2*mag^2 -
+        /// 1/mag^2. So if this vector's magnitude is unity (1), then full cylindrical billboarding occurs. A vector
+        /// magnitude of 0.605 produces double reverse cylindrical billboarding. Also see #SphericalBillboard,
+        /// #CylindricalBillboardX, #CylindricalBillboardY, and #ConstSize.
+        /// </summary>
 		public Vector3 CylindricalBillboardZ = Vector3.Zero;
 
 		/// <summary>
-		/// If true, maintain a constant apparent size for the sprite regardless of camera distance or zoom. This is typically
-		/// used along with one of the Billboarding effects (see #SphericalBillboard, #CylindricalBillboardX, etc.).
-		/// Note that if ConstSize is true, ApparentSize, LodScale, and MipmapScale still act as if it is false, and therefore in that case you
-		/// may want to disable them (set them to large negative values). If both #ConstSize
-		/// and any Billboarding is enabled and you have asymmetric scaling (different scaling for each dimension), then you'll
-		/// need to separate those operations into different levels of the sprite tree to obtain the desired behavior. You'll also
-		/// probably want to disable the depth stencil buffer and control which sprite is drawn first so that certain sprites are
-		/// 'always on top'. See the examples.
-		/// </summary>
+        /// If true, maintain a constant apparent size for the sprite regardless of camera distance or zoom. This is
+        /// typically used along with one of the Billboarding effects (see #SphericalBillboard, #CylindricalBillboardX,
+        /// etc.). Note that if ConstSize is true, ApparentSize, LodScale, and MipmapScale still act as if it is false,
+        /// and therefore in that case you may want to disable them (set them to large negative values). If both
+        /// #ConstSize and any Billboarding is enabled and you have asymmetric scaling (different scaling for each
+        /// dimension), then you'll need to separate those operations into different levels of the sprite tree to obtain
+        /// the desired behavior. You'll also probably want to disable the depth stencil buffer and control which sprite
+        /// is drawn first so that certain sprite are 'always on top'. See the examples.
+        /// </summary>
 		public bool ConstSize = false;
 
 		/// <summary>
-		/// Distance to the camera.
-		/// </summary>
+        /// Distance to the camera.
+        /// </summary>
 		public double CamDistance { get; private set; }
 
 		/// <summary>
-		/// Internal use only.
-		/// Used for predicting new depth clipping values
-		/// </summary>
+        /// Internal use only. Used for predicting new depth clipping values
+        /// </summary>
 		public double PrevCamDistance { get; private set; }
 
 		/// <summary>
-		/// The #Draw method takes an incoming 'world' matrix parameter which is the coordinate system of its parent. #AbsoluteMatrix
-		/// is that incoming world matrix parameter times the #Matrix member and altered according to Billboarding and #ConstSize.
-		/// This is not read-only because a callback (see #PreDraw, #PreSubsprites, #PreLocal, and #SetEffect) may need to
-		/// change it from within the #Draw method. This is the matrix that is also passed to subsprites as their 'world' matrix.
-		/// </summary>
+        /// The #Draw method takes an incoming 'world' matrix parameter which is the coordinate system of its parent.
+        /// #AbsoluteMatrix is that incoming world matrix parameter times the #Matrix member and altered according to
+        /// Billboarding and #ConstSize. This is not read-only because a callback (see #PreDraw, #PreSubsprites,
+        /// #PreLocal, and #SetEffect) may need to change it from within the #Draw method. This is the matrix that is
+        /// also passed to subsprites as their 'world' matrix.
+        /// </summary>
 		public Matrix AbsoluteMatrix = Matrix.Identity;
 
 		/// <summary>
-		/// The matrix for this sprite. This defines the sprite's orientation and position relative to the parent coordinate system.
-		/// For more detailed information, see #AbsoluteMatrix. 
-		/// </summary>
+        /// The matrix for this sprite. This defines the sprite's orientation and position relative to the parent
+        /// coordinate system. For more detailed information, see #AbsoluteMatrix. 
+        /// </summary>
 		public Matrix Matrix = Matrix.Identity;
 
 		/// <summary>
-		/// Current incoming graphics parameter to the #Draw method. Typically this would be of interest to a callback function (see
-		/// #PreDraw, #PreSubsprites, #PreLocal, and #SetEffect).
-		/// </summary>
+        /// Current incoming graphics parameter to the #Draw method. Typically this would be of interest to a callback
+        /// function (see #PreDraw, #PreSubsprites, #PreLocal, and #SetEffect).
+        /// </summary>
 		public BlGraphicsDeviceManager Graphics = null;
 
 		/// <summary>
-		/// Current incoming world matrix parameter to the #Draw method. Typically this would be of interest to a callback function (see
-		/// #PreDraw, #PreSubsprites, #PreLocal, and #SetEffect).
-		/// </summary>
+        /// Current incoming world matrix parameter to the #Draw method. Typically this would be of interest to a
+        /// callback function (see #PreDraw, #PreSubsprites, #PreLocal, and #SetEffect).
+        /// </summary>
 		public Matrix? LastWorldMatrix = null;
 
 		/// <summary>
-		/// Wwhether to participate in autoclipping calculations, when they are enabled.
-		/// </summary>
+        /// Wwhether to participate in autoclipping calculations, when they are enabled.
+        /// </summary>
 		public bool IncludeInAutoClipping = true;
 
 		/// <summary>
-		/// Current incoming flags parameter to the Draw method. Typically this would be of interest to a callback function (see
-		/// #PreDraw, #PreSubsprites, #PreLocal, and #SetEffect).
-		/// </summary>
+        /// Current incoming flags parameter to the Draw method. Typically this would be of interest to a callback
+        /// function (see #PreDraw, #PreSubsprites, #PreLocal, and #SetEffect).
+        /// </summary>
 		public ulong FlagsParameter = 0;
 
 		/// <summary>
-		/// The color of the material. This is lit by both diffuse and ambient light. If null, MonoGame's default color is kept.
-		/// </summary>
+        /// The color of the material. This is lit by both diffuse and ambient light. If null, MonoGame's default color
+        /// is kept.
+        /// </summary>
 		public Vector3? Color = new Vector3(.5f, 1, .5f);
 
 		/// <summary>
-		/// The emissive color. If null, MonoGame's default is kept.
-		/// </summary>
+        /// The emissive color. If null, MonoGame's default is kept.
+        /// </summary>
 		
 		public Vector3? EmissiveColor = new Vector3(.1f, .1f, .1f);
 		/// <summary>
-		/// The specular color. If null, MonoGame's default is kept.
-		/// </summary>
+        /// The specular color. If null, MonoGame's default is kept.
+        /// </summary>
 		
 		public Vector3? SpecularColor = null;
 		/// <summary>
-		/// If a specular color is specified, this is the specular power.
-		/// </summary>
+        /// If a specular color is specified, this is the specular power.
+        /// </summary>
 		public float SpecularPower = 4;
 
 		/// <summary>
-		/// See #FrameProc
-		/// </summary>
-		/// <param name="sprite"></param>
+        /// See #FrameProc
+        /// </summary>
+        /// <param name="sprite"></param>
 		public delegate void FrameProcType(BlSprite sprite);
 
 		FrameProcType FrameProc = null;
 
 		/// <summary>
-		/// Execute the FrameProc, if it was specified in the BlSprite constructor.
-		/// (Normally you wouldn't need to call this because its automatically called 
-		/// by the BlWindow.)
-		/// </summary>
+        /// Execute the FrameProc, if it was specified in the BlSprite constructor. (Normally you wouldn't need to call
+        /// this because its automatically called by the BlWindow.)
+        /// </summary>
 		public void ExecuteFrameProc()
 		{
 			if(FrameProc!=null)
@@ -289,163 +292,166 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// Return code from #PreDraw callback. This tells #Draw what to do next.
-		/// </summary>
+        /// Return code from #PreDraw callback. This tells #Draw what to do next.
+        /// </summary>
 		public enum PreDrawCmd
 		{
 			/// <summary>
-			/// Continue Draw method execution
-			/// </summary>
+            /// Continue Draw method execution
+            /// </summary>
 			Continue,
 			/// <summary>
-			/// Draw should immediately return
-			/// </summary>
+            /// Draw should immediately return
+            /// </summary>
 			Abort,
 			/// <summary>
-			/// Continue Draw method execution, but don't bother re-calculating AbsoluteMatrix. One would typically return this
-			/// if, for example, its known that AbsoluteMatrix will not change from its current value because the Draw parameters
-			/// will be the same as they were the last time Draw was called. This happens, for example, when multiple calls are
-			/// being made in the same draw iteration for graphic operations that require multiple passes.
-			/// </summary>
+            /// Continue Draw method execution, but don't bother re-calculating AbsoluteMatrix. One would typically
+            /// return this if, for example, its known that AbsoluteMatrix will not change from its current value
+            /// because the Draw parameters will be the same as they were the last time Draw was called. This happens,
+            /// for example, when multiple calls are being made in the same draw iteration for graphic operations that
+            /// require multiple passes.
+            /// </summary>
 			UseCurrentAbsoluteMatrix
 		}
 
 		/// <summary>
-		/// See #PreDraw
-		/// </summary>
-		/// <param name="sprite"></param>
-		/// <returns></returns>
+        /// See #PreDraw
+        /// </summary>
+        /// <param name="sprite"></param>
+        /// <returns></returns>
 		public delegate PreDrawCmd PreDrawType(BlSprite sprite);
 
 		/// <summary>
-		/// If not null, #Draw method calls this at the beginning before doing anything else. From this function one
-		/// might examine and/or alter any public writable BlSprite field, and/or control the further execution of the
-		/// Draw method. You must undo in PostDraw whatever you do in PreDraw. Otherwise it will affect other sprites.
-		/// </summary>
+        /// If not null, #Draw method calls this at the beginning before doing anything else. From this function one
+        /// might examine and/or alter any public writable BlSprite field, and/or control the further execution of the
+        /// Draw method. You must undo in PostDraw whatever you do in PreDraw. Otherwise it will affect other sprite.
+        /// </summary>
 		public PreDrawType PreDraw = null;
 
 		/// <summary>
-		/// Return code from #PreSubsprites callback. This tells #Draw what to do next.
-		/// </summary>
+        /// Return code from #PreSubsprites callback. This tells #Draw what to do next.
+        /// </summary>
 		public enum PreSubspritesCmd
 		{
 			/// <summary>
-			/// Continue Draw method execution
-			/// </summary>
+            /// Continue Draw method execution
+            /// </summary>
 			Continue,
 			/// <summary>
-			/// Draw should immediately return
-			/// </summary>
+            /// Draw should immediately return
+            /// </summary>
 			Abort,
 			/// <summary>
-			/// Skip drawing subsprites
-			/// </summary>
+            /// Skip drawing subsprites
+            /// </summary>
 			DontDrawSubsprites
 		}
 
 		/// <summary>
-		/// See #PreSubsprites
-		/// </summary>
-		/// <param name="sprite"></param>
-		/// <returns></returns>
+        /// See #PreSubsprites
+        /// </summary>
+        /// <param name="sprite"></param>
+        /// <returns></returns>
 		public delegate PreSubspritesCmd PreSubspritesType(BlSprite sprite);
 		
 		/// <summary>
-		/// If not null, #Draw method calls this after the matrix calculations for AbsoluteMatrix (including billboards, CamDistance,
-		/// ConstSize, etc.) but before drawing the subsprites or local model. From this function one might examine and/or alter
-		/// any public writable BlSprite field.
-		/// </summary>
+        /// If not null, #Draw method calls this after the matrix calculations for AbsoluteMatrix (including billboards,
+        /// CamDistance, ConstSize, etc.) but before drawing the subsprites or local model. From this function one might
+        /// examine and/or alter any public writable BlSprite field.
+        /// </summary>
 		public PreSubspritesType PreSubsprites = null;
 
 		/// <summary>
-		/// Return code from #PreSubsprites callback. This tells #Draw what to do next.
-		/// </summary>
+        /// Return code from #PreSubsprites callback. This tells #Draw what to do next.
+        /// </summary>
 		public enum SetEffectCmd
 		{
 			/// <summary>
-			/// Continue Draw method execution for the mesh
-			/// </summary>
+            /// Continue Draw method execution for the mesh
+            /// </summary>
 			Continue,
 			/// <summary>
-			/// Draw should immediately return
-			/// </summary>
+            /// Draw should immediately return
+            /// </summary>
 			Abort,
 			/// <summary>
-			/// Draw should skip the current mesh
-			/// </summary>
+            /// Draw should skip the current mesh
+            /// </summary>
 			Skip,
 		}
 
 		/// <summary>
-		/// See #SetEffect
-		/// </summary>
-		/// <param name="sprite"></param>
-		/// <param name="effect"></param>
-		/// <returns></returns>
+        /// See #SetEffect
+        /// </summary>
+        /// <param name="sprite"></param>
+        /// <param name="effect"></param>
+        /// <returns></returns>
 		public delegate Effect SetMeshEffectType(BlSprite sprite, Effect effect);
 
 		/// <summary>
-		/// If this not null, then the #Draw method executes this delegate for each model mesh effect instead using the
-		/// default BasicEffects. See the SpriteAlphaTexture for an example. If you use this but the effect is still of
-		/// type BlBasicEffect, then you might want to call SetupBasicEffect from within this delegate to set all the
-		/// effect's parameters, rather than doing it yourself. The return value is the new or altered effect.
-		/// If this is called when the thing to draw is a VertexPositionNormalTexture, then the effect parameter passed in
-		/// is a null.
-		/// </summary>
+        /// If this not null, then the #Draw method executes this delegate for each model mesh effect instead using the
+        /// default BasicEffects. See the SpriteAlphaTexture for an example. If you use this but the effect is still of
+        /// type BlBasicEffect, then you might want to call SetupBasicEffect from within this delegate to set all the
+        /// effect's parameters, rather than doing it yourself. The return value is the new or altered effect. If this
+        /// is called when the thing to draw is a VertexPositionNormalTexture, then the effect parameter passed in is a
+        /// null.
+        /// </summary>
 		public SetMeshEffectType SetEffect = null;
 
 		/// <summary>
-		/// Return code from #PreSubsprites callback. This tells #Draw what to do next.
-		/// </summary>
+        /// Return code from #PreSubsprites callback. This tells #Draw what to do next.
+        /// </summary>
 		public enum PreLocalCmd
 		{
 			/// <summary>
-			/// Continue Draw method execution
-			/// </summary>
+            /// Continue Draw method execution
+            /// </summary>
 			Continue,
 			/// <summary>
-			/// Draw should immediately return
-			/// </summary>
+            /// Draw should immediately return
+            /// </summary>
 			Abort,
 		}
 
 		/// <summary>
-		/// See #PreLocal
-		/// </summary>
-		/// <param name="sprite"></param>
-		/// <returns></returns>
+        /// See #PreLocal
+        /// </summary>
+        /// <param name="sprite"></param>
+        /// <returns></returns>
 		public delegate PreLocalCmd PreLocalType(BlSprite sprite);
 		
 		/// <summary>
-		/// If not null, #Draw method calls this after drawing subsprites (if appropriate) but before drawing the local model. From this
-		/// function one might examine and/or alter any public writable BlSprite field, and/or abort the #Draw method.
-		/// </summary>
+        /// If not null, #Draw method calls this after drawing subsprites (if appropriate) but before drawing the local
+        /// model. From this function one might examine and/or alter any public writable BlSprite field, and/or abort
+        /// the #Draw method.
+        /// </summary>
 		public PreLocalType PreLocal = null;
 
 		/// <summary>
-		/// See #DrawCleanup
-		/// </summary>
-		/// <param name="sprite"></param>
+        /// See #DrawCleanup
+        /// </summary>
+        /// <param name="sprite"></param>
 		public delegate void DrawCleanupType(BlSprite sprite);
 		
 		/// <summary>
-		/// If not null, #Draw method calls this at the end.
-		/// </summary>
+        /// If not null, #Draw method calls this at the end.
+        /// </summary>
 		public DrawCleanupType DrawCleanup = null;
 		
 		/// <summary>
-		/// The name of the BlSprite
-		/// </summary>
+        /// The name of the BlSprite
+        /// </summary>
 		public string Name;
 
 		/// <summary>
-		/// Constructs a sprite
-		/// </summary>
-		/// <param name="graphicsIn">The BlGraphicsDeviceManager that operates on this sprite</param>
-		/// <param name="name">The name of the sprite (must be unique among other sprites in the same subsprite list)</param>
-		/// <param name="frameProc">The delegate to run every frame. (Note that this is NOT called from within the Draw method.
-		/// Rather, it is called separately only once every frame. Therefore you can, for example, delete and add
-		/// other subsprites of this sprite's Parent. See #Parent for more information.)</param>
+        /// Constructs a sprite
+        /// </summary>
+        /// <param name="graphicsIn">The BlGraphicsDeviceManager that operates on this sprite</param>
+        /// <param name="name">The name of the sprite (must be unique among other sprite in the same subsprite list)
+        ///     </param>
+        /// <param name="frameProc">The delegate to run every frame. (Note that this is NOT called from within the Draw
+        ///     method. Rather, it is called separately only once every frame. Therefore you can, for example, delete
+        ///     and add other subsprites of this sprite's Parent. See #Parent for more information.)</param>
 		public BlSprite(BlGraphicsDeviceManager graphicsIn, string name,FrameProcType frameProc=null)
 		{
 			FrameProc = frameProc;
@@ -456,11 +462,27 @@ namespace Blotch
 			Name = name;
 		}
 
+        /// <summary>
+        /// Recursively Disposes and removes all subsprites from the given sprite. Does not dispose their LODs.
+        /// </summary>
+        /// <param name="sprite"></param>
+        static public void DisposeSubspriteTree(BlSprite sprite)
+        {
+            for(int n=sprite.Count-1;n>=0; n--)
+            {
+                var subsprite = sprite.ElementAt(n);
+                var name = subsprite.Key;
+                BlSprite.DisposeSubspriteTree(subsprite.Value);
+                sprite.Remove(name);
+                subsprite.Value.Dispose();
+            }
+        }
+
 		/// <summary>
-		/// Add a subsprite. (A BlSprite inherits from a Dictionary of BlSprites. This wrapper method to the dictionary's Add
-		/// method simply adds the sprite where the key is the sprite's #Name.)
-		/// </summary>
-		/// <param name="s"></param>
+        /// Add a subsprite. (A BlSprite inherits from a Dictionary of BlSprites. This wrapper method to the
+        /// dictionary's Add method simply adds the sprite where the key is the sprite's #Name.)
+        /// </summary>
+        /// <param name="s"></param>
 		public void Add(BlSprite s, bool reAdd = false)
 		{
             if (s.Name==null)
@@ -489,10 +511,10 @@ namespace Blotch
 
         }
 		/// <summary>
-		/// Returns the current 2D view coordinates of the sprite (for passing to DrawText, for example),
-		/// or null if it's behind the camera.
-		/// </summary>
-		/// <returns>The view coords of the sprite</returns>
+        /// Returns the current 2D view coordinates of the sprite (for passing to DrawText, for example), or null if
+        /// it's behind the camera.
+        /// </summary>
+        /// <returns>The view coords of the sprite</returns>
 		public Vector2? GetViewCoords()
 		{
 			if (BlDebug.ShowThreadWarnings && CreationThread != Thread.CurrentThread.ManagedThreadId)
@@ -513,8 +535,8 @@ namespace Blotch
 			return clientResult;
 		}
 		/// <summary>
-		/// Sets all material colors to black.
-		/// </summary>
+        /// Sets all material colors to black.
+        /// </summary>
 		public void SetAllMaterialBlack()
 		{
 			Color = Vector3.Zero;
@@ -524,12 +546,12 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// Returns the point on the line between point1 and point2 that is nearest to nearPoint
-		/// </summary>
-		/// <param name="point1"></param>
-		/// <param name="point2"></param>
-		/// <param name="nearPoint"></param>
-		/// <returns>Point on the line nearest to nearPoint</returns>
+        /// Returns the point on the line between point1 and point2 that is nearest to nearPoint
+        /// </summary>
+        /// <param name="point1"></param>
+        /// <param name="point2"></param>
+        /// <param name="nearPoint"></param>
+        /// <returns>Point on the line nearest to nearPoint</returns>
 		public static Vector3 NearestPointOnLine(Vector3 point1, Vector3 point2, Vector3 nearPoint)
 		{
 			var lineDir = (point2 - point1);
@@ -540,11 +562,11 @@ namespace Blotch
 		}
 		
 		/// <summary>
-		/// Returns the distance along the ray to the first point the ray enters the bounding sphere
-		/// (BoundSphere) + RadiusTweak, or null if it doesn't intersect.
-		/// </summary>
-		/// <param name="ray"></param>
-		/// <returns>How far along the ray till the first intersection, or null if it didn't intersect</returns>
+        /// Returns the distance along the ray to the first point the ray enters the bounding sphere (BoundSphere) +
+        /// RadiusTweak, or null if it doesn't intersect.
+        /// </summary>
+        /// <param name="ray"></param>
+        /// <returns>How far along the ray till the first intersection, or null if it didn't intersect</returns>
 		public double? DoesRayIntersect(Ray ray)
 		{
 			if (BoundSphere == null)
@@ -558,12 +580,13 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// Returns a list of subsprites that the ray hit (i.e. those that were within their radius of the ray)
-		/// </summary>
-		/// <param name="ray">The ray we are searching</param>
-		/// <param name="flags">Check for a hit only if flags & BlSprite#Flags is non-zero</param>
-		/// <param name="sprites">An existing sprite list to load. If null, then this allocates a new sprite list.</param>
-		/// <returns>A list of subsprites that the ray hit</returns>
+        /// Returns a list of subsprites that the ray hit (i.e. those that were within their radius of the ray)
+        /// </summary>
+        /// <param name="ray">The ray we are searching</param>
+        /// <param name="flags">Check for a hit only if flags & BlSprite#Flags is non-zero</param>
+        /// <param name="sprites">An existing sprite list to load. If null, then this allocates a new sprite list.
+        ///     </param>
+        /// <returns>A list of subsprites that the ray hit</returns>
 		public List<BlSprite> GetRayIntersections(Ray ray, ulong flags=0xFFFFFFFFFFFFFFFF,List<BlSprite> sprites=null)
 		{
 			if(sprites == null)
@@ -585,11 +608,11 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// Draws the sprite and the subsprites.
-		/// </summary>
-		/// <param name="worldMatrixIn">Defines the position and orientation of the sprite</param>
-		/// <param name="flagsIn">Copied to LastFlags for use by any callback of Draw (PreDraw, PreSubspriteDraw, PreLocalDraw,
-		/// and SetEffect) that wants it</param>
+        /// Draws the sprite and the subsprites.
+        /// </summary>
+        /// <param name="worldMatrixIn">Defines the position and orientation of the sprite</param>
+        /// <param name="flagsIn">Copied to LastFlags for use by any callback of Draw (PreDraw, PreSubspriteDraw,
+        ///     PreLocalDraw, and SetEffect) that wants it</param>
 		public void Draw(Matrix? worldMatrixIn = null, ulong flagsIn = 0xFFFFFFFFFFFFFFFF)
 		{
 			if (BlDebug.ShowThreadWarnings && CreationThread != Thread.CurrentThread.ManagedThreadId)
@@ -626,8 +649,8 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// This does the meat of Drawing
-		/// </summary>
+        /// This does the meat of Drawing
+        /// </summary>
 		void DrawInternal()
 		{
 			CalcApparentSize();
@@ -705,10 +728,10 @@ namespace Blotch
 			return LODs[(int)i];
 		}
 		/// <summary>
-		/// If Mipmap is a BlMipmap, this returns the mimap texture that should currently be applied to the sprite.
-		/// If Mipmap is a Texture2D, then that texture is returned.
-		/// </summary>
-		/// <returns></returns>
+        /// If Mipmap is a BlMipmap, this returns the mimap texture that should currently be applied to the sprite. If
+        /// Mipmap is a Texture2D, then that texture is returned.
+        /// </summary>
+        /// <returns></returns>
 		public Texture2D GetCurrentTexture()
 		{
 			if(Mipmap is BlMipmap)
@@ -733,8 +756,8 @@ namespace Blotch
 			}
 		}
 		/// <summary>
-		/// Called by DrawInternal
-		/// </summary>
+        /// Called by DrawInternal
+        /// </summary>
 		void ProcessModel()
 		{
 			var obj = GetLod();
@@ -849,8 +872,8 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// Called by DrawInternal
-		/// </summary>
+        /// Called by DrawInternal
+        /// </summary>
 		void CalcMatrix()
 		{
 			Matrix view = Graphics.View;
@@ -950,10 +973,10 @@ namespace Blotch
 			}
 		}
 		/// <summary>
-		/// Sets up in the specified BasicEffect all matrices and lighting parameters for this sprite.
-		/// BlSprite#DrawInternal calls this for the BasicEffects embedded in the LOD models.
-		/// For BlBasicEffect objects, see the overload of this method.
-		/// </summary>
+        /// Sets up in the specified BasicEffect all matrices and lighting parameters for this sprite.
+        /// BlSprite#DrawInternal calls this for the BasicEffects embedded in the LOD models. For BlBasicEffect objects,
+        /// see the overload of this method.
+        /// </summary>
 		public void SetupBasicEffect(BasicEffect effect)
 		{
 			effect.Projection = Graphics.Projection;
@@ -1053,10 +1076,10 @@ namespace Blotch
 			}
 		}
 		/// <summary>
-		/// Sets up in the specified BlBasicEffect with all matrices and lighting parameters for this sprite.
-		/// App code might call this from a SetEffect delegate if, for example, it is using one of the
-		/// BlBasicEffectxxx effects, like the BlBasicEffectWithAlphaTest.
-		/// </summary>
+        /// Sets up in the specified BlBasicEffect with all matrices and lighting parameters for this sprite. App code
+        /// might call this from a SetEffect delegate if, for example, it is using one of the BlBasicEffectxxx effects,
+        /// like the BlBasicEffectWithAlphaTest.
+        /// </summary>
 		public void SetupBasicEffect(BlBasicEffect effect)
 		{
 			effect.Projection = Graphics.Projection;
@@ -1160,12 +1183,11 @@ namespace Blotch
 		}
 
 		/// <summary>
-		/// This makes a Sort operation sort sprites far to near. That is, the nearer sprites are later in the list.
-		/// For sorting near to far, use something like
-		/// myList.Sort(new Comparison<EsSprite>((b, a) => a.CompareTo(b)));
-		/// </summary>
-		/// <param name="obj"></param>
-		/// <returns></returns>
+        /// This makes a Sort operation sort sprite far to near. That is, the nearer sprite are later in the list. For
+        /// sorting near to far, use something like myList.Sort(new Comparison<EsSprite>((b, a) => a.CompareTo(b)));
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
 		public int CompareTo(object obj)
 		{
 			var other = (BlSprite)obj;
@@ -1185,17 +1207,17 @@ namespace Blotch
 
 		int CreationThread = -1;
 		/// <summary>
-		/// Set when the object is Disposed.
-		/// </summary>
+        /// Set when the object is Disposed.
+        /// </summary>
 		public bool IsDisposed = false;
 		/// <summary>
-		/// When finished with the object, you should call Dispose() from the same thread that created the object.
-		/// You can call this multiple times, but once is enough. If it isn't called before the object
-		/// becomes inaccessible, then the destructor will call it and, if BlDebug.EnableDisposeErrors is
-		/// true (it is true by default for Debug builds), then it will get an exception saying that it
-		/// wasn't called by the same thread that created it. This is because the platform's underlying
-		/// 3D library (OpenGL, etc.) often requires 3D resources to be managed only by one thread.
-		/// </summary>
+        /// When finished with the object, you should call Dispose() from the same thread that created the object. You
+        /// can call this multiple times, but once is enough. If it isn't called before the object becomes inaccessible,
+        /// then the destructor will call it and, if BlDebug.EnableDisposeErrors is true (it is true by default for
+        /// Debug builds), then it will get an exception saying that it wasn't called by the same thread that created
+        /// it. This is because the platform's underlying 3D library (OpenGL, etc.) often requires 3D resources to be
+        /// managed only by one thread. Also see #DisposeSubspriteTree.
+        /// </summary>
 		public void Dispose()
 		{
 			if (BlDebug.ShowThreadInfo)

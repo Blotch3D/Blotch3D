@@ -121,6 +121,8 @@ namespace Blotch
 
             while(win==null) Thread.Sleep(100);
 
+            win.WinThread = thread;
+
             return win;
         }
 
@@ -221,6 +223,7 @@ namespace Blotch
                     Graphics.SpriteBatch.DrawString(txtInfo.TextFont, txtInfo.Text, txtInfo.Coords, txtInfo.TextColor);
                 } catch
 				{
+                    if (txtInfo.TextFont == null) throw new Exception("No TextFont specified");
                     Graphics.SpriteBatch.DrawString(txtInfo.TextFont, "<txtErr>", txtInfo.Coords, txtInfo.TextColor);
                 }
             }

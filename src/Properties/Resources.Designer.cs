@@ -153,6 +153,16 @@ namespace Blotch3D.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Byte[].
         /// </summary>
+        internal static byte[] image_0 {
+            get {
+                object obj = ResourceManager.GetObject("image_0", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
         internal static byte[] plane {
             get {
                 object obj = ResourceManager.GetObject("plane", resourceCulture);
