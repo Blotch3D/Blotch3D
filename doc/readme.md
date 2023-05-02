@@ -216,12 +216,12 @@ To create a 3D window, do either of the following:
 
 1.  Use BlWindow3d.Factory to create a BlWindow3d and then pass all
     pertinent code to it via delegates/lambdas. See
-    BlotchExample13_NoDerivation for an example.
+    BlotchExample15_NoDerivation for an example.
 
 2.  Derive a class from BlWindow3d and put your pertinent code in
     certain of its overloaded methods. Then instantiate an object of
     that class and call its Run method from the same thread. See all
-    other examples *except* BlotchExample13_NoDerivation.
+    other examples *except* BlotchExample15_NoDerivation.
 
 The first method above is recommended for several reasons. The majority
 of examples use the second method only because its slightly less busy
