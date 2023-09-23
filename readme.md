@@ -1,8 +1,6 @@
-Blotch3D
-========
+# Blotch3D
 
-Quick start for Windows
------------------------
+## Quick start for Windows
 
 To get started with development:
 
@@ -35,10 +33,9 @@ To deliver a Blotch3D app for Windows, just deliver the contents of your
 project's output folder. No other software need be installed on the
 target system.
 
-Features
---------
+## Features
 
-Blotch3D is a high-level C\# library that vastly simplifies many of the
+Blotch3D is a high-level C# library that vastly simplifies many of the
 tasks in developing real-time 3D applications and games.
 
 You can\...
@@ -127,11 +124,10 @@ You can\...
     apps can be built for any Microsoft Windows platforms, iOS, Android,
     MacOS, Linux, PS4, PSVita, Xbox One, and Switch.
 
-Overview
---------
+## Overview
 
 Blotch3D sits on top of MonoGame and all MonoGame's features are still
-available. MonoGame is a widely used mid-level 3D library for C\#. It is
+available. MonoGame is a widely used mid-level 3D library for C#. It is
 open source, free, fast, cross platform, actively developed by a large
 community, and used in many professional games. There is a plethora of
 MonoGame documentation, tutorials, examples, and discussions on line.
@@ -151,7 +147,7 @@ Reference documentation of Blotch3D (classes, methods, fields,
 properties, etc.) is available through Visual Studio IntelliSense and in
 "doc/Blotch3D.chm" (which includes this readme as its first section).
 Note: To support Doxygen documentation generator, links in the
-IntelliSense comments are preceded with '\#'.
+IntelliSense comments are preceded with '#'.
 
 To support all the platforms, there are certain limitations in MonoGame.
 There is no official cross-platform way to specify an existing window to
@@ -174,8 +170,7 @@ project is Example.cs. You can do a diff between the basic example's
 Example.cs and another example's Example.cs to see what extra code must
 be added to implement the features it demonstrates.
 
-Creating a new project
-----------------------
+## Creating a new project
 
 (See the [Quick start for Windows](#features) section to set everything
 up for development)
@@ -209,8 +204,7 @@ your app and add to it a reference to that Blotch3D project you created
 first. For some platforms you may need to do some online research to
 properly create projects.
 
-Development overview
---------------------
+## Development overview
 
 To create a 3D window, do either of the following:
 
@@ -338,8 +332,7 @@ informative exception by the finalizer if this isn't done.
 See the examples, reference documentation (doc/Blotch3D.chm), and
 IntelliSense for more information.
 
-Making and using content
-------------------------
+## Making and using content
 
 There are several ways to load 3D models, audio, images, etc., depending
 on its type.
@@ -399,7 +392,7 @@ https://github.com/Martenfur/Nopipeline.
 
 Other ways to get content are:
 
-1.  You may be able to employ C\# library or 3rd-party code in your
+1.  You may be able to employ C# library or 3rd-party code in your
     project to load content into a form understood by Blotch3D/Monogame,
     but note that it might be platform-specific.
 
@@ -445,8 +438,7 @@ development. See
 <https://community.monogame.net/t/building-and-loading-content-at-runtime/10849>
 for more information.
 
-Particles
----------
+## Particles
 
 Particle systems in Blotch3D are implemented by specifying
 BlSprite.FrameProc delegates. So, particles systems are completely
@@ -454,8 +446,7 @@ configurable. For example, you can implement nonlinear or abrupt changes
 in the particle's life or make particle trees (particles with
 particles). See the Particle example.
 
-Custom effects
---------------
+## Custom effects
 
 By default, Blotch3D draws sprites using a standard shader that comes
 with MonoGame which is managed by a MonoGame BasicEffect object.
@@ -561,12 +552,11 @@ pixel is opaque and no coloration from farther values should show
 through. Values of zero indicate the pixel is completely transparent.
 
 Translucent textures drawn using the 2D Blotch3D drawing methods
-(BlGraphicsDeviceManager\#DrawText,
-BlGraphicsDeviceManager\#DrawTexture, and BlGuiControl) or any MonoGame
-2D drawing methods (for example, by use of MonoGame's SpriteBatch class)
-will always correctly show the things behind them according to the
-pixel's alpha channel as long as they are called after all other 3D
-things are drawn.
+(BlGraphicsDeviceManager#DrawText, BlGraphicsDeviceManager#DrawTexture,
+and BlGuiControl) or any MonoGame 2D drawing methods (for example, by
+use of MonoGame's SpriteBatch class) will always correctly show the
+things behind them according to the pixel's alpha channel as long as
+they are called after all other 3D things are drawn.
 
 But translucent textures applied to a 3D sprite may require special
 handling.
@@ -667,8 +657,7 @@ effects](#custom-effects) section for details.
 code from the original BasicEffect for pixel lighting \[an advanced form
 of bump mapping\] has been removed from this shader.)
 
-Setting and dynamically changing a sprite's scale, orientation, and position
-----------------------------------------------------------------------------
+## Setting and dynamically changing a sprite's scale, orientation, and position
 
 You change a sprite's scaling, position, rotation, etc. relative to its
 parent sprite (or to an unmodified coordinate system if there is no
@@ -703,8 +692,7 @@ For a good introduction without the math, see
 The following [Matrix internals](#matrix-internals) section should be
 studied only when you need a deeper knowledge.
 
-Matrix internals
-----------------
+## Matrix internals
 
 (Essentials are available in
 <https://github.com/Blotch3D/Blotch3D/blob/master/doc/3D_linear_algebra_cheat_sheet.pdf>)
@@ -892,8 +880,7 @@ parent's matrix with the child's matrix to create the final ("absolute")
 matrix used to draw that child, and that matrix is also used as the
 parent matrix for the subsprites of that child.
 
-A Short Glossary of 3D Graphics Terms
--------------------------------------
+## A Short Glossary of 3D Graphics Terms
 
 Polygon
 
@@ -1072,8 +1059,7 @@ view and projection matrices, though, because there are higher-level
 functions that control them---like Zoom, aspect ratio, and camera
 position and orientation functions.
 
-Deficiencies and Alternatives
------------------------------
+## Deficiencies and Alternatives
 
 Although any feature can certainly be implemented by the app developer,
 notable features directly lacking in Blotch3D/MonoGame are...
@@ -1096,6 +1082,11 @@ that year. So, that's probably worth every penny when you think about
 it, especially since it is Unity3D that would probably be what sells
 your product. The binaries are larger, and learning curve is certainly
 steeper, though.
+
+Godot game engine. Not as feature-rich as Unity3D but still fairly rich.
+This seems to be pretty much open source and requires no royalties or
+other fees, but check the details. Supports C#, among other languages.
+Don't know how a bare-bones example compares to Blotch3D.
 
 I haven't investigated it, but MonoGame.Extended seems to provide some
 but not all of the same features as Blotch3D. You could even try using
@@ -1136,12 +1127,11 @@ notice are:
 -   Particle systems are not as versatile
 
 Finally, a mention of three.js is in order, even though it is JavaScript
-rather than C\#, because it's so full featured yet easy to learn. See
+rather than C#, because it's so full featured yet easy to learn. See
 <https://docs.microsoft.com/en-us/windows/uwp/get-started/get-started-tutorial-game-js3d>
 for Visual Studio-based development of three.js.
 
-Troubleshooting
----------------
+## Troubleshooting
 
 Q: When I set a billboard attribute of a flat sprite (like a plane), I
 can no longer see it.
@@ -1233,8 +1223,7 @@ tasks in drawing things when you only want to calculate the sprite's
 position without drawing it, then when it comes time to draw things,
 enable them.
 
-Rights
-------
+## Rights
 
 Blotch3D (formerly GWin3D) Copyright (c) 1999-2020 Kelly Loum, all
 rights reserved except those granted in the following license:

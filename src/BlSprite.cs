@@ -981,7 +981,7 @@ namespace Blotch
 		{
 			effect.Projection = Graphics.Projection;
 			effect.View = Graphics.View;
-			effect.World = AbsoluteMatrix;
+			effect.World = AbsoluteMatrix;  
 
 			effect.LightingEnabled = true;
 			do

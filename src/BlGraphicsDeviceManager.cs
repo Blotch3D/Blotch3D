@@ -410,23 +410,29 @@ namespace Blotch
 			GraphicsDevice.BlendState = BlendState.AlphaBlend;
 			//GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 			GraphicsProfile = GraphicsProfile.HiDef;
-			PreferMultiSampling = true;
+            PreparingDeviceSettings += Graphics_PreparingDeviceSettings;
+            //PreferMultiSampling = true;
 
 			//RasterizerState rasterizerState = new RasterizerState();
 			//rasterizerState.CullMode = CullMode.None;
 			//GraphicsDevice.RasterizerState = rasterizerState;
-			GraphicsProfile = GraphicsProfile.HiDef;
-			GraphicsDevice.PresentationParameters.MultiSampleCount = 8;
+			//GraphicsProfile = GraphicsProfile.HiDef;
+			//GraphicsDevice.PresentationParameters.MultiSampleCount = 8;
 			GraphicsDevice.DepthStencilState = DepthStencilState.Default;
 			ApplyChanges();
 		}
+        private void Graphics_PreparingDeviceSettings(object sender, PreparingDeviceSettingsEventArgs e)
+        {
+            PreferMultiSampling = true;
+            e.GraphicsDeviceInformation.PresentationParameters.MultiSampleCount = 8;
+        }
 
-		/// <summary>
-		/// Informs the auto-clipping code of an object that should be visible within the clipping limits. This is
-		/// mainly for internal use. Application code should control clipping with NearClip and FarClip.
-		/// </summary>
-		/// <param name="s">The sprite that should be included in the auto-clipping code</param>
-		public void ExtendClippingTo(BlSprite s)
+        /// <summary>
+        /// Informs the auto-clipping code of an object that should be visible within the clipping limits. This is
+        /// mainly for internal use. Application code should control clipping with NearClip and FarClip.
+        /// </summary>
+        /// <param name="s">The sprite that should be included in the auto-clipping code</param>
+        public void ExtendClippingTo(BlSprite s)
 		{
 			var near = s.CamDistance - s.BoundSphere.Value.Radius;
 			var far = s.CamDistance + s.BoundSphere.Value.Radius;
