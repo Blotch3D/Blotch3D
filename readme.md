@@ -113,8 +113,7 @@ You can\...
 -   All other MonoGame features remain available, like audio, joystick
     support, etc.
 
--   Blotch3D is a .NET Standard Library that works with .NET 6, .NET 5,
-    .NET Framework, .NET Core 3, and other .NET Standard code.
+-   Blotch3D is a .NET Standard Library that works with all versions of .NET.
 
 -   See <https://github.com/sqrMin1/MonoGame.Forms> to integrate the 3D
     window (BlWindow.Window) with a .NET Forms GUI (although this hasn't
