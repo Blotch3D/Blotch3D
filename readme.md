@@ -1,5 +1,7 @@
 # Blotch3D
 
+# 
+
 ## Quick start for Windows
 
 To get started with development:
@@ -113,7 +115,8 @@ You can\...
 -   All other MonoGame features remain available, like audio, joystick
     support, etc.
 
--   Blotch3D is a .NET Standard Library that works with all versions of .NET.
+-   Blotch3D is a .NET Standard Library that works with all versions of
+    .NET.
 
 -   See <https://github.com/sqrMin1/MonoGame.Forms> to integrate the 3D
     window (BlWindow.Window) with a .NET Forms GUI (although this hasn't
@@ -1063,7 +1066,7 @@ position and orientation functions.
 Although any feature can certainly be implemented by the app developer,
 notable features directly lacking in Blotch3D/MonoGame are...
 
--   Shadows (although they might be added in the future)
+-   Shadows
 
 -   Physics
 
@@ -1097,7 +1100,8 @@ See
 [https://www.monogameextended.net](https://www.monogameextended.net/).
 
 Another alternative is UrhoSharp. I haven't looked at it in detail, but
-below are listed some of its advantages.
+below are listed some of its advantages. It has not been updated in a
+while.
 
 -   UrhoSharp supports physics
 
