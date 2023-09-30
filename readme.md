@@ -1077,18 +1077,21 @@ notable features directly lacking in Blotch3D/MonoGame are...
 -   More than one 3D window per process
 
 Unity3D is a Cadillac 3D library that does virtually anything. See the
-Unity3D site for details, but generally, if your profits or funding is
-less than \$100K per year on your Unity3D product, then Unity3D is free.
-If you make more per year, then you pay Unity3D less than 1% of profits
-that year. So, that's probably worth every penny when you think about
-it, especially since it is Unity3D that would probably be what sells
-your product. The binaries are larger, and learning curve is certainly
-steeper, though.
+Unity3D site for details, but generally when your business revenue
+exceeds \$200K per year, you pay less than a few percent of it to Unity.
+So, that's probably worth every penny when you think about it,
+especially since it is Unity3D that would probably be what sells your
+product. Development is different in that you place and configure
+objects with the GUI, and write C# code only when you want things to
+behave a unique way.
 
 Godot game engine. Not as feature-rich as Unity3D but still fairly rich.
 This seems to be pretty much open source and requires no royalties or
 other fees, but check the details. Supports C#, among other languages.
 Don't know how a bare-bones example compares to Blotch3D.
+
+FNA is another replacement for Microsoft's XNS, just like Monogame,
+which is what Blotch3D sits upon.
 
 I haven't investigated it, but MonoGame.Extended seems to provide some
 but not all of the same features as Blotch3D. You could even try using
