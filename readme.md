@@ -1077,13 +1077,11 @@ notable features directly lacking in Blotch3D/MonoGame are...
 -   More than one 3D window per process
 
 Unity3D is a Cadillac 3D library that does virtually anything. See the
-Unity3D site for details, but generally when your business revenue
-exceeds \$200K per year, you pay less than a few percent of it to Unity.
-So, that's probably worth every penny when you think about it,
-especially since it is Unity3D that would probably be what sells your
-product. Development is different in that you place and configure
-objects with the GUI, and write C# code only when you want things to
-behave a unique way.
+Unity3D site for details, but generally if your revenue is less than
+\$100k, then it's free. If it's more than that then you pay less than a
+few percent of game revenue. Development is different in that you place
+and configure objects with the GUI, and write C# code only when you want
+things to behave a unique way.
 
 Godot game engine. Not as feature-rich as Unity3D but still fairly rich.
 This seems to be pretty much open source and requires no royalties or
