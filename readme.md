@@ -177,21 +177,15 @@ be added to implement the features it demonstrates.
 (See the [Quick start for Windows](#features) section to set everything
 up for development)
 
-You can create a new .NET Core 3.x/WPF Core 3.x/Windows Forms Core 3.x
-project and add a reference to the Blotch3D project or the Blotch3D
-NuGet package. (Although using the Monogame window as a child window of
-a UI may be impossible or problematic. See the [Development
-overview](#development-overview) section for further discussion.)
+You can use an existing or new .NET 5, 6, 7, 8, Framework, or Core
+3.x/WPF Core 3.x/Windows Forms Core 3.x project and add a reference to
+the Blotch3D project or the Blotch3D NuGet package.
 
-To add Blotch3D to an existing Windows Core 3.x project, add a reference
-to Blotch3D.
-
-To add Blotch3D to an existing .NET Framework project, add a reference
-to Blotch3D and (to avoid a weird startup bug where it won't load
-SDL2.dll) also add the NuGet package 'MonoGame.Framework.DesktopGL' via
-the solution's NuGet screen. (You have to add it from the solution's
-NuGet screen because that package may not be visible in a .NET Framework
-project's NuGet screen, even though it is compatible with it).
+If you get a weird startup bug where it won't load SDL2.dll, also add
+the NuGet package 'MonoGame.Framework.DesktopGL' via the solution's
+NuGet screen. (You may have to add it from the solution's NuGet screen
+because that package may not be visible in a .NET Framework project's
+NuGet screen, even though it is compatible with it).
 
 To create a project for another platform besides Microsoft Windows:
 First you will need to install any Visual Studio add-ons, etc. for the
