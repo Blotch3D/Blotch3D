@@ -39,14 +39,14 @@ namespace Blotch
     /// <summary>
     /// To make a 3D window, you either create an instance with the BlWindow3d.Factory, or derive a class from
     /// BlWidnow3D. If you use the factory, at a minimum you must perform setup with a call to #EnqueueCommandBlocking,
-    /// and then you can assign a BlWindow3d.#FrameDrawDelegate to perfom FrameDraw processing. Do not assign the
+    /// and then you can assign a BlWindow3d.#FrameDrawDelegate to perform FrameDraw processing. Do not assign the
     /// BlWindow3d.#FrameDrawDelegate before the setup! If you derive from BlWindow3d, you must override at least the
     /// #FrameDraw method, and open it with a call to its “Run” method from the same thread that instantiated it. The
     /// Run method will call the #Setup, #FrameProc, and #FrameDraw methods when appropriate, and not return until the
     /// window closes. All code that accesses 3D resources must be done in that thread (i.e., one of the overrides),
     /// including code that creates and uses all Blotch3D and MonoGame objects. Note that this rule also applies to any
     /// code structure that may internally use other threads, as well. Other threads that need to access 3D resources or
-    /// otheriwse do something in a thread-safe way with the 3D thread can do so by passing a delegate to
+    /// otherwise do something in a thread-safe way with the 3D thread can do so by passing a delegate to
     /// #EnqueueCommand and #EnqueueCommandBlocking.
     /// </summary>
     public class BlWindow3D : Game
@@ -55,10 +55,10 @@ namespace Blotch
         /// The BlGraphicsDeviceManager associated with this window. This is automatically created when you create the
         /// BlWindow3D.
         /// </summary>
-		public BlGraphicsDeviceManager Graphics;
+		static public BlGraphicsDeviceManager Graphics;
 
         /// <summary>
-        /// A FrameDrawDelegate runs every frame. If you've overloaded FrameDraw, it runs immediatley after FrameDraw.
+        /// A FrameDrawDelegate runs every frame. If you've overloaded FrameDraw, it runs immediately after FrameDraw.
         /// You can use it instead of or in addition to FrameDraw to dynamically change the FrameDraw code. You can also
         /// use this directly in a BlWindow3d instance so you don't even need to derive from BlWindow3d (in which case
         /// you could use EnqueueCommandBlocking to perform your initialization code before assigning
@@ -96,11 +96,14 @@ namespace Blotch
         /// </summary>
 		public BlWindow3D()
 		{
-			CreationThread = Thread.CurrentThread.ManagedThreadId;
+			if(Graphics == null)
+			{
+                CreationThread = Thread.CurrentThread.ManagedThreadId;
 
-			Graphics = new BlGraphicsDeviceManager(this);
-			Window.AllowUserResizing = true;
-		}
+                Graphics = new BlGraphicsDeviceManager(this);
+                Window.AllowUserResizing = true;
+            }
+        }
 
         /// <summary>
         /// If you don't feel like to deriving from BlWindow, you can create a window using this factory and then use
@@ -117,6 +120,7 @@ namespace Blotch
                 win.Run();
             });
             thread.IsBackground = true;
+			thread.SetApartmentState(ApartmentState.MTA);
             thread.Start();
 
             while(win==null) Thread.Sleep(100);

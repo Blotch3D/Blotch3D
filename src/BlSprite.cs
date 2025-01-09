@@ -148,7 +148,7 @@ namespace Blotch
 
         /// <summary>
         /// This increases the model's radius that is used by DoesRayIntersect. For example, make this larger than '1'
-        /// so that DoesRayIntersect thinks it is lareger.
+        /// so that DoesRayIntersect thinks it is larger.
         /// </summary>
         public double RadiusTweak = 1;
 
@@ -242,7 +242,7 @@ namespace Blotch
 		public Matrix? LastWorldMatrix = null;
 
 		/// <summary>
-        /// Wwhether to participate in autoclipping calculations, when they are enabled.
+        /// Whether to participate in autoclipping calculations, when they are enabled.
         /// </summary>
 		public bool IncludeInAutoClipping = true;
 

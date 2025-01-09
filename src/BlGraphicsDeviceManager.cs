@@ -57,13 +57,13 @@ namespace Blotch
 	{
 		/// <summary>
 		/// This is the view matrix. Normally you would use the higher-level functions
-		/// #Eye, #LookAt, #CameraUp, #SetCameraToSprite, and #DoDefaultGui intead of changing this directly.
+		/// #Eye, #LookAt, #CameraUp, #SetCameraToSprite, and #DoDefaultGui instead of changing this directly.
 		/// </summary>
 		public Microsoft.Xna.Framework.Matrix View;
 
 		/// <summary>
 		/// The Projection matrix. Normally you would use the higher-level functions
-		/// #Zoom, #Aspect, #NearClip, or #FarClip intead of changing this directly.
+		/// #Zoom, #Aspect, #NearClip, or #FarClip instead of changing this directly.
 		/// </summary>
 		public Microsoft.Xna.Framework.Matrix Projection;
 
@@ -104,7 +104,7 @@ namespace Blotch
 		public double DefGuiMinLookZ = -1;
 
 		/// <summary>
-		/// Caues #DoDefaultGui to prevent the Z component of #CameraForwardNormalized from rising above this value.
+		/// Causes #DoDefaultGui to prevent the Z component of #CameraForwardNormalized from rising above this value.
 		/// For example, set this to zero so that #DoDefaultGui won't allow the camera to look upward
 		/// </summary>
 		public double DefGuiMaxLookZ = 1;
@@ -297,12 +297,14 @@ namespace Blotch
 		/// <summary>
 		/// The BlWindow3D associated with this object.
 		/// </summary>
-		public BlWindow3D Window;
+		public BlWindow3D Window { get { return _Window; } set { _Window = value; Static_Window = value; } }
+        BlWindow3D _Window = null;
+        public static BlWindow3D Static_Window = null;
 
-		/// <summary>
-		/// A SpriteBatch for use by certain text and texture drawing methods.
-		/// </summary>
-		public SpriteBatch SpriteBatch=null;
+        /// <summary>
+        /// A SpriteBatch for use by certain text and texture drawing methods.
+        /// </summary>
+        public SpriteBatch SpriteBatch=null;
 
 		/// <summary>
 		/// </summary>
@@ -696,6 +698,8 @@ namespace Blotch
 
             KeyboardState? PrevKeyboardState = null;
             MouseState? PrevMouseState = null;
+			DateTime PrevTime = DateTime.MinValue;
+			TimeSpan MaxMouseStateChangeTime = TimeSpan.FromMilliseconds(200);
             bool LastMatched = false;
 
             /// <summary>
@@ -813,9 +817,9 @@ namespace Blotch
             }
 
             /// <summary>
-            /// Called by DoDefaultGui for each operation (pan, zoom, etc.) to check if the current input state matches
-            /// the state of this object. Application code would not normally call this unless it implements its own
-            /// configurable GUI code like DoDefaultGui.
+            /// Called by DoDefaultGui for each operation (pan, zoom, etc.) to check if the current input state matches the state of this
+            /// object and, if so, get a vector indicating the change in mouse position. Application code would not normally call this
+            /// unless it implements its own configurable GUI code like DoDefaultGui.
             /// </summary>
             /// <param name="k"></param>
             /// <param name="m"></param>
@@ -840,9 +844,13 @@ namespace Blotch
 
                 Vector3? ret = null;
 
-                if(PrevKeyboardState == null || PrevMouseState == null)
+                if (PrevKeyboardState == null)
                 {
                     PrevKeyboardState = k;
+                }
+
+                if (PrevMouseState == null)
+                {
                     PrevMouseState = m;
                 }
 
@@ -899,19 +907,30 @@ namespace Blotch
 
                 LastMatched = true;
 
-                var v = new Vector3();
+				var now = DateTime.Now;
 
-                v.X = (float)(m.X - PrevMouseState.Value.X);
-                v.Y = (float)(m.Y - PrevMouseState.Value.Y);
-                v.Z = (float)(m.ScrollWheelValue - PrevMouseState.Value.ScrollWheelValue);
+				var bnds = BlGraphicsDeviceManager.Static_Window.Window.ClientBounds;
 
-                if (Matrix != null)
-                    v = Vector3.Transform(v, Matrix.Value);
+                if (m.X > 0 && m.X < bnds.Width && m.Y > 0 && m.Y < bnds.Height)
+                {
+                    if (now - PrevTime < MaxMouseStateChangeTime)
+                    {
+                        var v = new Vector3();
 
-                ret = v;
+                        v.X = (float)(m.X - PrevMouseState.Value.X);
+                        v.Y = (float)(m.Y - PrevMouseState.Value.Y);
+                        v.Z = (float)(m.ScrollWheelValue - PrevMouseState.Value.ScrollWheelValue);
 
-                PrevKeyboardState = k;
-                PrevMouseState = m;
+                        if (Matrix != null)
+                            v = Vector3.Transform(v, Matrix.Value);
+
+                        ret = v;
+                    }
+
+                    PrevKeyboardState = k;
+                    PrevMouseState = m;
+                    PrevTime = now;
+                }
 
                 return ret;
             }
@@ -964,7 +983,7 @@ namespace Blotch
         /// clicked then do a 'pick' (returns a ray into window at mouse position); finally, SHIFT causes all the previous controls to be fine
         /// rather than coarse. To override this default behavior, specify arguments. You can specify a keyboard state and a
         /// mouse state to use. You can specify the input state for each function. See InputDefinition.
-        /// Rather than calling this, you can also control each camera attribute individually and programatically by using AdjustCameraZoom, AdjustCameraDolly, AdjustCameraRotation, AdjustCameraPan,
+        /// Rather than calling this, you can also control each camera attribute individually and programmatically by using AdjustCameraZoom, AdjustCameraDolly, AdjustCameraRotation, AdjustCameraPan,
 		/// AdjustCameraTruck, ResetCamera, and/or SetCameraToSprite. Or see the more basic fields of Zoom, Aspect,
 		/// TargetEye, and TargetLookAt.
         /// </summary>
